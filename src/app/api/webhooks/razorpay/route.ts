@@ -1,0 +1,145 @@
+import { NextResponse } from "next/server";
+import crypto from "crypto";
+
+// POST /api/webhooks/razorpay — Razorpay webhook handler
+// Handles: payment.captured, payment.failed, subscription.charged, subscription.halted
+export async function POST(req: Request) {
+    try {
+        const body = await req.text();
+        const signature = req.headers.get("x-razorpay-signature");
+
+        if (!signature) {
+            return NextResponse.json(
+                { error: "Missing signature" },
+                { status: 400 }
+            );
+        }
+
+        // Verify webhook signature
+        const expectedSig = crypto
+            .createHmac("sha256", process.env.RAZORPAY_WEBHOOK_SECRET!)
+            .update(body)
+            .digest("hex");
+
+        if (signature !== expectedSig) {
+            console.error("[Razorpay Webhook] Invalid signature");
+            return NextResponse.json(
+                { error: "Invalid signature" },
+                { status: 400 }
+            );
+        }
+
+        const event = JSON.parse(body);
+
+        const { createServiceClient } = await import("@/lib/supabase/server");
+        const supabase = await createServiceClient();
+
+        switch (event.event) {
+            case "payment.captured": {
+                const payment = event.payload.payment.entity;
+                // Update payment status
+                await supabase
+                    .from("payments")
+                    .update({ gateway_payment_status: "captured" })
+                    .eq("gateway_payment_id", payment.id);
+
+                console.log(
+                    `[Razorpay Webhook] Payment captured: ${payment.id}`
+                );
+                break;
+            }
+
+            case "payment.failed": {
+                const payment = event.payload.payment.entity;
+                const enrollmentId = payment.notes?.enrollment_id;
+
+                if (enrollmentId) {
+                    await supabase
+                        .from("enrollments")
+                        .update({ status: "payment_failed" })
+                        .eq("id", enrollmentId);
+                }
+
+                // Record the failed payment
+                if (payment.notes?.coach_id) {
+                    await supabase.from("payments").upsert(
+                        {
+                            coach_id: payment.notes.coach_id,
+                            client_id: payment.notes.client_id || null,
+                            enrollment_id: enrollmentId || null,
+                            amount: payment.amount / 100,
+                            currency: payment.currency?.toUpperCase() || "INR",
+                            payment_type: payment.notes.payment_type || "new",
+                            gateway_payment_id: payment.id,
+                            gateway_order_id: payment.order_id,
+                            payment_gateway: "razorpay",
+                            gateway_payment_status: "failed",
+                        },
+                        { onConflict: "gateway_payment_id" }
+                    );
+                }
+
+                console.error(
+                    `[Razorpay Webhook] Payment failed: ${payment.id}`,
+                    payment.error_description
+                );
+                break;
+            }
+
+            case "subscription.charged": {
+                // Coach subscription renewed successfully
+                const subscription = event.payload.subscription.entity;
+                const coachId = subscription.notes?.coach_id;
+
+                if (coachId) {
+                    await supabase
+                        .from("coaches")
+                        .update({
+                            plan: "active",
+                            updated_at: new Date().toISOString(),
+                        })
+                        .eq("id", coachId);
+
+                    console.log(
+                        `[Razorpay Webhook] Subscription renewed for coach: ${coachId}`
+                    );
+                }
+                break;
+            }
+
+            case "subscription.halted": {
+                // Coach subscription payment failed
+                const subscription = event.payload.subscription.entity;
+                const coachId = subscription.notes?.coach_id;
+
+                if (coachId) {
+                    await supabase
+                        .from("coaches")
+                        .update({
+                            plan: "suspended" as string,
+                            updated_at: new Date().toISOString(),
+                        })
+                        .eq("id", coachId);
+
+                    console.error(
+                        `[Razorpay Webhook] Subscription halted for coach: ${coachId}`
+                    );
+                }
+                break;
+            }
+
+            default:
+                console.log(
+                    `[Razorpay Webhook] Unhandled event: ${event.event}`
+                );
+        }
+
+        return NextResponse.json({ received: true });
+    } catch (error) {
+        console.error("[Razorpay Webhook] Processing error:", error);
+        return NextResponse.json(
+            { error: "Webhook failed" },
+            { status: 500 }
+        );
+    }
+}

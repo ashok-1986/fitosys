@@ -1,0 +1,20 @@
+{
+    "crons": [
+        {
+            "path": "/api/cron/checkins",
+            "schedule": "0 13 * * 0"
+        },
+        {
+            "path": "/api/cron/summaries",
+            "schedule": "0 1 * * 1"
+        },
+        {
+            "path": "/api/cron/renewals",
+            "schedule": "0 4 * * *"
+        },
+        {
+            "path": "/api/cron/expiry",
+            "schedule": "0 0 * * *"
+        }
+    ]
+}
