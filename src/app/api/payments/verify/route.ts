@@ -1,21 +1,41 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { verifyRazorpayPayment } from "@/lib/razorpay/verify-payment";
+import { getRazorpay } from "@/lib/razorpay/client";
 import {
     sendClientWelcome,
     sendCoachNewClientNotification,
 } from "@/lib/whatsapp";
+import {
+    checkRateLimit,
+    rateLimitResponse,
+    getClientIP,
+} from "@/lib/rate-limit";
 
 // POST /api/payments/verify — Verify Razorpay payment signature + activate enrollment
 // Called immediately after the Razorpay modal closes successfully on frontend
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
+    // Rate limit: 20 requests per minute per IP
+    const ip = getClientIP(req);
+    const { allowed, retryAfterMs } = checkRateLimit(`verify:${ip}`, {
+        maxRequests: 20,
+    });
+    if (!allowed) {
+        return rateLimitResponse(retryAfterMs);
+    }
+
     try {
         const {
             razorpay_order_id,
             razorpay_payment_id,
             razorpay_signature,
-            enrollmentId,
-            clientData,
         } = await req.json();
+
+        if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+            return NextResponse.json(
+                { error: "Missing payment parameters" },
+                { status: 400 }
+            );
+        }
 
         // Step 1: Verify signature — CRITICAL security check
         const isValid = verifyRazorpayPayment(
@@ -32,26 +52,53 @@ export async function POST(req: Request) {
             );
         }
 
+        // Step 2: Fetch order from Razorpay to get server-side notes
+        // This prevents the client from tampering with clientData
+        const razorpay = getRazorpay();
+        const order = await razorpay.orders.fetch(razorpay_order_id);
+        const notes = order.notes as Record<string, string>;
+
+        if (!notes?.enrollment_id || !notes?.coach_id) {
+            console.error("[Razorpay] Order missing required notes");
+            return NextResponse.json(
+                { error: "Invalid order data" },
+                { status: 400 }
+            );
+        }
+
+        // Extract client data from server-side order notes (not from frontend!)
+        const clientData = {
+            full_name: notes.client_full_name,
+            whatsapp_number: notes.client_whatsapp,
+            email: notes.client_email,
+            age: notes.client_age ? parseInt(notes.client_age) : null,
+            primary_goal: notes.client_primary_goal || null,
+            health_notes: notes.client_health_notes || null,
+        };
+        const enrollmentId = notes.enrollment_id;
+
         const { createServiceClient } = await import("@/lib/supabase/server");
         const supabase = await createServiceClient();
 
-        // Step 2: Get enrollment details
+        // Step 3: Get enrollment — verify it matches the order
         const { data: enrollment } = await supabase
             .from("enrollments")
             .select(
-                "*, programs(name, duration_weeks), coaches(full_name, whatsapp_number)"
+                "*, programs(name, duration_weeks), coaches(full_name, whatsapp_number, checkin_day)"
             )
             .eq("id", enrollmentId)
+            .eq("coach_id", notes.coach_id)
+            .eq("status", "pending") // Only activate pending enrollments
             .single();
 
         if (!enrollment) {
             return NextResponse.json(
-                { error: "Enrollment not found" },
+                { error: "Enrollment not found or already activated" },
                 { status: 404 }
             );
         }
 
-        // Step 3: Create or find client record
+        // Step 4: Create or find client record
         let clientId: string;
         const { data: existingClient } = await supabase
             .from("clients")
@@ -87,7 +134,7 @@ export async function POST(req: Request) {
             clientId = newClient.id;
         }
 
-        // Step 4: Update enrollment to active with client_id
+        // Step 5: Update enrollment to active with client_id
         await supabase
             .from("enrollments")
             .update({
@@ -98,7 +145,7 @@ export async function POST(req: Request) {
             })
             .eq("id", enrollmentId);
 
-        // Step 5: Record payment
+        // Step 6: Record payment
         await supabase.from("payments").insert({
             coach_id: enrollment.coach_id,
             client_id: clientId,
@@ -113,10 +160,11 @@ export async function POST(req: Request) {
             paid_at: new Date().toISOString(),
         });
 
-        // Step 6: Send WhatsApp notifications (fire and forget)
+        // Step 7: Send WhatsApp notifications (fire and forget)
         const coach = enrollment.coaches as unknown as {
             full_name: string;
             whatsapp_number: string;
+            checkin_day: number;
         };
         const program = enrollment.programs as unknown as {
             name: string;
@@ -124,7 +172,6 @@ export async function POST(req: Request) {
         };
 
         try {
-            // Compute enrollment dates for notification messages
             const endDate = enrollment.end_date
                 ? new Date(enrollment.end_date).toLocaleDateString("en-IN", {
                     day: "numeric",
@@ -159,7 +206,8 @@ export async function POST(req: Request) {
                     coachName: coach?.full_name || "Your Coach",
                     programName: program?.name || "Coaching Program",
                     endDate,
-                    checkinDay: dayNames[0], // Default Sunday, updated by coach settings
+                    checkinDay:
+                        dayNames[coach?.checkin_day ?? 0] || dayNames[0],
                     clientPhone: clientData.whatsapp_number,
                 }),
                 coach?.whatsapp_number
@@ -176,7 +224,9 @@ export async function POST(req: Request) {
             ]);
         } catch {
             // WhatsApp failures should not break the payment flow
-            console.error("[Razorpay] WhatsApp notification failed (non-blocking)");
+            console.error(
+                "[Razorpay] WhatsApp notification failed (non-blocking)"
+            );
         }
 
         console.log(

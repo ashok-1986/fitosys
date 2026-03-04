@@ -1,10 +1,80 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { createRazorpayOrder } from "@/lib/razorpay/create-order";
+import {
+    checkRateLimit,
+    rateLimitResponse,
+    getClientIP,
+} from "@/lib/rate-limit";
+
+// Zod schema for intake validation
+const intakeSchema = z.object({
+    slug: z.string().min(1).max(50),
+    full_name: z
+        .string()
+        .min(2, "Name must be at least 2 characters")
+        .max(100, "Name too long")
+        .transform((s) => s.replace(/<[^>]*>/g, "")), // strip HTML
+    whatsapp_number: z
+        .string()
+        .regex(/^\+?[0-9]{10,15}$/, "Invalid phone number"),
+    email: z.string().email("Invalid email").max(255),
+    age: z.coerce.number().int().min(10).max(120).optional().nullable(),
+    primary_goal: z
+        .string()
+        .max(500)
+        .transform((s) => s.replace(/<[^>]*>/g, ""))
+        .optional()
+        .nullable(),
+    health_notes: z
+        .string()
+        .max(1000)
+        .transform((s) => s.replace(/<[^>]*>/g, ""))
+        .optional()
+        .nullable(),
+    program_id: z.string().uuid("Invalid program ID"),
+    agree_terms: z.literal(true, {
+        message: "You must agree to the terms",
+    }),
+});
 
 // POST /api/public/intake — Submit intake form + create Razorpay order
 // No auth required — this is the public client-facing endpoint
 export async function POST(request: NextRequest) {
-    const body = await request.json();
+    // Rate limit: 10 requests per minute per IP
+    const ip = getClientIP(request);
+    const { allowed, retryAfterMs } = checkRateLimit(`intake:${ip}`, {
+        maxRequests: 10,
+    });
+    if (!allowed) {
+        return rateLimitResponse(retryAfterMs);
+    }
+
+    // Parse and validate input
+    let body;
+    try {
+        body = await request.json();
+    } catch {
+        return NextResponse.json(
+            { error: "Invalid request body" },
+            { status: 400 }
+        );
+    }
+
+    const parsed = intakeSchema.safeParse(body);
+    if (!parsed.success) {
+        return NextResponse.json(
+            {
+                error: "Validation failed",
+                details: parsed.error.issues.map((i) => ({
+                    field: i.path.join("."),
+                    message: i.message,
+                })),
+            },
+            { status: 400 }
+        );
+    }
+
     const {
         slug,
         full_name,
@@ -14,23 +84,7 @@ export async function POST(request: NextRequest) {
         primary_goal,
         health_notes,
         program_id,
-        agree_terms,
-    } = body;
-
-    // Validate required fields
-    if (!slug || !full_name || !whatsapp_number || !email || !program_id) {
-        return NextResponse.json(
-            { error: "All required fields must be filled" },
-            { status: 400 }
-        );
-    }
-
-    if (!agree_terms) {
-        return NextResponse.json(
-            { error: "You must agree to the terms" },
-            { status: 400 }
-        );
-    }
+    } = parsed.data;
 
     // Use service client since this is a public endpoint (no auth session)
     const { createServiceClient } = await import("@/lib/supabase/server");
@@ -54,7 +108,7 @@ export async function POST(request: NextRequest) {
     // Get program details
     const { data: program, error: progError } = await supabase
         .from("programs")
-        .select("*")
+        .select("id, name, duration_weeks, price, currency")
         .eq("id", program_id)
         .eq("coach_id", coach.id)
         .eq("is_active", true)

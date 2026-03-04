@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     let query = supabase!
         .from("clients")
         .select(
-            `*,
+            `id, full_name, whatsapp_number, email, status, created_at,
             enrollments!client_id (
                 id,
                 status,
@@ -37,15 +37,18 @@ export async function GET(request: NextRequest) {
     }
 
     if (search) {
+        // Sanitize search input — escape SQL wildcards
+        const sanitized = search.replace(/[%_\\]/g, "\\$&");
         query = query.or(
-            `full_name.ilike.%${search}%,whatsapp_number.ilike.%${search}%`
+            `full_name.ilike.%${sanitized}%,whatsapp_number.ilike.%${sanitized}%`
         );
     }
 
     const { data, error: dbError } = await query;
 
     if (dbError) {
-        return NextResponse.json({ error: dbError.message }, { status: 500 });
+        console.error("[API/clients] Database error:", dbError);
+        return NextResponse.json({ error: "Failed to fetch clients" }, { status: 500 });
     }
 
     // Post-process: flatten enrollment/program data, pick latest check-in

@@ -2,11 +2,16 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
-    // Guard: skip auth if Supabase env vars are not configured
+    // Guard: block access if Supabase env vars are not configured
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     if (!supabaseUrl || !supabaseAnonKey) {
-        console.warn("[middleware] Supabase env vars not set — skipping auth checks");
+        console.error("[middleware] CRITICAL: Supabase env vars missing — blocking access");
+        if (request.nextUrl.pathname.startsWith("/dashboard")) {
+            const url = request.nextUrl.clone();
+            url.pathname = "/login";
+            return NextResponse.redirect(url);
+        }
         return NextResponse.next();
     }
 
