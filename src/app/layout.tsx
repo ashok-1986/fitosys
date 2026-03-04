@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Urbanist, Barlow_Condensed } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const urbanist = Urbanist({
@@ -29,6 +30,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${urbanist.variable} ${barlowCondensed.variable} font-sans antialiased`}>
         {children}
+        <Analytics />
       </body>
     </html>
   );
