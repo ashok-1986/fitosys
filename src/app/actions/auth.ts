@@ -93,3 +93,37 @@ export async function logoutAction() {
     await supabase.auth.signOut();
     redirect("/login");
 }
+
+export async function googleSignInAction() {
+    const supabase = await createClient();
+
+    // Determine the base URL for the callback
+    const getURL = () => {
+        let url =
+            process?.env?.NEXT_PUBLIC_APP_URL ?? // Set this to site URL in production env
+            process?.env?.NEXT_PUBLIC_VERCEL_URL ?? // Automatically set by Vercel
+            'http://localhost:3000';
+
+        // Make sure to include `https://` when not localhost
+        url = url.includes('http') ? url : `https://${url}`;
+        // Make sure to include trailing `/`
+        url = url.charAt(url.length - 1) === '/' ? url : `${url}/`;
+        return url;
+    };
+
+    const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+            redirectTo: `${getURL()}api/auth/callback`,
+        },
+    });
+
+    if (error) {
+        console.error("Google OAuth error:", error);
+        return { error: error.message };
+    }
+
+    if (data.url) {
+        redirect(data.url);
+    }
+}
