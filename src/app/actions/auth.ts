@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 
 export async function loginAction(formData: FormData) {
     const supabase = await createClient();
@@ -97,24 +98,15 @@ export async function logoutAction() {
 export async function googleSignInAction() {
     const supabase = await createClient();
 
-    // Determine the base URL for the callback
-    const getURL = () => {
-        let url =
-            process?.env?.NEXT_PUBLIC_APP_URL ?? // Set this to site URL in production env
-            process?.env?.NEXT_PUBLIC_VERCEL_URL ?? // Automatically set by Vercel
-            'http://localhost:3000';
-
-        // Make sure to include `https://` when not localhost
-        url = url.includes('http') ? url : `https://${url}`;
-        // Make sure to include trailing `/`
-        url = url.charAt(url.length - 1) === '/' ? url : `${url}/`;
-        return url;
-    };
+    const headersList = await headers();
+    const host = headersList.get("x-forwarded-host") ?? headersList.get("host") ?? "localhost:3000";
+    const protocol = headersList.get("x-forwarded-proto") ?? (host.includes("localhost") ? "http" : "https");
+    const callbackUrl = `${protocol}://${host}/api/auth/callback`;
 
     const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-            redirectTo: `${getURL()}api/auth/callback`,
+            redirectTo: callbackUrl,
         },
     });
 

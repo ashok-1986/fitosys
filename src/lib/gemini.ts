@@ -1,6 +1,9 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from "openai";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+const openai = new OpenAI({
+    baseURL: "https://openrouter.ai/api/v1",
+    apiKey: process.env.OPENROUTER_API_KEY || "",
+});
 
 export interface CheckInData {
     client_name: string;
@@ -18,10 +21,8 @@ export interface SummaryInput {
     non_responder_names: string[];
 }
 
-export async function generateWeeklySummary(
-    input: SummaryInput
-): Promise<string> {
-    const prompt = `You are a coaching assistant reviewing weekly check-in data for a fitness coach.
+function buildWeeklySummaryPrompt(input: SummaryInput): string {
+    return `You are a coaching assistant reviewing weekly check-in data for a fitness coach.
 
 Coach: ${input.coach_name}
 Week ending: ${input.week_ending}
@@ -63,36 +64,53 @@ NON-RESPONDERS
 [List names of clients who did not respond this week]
 
 Keep total under 150 words. Be specific. No filler phrases.`;
+}
 
-    const model = genAI.getGenerativeModel({
-        model: "gemini-2.0-flash",
-        generationConfig: {
-            temperature: 0.3,
-            maxOutputTokens: 512,
-            topK: 40,
-            topP: 0.95,
-        },
-    });
+export async function generateWeeklySummary(
+    input: SummaryInput
+): Promise<string> {
+    const prompt = buildWeeklySummaryPrompt(input);
 
     // Exponential backoff: 4s → 16s → 60s
     const delays = [4000, 16000, 60000];
 
     for (let attempt = 0; attempt <= delays.length; attempt++) {
         try {
-            const result = await model.generateContent(prompt);
-            return result.response.text();
+            const completion = await openai.chat.completions.create({
+                messages: [{ role: "user", content: prompt }],
+                model: "qwen/qwen3.5-35b-a3b",
+                temperature: 0.3,
+                max_tokens: 512,
+                top_p: 0.95,
+            });
+            return completion.choices[0].message.content || "Summary unavailable.";
         } catch (error) {
             if (attempt < delays.length) {
                 console.warn(
-                    `Gemini API attempt ${attempt + 1} failed, retrying in ${delays[attempt] / 1000}s...`
+                    `AI API attempt ${attempt + 1} failed, retrying in ${delays[attempt] / 1000}s...`
                 );
                 await new Promise((resolve) => setTimeout(resolve, delays[attempt]));
             } else {
-                console.error("Gemini API failed after all retries:", error);
+                console.error("AI API failed after all retries:", error);
                 return `⚠️ Summary generation delayed. We'll retry in 2 hours.\n\nIn the meantime, check your dashboard for individual client responses.\n\nResponse rate: ${input.responded_clients.length} of ${input.total_active_clients} clients responded.`;
             }
         }
     }
 
     return "Summary unavailable.";
+}
+
+export async function generateWeeklySummaryStream(
+    input: SummaryInput
+) {
+    const prompt = buildWeeklySummaryPrompt(input);
+
+    return await openai.chat.completions.create({
+        messages: [{ role: "user", content: prompt }],
+        model: "qwen/qwen3.5-35b-a3b",
+        temperature: 0.3,
+        max_tokens: 512,
+        top_p: 0.95,
+        stream: true,
+    });
 }

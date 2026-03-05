@@ -29,7 +29,7 @@ export default function TermsPage() {
                     <h2 className="text-lg font-semibold text-foreground">5. Data Handling</h2>
                     <p>Your client data is stored securely and isolated per coach account. We do not share or sell your data. See our Privacy Policy for full details.</p>
                     <h2 className="text-lg font-semibold text-foreground">6. Contact</h2>
-                    <p>For questions about these terms, contact us at hello@fitosys.com.</p>
+                    <p>For questions about these terms, contact us at fitosys@alchemetryx.com.</p>
                 </div>
                 <div className="mt-8">
                     <Link href="/">

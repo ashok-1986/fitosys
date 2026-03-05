@@ -6,143 +6,34 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   ArrowRight,
-  Users,
   MessageCircle,
   RefreshCw,
   CheckCircle,
   Zap,
   Clock,
-  Star,
   Smartphone,
   Brain,
   Bell,
-  MessageSquare,
-  CalendarX,
-  HelpCircle,
+  Activity,
+  UserX,
+  CreditCard,
+  BarChart3,
+  TrendingDown,
+  ShieldCheck,
+  Award,
+  Users,
+  Heart,
+  CalendarDays,
+  PlayCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   ScrollReveal,
   StaggerReveal,
-  CountUp,
-  ImageReveal,
 } from "@/components/gsap-provider";
 
 gsap.registerPlugin(ScrollTrigger);
-
-/* ── Data ─────────────────────────────────────────────── */
-
-const FEATURES = [
-  {
-    icon: Users,
-    illustrationIcon: Smartphone,
-    title: "Client Onboarding",
-    description:
-      "One link, one form, one payment. New clients onboard themselves in under 5 minutes.",
-    highlights: [
-      "Shareable onboarding link",
-      "Razorpay-powered payments",
-      "Instant WhatsApp confirmation",
-    ],
-    image: "/images/feature-onboarding.svg",
-  },
-  {
-    icon: MessageCircle,
-    illustrationIcon: Brain,
-    title: "Weekly Check-ins",
-    description:
-      "Automated WhatsApp check-ins with AI-powered summaries delivered to you every Monday.",
-    highlights: [
-      "4-question structured check-in",
-      "Gemini AI weekly summaries",
-      "Non-responder alerts",
-    ],
-    image: "/images/feature-checkins.svg",
-  },
-  {
-    icon: RefreshCw,
-    illustrationIcon: Bell,
-    title: "Renewal Reminders",
-    description:
-      "Never lose a client to a forgotten follow-up. Automated renewal reminders with one-tap payment.",
-    highlights: [
-      "7-day advance reminders",
-      "Progress-based messaging",
-      "One-tap renewal links",
-    ],
-    image: "/images/feature-renewals.svg",
-  },
-];
-
-const PRICING = [
-  { region: "India", price: "₹1,499", period: "/month", popular: true },
-  { region: "UK", price: "£11", period: "/month", popular: false },
-  { region: "USA / Canada", price: "$14", period: "/month", popular: false },
-];
-
-const TESTIMONIALS = [
-  {
-    name: "Priya S.",
-    role: "Fitness Coach, Mumbai",
-    text: "I went from spending 4 hours every Sunday on admin to zero. Fitosys handles everything while I focus on coaching.",
-    rating: 5,
-  },
-  {
-    name: "Rahul K.",
-    role: "Yoga Instructor, Delhi",
-    text: "The AI weekly summaries are magic. I know exactly which clients need my attention before Monday morning tea.",
-    rating: 5,
-  },
-  {
-    name: "Sarah M.",
-    role: "Wellness Coach, London",
-    text: "My clients love the professional onboarding flow. It elevated my brand perception from day one.",
-    rating: 5,
-  },
-];
-
-/* ── Feature Illustration Component ───────────────────── */
-
-function FeatureIllustration({
-  feature,
-  index,
-}: {
-  feature: (typeof FEATURES)[0];
-  index: number;
-}) {
-  const colors = [
-    { bg: "#1A0003", accent: "#E8001D", ring: "#3D0008" },
-    { bg: "#021A0E", accent: "#16A34A", ring: "#04331C" },
-    { bg: "#1A1200", accent: "#D97706", ring: "#332400" },
-  ];
-  const c = colors[index % 3];
-
-  return (
-    <div className="relative w-full h-48 flex items-center justify-center mb-6 rounded-xl overflow-hidden" style={{ background: c.bg }}>
-      <div
-        className="absolute w-32 h-32 rounded-full opacity-30"
-        style={{ background: c.ring, top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
-      />
-      <div
-        className="relative z-10 h-16 w-16 rounded-2xl flex items-center justify-center shadow-lg"
-        style={{ background: c.accent }}
-      >
-        <feature.illustrationIcon className="h-8 w-8 text-white" />
-      </div>
-      {/* Decorative dots */}
-      <div className="absolute top-4 right-4 grid grid-cols-3 gap-1">
-        {Array.from({ length: 9 }).map((_, i) => (
-          <div key={i} className="h-1.5 w-1.5 rounded-full opacity-30" style={{ background: c.accent }} />
-        ))}
-      </div>
-      <div className="absolute bottom-4 left-4 flex gap-1">
-        <div className="h-2 w-8 rounded-full opacity-40" style={{ background: c.accent }} />
-        <div className="h-2 w-4 rounded-full opacity-25" style={{ background: c.accent }} />
-      </div>
-    </div>
-  );
-}
 
 /* ── WhatsApp Conversation Mockup ─────────────────────── */
 
@@ -297,36 +188,39 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Navigation — transparent over dark hero */}
-      <nav className="absolute top-0 left-0 right-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/">
-            <h1 className="text-xl font-bold tracking-tight" style={{ textTransform: 'none' }}>
-              <span className="text-[#E8001D]">Fito</span>
-              <span className="text-white">sys</span>
-            </h1>
+    <main className="min-h-screen bg-[#0A0A0A] font-sans selection:bg-[#E8001D]/30 selection:text-white">
+      {/* ── Sticky Transparent Navbar ───────────────────── */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0A0A0A]/60 backdrop-blur-md border-b border-white/5 transition-all duration-300">
+        <div className="max-w-[1240px] mx-auto px-6 h-20 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <img 
+              src="/fitosys-logo.png" 
+              alt="Fitosys" 
+              className="h-24 w-auto object-contain"
+            />
           </Link>
-          <div className="flex items-center gap-3">
-            <Link href="/login">
-              <Button variant="ghost" size="sm" className="text-[#A0A0A0] hover:text-white hover:bg-white/10">
-                Sign In
-              </Button>
+          <div className="hidden md:flex items-center gap-8 text-sm font-semibold text-[#A0A0A0]">
+            <Link href="#features" className="hover:text-white transition-colors">How it Works</Link>
+            <Link href="/demo" className="hover:text-[#E8001D] transition-colors flex items-center gap-1.5">
+              <Brain className="h-4 w-4" /> Live AI Demo
+            </Link>
+            <Link href="#pricing" className="hover:text-white transition-colors">Pricing</Link>
+          </div>
+          <div className="flex items-center gap-4">
+            <Link href="/login" className="text-sm font-semibold text-white hover:text-[#A0A0A0] transition-colors hidden sm:block">
+              Log in
             </Link>
             <Link href="/signup">
-              <Button
-                size="sm"
-                className="bg-[#E8001D] hover:bg-[#9E0014] text-white"
-              >
-                Start Free Trial
+              <Button className="bg-[#E8001D] hover:bg-[#9E0014] text-white rounded-full font-bold px-6 border-0">
+                Start Free
               </Button>
             </Link>
           </div>
         </div>
       </nav>
 
-      {/* Hero — "The Inbox That Never Sleeps" */}
-      <section ref={heroRef} className="relative overflow-hidden" style={{ background: "#0A0A0A" }}>
+      {/* Hero — Section 1 */}
+      <section ref={heroRef} className="relative overflow-hidden bg-[#0A0A0A] pt-40 pb-20 md:pt-48 md:pb-32">
         {/* Subtle grid pattern */}
         <div
           className="absolute inset-0 opacity-[0.03]"
@@ -339,439 +233,481 @@ export default function LandingPage() {
         <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[#E8001D]/[0.04] to-transparent" />
         <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#0A0A0A] to-transparent" />
 
-        <div className="relative max-w-6xl mx-auto px-4 pt-28 pb-20 md:pt-32 md:pb-28">
+        <div className="relative max-w-6xl mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
             {/* Left — Copy */}
-            <div className="text-left">
-              <div
-                data-hero-badge
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E8001D]/10 border border-[#E8001D]/20 text-[#E8001D] text-sm font-medium mb-6"
-              >
-                <Zap className="h-3.5 w-3.5" />
-                For fitness · wellness · yoga coaches
-              </div>
-
+            <div className="text-left flex flex-col items-start pt-8 lg:pt-0">
               <h1
                 data-hero-title
                 className="text-4xl md:text-[56px] font-bold leading-[1.05] text-white tracking-tight"
               >
-                Your clients are active.{" "}
-                <span className="text-[#A0A0A0]">Your admin shouldn&apos;t be.</span>
+                You became a coach to change lives. <span className="text-[#A0A0A0]">Not to spend Sunday nights chasing check-ins.</span>
               </h1>
 
               <p
                 data-hero-desc
-                className="text-lg text-[#A0A0A0] mt-6 max-w-lg leading-relaxed" style={{ textTransform: 'none', fontFamily: 'var(--font-sans)', letterSpacing: 'normal' }}
+                className="text-lg text-[#A0A0A0] mt-6 max-w-lg leading-relaxed font-sans"
               >
-                Fitosys automates your check-ins, renewals, and client tracking — so you spend your energy coaching, not chasing.
+                Fitosys runs your client follow-ups, weekly check-ins, and renewal reminders on autopilot — so Monday morning starts with a clear plan, not a pile of missed messages.
               </p>
 
               <div
                 data-hero-cta
-                className="flex flex-col sm:flex-row items-start gap-3 mt-8"
+                className="flex flex-col sm:flex-row items-center sm:items-start gap-4 mt-8 w-full sm:w-auto"
               >
-                <Link href="/signup">
+                <Link href="/signup" className="w-full sm:w-auto">
                   <Button
                     size="lg"
-                    className="bg-[#E8001D] hover:bg-[#9E0014] text-white px-8 h-12 text-base font-semibold shadow-lg shadow-[#E8001D]/20"
+                    className="w-full sm:w-auto bg-[#E8001D] hover:bg-[#9E0014] text-white px-8 h-14 text-base font-semibold shadow-lg shadow-[#E8001D]/20 transition-all rounded-full"
                   >
-                    Start Free Trial
-                    <ArrowRight className="h-4 w-4 ml-2" />
+                    Start Free — No Card Needed
                   </Button>
                 </Link>
-                <Link href="#features">
+                <Link href="/demo" className="w-full sm:w-auto">
                   <Button
                     variant="outline"
                     size="lg"
-                    className="h-12 text-base border-[#222222] text-[#A0A0A0] hover:bg-white/5 hover:text-white hover:border-[#A0A0A0]"
+                    className="w-full sm:w-auto h-14 text-base border-[#222222] text-[#A0A0A0] hover:bg-white/5 hover:text-white hover:border-[#A0A0A0] rounded-full transition-all"
                   >
-                    See How It Works
-                    <ArrowRight className="h-4 w-4 ml-2" />
+                    <PlayCircle className="h-5 w-5 mr-2" />
+                    See It Work in 60 Seconds <ArrowRight className="h-4 w-4 ml-2" />
                   </Button>
                 </Link>
               </div>
 
-              <p
-                data-hero-proof
-                className="text-sm text-[#A0A0A0]/60 mt-6" style={{ textTransform: 'none', fontFamily: 'var(--font-sans)', letterSpacing: 'normal' }}
-              >
-                Trusted by coaches in{" "}
-                <span className="text-[#A0A0A0]">Mumbai</span> ·{" "}
-                <span className="text-[#A0A0A0]">London</span> ·{" "}
-                <span className="text-[#A0A0A0]">Toronto</span>
-              </p>
+              <div data-hero-proof className="mt-8 flex items-center gap-3">
+                <div className="flex -space-x-2">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="h-8 w-8 rounded-full border-2 border-[#0A0A0A] bg-[#222222]" />
+                  ))}
+                </div>
+                <p className="text-xs text-[#A0A0A0]/80">
+                  Used by coaches in Mumbai · London · Toronto · Bangalore
+                </p>
+              </div>
             </div>
 
             {/* Right — WhatsApp Mockup */}
-            <div className="flex justify-center lg:justify-end">
+            <div className="flex justify-center w-full lg:justify-end mt-8 lg:mt-0 lg:order-last order-first mb-8 lg:mb-0">
               <WhatsAppMockup />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Section 2: The Problem Banner */}
-      <section style={{ background: "#111111" }} className="relative overflow-hidden">
-        <div className="max-w-6xl mx-auto px-4 py-20 md:py-28">
-          {/* Header */}
-          <ScrollReveal className="text-center mb-12">
-            <div className="inline-flex items-center justify-center px-4 py-1.5 mb-5 rounded-full bg-[#E8001D]/10 text-[#E8001D] text-xs font-bold uppercase tracking-wider">
-              The Reality Check
-            </div>
-            <h2 className="text-3xl md:text-5xl font-black leading-tight tracking-tight text-white mb-4">
-              Every Sunday evening, you&apos;re doing this manually.
+      {/* Section 2: The Sunday Evening Scene */}
+      <section className="bg-[#111111] py-24 relative overflow-hidden">
+        <div className="max-w-6xl mx-auto px-4">
+          <ScrollReveal className="text-center mb-16">
+            <span className="text-[#E8001D] text-sm font-bold tracking-widest uppercase block mb-4">THE REAL COST OF DOING IT MANUALLY</span>
+            <h2 className="text-3xl md:text-5xl font-black text-white max-w-3xl mx-auto leading-tight">
+              Every week you lose time, money, and clients — not because you&apos;re a bad coach. Because you have no system.
             </h2>
-            <p className="text-lg text-[#A0A0A0] leading-relaxed max-w-2xl mx-auto" style={{ textTransform: 'none', fontFamily: 'var(--font-sans)', letterSpacing: 'normal' }}>
-              You didn&apos;t become a coach to spend your weekends buried in spreadsheets.
-            </p>
           </ScrollReveal>
 
-          {/* The Sunday Dread */}
-          <div className="max-w-4xl mx-auto">
-            <ScrollReveal className="flex flex-col gap-2 mb-8">
-              <h3 className="text-2xl font-bold text-[#E8001D]">
-                The Sunday Dread
-              </h3>
-              <div className="h-1 w-12 bg-[#E8001D] rounded-full" />
-            </ScrollReveal>
+          <StaggerReveal className="grid md:grid-cols-3 gap-6 mb-16" stagger={0.15}>
+            {/* Tile 1 */}
+            <div className="bg-[#1A0003] border border-[#E8001D]/20 rounded-2xl p-8 hover:border-[#E8001D]/40 transition-colors group">
+              <Clock className="h-10 w-10 text-[#E8001D] mb-6 opacity-80 group-hover:scale-110 transition-transform" />
+              <h3 className="text-xl font-bold text-white mb-3">2–3 hours every Sunday</h3>
+              <p className="text-[#A0A0A0] leading-relaxed">
+                You copy-paste check-in messages one by one. Edit the name. Hit send. Repeat for every client. Then wait to see who actually replies.
+              </p>
+            </div>
+            {/* Tile 2 */}
+            <div className="bg-[#1A0003] border border-[#E8001D]/20 rounded-2xl p-8 hover:border-[#E8001D]/40 transition-colors group">
+              <UserX className="h-10 w-10 text-[#E8001D] mb-6 opacity-80 group-hover:scale-110 transition-transform" />
+              <h3 className="text-xl font-bold text-white mb-3">2–3 clients quietly disappear each month</h3>
+              <p className="text-[#A0A0A0] leading-relaxed">
+                Their program ended. You meant to follow up. Life got in the way. By the time you noticed, they had moved on.
+              </p>
+            </div>
+            {/* Tile 3 */}
+            <div className="bg-[#1A0003] border border-[#E8001D]/20 rounded-2xl p-8 hover:border-[#E8001D]/40 transition-colors group">
+              <TrendingDown className="h-10 w-10 text-[#E8001D] mb-6 opacity-80 group-hover:scale-110 transition-transform" />
+              <h3 className="text-xl font-bold text-white mb-3">Zero visibility until it&apos;s too late</h3>
+              <p className="text-[#A0A0A0] leading-relaxed">
+                You find out a client is struggling when they ask for a refund — not when their energy score dropped to 3 out of 10 for three weeks straight.
+              </p>
+            </div>
+          </StaggerReveal>
 
-            {/* Problem Tiles */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              {/* Tile 1 — WhatsApp Scroll Fatigue */}
-              <ScrollReveal>
-                <div className="group relative flex flex-col gap-3 rounded-xl border border-[#222222] bg-[#0A0A0A] p-5 shadow-sm transition-all hover:shadow-md hover:border-[#E8001D]/40">
-                  <div className="absolute right-4 top-4 opacity-10">
-                    <MessageCircle className="h-14 w-14 text-[#E8001D]" />
-                  </div>
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full text-[#E8001D]" style={{ background: "#1A0003" }}>
-                    <MessageSquare className="h-6 w-6" />
-                  </div>
-                  <div className="relative z-10 flex flex-col gap-1">
-                    <h4 className="text-lg font-bold leading-tight text-white">
-                      Sending 30 check-in messages by hand
-                    </h4>
-                    <p className="text-sm font-medium text-[#A0A0A0]" style={{ textTransform: 'none', fontFamily: 'var(--font-sans)', letterSpacing: 'normal' }}>
-                      WhatsApp Scroll Fatigue
-                    </p>
-                  </div>
-                </div>
-              </ScrollReveal>
+          <ScrollReveal>
+            <div className="text-center">
+              <p className="text-2xl md:text-4xl font-black text-white px-4 py-8 rounded-2xl bg-[#E8001D]/5 border border-[#E8001D]/10">
+                The average coach loses <span className="text-[#E8001D]">₹72,000</span> a year to admin gaps. Not bad coaching. Bad systems.
+              </p>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
 
-              {/* Tile 2 — Revenue Leaks */}
-              <ScrollReveal>
-                <div className="group relative flex flex-col gap-3 rounded-xl border border-[#222222] bg-[#0A0A0A] p-5 shadow-sm transition-all hover:shadow-md hover:border-[#E8001D]/40">
-                  <div className="absolute right-4 top-4 opacity-10">
-                    <CalendarX className="h-14 w-14 text-[#E8001D]" />
-                  </div>
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full text-[#E8001D]" style={{ background: "#1A0003" }}>
-                    <CalendarX className="h-6 w-6" />
-                  </div>
-                  <div className="relative z-10 flex flex-col gap-1">
-                    <h4 className="text-lg font-bold leading-tight text-white">
-                      Missing renewals you didn&apos;t even know expired
-                    </h4>
-                    <p className="text-sm font-medium text-[#A0A0A0]" style={{ textTransform: 'none', fontFamily: 'var(--font-sans)', letterSpacing: 'normal' }}>
-                      Revenue Leaks
-                    </p>
-                  </div>
-                </div>
-              </ScrollReveal>
+      {/* Section 3: Social Proof (Moved up) */}
+      <section className="py-24 bg-[#0A0A0A] border-y border-[#222222]">
+        <div className="max-w-6xl mx-auto px-4">
+          <ScrollReveal className="text-center mb-16">
+            <span className="text-[#A0A0A0] text-sm font-bold tracking-widest uppercase block mb-4">COACHES WHO MADE THE SWITCH</span>
+            <h2 className="text-3xl md:text-5xl font-black text-white">
+              Real coaches. Real results. No stock photos.
+            </h2>
+          </ScrollReveal>
 
-              {/* Tile 3 — Client Churn */}
-              <ScrollReveal>
-                <div className="group relative flex flex-col gap-3 rounded-xl border border-[#222222] bg-[#0A0A0A] p-5 shadow-sm transition-all hover:shadow-md hover:border-[#E8001D]/40">
-                  <div className="absolute right-4 top-4 opacity-10">
-                    <Users className="h-14 w-14 text-[#E8001D]" />
-                  </div>
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full text-[#E8001D]" style={{ background: "#1A0003" }}>
-                    <HelpCircle className="h-6 w-6" />
-                  </div>
-                  <div className="relative z-10 flex flex-col gap-1">
-                    <h4 className="text-lg font-bold leading-tight text-white">
-                      No idea who&apos;s struggling until it&apos;s too late
-                    </h4>
-                    <p className="text-sm font-medium text-[#A0A0A0]" style={{ textTransform: 'none', fontFamily: 'var(--font-sans)', letterSpacing: 'normal' }}>
-                      Client Churn
-                    </p>
-                  </div>
+          <div className="grid md:grid-cols-2 gap-8 lg:gap-16">
+            {/* Left — Before */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-3 mb-8">
+                <div className="w-12 h-px bg-[#E8001D]/50" />
+                <span className="text-[#E8001D] font-bold tracking-widest uppercase text-sm">Before Fitosys</span>
+                <div className="flex-1 h-px bg-[#E8001D]/20" />
+              </div>
+              <StaggerReveal stagger={0.1}>
+                <div className="relative pl-6 border-l-2 border-[#E8001D]/30 py-2">
+                  <p className="text-[#A0A0A0] italic mb-3">&quot;I was spending 3 hours every Sunday sending check-in messages manually. I dreaded it every single week.&quot;</p>
+                  <p className="text-sm font-medium text-white">— Priya M., Fitness Coach, Mumbai</p>
                 </div>
-              </ScrollReveal>
+                <div className="relative pl-6 border-l-2 border-[#E8001D]/30 py-2">
+                  <p className="text-[#A0A0A0] italic mb-3">&quot;A client dropped off and I only noticed when she posted about a different coach on Instagram. That was my wake-up call.&quot;</p>
+                  <p className="text-sm font-medium text-white">— Rahul S., Yoga Instructor, Bangalore</p>
+                </div>
+                <div className="relative pl-6 border-l-2 border-[#E8001D]/30 py-2">
+                  <p className="text-[#A0A0A0] italic mb-3">&quot;Six Excel tabs, four WhatsApp groups, and I still had no idea who was about to quit.&quot;</p>
+                  <p className="text-sm font-medium text-white">— Anjali K., Wellness Coach, Delhi</p>
+                </div>
+              </StaggerReveal>
             </div>
 
-            {/* Revenue Loss Stat Card */}
-            <ScrollReveal className="mt-8">
-              <div className="relative overflow-hidden rounded-xl border border-[#E8001D]/20 shadow-xl bg-[#0A0A0A]">
-                <div className="relative p-8 text-center">
-                  {/* Decorative glows */}
-                  <div className="absolute -top-10 -left-10 h-32 w-32 rounded-full bg-[#E8001D] blur-3xl opacity-20" />
-                  <div className="absolute -bottom-10 -right-10 h-32 w-32 rounded-full bg-[#E8001D] blur-3xl opacity-20" />
-                  <p className="relative text-sm font-medium text-[#A0A0A0] mb-2" style={{ textTransform: 'none', fontFamily: 'var(--font-sans)', letterSpacing: 'normal' }}>
-                    Annual Revenue Lost to Admin Gaps
-                  </p>
-                  <p className="relative text-5xl md:text-6xl font-black text-[#E8001D] tracking-tight">
-                    ₹72,000
-                  </p>
-                  <p className="relative mt-2 text-xs text-[#A0A0A0]" style={{ textTransform: 'none', fontFamily: 'var(--font-sans)', letterSpacing: 'normal' }}>
-                    Based on average coach data
-                  </p>
+            {/* Right — After */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-3 mb-8">
+                <div className="w-12 h-px bg-green-500/50" />
+                <span className="text-green-500 font-bold tracking-widest uppercase text-sm">After Fitosys</span>
+                <div className="flex-1 h-px bg-green-500/20" />
+              </div>
+              <StaggerReveal stagger={0.1}>
+                <div className="flex gap-4 items-start bg-green-500/5 border border-green-500/10 rounded-xl p-5 hover:bg-green-500/10 transition-colors">
+                  <CheckCircle className="h-6 w-6 text-green-500 shrink-0 mt-0.5" />
+                  <p className="text-white">Sunday evenings are free again. Check-ins go out at 7 PM without touching the phone.</p>
                 </div>
-                <Link href="/signup">
-                  <div className="bg-[#E8001D]/20 p-3.5 text-center cursor-pointer hover:bg-[#E8001D]/30 transition-colors">
-                    <span className="text-xs font-bold uppercase tracking-widest text-[#E8001D]">Stop the bleed</span>
-                  </div>
-                </Link>
+                <div className="flex gap-4 items-start bg-green-500/5 border border-green-500/10 rounded-xl p-5 hover:bg-green-500/10 transition-colors">
+                  <RefreshCw className="h-6 w-6 text-green-500 shrink-0 mt-0.5" />
+                  <p className="text-white">3 renewals recovered in month one that would have been forgotten.</p>
+                </div>
+                <div className="flex gap-4 items-start bg-green-500/5 border border-green-500/10 rounded-xl p-5 hover:bg-green-500/10 transition-colors">
+                  <Brain className="h-6 w-6 text-green-500 shrink-0 mt-0.5" />
+                  <p className="text-white">Knows exactly which 2 clients to call every Monday. The AI tells them before they ask.</p>
+                </div>
+              </StaggerReveal>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Section 4: How It Actually Works */}
+      <section className="py-24 bg-[#111111] relative">
+        <div className="max-w-4xl mx-auto px-4">
+          <ScrollReveal className="text-center mb-16">
+            <span className="text-[#A0A0A0] text-sm font-bold tracking-widest uppercase block mb-4">THREE THINGS. FULLY AUTOMATED.</span>
+            <h2 className="text-3xl md:text-5xl font-black text-white">
+              Set it up once. It runs while you coach.
+            </h2>
+          </ScrollReveal>
+
+          <div className="space-y-12 relative">
+            {/* Connecting line for desktop */}
+            <div className="absolute left-[2.25rem] top-10 bottom-10 w-0.5 bg-gradient-to-b from-[#E8001D] to-[#E8001D]/10 hidden md:block" />
+
+            {/* Step 1 */}
+            <ScrollReveal className="relative flex flex-col md:flex-row gap-6 md:gap-8 items-start">
+              <div className="w-16 h-16 rounded-full bg-[#E8001D]/20 border-2 border-[#E8001D] text-[#E8001D] flex items-center justify-center text-2xl font-black shrink-0 relative z-10 mx-auto md:mx-0 shadow-[0_0_15px_rgba(232,0,29,0.3)]">
+                01
+              </div>
+              <div className="bg-[#0A0A0A] border border-[#222222] rounded-2xl p-8 flex-1">
+                <h3 className="text-2xl font-bold text-white mb-3">Your clients pay and onboard in one link</h3>
+                <p className="text-[#A0A0A0] text-lg leading-relaxed">
+                  Share your personal Fitosys link anywhere — WhatsApp, Instagram, email. Your client fills one form, picks a program, pays. They appear in your dashboard in 2 minutes. You did nothing.
+                </p>
+              </div>
+            </ScrollReveal>
+
+            {/* Step 2 */}
+            <ScrollReveal className="relative flex flex-col md:flex-row gap-6 md:gap-8 items-start">
+              <div className="w-16 h-16 rounded-full bg-[#E8001D]/20 border-2 border-[#E8001D] text-[#E8001D] flex items-center justify-center text-2xl font-black shrink-0 relative z-10 mx-auto md:mx-0 shadow-[0_0_15px_rgba(232,0,29,0.3)]">
+                02
+              </div>
+              <div className="bg-[#0A0A0A] border border-[#222222] rounded-2xl p-8 flex-1">
+                <h3 className="text-2xl font-bold text-white mb-3">Every Sunday, your clients get a check-in. Automatically.</h3>
+                <p className="text-[#A0A0A0] text-lg leading-relaxed">
+                  A personalised WhatsApp goes out to every active client at 7 PM. They reply naturally — weight, sessions, energy, wins, struggles. Every Monday at 7 AM, the AI sends you a 150-word summary: who&apos;s struggling, who&apos;s thriving, who hasn&apos;t replied.
+                </p>
+              </div>
+            </ScrollReveal>
+
+            {/* Step 3 */}
+            <ScrollReveal className="relative flex flex-col md:flex-row gap-6 md:gap-8 items-start">
+              <div className="w-16 h-16 rounded-full bg-[#E8001D]/20 border-2 border-[#E8001D] text-[#E8001D] flex items-center justify-center text-2xl font-black shrink-0 relative z-10 mx-auto md:mx-0 shadow-[0_0_15px_rgba(232,0,29,0.3)]">
+                03
+              </div>
+              <div className="bg-[#0A0A0A] border border-[#222222] rounded-2xl p-8 flex-1">
+                <h3 className="text-2xl font-bold text-white mb-3">Renewals go out before you remember to send them</h3>
+                <p className="text-[#A0A0A0] text-lg leading-relaxed">
+                  7 days before a program ends, your client gets a personalised message with their progress stats and a payment link. No manual work. No forgotten follow-ups. Just a notification that ₹15,000 just renewed.
+                </p>
               </div>
             </ScrollReveal>
           </div>
         </div>
       </section>
 
-      {/* Social Proof Bar */}
-      <section className="border-y border-border bg-card">
-        <div className="max-w-6xl mx-auto px-4 py-8">
-          <StaggerReveal className="flex flex-wrap items-center justify-center gap-8 md:gap-16 text-sm text-muted-foreground" stagger={0.1}>
-            <div className="text-center">
-              <span className="block text-2xl font-bold text-foreground">
-                <CountUp end={500} suffix="+" />
-              </span>
-              Coaches
-            </div>
-            <div className="text-center">
-              <span className="block text-2xl font-bold text-foreground">
-                <CountUp end={12000} suffix="+" />
-              </span>
-              Clients Managed
-            </div>
-            <div className="text-center">
-              <span className="block text-2xl font-bold text-foreground">
-                <CountUp end={24} prefix="₹" suffix="L+" duration={2.5} />
-              </span>
-              Revenue Tracked
-            </div>
-            <div className="text-center">
-              <span className="block text-2xl font-bold text-foreground">
-                <CountUp end={82} suffix="%" />
-              </span>
-              Avg Check-in Rate
-            </div>
-          </StaggerReveal>
-        </div>
-      </section>
-
-      {/* Features */}
-      <section id="features" className="py-20 md:py-28">
+      {/* Section 5: The AI Difference */}
+      <section className="py-24 bg-[#0A0A0A] border-y border-[#222222]">
         <div className="max-w-6xl mx-auto px-4">
-          <ScrollReveal className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold">
-              Three automations. Zero admin work.
-            </h2>
-            <p className="text-muted-foreground mt-3 max-w-xl mx-auto">
-              Fitosys replaces WhatsApp groups, Excel sheets, and memory with
-              one automated system.
-            </p>
-          </ScrollReveal>
-
-          <StaggerReveal className="grid md:grid-cols-3 gap-8" stagger={0.2}>
-            {FEATURES.map((feature, i) => (
-              <Card
-                key={feature.title}
-                className="group hover:shadow-xl transition-all duration-300 border-border/50 hover:border-brand/20 overflow-hidden"
-              >
-                <CardContent className="p-6">
-                  <FeatureIllustration feature={feature} index={i} />
-                  <div className="h-12 w-12 rounded-xl bg-brand/10 text-brand flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <feature.icon className="h-6 w-6" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    {feature.description}
-                  </p>
-                  <ul className="space-y-2">
-                    {feature.highlights.map((h) => (
-                      <li
-                        key={h}
-                        className="flex items-center gap-2 text-sm text-muted-foreground"
-                      >
-                        <CheckCircle className="h-3.5 w-3.5 text-success shrink-0" />
-                        {h}
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            ))}
-          </StaggerReveal>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section className="py-20 bg-card border-y border-border">
-        <div className="max-w-6xl mx-auto px-4">
-          <ScrollReveal className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold">
-              Set up in 10 minutes
-            </h2>
-          </ScrollReveal>
-          <StaggerReveal className="grid md:grid-cols-3 gap-8 max-w-3xl mx-auto" stagger={0.2}>
-            {[
-              {
-                step: "01",
-                title: "Create your programs",
-                desc: "Set name, duration, price. Takes 2 minutes.",
-              },
-              {
-                step: "02",
-                title: "Share your link",
-                desc: "Clients onboard and pay themselves.",
-              },
-              {
-                step: "03",
-                title: "Coach. That's it.",
-                desc: "Check-ins, summaries, renewals — all automated.",
-              },
-            ].map((item) => (
-              <div key={item.step} className="text-center">
-                <div className="h-14 w-14 rounded-full bg-brand text-white flex items-center justify-center text-lg font-bold mx-auto mb-4 shadow-lg shadow-brand/20">
-                  {item.step}
-                </div>
-                <h3 className="font-semibold text-lg">{item.title}</h3>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {item.desc}
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <ScrollReveal>
+                <span className="text-blue-500 text-sm font-bold tracking-widest uppercase block mb-4 flex items-center gap-2">
+                  <Brain className="h-4 w-4" /> POWERED BY AI
+                </span>
+                <h2 className="text-3xl md:text-5xl font-black text-white leading-tight mb-6">
+                  Your Monday morning used to be chaos. Now it&apos;s a briefing.
+                </h2>
+                <p className="text-[#A0A0A0] text-lg leading-relaxed mb-8">
+                  Every Monday at 7 AM, before you open your first WhatsApp chat, Fitosys delivers your weekly coaching pulse. AI-generated. Data-driven. Under 2 minutes to read.
                 </p>
-              </div>
-            ))}
-          </StaggerReveal>
+                <Link href="/demo">
+                  <Button variant="outline" className="text-blue-400 border-blue-500/30 hover:bg-blue-500/10 rounded-full">
+                    See What Your Monday Summary Looks Like <ArrowRight className="h-4 w-4 ml-2" />
+                  </Button>
+                </Link>
+              </ScrollReveal>
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-6">
+              <StaggerReveal stagger={0.1}>
+                {/* Card 1 */}
+                <div className="bg-[#111111] border border-[#222222] p-6 rounded-2xl bg-gradient-to-br from-[#111111] to-[#111111] hover:to-blue-900/10 transition-colors">
+                  <div className="h-10 w-10 bg-blue-500/20 text-blue-500 rounded-xl flex items-center justify-center mb-4">
+                    <Activity className="h-5 w-5" />
+                  </div>
+                  <h4 className="text-lg font-bold text-white mb-2">Weekly Summary</h4>
+                  <p className="text-sm text-[#A0A0A0]">Response rate, energy averages, clients needing attention — delivered to your WhatsApp before your first coffee.</p>
+                </div>
+                {/* Card 2 */}
+                <div className="bg-[#111111] border border-[#222222] p-6 rounded-2xl bg-gradient-to-br from-[#111111] to-[#111111] hover:to-red-900/10 transition-colors mt-0 sm:mt-8">
+                  <div className="h-10 w-10 bg-red-500/20 text-red-500 rounded-xl flex items-center justify-center mb-4">
+                    <ShieldCheck className="h-5 w-5" />
+                  </div>
+                  <h4 className="text-lg font-bold text-white mb-2">Client Risk Score</h4>
+                  <p className="text-sm text-[#A0A0A0]">Fitosys flags clients showing early churn signals — dropping energy, missed sessions, no replies — before they leave.</p>
+                </div>
+                {/* Card 3 */}
+                <div className="bg-[#111111] border border-[#222222] p-6 rounded-2xl bg-gradient-to-br from-[#111111] to-[#111111] hover:to-purple-900/10 transition-colors">
+                  <div className="h-10 w-10 bg-purple-500/20 text-purple-500 rounded-xl flex items-center justify-center mb-4">
+                    <MessageCircle className="h-5 w-5" />
+                  </div>
+                  <h4 className="text-lg font-bold text-white mb-2">Personalised Renewals</h4>
+                  <p className="text-sm text-[#A0A0A0]">Every renewal message is written by AI using the client&apos;s actual stats. Not a template. A message that feels personal.</p>
+                </div>
+                {/* Card 4 */}
+                <div className="bg-[#111111] border border-[#222222] p-6 rounded-2xl bg-gradient-to-br from-[#111111] to-[#111111] hover:to-green-900/10 transition-colors sm:mt-8">
+                  <div className="h-10 w-10 bg-green-500/20 text-green-500 rounded-xl flex items-center justify-center mb-4">
+                    <BarChart3 className="h-5 w-5" />
+                  </div>
+                  <h4 className="text-lg font-bold text-white mb-2">Business Insights</h4>
+                  <p className="text-sm text-[#A0A0A0]">Monthly pattern analysis. Which programs retain best. Which clients are most at risk. One clear action for you to take.</p>
+                </div>
+              </StaggerReveal>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-20">
+      {/* Section 6: Who This Is For */}
+      <section className="py-24 bg-[#111111]">
         <div className="max-w-6xl mx-auto px-4">
-          <ScrollReveal className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold">
-              Trusted by coaches
+          <ScrollReveal className="text-center mb-16">
+            <span className="text-[#A0A0A0] text-sm font-bold tracking-widest uppercase block mb-4">BUILT FOR COACHES LIKE YOU</span>
+            <h2 className="text-3xl md:text-5xl font-black text-white max-w-2xl mx-auto">
+              If you manage more than 15 clients on WhatsApp, this is for you.
             </h2>
           </ScrollReveal>
-          <StaggerReveal className="grid md:grid-cols-3 gap-6" stagger={0.15}>
-            {TESTIMONIALS.map((t) => (
-              <Card key={t.name} className="border-border/50 hover:shadow-lg transition-shadow duration-300">
-                <CardContent className="p-6">
-                  <div className="flex gap-0.5 mb-3">
-                    {Array.from({ length: t.rating }).map((_, i) => (
-                      <Star
-                        key={i}
-                        className="h-4 w-4 fill-warning text-warning"
-                      />
-                    ))}
-                  </div>
-                  <p className="text-sm text-muted-foreground italic mb-4">
-                    &ldquo;{t.text}&rdquo;
-                  </p>
-                  <div className="flex items-center gap-3">
-                    <div className="h-9 w-9 rounded-full bg-brand/10 text-brand flex items-center justify-center text-xs font-bold">
-                      {t.name.split(" ").map((n) => n[0]).join("")}
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium">{t.name}</p>
-                      <p className="text-xs text-muted-foreground">{t.role}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+
+          <StaggerReveal className="grid md:grid-cols-3 gap-6 mb-16" stagger={0.15}>
+            <div className="bg-[#0A0A0A] border border-[#222222] rounded-2xl p-8 hover:border-[#E8001D]/30 transition-colors">
+              <Award className="h-8 w-8 text-[#E8001D] mb-4" />
+              <h3 className="text-xl font-bold text-white mb-3">Fitness Coaches</h3>
+              <p className="text-[#A0A0A0]">Managing 20–40 clients. Running transformation programs. Tired of chasing renewals and copy-pasting check-in messages every Sunday.</p>
+            </div>
+            <div className="bg-[#0A0A0A] border border-[#222222] rounded-2xl p-8 hover:border-[#E8001D]/30 transition-colors">
+              <Heart className="h-8 w-8 text-[#E8001D] mb-4" />
+              <h3 className="text-xl font-bold text-white mb-3">Yoga Instructors</h3>
+              <p className="text-[#A0A0A0]">Teaching individual and small group sessions. Building long-term client relationships. Need a system that matches your practice&apos;s energy — calm, intentional, not chaotic.</p>
+            </div>
+            <div className="bg-[#0A0A0A] border border-[#222222] rounded-2xl p-8 hover:border-[#E8001D]/30 transition-colors">
+              <Brain className="h-8 w-8 text-[#E8001D] mb-4" />
+              <h3 className="text-xl font-bold text-white mb-3">Wellness Coaches</h3>
+              <p className="text-[#A0A0A0]">Working with mental, physical, and spiritual health. Your clients need consistent check-ins and accountability. Your tool should make that effortless, not add to your plate.</p>
+            </div>
           </StaggerReveal>
+
+          <ScrollReveal>
+            <div className="bg-[#0A0A0A] p-6 rounded-2xl border border-[#222222] text-center max-w-3xl mx-auto">
+              <p className="font-bold text-white mb-2">Not for you if:</p>
+              <p className="text-[#A0A0A0] text-sm">You run a gym with 200+ members, need a booking calendar for classes, or want a complex enterprise platform. Fitosys is for the independent coach who wants one clean system, not ten complicated tools.</p>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 
-      {/* Pricing */}
-      <section className="py-20 bg-card border-y border-border" id="pricing">
-        <div className="max-w-6xl mx-auto px-4">
-          <ScrollReveal className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold">Simple pricing</h2>
-            <p className="text-muted-foreground mt-2">
-              One plan. Everything included. Pays for itself with one saved client.
+      {/* Section 7: Founder Credibility */}
+      <section className="py-24 bg-[#0A0A0A] border-y border-[#222222]">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <ScrollReveal>
+            <span className="text-[#A0A0A0] text-sm font-bold tracking-widest uppercase block mb-4">WHY WE BUILT THIS</span>
+            <h2 className="text-3xl md:text-5xl font-black text-white leading-tight mb-8">
+              We talked to 50 coaches. Every single one managed clients on WhatsApp.
+            </h2>
+            <p className="text-lg text-[#A0A0A0] leading-relaxed mb-6">
+              Not because they wanted to. Because nothing existed that was simple enough, affordable enough, and actually designed for how coaches work in India — on their phones, on WhatsApp, between sessions.
+            </p>
+            <p className="text-lg text-[#A0A0A0] leading-relaxed mb-10">
+              Fitosys is built by Alchemetryx, a team that builds practical tools for real businesses. We are not a VC-funded startup promising to disrupt everything. We are builders who saw a clear problem and built the simplest possible solution.
+            </p>
+            {/* Note: Placeholder for a real founder/team image as requested */}
+            <div className="w-24 h-24 rounded-full border-4 border-[#111111] bg-[#222222] mx-auto overflow-hidden shadow-xl mb-4">
+              <div className="w-full h-full bg-gradient-to-tr from-[#333] to-[#555] flex items-center justify-center">
+                <Users className="text-[#888] h-10 w-10" />
+              </div>
+            </div>
+            <p className="text-sm font-bold text-white">
+              Created by <a href="https://alchemetryx.com" target="_blank" rel="noopener noreferrer" className="hover:underline text-white">Alchemetryx</a>
             </p>
           </ScrollReveal>
-          <StaggerReveal className="grid md:grid-cols-3 gap-6 max-w-3xl mx-auto" stagger={0.15}>
-            {PRICING.map((p) => (
-              <Card
-                key={p.region}
-                className={`relative overflow-hidden transition-all duration-300 hover:shadow-lg ${p.popular
-                  ? "border-brand ring-1 ring-brand"
-                  : "border-border/50"
-                  }`}
-              >
-                {p.popular && (
-                  <div className="absolute top-0 left-0 w-full h-1 bg-brand" />
-                )}
-                <CardContent className="p-6 text-center">
-                  <p className="text-sm font-medium text-muted-foreground">
-                    {p.region}
-                  </p>
-                  <div className="flex items-baseline justify-center mt-3">
-                    <span className="text-4xl font-bold">{p.price}</span>
-                    <span className="text-muted-foreground ml-1">
-                      {p.period}
-                    </span>
-                  </div>
-                  <Link href="/signup">
-                    <Button
-                      className={`w-full mt-6 ${p.popular
-                        ? "bg-brand hover:bg-brand/90 text-white"
-                        : ""
-                        }`}
-                      variant={p.popular ? "default" : "outline"}
-                    >
-                      Get Started
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
-          </StaggerReveal>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-20 md:py-28">
-        <ScrollReveal className="max-w-3xl mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold">
-            Stop losing clients to admin gaps
+      {/* Section 8: Pricing */}
+      <section className="py-24 bg-[#111111]" id="pricing">
+        <div className="max-w-6xl mx-auto px-4">
+          <ScrollReveal className="text-center mb-16">
+            <span className="text-[#A0A0A0] text-sm font-bold tracking-widest uppercase block mb-4">SIMPLE PRICING</span>
+            <h2 className="text-3xl md:text-5xl font-black text-white">
+              One plan. Everything included. No surprises.
+            </h2>
+          </ScrollReveal>
+
+          <ScrollReveal className="max-w-md mx-auto">
+            <Card className="border-[#E8001D] ring-2 ring-[#E8001D] shadow-[0_0_30px_rgba(232,0,29,0.15)] bg-[#0A0A0A] rounded-2xl relative overflow-hidden">
+              <div className="absolute top-0 right-[-40px] bg-[#E8001D] text-white text-xs font-bold py-1.5 px-10 rotate-45 transform origin-bottom border-y border-[#E8001D]">
+                ALL INCLUSIVE
+              </div>
+              <CardContent className="p-8">
+                <p className="text-xl font-bold text-white mb-2">Fitosys Basic</p>
+                <div className="flex items-baseline mb-2">
+                  <span className="text-5xl font-black text-white tracking-tight">₹1,499</span>
+                  <span className="text-[#A0A0A0] ml-2">/month</span>
+                </div>
+                <p className="text-sm text-[#A0A0A0] mb-8 pb-8 border-b border-[#222222]">
+                  £11/month · $14/month
+                </p>
+
+                <ul className="space-y-4 mb-8">
+                  {[
+                    "Client onboarding with payment link",
+                    "Weekly WhatsApp check-ins — automated",
+                    "AI Monday summary",
+                    "Client risk scoring",
+                    "Renewal reminders with personalised messages",
+                    "Coach dashboard",
+                    "Unlimited active clients"
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <CheckCircle className="h-5 w-5 text-[#E8001D] shrink-0" />
+                      <span className="text-white text-sm">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <Link href="/signup">
+                  <Button className="w-full h-14 bg-[#E8001D] hover:bg-[#9E0014] text-white rounded-full text-base font-bold shadow-lg shadow-[#E8001D]/20">
+                    Start Free for 14 Days
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            <div className="mt-8 space-y-3 text-center">
+              <p className="flex items-center justify-center gap-2 text-sm text-[#A0A0A0]">
+                <CreditCard className="h-4 w-4" /> No credit card needed to start
+              </p>
+              <p className="flex items-center justify-center gap-2 text-sm text-[#A0A0A0]">
+                <Zap className="h-4 w-4" /> Up and running in 15 minutes
+              </p>
+              <p className="flex items-center justify-center gap-2 text-sm text-[#A0A0A0]">
+                <ShieldCheck className="h-4 w-4" /> If it doesn&apos;t recover one renewal in your first month, we will refund you in full
+              </p>
+            </div>
+
+            <div className="mt-8 bg-[#1A0003] border border-[#E8001D]/20 p-4 rounded-xl text-center">
+              <p className="text-[#A0A0A0] text-sm">
+                One recovered renewal pays for 2 months of Fitosys. The average coach recovers 3 in their first month.
+              </p>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* Section 9: Final CTA */}
+      <section className="py-28 bg-[#E8001D] relative overflow-hidden">
+        {/* Abstract pattern */}
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle, #fff 2px, transparent 2px)", backgroundSize: "40px 40px" }} />
+        <div className="relative max-w-4xl mx-auto px-4 text-center">
+          <h2 className="text-4xl md:text-6xl font-black text-white mb-6 leading-tight">
+            Your clients chose you because you show up for them.
           </h2>
-          <p className="text-muted-foreground mt-4 text-lg">
-            Join 500+ coaches who automated their business with Fitosys.
+          <p className="text-xl md:text-2xl text-white/90 font-medium mb-6">
+            Now build a system that shows up for you.
           </p>
-          <Link href="/signup">
-            <Button
-              size="lg"
-              className="mt-8 bg-brand hover:bg-brand/90 text-white px-10 h-12 text-base"
-            >
-              <Clock className="h-4 w-4 mr-2" />
-              Start Your Free Trial
-            </Button>
-          </Link>
-        </ScrollReveal>
+          <p className="text-lg text-white/80 max-w-2xl mx-auto mb-10">
+            Fitosys is currently onboarding the first 25 beta coaches. Free for 30 days. No complicated setup. Full support from our team.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
+            <Link href="/signup">
+              <Button size="lg" className="h-16 px-10 rounded-full bg-white text-[#E8001D] hover:bg-slate-100 font-bold text-lg shadow-xl shrink-0 w-full sm:w-auto">
+                Claim Your Beta Spot
+              </Button>
+            </Link>
+            <a href="mailto:fitosys@alchemetryx.com">
+              <Button variant="outline" size="lg" className="h-16 px-8 rounded-full border-white text-[#000000] hover:bg-white/10 hover:text-white font-medium w-full sm:w-auto mt-4 sm:mt-0 bg-[#ffffff]">
+                Talk to the Team First <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </a>
+          </div>
+          <div className="inline-flex items-center gap-2 bg-black/20 px-4 py-2 rounded-full border border-white/20">
+            <div className="h-2 w-2 rounded-full bg-green-400 animate-pulse" />
+            <p className="text-sm font-bold text-white tracking-widest uppercase">19 of 25 beta spots remaining</p>
+          </div>
+        </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border bg-card py-10">
-        <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
+      <footer className="border-t border-[#222222] bg-[#0A0A0A] py-10">
+        <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-[#A0A0A0]">
           <div className="flex items-center gap-2">
-            <span className="font-bold text-foreground" style={{ textTransform: 'none' }}>
-              <span className="text-brand">Fito</span>sys
+            <span className="font-bold text-white" style={{ textTransform: 'none' }}>
+              <span className="text-[#E8001D]">Fito</span>sys
             </span>
             <span>· Business OS for Fitness Coaches</span>
           </div>
           <div className="flex gap-6">
-            <Link href="/terms" className="hover:text-foreground transition-colors">
+            <Link href="/terms" className="hover:text-white transition-colors">
               Terms
             </Link>
-            <Link href="/privacy" className="hover:text-foreground transition-colors">
+            <Link href="/privacy" className="hover:text-white transition-colors">
               Privacy
             </Link>
             <a
-              href="mailto:hello@fitosys.com"
-              className="hover:text-foreground transition-colors"
+              href="mailto:fitosys@alchemetryx.com"
+              className="hover:text-white transition-colors"
             >
               Contact
             </a>
@@ -779,6 +715,6 @@ export default function LandingPage() {
           <p>© 2026 Alchemetryx. All rights reserved.</p>
         </div>
       </footer>
-    </div>
+    </main>
   );
 }
