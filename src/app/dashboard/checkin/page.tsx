@@ -1,18 +1,25 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useTransition } from "react";
 import { NavBar } from "@/components/ui/navigation";
 import { ProgressBar } from "@/components/ui/design-system";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { submitCheckin } from "@/lib/actions";
 
 export default function CheckinScreen() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const clientId = searchParams.get("clientId");
+  
   const [step, setStep] = useState(0);
   const [energy, setEnergy] = useState(7);
   const [sessions, setSessions] = useState(3);
   const [win, setWin] = useState("");
   const [struggle, setStruggle] = useState("");
+  
+  const [isPending, startTransition] = useTransition();
+  const [isDone, setIsDone] = useState(false);
 
   const questions = [
     { id: "energy", label: "How's your energy this week?", type: "scale" },
@@ -23,15 +30,40 @@ export default function CheckinScreen() {
 
   const total = questions.length;
 
-  if (step >= total) {
+  const handleNext = () => {
+    if (step < total - 1) {
+      setStep(s => s + 1);
+    } else {
+      // Final Submit
+      if (!clientId) {
+        alert("Client ID is missing. Cannot save checkin.");
+        setIsDone(true);
+        return;
+      }
+
+      startTransition(async () => {
+        await submitCheckin({
+          coach_id: "00000000-0000-0000-0000-000000000000", // Fallback for MVP
+          client_id: clientId,
+          energy,
+          sessions,
+          win,
+          struggle
+        });
+        setIsDone(true);
+      });
+    }
+  };
+
+  if (isDone) {
     return (
       <div className="flex-1 w-full bg-[#0A0A0A] text-white flex flex-col items-center justify-center p-8 min-h-screen font-sans">
         <div className="text-6xl mb-6">✅</div>
         <h2 className="text-3xl font-bold font-barlow tracking-wider mb-3 text-center uppercase">
-          Check-in Complete
+          Check-in Saved
         </h2>
         <p className="text-[15px] text-white/60 leading-relaxed text-center mb-8 max-w-xs">
-          Great work, Rohan. Coach Ashok gets your summary tomorrow morning.
+          The tracking data has been securely logged to the database.
         </p>
         <button 
           onClick={() => router.push("/dashboard")}
@@ -48,16 +80,15 @@ export default function CheckinScreen() {
   return (
     <div className="flex-1 w-full flex flex-col min-h-screen bg-[#0A0A0A] text-white font-sans overflow-hidden">
       <NavBar 
-        title="Weekly Check-in" 
+        title="Log Check-in" 
         back="Cancel" 
-        backHref="/dashboard" 
+        backHref="/dashboard/clients" 
       />
 
       {/* ── Progress ── */}
       <div className="px-5 pt-3">
         <div className="flex justify-between mb-2">
           <p className="text-xs text-white/40">Step {step + 1} of {total}</p>
-          <p className="text-xs text-white/60">Coach Ashok Fitness</p>
         </div>
         <ProgressBar value={step + 1} max={total} color="#F20000" />
       </div>
@@ -84,7 +115,6 @@ export default function CheckinScreen() {
               }}
             />
             
-            {/* Range Thumb styles via global css usually, but handled by accent-[] class */}
             <div className="flex justify-between mt-3 px-1">
               <span className="text-xs text-white/40 uppercase tracking-widest font-semibold">Exhausted</span>
               <span className="text-xs text-white/40 uppercase tracking-widest font-semibold">Unstoppable</span>
@@ -127,17 +157,21 @@ export default function CheckinScreen() {
       <div className="px-6 pb-8 pt-4 flex gap-3 bg-[#0A0A0A]">
         {step > 0 && (
           <button 
+            type="button"
             onClick={() => setStep(s => s - 1)} 
             className="flex-1 bg-[#1C1C1E] border border-white/10 rounded-xl p-4 text-white/60 text-[15px] font-medium transition-colors active:scale-[0.98] hover:bg-white/5"
+            disabled={isPending}
           >
             Back
           </button>
         )}
         <button 
-          onClick={() => setStep(s => s + 1)} 
-          className="flex-[2] bg-[#F20000] hover:bg-[#C20000] border-none rounded-xl p-4 text-white text-base font-bold font-barlow tracking-widest uppercase transition-colors shadow-[0_4px_24px_rgba(242,0,0,0.18)] active:scale-[0.98]"
+          type="button"
+          onClick={handleNext} 
+          disabled={isPending}
+          className="flex-[2] bg-[#F20000] hover:bg-[#C20000] border-none rounded-xl p-4 text-white text-base font-bold font-barlow tracking-widest uppercase transition-colors shadow-[0_4px_24px_rgba(242,0,0,0.18)] active:scale-[0.98] disabled:opacity-50"
         >
-          {step === total - 1 ? "Submit ✓" : "Continue →"}
+          {isPending ? "Saving..." : step === total - 1 ? "Submit ✓" : "Continue →"}
         </button>
       </div>
     </div>

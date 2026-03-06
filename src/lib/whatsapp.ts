@@ -1,166 +1,161 @@
-// ─── WhatsApp Integration Layer ───
-// Stubbed for MVP — plug in Interakt (India) or WATI (Global) API later.
-// All message templates match PRD Section 5.
+/**
+ * Fitosys - Meta WhatsApp Cloud API Service
+ */
 
-interface SendMessageParams {
-    to: string; // phone with country code, e.g. "+919876543210"
-    message: string;
+const META_API_URL = "https://graph.facebook.com/v18.0";
+const PHONE_NUMBER_ID = process.env.META_PHONE_NUMBER_ID;
+const ACCESS_TOKEN = process.env.META_WHATSAPP_TOKEN;
+
+interface MetaSendMessageResponse {
+  messaging_product: string;
+  contacts: { input: string; wa_id: string }[];
+  messages: { id: string }[];
 }
 
-async function sendMessage({ to, message }: SendMessageParams): Promise<void> {
-    // TODO: Replace with real Interakt/WATI API call
-    console.log(`[WhatsApp] → ${to}`);
-    console.log(message);
-    console.log("---");
+/**
+ * Helper to ensure the phone number is correctly formatted for Meta (E.164 without the +)
+ */
+function formatPhoneNumber(phone: string): string {
+  // Remove all non-numeric characters
+  return phone.replace(/\D/g, "");
 }
 
-// ─── Message Templates ───
+/**
+ * Sends a pre-approved Meta Template message.
+ * Required for initiating conversations outside the 24-hour customer service window.
+ */
+export async function sendTemplateMessage(
+  to: string,
+  templateName: string,
+  languageCode: string = "en",
+  components: any[] = [] // Optional dynamic variables for the template
+): Promise<MetaSendMessageResponse | null> {
+  if (!PHONE_NUMBER_ID || !ACCESS_TOKEN) {
+    console.error("Missing Meta WhatsApp API credentials in environment.");
+    return null;
+  }
 
-export async function sendClientWelcome(params: {
-    clientName: string;
-    coachName: string;
-    programName: string;
-    endDate: string;
-    checkinDay: string;
-    clientPhone: string;
-}) {
-    const message = `Hi ${params.clientName} 👋
+  try {
+    const formattedPhone = formatPhoneNumber(to);
+    
+    const response = await fetch(`${META_API_URL}/${PHONE_NUMBER_ID}/messages`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${ACCESS_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        messaging_product: "whatsapp",
+        recipient_type: "individual",
+        to: formattedPhone,
+        type: "template",
+        template: {
+          name: templateName,
+          language: {
+            code: languageCode,
+          },
+          components: components,
+        },
+      }),
+    });
 
-Welcome to ${params.coachName}'s coaching program!
+    const data = await response.json();
 
-Your ${params.programName} program starts today and runs until ${params.endDate}.
+    if (!response.ok) {
+      console.error("Meta API Template Error:", JSON.stringify(data, null, 2));
+      throw new Error(`Failed to send template message: ${data.error?.message || "Unknown error"}`);
+    }
 
-Here's what to expect:
-• Every ${params.checkinDay} evening, I'll send you a quick 4-question check-in on WhatsApp
-• Just reply here, it takes 2 minutes
-• I'll review your responses and flag anything that needs attention
-
-Talk soon,
-${params.coachName}`;
-
-    await sendMessage({ to: params.clientPhone, message });
+    return data;
+  } catch (error) {
+    console.error("sendTemplateMessage Error:", error);
+    return null;
+  }
 }
 
-export async function sendCoachNewClientNotification(params: {
-    coachPhone: string;
-    clientName: string;
-    programName: string;
-    currency: string;
-    amount: number;
-    startDate: string;
-    endDate: string;
-}) {
-    const message = `💰 New client onboarded
+/**
+ * Sends a standard text message.
+ * ONLY works if the user has messaged the business within the last 24 hours.
+ */
+export async function sendTextMessage(to: string, text: string): Promise<MetaSendMessageResponse | null> {
+  if (!PHONE_NUMBER_ID || !ACCESS_TOKEN) {
+    console.error("Missing Meta WhatsApp API credentials in environment.");
+    return null;
+  }
 
-Name: ${params.clientName}
-Program: ${params.programName}
-Amount: ${params.currency}${params.amount}
-Program dates: ${params.startDate} to ${params.endDate}
+  try {
+    const formattedPhone = formatPhoneNumber(to);
+    
+    const response = await fetch(`${META_API_URL}/${PHONE_NUMBER_ID}/messages`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${ACCESS_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        messaging_product: "whatsapp",
+        recipient_type: "individual",
+        to: formattedPhone,
+        type: "text",
+        text: {
+          preview_url: false,
+          body: text,
+        },
+      }),
+    });
 
-They're now in your Active Clients list.`;
+    const data = await response.json();
 
-    await sendMessage({ to: params.coachPhone, message });
+    if (!response.ok) {
+      console.error("Meta API Text Error:", JSON.stringify(data, null, 2));
+      throw new Error(`Failed to send text message: ${data.error?.message || "Unknown error"}`);
+    }
+
+    return data;
+  } catch (error) {
+    console.error("sendTextMessage Error:", error);
+    return null;
+  }
 }
 
-export async function sendWeeklyCheckin(params: {
-    clientName: string;
-    coachName: string;
-    clientPhone: string;
-}) {
-    const message = `Hey ${params.clientName} 👋
+/**
+ * Sends an interactive message (like a list or buttons).
+ * ONLY works if the user has messaged the business within the last 24 hours.
+ */
+export async function sendInteractiveMessage(to: string, interactiveObject: any): Promise<MetaSendMessageResponse | null> {
+  if (!PHONE_NUMBER_ID || !ACCESS_TOKEN) {
+    console.error("Missing Meta WhatsApp API credentials in environment.");
+    return null;
+  }
 
-Quick weekly check-in from ${params.coachName}.
-Takes 2 minutes, reply right here.
+  try {
+    const formattedPhone = formatPhoneNumber(to);
+    
+    const response = await fetch(`${META_API_URL}/${PHONE_NUMBER_ID}/messages`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${ACCESS_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        messaging_product: "whatsapp",
+        recipient_type: "individual",
+        to: formattedPhone,
+        type: "interactive",
+        interactive: interactiveObject,
+      }),
+    });
 
-1️⃣ Weight this week? (e.g., 73.2 kg)
-2️⃣ Sessions completed this week? (e.g., 3)
-3️⃣ Energy level 1 to 10? (1 = exhausted, 10 = amazing)
-4️⃣ Any wins or struggles this week?
+    const data = await response.json();
 
-Just reply in one message or separate messages, whatever is easier.`;
+    if (!response.ok) {
+      console.error("Meta API Interactive Error:", JSON.stringify(data, null, 2));
+      throw new Error(`Failed to send interactive message: ${data.error?.message || "Unknown error"}`);
+    }
 
-    await sendMessage({ to: params.clientPhone, message });
-}
-
-export async function sendRenewalReminder(params: {
-    clientName: string;
-    coachName: string;
-    programName: string;
-    endDate: string;
-    sessionsCompleted: number;
-    weeksCompleted: number;
-    weightProgress: string | null;
-    paymentLink: string;
-    clientPhone: string;
-}) {
-    const weightLine = params.weightProgress
-        ? `📉 ${params.weightProgress} progress tracked\n`
-        : "";
-    const message = `Hey ${params.clientName} 👋
-
-Your ${params.programName} with ${params.coachName} ends on ${params.endDate}.
-
-Here's a quick look at your journey:
-📊 ${params.sessionsCompleted} sessions completed
-${weightLine}✅ ${params.weeksCompleted} weeks of check-ins completed
-
-Ready to keep the momentum going?
-
-Renew your program here:
-${params.paymentLink}
-
-Questions? Just reply here.
-
-${params.coachName}`;
-
-    await sendMessage({ to: params.clientPhone, message });
-}
-
-export async function sendSecondRenewalReminder(params: {
-    clientName: string;
-    coachName: string;
-    daysRemaining: number;
-    paymentLink: string;
-    clientPhone: string;
-}) {
-    const message = `Hi ${params.clientName}, just a quick reminder that your program ends in ${params.daysRemaining} days.
-
-Renewing takes 2 minutes:
-${params.paymentLink}
-
-If you are taking a break, no problem — just let me know so I can keep your spot open.
-
-${params.coachName}`;
-
-    await sendMessage({ to: params.clientPhone, message });
-}
-
-export async function sendCoachWeeklySummary(params: {
-    coachName: string;
-    coachPhone: string;
-    summaryText: string;
-    dashboardLink: string;
-}) {
-    const message = `Good morning ${params.coachName} 👋
-
-Your weekly coaching pulse is ready.
-
-${params.summaryText}
-
-View full details in your dashboard: ${params.dashboardLink}`;
-
-    await sendMessage({ to: params.coachPhone, message });
-}
-
-export async function sendCoachRenewalNotification(params: {
-    coachPhone: string;
-    clientName: string;
-    programName: string;
-    newEndDate: string;
-    currency: string;
-    amount: number;
-}) {
-    const message = `${params.clientName} renewed ${params.programName} until ${params.newEndDate}. ${params.currency}${params.amount} received.`;
-
-    await sendMessage({ to: params.coachPhone, message });
+    return data;
+  } catch (error) {
+    console.error("sendInteractiveMessage Error:", error);
+    return null;
+  }
 }
