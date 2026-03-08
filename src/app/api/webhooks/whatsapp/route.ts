@@ -1,75 +1,62 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 
-const VERIFY_TOKEN = process.env.META_WEBHOOK_VERIFY_TOKEN;
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
-/**
- * Handle GET requests for Webhook Verification
- * Meta will send a GET request to this endpoint with a challenge string when
- * you configure the Webhook URL in the Meta App Dashboard.
- */
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
+// GET — AiSensy webhook verification
+export async function GET(req: NextRequest) {
+  const token = req.nextUrl.searchParams.get("token");
 
-  const mode = searchParams.get("hub.mode");
-  const token = searchParams.get("hub.verify_token");
-  const challenge = searchParams.get("hub.challenge");
-
-  // Check if a request is for verification
-  if (mode && token) {
-    // Check the mode and token sent are correct
-    if (mode === "subscribe" && token === VERIFY_TOKEN) {
-      console.log("Meta Webhook Verified!");
-      // Respond with the challenge token from the request
-      return new NextResponse(challenge, { status: 200 });
-    } else {
-      // Respond with '403 Forbidden' if verify tokens do not match
-      return new NextResponse("Forbidden", { status: 403 });
-    }
+  if (token === process.env.WHATSAPP_VERIFY_TOKEN) {
+    return new Response("Webhook verified", { status: 200 });
   }
-
-  return new NextResponse("Invalid request", { status: 400 });
+  return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 }
 
-/**
- * Handle POST requests from Meta
- * Whenever a user sends a message to the business number, Meta hits this endpoint.
- */
-export async function POST(request: Request) {
+// POST — Incoming client replies
+export async function POST(req: NextRequest) {
   try {
-    const body = await request.json();
+    const body = await req.json();
 
-    // Check if it's a WhatsApp status update or message
-    if (body.object === "whatsapp_business_account") {
-      for (const entry of body.entry) {
-        for (const change of entry.changes) {
-          if (change.value && change.value.messages) {
-            // WE RECEIVED A MESSAGE
-            const message = change.value.messages[0];
-            const contact = change.value.contacts[0];
-            
-            const fromNumber = message.from; // Phone number without the +
-            const messageId = message.id;
-            const messageType = message.type;
-            
-            console.log(`Received ${messageType} from ${fromNumber}: ${messageId}`);
+    // AiSensy message structure
+    const message = body?.message;
+    const from = body?.sender?.phone;    // client phone number
+    const text = body?.message?.text;    // client reply text
+    const timestamp = body?.timestamp;
 
-            // TODO: Match `fromNumber` in Supabase `clients` table
-            // TODO: Extract text component and save to `checkins` table
-
-            if (messageType === "text") {
-              console.log("Message Body:", message.text.body);
-            }
-          }
-        }
-      }
-      
-      // WhatsApp requires a 200 OK response immediately, otherwise it will keep retrying
-      return NextResponse.json({ status: "success" }, { status: 200 });
-    } else {
-      return new NextResponse("Not Found", { status: 404 });
+    if (!from || !text) {
+      return NextResponse.json({ status: "ignored" });
     }
+
+    // Look up client in Supabase by phone number
+    const { data: client } = await supabase
+      .from("clients")
+      .select("id, coach_id, name")
+      .eq("phone", from)
+      .single();
+
+    if (!client) {
+      console.warn(`[WhatsApp] Unknown sender: ${from}`);
+      return NextResponse.json({ status: "unknown_sender" });
+    }
+
+    // Store the check-in reply
+    await supabase.from("checkins").insert({
+      client_id: client.id,
+      coach_id: client.coach_id,
+      raw_reply: text,
+      received_at: new Date().toISOString(),
+      source: "whatsapp",
+      processed: false,      // Gemini AI processes this in Monday cron
+    });
+
+    return NextResponse.json({ status: "ok" });
+
   } catch (error) {
-    console.error("Meta Webhook Error:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    console.error("[WhatsApp] Webhook error:", error);
+    return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
 }

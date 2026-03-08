@@ -85,9 +85,9 @@ export async function getEnrichedClients(coachId: string): Promise<EnrichedClien
   }
 
   // Transform the raw Supabase join data into the clean EnrichedClient payload the UI expects
-  return (data || []).map((row: any) => {
-    // Safely extract deeply nested relations (assuming 1 active enrollment for now)
-    const enrollment = row.enrollments && row.enrollments.length > 0 ? row.enrollments[0] : null;
+  return (data || []).map((row: Record<string, unknown>) => {
+    const enrollments = row.enrollments as Array<{ end_date?: string; programs?: { name?: string } }> | null;
+    const enrollment = enrollments && enrollments.length > 0 ? enrollments[0] : null;
     const programName = enrollment?.programs?.name || "No Active Program";
     
     // Calculate days left
@@ -98,8 +98,8 @@ export async function getEnrichedClients(coachId: string): Promise<EnrichedClien
     }
 
     // Get latest checkin (Supabase returns an array, we find the newest by date)
-    const checkins = row.checkins || [];
-    const latestCheckin = checkins.sort((a: any, b: any) => new Date(b.check_date).getTime() - new Date(a.check_date).getTime())[0];
+    const checkins = (row.checkins || []) as Array<{ check_date: string; energy_score?: number; sessions_completed?: number }>;
+    const latestCheckin = checkins.sort((a, b) => new Date(b.check_date).getTime() - new Date(a.check_date).getTime())[0];
     
     const energy = latestCheckin?.energy_score || 0;
     const sessions = latestCheckin?.sessions_completed || 0;
@@ -115,13 +115,13 @@ export async function getEnrichedClients(coachId: string): Promise<EnrichedClien
     }
 
     return {
-      id: row.id,
-      name: row.full_name,
+      id: row.id as string,
+      name: row.full_name as string,
       program: programName,
       energy,
       sessions,
       risk,
-      status: row.status,
+      status: typeof row.status === 'string' ? row.status : 'inactive',
       daysLeft: Math.max(0, daysLeft) // Prevent negative 
     };
   });

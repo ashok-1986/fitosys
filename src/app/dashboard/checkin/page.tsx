@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState, useTransition } from "react";
+import React, { Suspense, useState, useTransition } from "react";
 import { NavBar } from "@/components/ui/navigation";
 import { ProgressBar } from "@/components/ui/design-system";
 import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { submitCheckin } from "@/lib/actions";
 
-export default function CheckinScreen() {
+function CheckinScreenContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const clientId = searchParams.get("clientId");
@@ -175,5 +175,13 @@ export default function CheckinScreen() {
         </button>
       </div>
     </div>
+  );
+}
+
+export default function CheckinScreen() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#0A0A0A]" />}>
+      <CheckinScreenContent />
+    </Suspense>
   );
 }

@@ -89,7 +89,14 @@ END $$;
 
 -- Remove UNIQUE and NOT NULL constraints from gateway_payment_id
 -- (Razorpay webhook may insert before verify route, so we allow duplicates/nulls)
-ALTER TABLE payments ALTER COLUMN gateway_payment_id DROP NOT NULL;
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'payments' AND column_name = 'gateway_payment_id') THEN
+        ALTER TABLE payments ALTER COLUMN gateway_payment_id DROP NOT NULL;
+    ELSE
+        ALTER TABLE payments ADD COLUMN gateway_payment_id TEXT;
+    END IF;
+END $$;
 
 -- Drop unique constraint on gateway_payment_id (was stripe_payment_intent_id)
 DO $$

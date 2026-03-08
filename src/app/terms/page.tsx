@@ -19,7 +19,7 @@ export default function TermsPage() {
                 <div className="prose prose-sm text-muted-foreground space-y-4">
                     <p>Last updated: February 2026</p>
                     <h2 className="text-lg font-semibold text-foreground">1. Acceptance of Terms</h2>
-                    <p>By accessing or using Fitosys, you agree to be bound by these Terms of Service. Fitosys is a SaaS platform operated by Alchemetryx for fitness, wellness, and yoga coaches.</p>
+                    <p>By accessing or using Fitosys, you agree to be bound by these Terms of Service. Fitosys is a SaaS system operated by Alchemetryx for fitness, wellness, and yoga coaches.</p>
                     <h2 className="text-lg font-semibold text-foreground">2. Service Description</h2>
                     <p>Fitosys provides client onboarding, automated check-in management, and renewal reminder services for independent coaches. We use third-party services including Razorpay for payments and WhatsApp Business API for messaging.</p>
                     <h2 className="text-lg font-semibold text-foreground">3. Account Responsibility</h2>

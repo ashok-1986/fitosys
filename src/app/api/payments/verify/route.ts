@@ -201,25 +201,17 @@ export async function POST(req: NextRequest) {
             ];
 
             await Promise.allSettled([
-                sendClientWelcome({
-                    clientName: clientData.full_name.split(" ")[0],
-                    coachName: coach?.full_name || "Your Coach",
-                    programName: program?.name || "Coaching Program",
-                    endDate,
-                    checkinDay:
-                        dayNames[coach?.checkin_day ?? 0] || dayNames[0],
-                    clientPhone: clientData.whatsapp_number,
-                }),
+                sendClientWelcome(
+                    clientData.whatsapp_number,
+                    clientData.full_name.split(" ")[0],
+                    coach?.full_name || "Your Coach"
+                ),
                 coach?.whatsapp_number
-                    ? sendCoachNewClientNotification({
-                        coachPhone: coach.whatsapp_number,
-                        clientName: clientData.full_name,
-                        programName: program?.name || "Coaching Program",
-                        currency: enrollment.currency || "INR",
-                        amount: enrollment.amount_paid,
-                        startDate,
-                        endDate,
-                    })
+                    ? sendCoachNewClientNotification(
+                        coach.whatsapp_number,
+                        coach?.full_name || "Coach",
+                        clientData.full_name
+                      )
                     : Promise.resolve(),
             ]);
         } catch {

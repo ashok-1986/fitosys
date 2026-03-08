@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { sendWeeklyCheckin } from "@/lib/whatsapp";
+import { sendWhatsAppTemplate } from "@/lib/whatsapp";
 
 // POST /api/cron/checkins — Weekly check-in blast
 // Triggered by Vercel CRON or pg_cron
@@ -98,11 +98,11 @@ export async function POST(request: NextRequest) {
 
             // Send WhatsApp check-in message
             try {
-                await sendWeeklyCheckin({
-                    clientName: client.full_name.split(" ")[0],
-                    coachName: coach.full_name,
-                    clientPhone: client.whatsapp_number,
-                });
+                await sendWhatsAppTemplate(
+                    client.whatsapp_number,
+                    "fitosys_weekly_checkin",
+                    [client.full_name.split(" ")[0], coach.full_name]
+                );
                 totalSent++;
 
                 // Log outbound message

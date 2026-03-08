@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generateWeeklySummary, SummaryInput } from "@/lib/gemini";
+import { generateWeeklySummary, SummaryInput } from "@/lib/openrouter";
 import { sendCoachWeeklySummary } from "@/lib/whatsapp";
 
 // POST /api/cron/summaries — Generate AI coaching summaries
@@ -116,12 +116,11 @@ export async function POST(request: NextRequest) {
             });
 
             // Send via WhatsApp
-            await sendCoachWeeklySummary({
-                coachName: coach.full_name.split(" ")[0],
-                coachPhone: coach.whatsapp_number,
-                summaryText,
-                dashboardLink: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/pulse`,
-            });
+            await sendCoachWeeklySummary(
+                coach.whatsapp_number,
+                coach.full_name.split(" ")[0],
+                summaryText
+            );
 
             // Mark as delivered
             await supabase

@@ -1,0 +1,182 @@
+Document Change Log
+1. Product Overview
+1.1 What Is Fitosys
+Fitosys is a SaaS business operating system for independent fitness, wellness, and yoga coaches. It automates the three most time-consuming admin tasks in a coaching business: client onboarding with payment, weekly WhatsApp check-ins with AI summary, and program renewal reminders.
+Everything runs on WhatsApp. No app for clients to download. No behaviour change required. The coach sets up once in 30 minutes. The system runs every week automatically after that.
+1.2 Core Promise
+1.3 Target Market
+1.4 Pricing
+2. Tech Stack
+2.1 Environment Variables
+3. MVP Scope
+3.1 Phase 1 Features (In Scope)
+Client Onboarding with Payment (Razorpay)
+Weekly WhatsApp Check-in Automation with Gemini AI Summary
+Renewal Reminder Automation
+3.2 Explicitly Out of Scope — Phase 1
+Mobile app
+Group coaching or cohort management
+Exercise library or workout builder
+Nutrition logging
+Video calls or lesson delivery
+Coach-to-coach marketplace
+Custom domain per coach
+Zapier or third-party integrations
+API access for coaches
+White labeling
+Progress photo upload
+Custom check-in questions per program
+3.3 Build Status Tracker
+4. Database Schema
+All tables use UUID primary keys. All coach-specific tables include coach_id for RLS enforcement. Column naming is gateway-agnostic — no stripe_ or razorpay_ prefixes on shared fields.
+4.1 coaches
+4.2 programs
+4.3 clients
+4.4 enrollments
+4.5 checkins
+4.6 ai_summaries
+4.7 payments
+4.8 whatsapp_log
+4.9 Row Level Security Policies
+5. WhatsApp Template Registry
+All templates submitted via Meta WhatsApp Manager. Direct Cloud API on +91 77383 63495. No BSP. Phone Number ID: 838337922704261.
+6. API Route Registry
+6.1 Auth Routes
+6.2 Coach Routes
+6.3 Program Routes
+6.4 Client Routes
+6.5 Enrollment Routes
+6.6 Check-in Routes
+6.7 Payment Routes
+6.8 Webhook Routes
+6.9 Public Routes
+6.10 Cron Routes
+7. Feature Specifications
+7.1 Feature 1 — Client Onboarding with Payment
+Each coach gets a unique link at fitosys.alchemetryx.com/join/[slug]. The client fills an intake form, selects a program, and pays via Razorpay — UPI, card, or net banking. Everything on one page. No redirects to another platform.
+User Stories
+Coach: I want a shareable onboarding link so clients can onboard without me guiding them step by step.
+Coach: I want to receive a WhatsApp notification the moment a client pays so I can send a personal welcome.
+Coach: I want the client to appear in my dashboard immediately after payment with no manual entry.
+Client: I want to fill one form and pay in one step. The process should take under 5 minutes.
+Client: I want a WhatsApp confirmation immediately after payment so I know I am registered.
+Intake Form Fields
+Payment Flow
+Client submits intake form → POST /api/public/:slug/intake
+API validates fields, creates Razorpay order, returns orderId + amount
+Frontend loads Razorpay checkout.js, opens modal with orderId
+Client pays. Razorpay fires payment.captured webhook to /api/webhook/razorpay
+Webhook: verify signature → idempotency check → create client → create enrollment → create payment record → fire T3 WhatsApp to client → fire freeform notification to coach
+Client redirected to /join/[slug]/success — terminal page
+Acceptance Criteria
+Onboarding link live within 24 hours of coach account creation
+Client completes form and pays in under 5 minutes
+WhatsApp notifications sent within 60 seconds of payment.captured
+Client appears in coach dashboard within 2 minutes of payment
+Failed payment creates no orphan records in database
+Razorpay webhook handles duplicate payment IDs idempotently — check gateway_payment_id before processing
+7.2 Feature 2 — Weekly Check-in Automation with AI Summary
+Every Sunday at 7 PM IST (per coach timezone config), T1 check-in message fires to all active clients. Clients reply on WhatsApp. Replies are stored. Every Monday at 7 AM IST, Gemini processes all responses and delivers a structured summary to the coach.
+Check-in Message Template (T1)
+Gemini Prompt Structure
+Prompt sent to Gemini API every Monday at 7 AM. Temperature: 0.3. Max tokens: 512. Model: gemini-2.0-flash.
+Output must include exactly these sections: RESPONSE RATE / NEEDS ATTENTION (up to 3) / STRONG PROGRESS (up to 3) / GROUP AVERAGE / THIS WEEK PRIORITY / NON-RESPONDERS. Total under 150 words. No filler phrases.
+Acceptance Criteria
+Check-in messages sent within 5-minute window of configured time
+Client reply matched to correct client via WhatsApp phone number
+Multiple messages from same client concatenated into single checkins record
+Gemini summary generated and delivered by 7:15 AM Monday
+If Gemini fails: retry once after 4 seconds, once after 16 seconds, once after 60 seconds. After third failure: store as failed, notify coach of delay.
+Coach can view historical summaries for any previous week in dashboard
+7.3 Feature 3 — Renewal Reminder Automation
+Daily cron at 10 AM UTC checks for programs ending in 7 days. Sends T2A (Utility, factual info, no payment link). If no reply within 48 hours, fires T2B (Marketing, with Razorpay payment link). If still unpaid after program end, flags coach in dashboard.
+Renewal Sequence
+Acceptance Criteria
+No duplicate renewal messages within same 7-day window — check renewal_reminder_1_sent flag
+Razorpay payment link in T2B is pre-filled with correct amount and client metadata
+Successful renewal extends end_date by one program duration from payment date — not restart from today
+Coach notification sent within 60 seconds of renewal payment
+Churn logging is optional but prompted in dashboard
+8. Dashboard Specifications
+8.1 /api/coaches/dashboard Response
+8.2 Navigation Structure
+8.3 Design Tokens
+9. Scheduled Jobs
+All cron jobs run as Next.js API routes triggered by Vercel Cron. Configured in vercel.json. Each route validates x-cron-secret header before executing.
+10. Webhook Specifications
+10.1 Razorpay Webhook — /api/webhook/razorpay
+Events Handled
+payment.captured — primary event. Creates client + enrollment + payment records. Fires WhatsApp messages.
+payment.failed — logs failure. Flags in dashboard if this was a renewal attempt.
+Processing Order for payment.captured
+Verify Razorpay signature using RAZORPAY_WEBHOOK_SECRET
+Extract payment.id — check payments table for existing record (idempotency)
+Extract metadata from payment notes: coach_slug, program_id, client intake data
+Upsert client record on (whatsapp_number, coach_id)
+Create enrollment record with start_date=today, end_date=today+duration_weeks
+Create payment record with gateway_payment_id
+Send T3 WhatsApp welcome to client
+Send freeform WhatsApp notification to coach
+Return 200 — always return 200 to Razorpay even on partial failures
+10.2 WhatsApp Webhook — /api/webhook/whatsapp
+GET — Verification
+Meta sends: hub.mode, hub.verify_token, hub.challenge
+Verify hub.verify_token === WHATSAPP_VERIFY_TOKEN
+Return hub.challenge as plain text with 200
+POST — Incoming Messages
+Extract sender phone number from entry[0].changes[0].value.messages[0].from
+Query clients: SELECT * FROM clients WHERE whatsapp_number = [number]
+If match: check for open checkin this week. Append reply to checkins.raw_reply. Set processed=false. Set responded_at=NOW().
+If no match: log to whatsapp_log with client_id=null
+Always return 200
+11. Antigravity Build Sequence
+Build in this exact order. Do not start the next task until the current one has zero TypeScript errors (npx tsc --noEmit) and the core flow works end to end.
+12. Non-Functional Requirements
+12.1 Performance
+Dashboard loads under 2 seconds on 4G mobile
+Webhook handlers respond under 5 seconds (Razorpay timeout is 5s)
+WhatsApp messages sent within 60 seconds of trigger event
+Gemini summary generation under 30 seconds per coach
+12.2 Security
+All API routes authenticated via Supabase JWT except /api/public/* and /api/webhook/*
+Razorpay webhook: verify x-razorpay-signature header before processing
+WhatsApp webhook: verify hub.verify_token on GET, validate sender origin on POST
+Cron routes: verify x-cron-secret header — reject all others with 401
+No coach can access another coach's data — enforced at both RLS and application layer
+NEXT_PUBLIC_ prefix only on variables that must be exposed to the browser (Razorpay key ID, Supabase URL/anon key)
+12.3 Reliability
+Razorpay webhook handler is idempotent — duplicate events safe via gateway_payment_id check
+WhatsApp send failures logged to whatsapp_log but do not crash other operations
+Gemini API failure falls back with 3 retries (4s / 16s / 60s). After third: mark failed, notify coach.
+Cron job failures alert to founder's WhatsApp
+12.4 Scalability
+Architecture handles 500 coaches / 20,000 clients without changes
+Move to Supabase paid tier ($25/month) at approximately 100 coaches
+Vercel free tier sufficient for MVP. Scale at 1,000 daily active users.
+13. Launch Checklist
+13.1 Technical
+All 3 features working end to end in staging
+Multi-tenant data isolation tested with 2 dummy coach accounts
+Razorpay webhook tested with test keys locally
+WhatsApp check-in tested with real replies on registered number
+Gemini summary tested with real check-in data
+Renewal flow tested with manual cron trigger
+Mobile responsive — tested on iPhone and Android
+npx tsc --noEmit — zero errors before every deploy
+13.2 WhatsApp
+3 submitted templates complete Meta review
+fitosys_client_welcome resubmitted as UTILITY template
+fitosys_renewal_info submitted as new UTILITY template
+Permanent System User access token generated in Meta Business Manager
+WHATSAPP_ACCESS_TOKEN and WHATSAPP_PHONE_NUMBER_ID added to Vercel env
+Webhook URL registered in Meta Developer App: https://fitosys.alchemetryx.com/api/webhook/whatsapp
+India payment method added in Meta Billing Hub
+13.3 Business
+fitosys.alchemetryx.com domain active and pointing to Vercel
+Razorpay live keys active — KYC cleared ✓
+Gemini API key active in Google AI Studio
+Terms of Service page live
+Privacy Policy page live
+5 beta coaches confirmed
+First real coach onboarded and active
+Fitosys PRD v2.0  |  Alchemetryx  |  March 2026  |  Confidential

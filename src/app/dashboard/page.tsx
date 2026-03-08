@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getCurrentCoachId, getRecentCheckins, getLatestAiSummary } from "@/lib/api-services";
+import WeeklyProgressCard from "@/components/weekly-progress-card";
 
 // Extract the custom Desktop StatCard and Avatar to match the screenshot exactly
 const DashboardAvatar = ({ name, risk, size = 40 }: { name: string, risk?: number, size?: number }) => {
@@ -132,6 +133,11 @@ export default async function DashboardScreen() {
           </div>
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#0A84FF] to-transparent opacity-50" />
         </div>
+      </div>
+
+      {/* Weekly Progress Chart */}
+      <div className="mb-10">
+        <WeeklyProgressCard />
       </div>
 
       {/* Needs Attention / Recent Check-ins */}

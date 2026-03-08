@@ -1,4 +1,4 @@
-import { generateWeeklySummaryStream, SummaryInput } from "@/lib/gemini";
+import { generateWeeklySummaryStream, SummaryInput } from "@/lib/openrouter";
 
 export async function POST(req: Request) {
     try {
@@ -9,7 +9,7 @@ export async function POST(req: Request) {
             coach_name: body.coach_name || "Coach",
             week_ending: new Date().toISOString().split("T")[0],
             total_active_clients: body.clients.length,
-            responded_clients: body.clients.map((c: any) => ({
+            responded_clients: body.clients.map((c: { name: string; energy: number; sessions: number }) => ({
                 client_name: c.name,
                 energy_score: c.energy,
                 sessions: c.sessions,

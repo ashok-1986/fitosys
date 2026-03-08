@@ -1,0 +1,24 @@
+1. Root Directory Structure
+The project lives at D:\Projects\Personal_Projects\Websites\fitosys. Every file and folder below is relative to this root.
+2. app/ Directory — Pages and API Routes
+All routes are collocated under app/. Pages use page.tsx. API routes use route.ts. Layouts use layout.tsx.
+3. lib/ Directory — Business Logic and API Clients
+lib/ contains all non-UI logic. Nothing in lib/ should import from app/ or components/. Every external service has its own subfolder.
+4. components/ Directory — UI Components
+All components are in TypeScript. No default exports except for page.tsx files. Every component has a single responsibility.
+5. types/ Directory — TypeScript Interfaces
+All DB table interfaces live in types/database.ts. All API request/response shapes live in types/api.ts. Never use 'any'.
+5.1 Key Type Definitions
+6. supabase/ Directory — Database Migrations
+6.1 Recommended Indexes
+7. Configuration Files
+7.1 vercel.json
+7.2 next.config.js
+7.3 tailwind.config.js — Key Additions
+7.4 middleware.ts
+8. Module Boundaries — What Can Import What
+This is the most important section for keeping the codebase clean as it grows. Violating these boundaries creates circular dependencies and untestable code.
+9. Naming Conventions
+10. Testing Strategy
+MVP does not require full test coverage. These are the minimum tests required before each deployment.
+Fitosys Project Structure v1.0  |  Alchemetryx  |  March 2026  |  Confidential

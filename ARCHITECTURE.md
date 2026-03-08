@@ -10,7 +10,7 @@
 | Styling | Tailwind CSS v4 + shadcn/ui |
 | Database | Supabase PostgreSQL + RLS |
 | Auth | Supabase Auth (email/password) |
-| AI | Gemini API (Flash + Pro) |
+| AI | **OpenRouter API** (Qwen 2.5 72B Instruct) |
 | Payments | Razorpay (India) |
 | WhatsApp | Interakt API |
 | Hosting | Vercel + Vercel Cron |
@@ -79,14 +79,16 @@ Cron/webhook routes use `createServiceClient()` (service role) to bypass RLS.
 ### WhatsApp
 - `POST /api/webhooks/whatsapp` — Inbound reply capture
 
-## AI Modules (`lib/gemini/`)
+## AI Modules
+
+**Note:** Using OpenRouter API with Qwen 2.5+ models. Module location: `lib/openrouter/`
 
 | Module | Trigger | Model |
 |---|---|---|
-| `weekly-summary.ts` | Monday cron | Flash |
-| `risk-score.ts` | Dashboard load | Flash |
-| `renewal-message.ts` | 7d before expiry | Flash |
-| `coach-insight.ts` | Monday summary | Pro |
+| `weekly-summary.ts` | Monday cron | Qwen 2.5 72B Instruct |
+| `risk-score.ts` | Dashboard load | Qwen 2.5 72B Instruct |
+| `renewal-message.ts` | 7d before expiry | Qwen 2.5 72B Instruct |
+| `coach-insight.ts` | Monday summary | Qwen 2.5 72B Instruct |
 
 ## Key Files
 
@@ -108,10 +110,14 @@ src/
 │   ├── supabase/           # Client + server Supabase
 │   ├── razorpay/           # Razorpay SDK wrappers
 │   ├── whatsapp.ts         # Interakt messaging
-│   ├── gemini.ts           # AI entry point
+│   ├── openrouter.ts       # AI entry point (Qwen 2.5+)
 │   └── hooks.ts            # React data hooks
 lib/
-├── gemini/                 # 4 AI feature modules
+├── openrouter/             # 4 AI feature modules
+│   ├── weekly-summary.ts
+│   ├── risk-score.ts
+│   ├── renewal-message.ts
+│   └── coach-insight.ts
 └── razorpay/               # Razorpay helpers
 supabase/
 └── migrations/             # 001_initial + 002_razorpay
@@ -123,4 +129,6 @@ See `.env.example` for the full list. Critical:
 - `CRON_SECRET` — secures cron routes
 - `SUPABASE_SERVICE_ROLE_KEY` — server-only, bypasses RLS
 - `RAZORPAY_KEY_SECRET` — server-only
+- `OPENROUTER_API_KEY` — OpenRouter API authentication
+- `OPENROUTER_MODEL` — Model selection (default: `qwen/qwen-2.5-72b-instruct`)
 - `NEXT_PUBLIC_RAZORPAY_KEY_ID` — frontend modal

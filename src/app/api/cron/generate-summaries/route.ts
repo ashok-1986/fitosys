@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase-server';
-import { generateWeeklySummary, SummaryInput, CheckInData } from '@/lib/gemini';
+import { generateWeeklySummary, SummaryInput, CheckInData } from '@/lib/openrouter';
 
 export async function GET(req: Request) {
   // 1. Verify Authentication
@@ -56,12 +56,12 @@ export async function GET(req: Request) {
         .map(c => c.full_name);
 
       // Map Supabase checkins to the Gemini/Qwen Input Interface
-      const formattedCheckins: CheckInData[] = respondedClientsList.map(c => ({
-        client_name: (c.clients as any)?.full_name || "Unknown",
+      const formattedCheckins: CheckInData[] = respondedClientsList.map((c: Record<string, unknown>) => ({
+        client_name: ((c.clients as { full_name?: string })?.full_name) || "Unknown",
         weight: c.weight_kg ? `${c.weight_kg}kg` : null,
-        sessions: c.sessions_completed,
-        energy_score: c.energy_score,
-        notes: c.notes
+        sessions: (c.sessions_completed as number | null | undefined) ?? null,
+        energy_score: (c.energy_score as number | null | undefined) ?? null,
+        notes: (c.notes as string | null | undefined) ?? null
       }));
 
       // Calculate aggregate metrics
@@ -104,8 +104,8 @@ export async function GET(req: Request) {
 
     return NextResponse.json({ success: true, processed: results });
     
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Cron Error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : String(error) }, { status: 500 });
   }
 }

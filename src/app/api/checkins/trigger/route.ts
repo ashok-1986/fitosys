@@ -87,12 +87,12 @@ export async function POST(_request: NextRequest) {
             continue;
         }
 
-        // Send WhatsApp check-in message (stubbed)
-        await sendWeeklyCheckin({
-            clientPhone: client.whatsapp_number,
-            clientName: client.full_name,
-            coachName: coach.full_name,
-        });
+        // Send WhatsApp check-in message
+        await sendWeeklyCheckin(
+            client.whatsapp_number,
+            client.full_name,
+            coach.full_name
+        );
 
         sentCount++;
     }

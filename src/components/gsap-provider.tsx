@@ -33,6 +33,7 @@ export function ScrollReveal({
     const [ready, setReady] = useState(false);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setReady(true);
     }, []);
 
@@ -111,6 +112,7 @@ export function StaggerReveal({
     const [ready, setReady] = useState(false);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setReady(true);
     }, []);
 

@@ -28,7 +28,7 @@ export default async function ClientDetailScreen({ params }: { params: { id: str
   }
 
   // Pad the chart data to 7 weeks if there aren't enough checkins yet
-  const chartData = profile.recentCheckins.map(c => c.energy_score || 0).reverse();
+  const chartData = profile.recentCheckins.map((c: { energy_score: number | null }) => c.energy_score || 0).reverse();
   while (chartData.length < 7) {
     chartData.unshift(0); // Insert 0 at the beginning for missing weeks
   }
@@ -116,7 +116,7 @@ export default async function ClientDetailScreen({ params }: { params: { id: str
           Energy Trend — 7 Weeks
         </p>
         <div className="flex gap-2 items-end h-[72px]">
-          {chartData.map((v, i) => {
+          {chartData.map((v: number, i: number) => {
             const isRed = v > 0 && v <= 4;
             const isOrange = v > 4 && v <= 6;
             const isGreen = v > 6;

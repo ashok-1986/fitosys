@@ -46,6 +46,38 @@ export async function POST(req: Request) {
                 console.log(
                     `[Razorpay Webhook] Payment captured: ${payment.id}`
                 );
+
+                // Look up enrollment details to send welcome message
+                const enrollmentId = payment.notes?.enrollment_id;
+                if (enrollmentId && payment.notes?.payment_type === "new") {
+                    const { data: enrollment } = await supabase
+                        .from("enrollments")
+                        .select("start_date, clients(full_name, whatsapp_number), coaches(full_name), programs(name)")
+                        .eq("id", enrollmentId)
+                        .single();
+
+                    if (enrollment) {
+                        const client = enrollment.clients as unknown as { full_name: string; whatsapp_number: string };
+                        const coach = enrollment.coaches as unknown as { full_name: string };
+                        const program = enrollment.programs as unknown as { name: string };
+                        
+                        try {
+                            const { sendWhatsAppTemplate } = await import("@/lib/whatsapp");
+                            const startDateFormatted = new Date(enrollment.start_date || Date.now()).toLocaleDateString("en-IN", {
+                                day: "numeric", month: "short", year: "numeric"
+                            });
+
+                            await sendWhatsAppTemplate(
+                                client.whatsapp_number,
+                                "fitosys_client_welcome",
+                                [coach.full_name, client.full_name.split(" ")[0], program.name, startDateFormatted]
+                            );
+                            console.log(`[Razorpay Webhook] Sent welcome message to ${client.full_name}`);
+                        } catch (err) {
+                            console.error("[Razorpay Webhook] Failed to send welcome message:", err);
+                        }
+                    }
+                }
                 break;
             }
 

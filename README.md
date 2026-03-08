@@ -1,5 +1,38 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Fitosys — Fitness Coaching Platform
+
+Fitosys is a multi-tenant SaaS platform for fitness coaches to manage clients, programs, check-ins, payments, and AI-powered insights.
+
+### Tech Stack
+- **Frontend**: Next.js 16 (App Router) + TypeScript
+- **Styling**: Tailwind CSS v4 + shadcn/ui
+- **Database**: Supabase PostgreSQL + Row Level Security
+- **Auth**: Supabase Auth (email/password)
+- **AI**: OpenRouter API (Qwen 2.5 72B Instruct)
+- **Payments**: Razorpay (India)
+- **WhatsApp**: Interakt API
+- **Hosting**: Vercel + Vercel Cron
+
+### Implementation Plan
+
+A comprehensive 13-phase implementation plan has been created covering:
+1. Core Infrastructure ✅ (Database schema, RLS, migrations)
+2. Authentication & Onboarding
+3. Program Management
+4. Client Management
+5. Enrollment & Payments
+6. Weekly Check-In System
+7. AI-Powered Features (OpenRouter integration)
+8. Dashboard & Analytics
+9. Settings & Configuration
+10. Cron Jobs & Automation
+11. WhatsApp Integration
+12. Testing & QA
+13. Deployment & Monitoring
+
+See `CHANGELOG.md` for the latest updates and implementation status.
+
 ## Getting Started
 
 First, run the development server:

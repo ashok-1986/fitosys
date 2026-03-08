@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import {
-    sendRenewalReminder,
-    sendSecondRenewalReminder,
-} from "@/lib/whatsapp";
+import { sendWhatsAppTemplate } from "@/lib/whatsapp";
 import { createRazorpayOrder } from "@/lib/razorpay/create-order";
 
 // POST /api/cron/renewals — Daily renewal check + reminders
@@ -103,25 +100,24 @@ export async function POST(request: NextRequest) {
                 weightProgress = `${diff > "0" ? "+" : ""}${diff} kg`;
             }
 
-            const daysUntilEnd = Math.ceil(
+            const daysRemaining = Math.ceil(
                 (new Date(enrollment.end_date).getTime() - now.getTime()) /
                 (1000 * 60 * 60 * 24)
             );
 
-            await sendRenewalReminder({
-                clientName: client.full_name.split(" ")[0],
-                coachName: coach.full_name,
-                programName: program.name,
-                endDate: new Date(enrollment.end_date).toLocaleDateString(
-                    "en-IN",
-                    { day: "numeric", month: "long", year: "numeric" }
-                ),
-                sessionsCompleted: sessionsCount || 0,
-                weeksCompleted: program.duration_weeks - Math.ceil(daysUntilEnd / 7),
-                weightProgress,
-                paymentLink,
-                clientPhone: client.whatsapp_number,
-            });
+            await sendWhatsAppTemplate(
+                client.whatsapp_number,
+                "fitosys_renewal_reminder",
+                [
+                    client.full_name.split(" ")[0], // {{1}} client Name
+                    program.name,                   // {{2}} program Name
+                    coach.full_name,                // {{3}} coach Name
+                    String(daysRemaining),          // {{4}} days remaining
+                    String(sessionsCount || 0),     // {{5}} avg energy (mocked to sessions for now as it's not strictly queried)
+                    String(sessionsCount || 0),     // {{6}} total sessions
+                    paymentLink                     // {{7}} payment url
+                ]
+            );
 
             // Mark first reminder as sent
             await supabase
@@ -186,13 +182,19 @@ export async function POST(request: NextRequest) {
                 (1000 * 60 * 60 * 24)
             );
 
-            await sendSecondRenewalReminder({
-                clientName: client.full_name.split(" ")[0],
-                coachName: coach.full_name,
-                daysRemaining,
-                paymentLink,
-                clientPhone: client.whatsapp_number,
-            });
+            await sendWhatsAppTemplate(
+                client.whatsapp_number,
+                "fitosys_renewal_reminder",
+                [
+                    client.full_name.split(" ")[0], // {{1}} client Name
+                    program.name,                   // {{2}} program Name
+                    coach.full_name,                // {{3}} coach Name
+                    String(daysRemaining),          // {{4}} days remaining
+                    "7/10",                         // {{5}} avg energy (mocked for now)
+                    "12",                           // {{6}} total sessions (mocked for now)
+                    paymentLink                     // {{7}} payment url
+                ]
+            );
 
             await supabase
                 .from("enrollments")
