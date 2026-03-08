@@ -4,6 +4,33 @@ All notable changes to the Fitosys landing page and application are documented h
 
 ---
 
+## [2026-03-08] — Vercel Deployment & WhatsApp Service Fixes
+
+### 🐛 Critical Build Fixes
+
+**File:** `src/lib/whatsapp.ts`
+
+Added missing function exports that were causing Vercel build failures:
+
+- `sendWeeklyCheckin(to, clientName, coachName)` — Weekly client check-in trigger
+- `sendCoachWeeklySummary(to, coachName, summaryText)` — AI summary delivery to coaches
+- `sendClientWelcome(to, clientName, coachName)` — Welcome message for new clients
+- `sendCoachNewClientNotification(to, coachName, clientName)` — New client alerts
+- `sendRenewalReminder(to, clientName, coachName, programName, daysLeft)` — First renewal reminder
+- `sendSecondRenewalReminder(to, clientName, coachName, programName, daysLeft)` — Follow-up reminder
+- `sendTextMessage(to, text)` — Generic text message sender
+
+All functions now use the AiSensy WhatsApp API with proper template parameter handling.
+
+### 📦 Deployment Status
+
+- ✅ Local build succeeds
+- ✅ All TypeScript errors resolved
+- ✅ WhatsApp service fully exported
+- ⏳ Vercel deployment in progress
+
+---
+
 ## [2026-03-08] — Phase 1 Compliance & Cleanup
 
 ### 🧹 Removed Out-of-Scope Features
