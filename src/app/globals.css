@@ -108,9 +108,97 @@
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
-    font-weight: 600;
+    font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.02em;
     color: var(--foreground);
   }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+  .font-sans {
+    font-family: var(--font-sans);
+  }
+}
+
+/* Fitosys Hero Component Styles */
+.fitosys-hero {
+  position: relative;
+  height: 300vh;              /* 3 scroll sections */
+  background: #0A0A0A;
+}
+
+.fitosys-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 0;
+}
+
+.fitosys-hero-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  text-align: center;
+  max-width: 900px;
+  width: 90%;
+}
+
+.fitosys-side-menu {
+  position: fixed;
+  left: 32px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.fitosys-menu-icon span {
+  display: block;
+  width: 20px;
+  height: 1px;
+  background: #FFFFFF;
+  margin: 4px 0;
+}
+
+.fitosys-scroll-progress {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  text-align: center;
+  min-width: 120px;
+}
+
+.fitosys-progress-track {
+  width: 120px;
+  height: 2px;
+  background: #1A1A1A;
+}
+
+.fitosys-scroll-sections {
+  position: relative;
+  margin-top: 100vh;          /* below the fixed hero content */
+  z-index: 5;
+}
+
+.fitosys-content-section {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0 10%;
 }
