@@ -4,6 +4,55 @@ All notable changes to the Fitosys landing page and application are documented h
 
 ---
 
+## [2026-03-08] — Check-in Auth Fix & Dashboard API Services
+
+### ✅ Security Improvement - Check-in Page
+
+**File:** `src/app/dashboard/checkin/page.tsx`
+
+- Replaced hardcoded fallback UUID (`00000000-0000-0000-0000-000000000000`) with proper authenticated coach ID retrieval
+- Added `getCurrentCoachIdClient()` import from api-services
+- Added proper error handling with try-catch block
+- Added login redirect for unauthenticated users
+- Added loading state ("Processing...") during coach ID fetch
+- Fixed button disabled state during fetch
+
+### 🔧 API Services Enhancement
+
+**File:** `src/lib/api-services.ts`
+
+Added new functions for dashboard metrics:
+
+- `getCurrentCoachIdClient()` — Client-side version for client components using browser Supabase client
+- `getCoachProfile(coachId)` — Fetch coach profile from database
+- `getRenewalsWithDetails(coachId)` — Get renewals due in next 7 days with client/program details
+- `getRevenueThisMonth(coachId)` — Get revenue for current month with fallback to enrollment data
+- `getRenewalsDueCount(coachId)` — Get count of renewals due in next 7 days
+- `getMRR(coachId)` — Calculate monthly recurring revenue from active enrollments
+
+Updated `getCurrentCoachId()` to properly authenticate via Supabase instead of returning hardcoded UUID.
+
+### 🐛 Hydration Error Fixes Applied
+
+**File:** `src/app/demo/page.tsx:250`
+
+✅ **Fixed:** Added `useEffect` mounted state pattern to prevent server/client date mismatch:
+
+```tsx
+const [mounted, setMounted] = useState(false);
+
+useEffect(() => {
+    setMounted(true);
+}, []);
+
+// In JSX:
+{mounted ? `Week of ${new Date().toLocaleDateString(...)}` : 'Loading...'}
+```
+
+This ensures the date is only rendered on the client side after hydration completes.
+
+---
+
 ## [2026-03-08] — Vercel Deployment & WhatsApp Service Fixes
 
 ### 🐛 Critical Build Fixes

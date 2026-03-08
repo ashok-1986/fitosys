@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Brain, ArrowRight, Loader2, Plus, Sparkles, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ interface DemoClient {
 }
 
 export default function AIDemoPage() {
+    const [mounted, setMounted] = useState(false);
     const [coachName, setCoachName] = useState("Priya");
     const [clients, setClients] = useState<DemoClient[]>([
         { id: 1, name: "Rohan", energy: 6, sessions: 3 },
@@ -24,6 +25,10 @@ export default function AIDemoPage() {
     ]);
     const [generating, setGenerating] = useState(false);
     const [summary, setSummary] = useState<string | null>(null);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const addClient = () => {
         if (clients.length >= 5) return;
@@ -247,7 +252,9 @@ export default function AIDemoPage() {
                                     <div className="h-2.5 w-2.5 rounded-full bg-success animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
                                     <div>
                                         <h3 className="font-bold text-white text-sm">Your Monday Coaching Pulse</h3>
-                                        <p className="text-[#A0A0A0] text-[11px]">Week of {new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                                        <p className="text-[#A0A0A0] text-[11px]">
+                                            {mounted ? `Week of ${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}` : 'Loading...'}
+                                        </p>
                                     </div>
                                 </div>
                                 <CardContent className="p-0 bg-[#0A0A0A]">
