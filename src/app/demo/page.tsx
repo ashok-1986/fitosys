@@ -251,19 +251,19 @@ export default function AIDemoPage() {
                                 <div className="bg-[#111111] border-b border-[#222222] px-6 py-4 flex items-center gap-3">
                                     <div className="h-2.5 w-2.5 rounded-full bg-success animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
                                     <div>
-                                        <h3 className="font-bold text-white text-sm">Your Monday Coaching Pulse</h3>
+                                        <h3 className="font-bold text-white text-sm font-playfair">Your Monday Coaching Pulse</h3>
                                         <p className="text-[#A0A0A0] text-[11px]">
                                             {mounted ? `Week of ${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}` : 'Loading...'}
                                         </p>
                                     </div>
                                 </div>
                                 <CardContent className="p-0 bg-[#0A0A0A]">
-                                    <div className="p-6 text-[#E0E0E0] text-[15px] leading-relaxed whitespace-pre-wrap font-sans">
+                                    <div className="p-6 text-[#E0E0E0] text-[15px] leading-relaxed whitespace-pre-wrap font-playfair">
                                         {summary}
                                         {generating && <span className="ml-1 inline-block w-2.5 h-4 bg-brand animate-pulse align-middle" />}
                                     </div>
                                     <div className="bg-[#111111] border-t border-[#222222] p-6 text-center">
-                                        <p className="text-[#A0A0A0] text-sm mb-4">
+                                        <p className="text-[#A0A0A0] text-sm mb-4 font-playfair">
                                             This is what lands in your WhatsApp every Monday at 7 AM — automatically.
                                         </p>
                                         <Link href="/signup">

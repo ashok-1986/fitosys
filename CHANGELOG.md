@@ -4,6 +4,32 @@ All notable changes to the Fitosys landing page and application are documented h
 
 ---
 
+## [2026-03-08] — Playfair Display Font & Technical Requirements Compliance
+
+### 🎨 Typography Updates
+
+**File:** `src/app/layout.tsx`
+
+- Added Playfair Display font via Google Fonts for use in demo page right-hand side
+- Added font variable `--font-playfair`
+- Added `.font-playfair` utility class in `src/app/globals.css`
+
+**File:** `src/app/demo/page.tsx`
+
+- Applied Playfair Display font to the "Monday Coaching Pulse" result card on the right side
+- Headline, body text, and footer now use Playfair Display
+
+### 🔧 Technical Requirements Compliance (TR-35)
+
+**File:** `src/app/layout.tsx`
+
+- Added JSON-LD Structured Data (SoftwareApplication schema)
+- Added meta keywords for India-specific targeting
+- Added OpenGraph and Twitter Card meta tags
+- Added canonical URL
+
+---
+
 ## [2026-03-08] — Check-in Auth Fix & Dashboard API Services
 
 ### ✅ Security Improvement - Check-in Page

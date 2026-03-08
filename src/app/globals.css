@@ -122,6 +122,9 @@
   .font-sans {
     font-family: var(--font-sans);
   }
+  .font-playfair {
+    font-family: var(--font-playfair);
+  }
 }
 
 /* Fitosys Hero Component Styles */
