@@ -62,15 +62,17 @@ export async function POST(req: Request) {
                         const program = enrollment.programs as unknown as { name: string };
                         
                         try {
-                            const { sendWhatsAppTemplate } = await import("@/lib/whatsapp");
+                            const { sendClientWelcome } = await import("@/lib/whatsapp");
                             const startDateFormatted = new Date(enrollment.start_date || Date.now()).toLocaleDateString("en-IN", {
                                 day: "numeric", month: "short", year: "numeric"
                             });
 
-                            await sendWhatsAppTemplate(
+                            await sendClientWelcome(
                                 client.whatsapp_number,
-                                "fitosys_client_welcome",
-                                [coach.full_name, client.full_name.split(" ")[0], program.name, startDateFormatted]
+                                coach.full_name,
+                                client.full_name.split(" ")[0],
+                                program.name,
+                                startDateFormatted
                             );
                             console.log(`[Razorpay Webhook] Sent welcome message to ${client.full_name}`);
                         } catch (err) {
