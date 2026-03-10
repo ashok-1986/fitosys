@@ -273,7 +273,7 @@ export async function sendCoachWeeklySummary(
 // notification.
 // ---------------------------------------------------------------------------
 
-export async function sendNewClientNotification(
+export async function sendCoachNewClientNotification(
   coachPhone: string,
   coachName: string,
   clientName: string

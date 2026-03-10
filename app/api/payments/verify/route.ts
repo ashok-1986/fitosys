@@ -237,8 +237,10 @@ export async function POST(req: NextRequest) {
             await Promise.allSettled([
                 sendClientWelcome(
                     clientData.whatsapp_number,
+                    coach?.full_name || "Your Coach",
                     clientData.full_name.split(" ")[0],
-                    coach?.full_name || "Your Coach"
+                    program?.name || "Fitness Program",
+                    startDate
                 ),
                 coach?.whatsapp_number
                     ? sendCoachNewClientNotification(
