@@ -1,0 +1,37 @@
+# Fitosys Roadmap: Phase 5 & Beyond
+
+With the branding and API migrations complete, our next focus is on activating the full core value proposition and ensuring production stability.
+
+## Phase 5: Automated Workflows & Dashboard
+
+### 1. WhatsApp Template Verification (3 Approved, 3 Remaining)
+- [x] **Approved**: `weekly_checkin`, `client_welcome`, `renewal_reminder` (Assumed)
+- [ ] **Pending Approval**: 
+    - `coach_weekly_summary` (High Priority for Qwen 3)
+    - `new_client_notification`
+    - `second_renewal_reminder`
+- [x] **Mapping**: Verified parameter order in `lib/whatsapp.ts`.
+- [x] **Content Guide**: Created [whatsapp_templates.md](file:///C:/Users/Alchemetryx/.gemini/antigravity/brain/fbd2524c-f92a-4a4e-b1bd-7251ed26db76/whatsapp_templates.md).
+
+### 2. Full Coach Dashboard
+- [ ] **Home Page**: Build the landing dashboard with real-time metrics (MRR, Total Revenue, Active Client count).
+- [ ] **Client List**: Implement a searchable/filterable client table with "Risk Level" indicators.
+- [ ] **Detail View**: Create individual client pages showing weight progress charts and check-in history.
+
+### 3. Automated Check-in Loop
+- [ ] **Scheduling**: Verify Vercel Cron jobs trigger at the correct IST times.
+- [ ] **AI Summary**: Test the end-to-end flow:
+    - Client replies on WhatsApp.
+    - Meta webhook triggers `app/api/webhooks/whatsapp`.
+    - Data is stored in `checkins`.
+    - Monday Cron triggers `generateWeeklySummary` via Qwen 3.
+    - Coach receives the summary on WhatsApp.
+
+### 4. Revenue Lifecycle
+- [ ] **Razorpay Checkout**: Finalize the public-facing checkout flow.
+- [ ] **Auto-Enrollment**: Implement a webhook to automatically create `enrollment` and `payment` records upon successful Razorpay payment.
+
+## Long-term Vision
+- [ ] **Multi-Coach Tiers**: Enable agency features for "Studio" plans.
+- [ ] **Custom Domains**: Allow coaches to map their own domains for intake forms.
+- [ ] **Mobile App**: PWA or native app for coaches to manage clients on the go.

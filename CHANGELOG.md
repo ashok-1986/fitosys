@@ -4,6 +4,54 @@ All notable changes to the Fitosys landing page and application are documented h
 
 ---
 
+## [2026-03-10] — Finalized WhatsApp & Automation Loop
+
+### 🔌 WhatsApp Service (Meta Direct)
+- **Direct Meta Integration**: Moved from Interakt/AiSensy to a direct Meta Cloud API implementation in `lib/whatsapp/templates.ts`.
+- **Template Alignment**: Fully synced the codebase with 6 Meta-approved templates:
+    - `fitosys_weekly_checkin`
+    - `fitosys_client_welcome`
+    - `fitosys_renewal_reminder`
+    - `fitosys_second_renewal_reminder`
+    - `fitosys_coach_weekly_summary` (AI summary delivery)
+    - `fitosys_new_client_notification`
+- **Parameter Mapping**: Updated `sendRenewalReminder` and `sendClientWelcome` to support multi-parameter bodies (e.g., energy scores, sessions count, program details).
+
+### 🤖 Automation & Cron Jobs
+- **Check-ins**: Refactored `app/api/cron/checkins/route.ts` to use the new template function and E.164 phone normalization.
+- **AI Summaries**: Refactored `app/api/cron/summaries/route.ts` to include the `weekDate` parameter for the coach summary.
+- **Renewals**: Refactored `app/api/cron/renewals/route.ts` to handle both first and second reminders with correct parameter lists and numeric casting.
+
+### ⚙️ Environment & Deployment
+- **Vercel**: Configured `WHATSAPP_PHONE_NUMBER_ID` (838337922704261) and `WHATSAPP_ACCESS_TOKEN` for production.
+- **API Versioning**: Standardized on Meta Graph API **v19.0**.
+
+---
+
+## [2026-03-09] — Branding Polish & API Migration (Meta / Qwen 3)
+
+### 🎨 Branding & UI Polish
+- **Logo Upgrade**: Replaced text-based logo with `logov2.png` (resizing to 100px height for premium feel).
+- **Navigation**: Made the header completely transparent (0% opacity) both before and after scroll, removing borders and background blurs.
+- **CTA Banner**: Replaced the minimal red banner with a rich 2-column layout (Headline + Stats vs. Button block).
+- **Animations**: Implemented GSAP staggered reveal for all CTA elements and fixed layout shifts using Flexbox.
+
+### 🔌 API Migrations & Service Updates
+- **Meta WhatsApp Cloud API**: Migrated from AiSensy to direct Meta integration in `lib/whatsapp.ts`.
+- **WhatsApp Webhooks**: Updated `app/api/webhooks/whatsapp/route.ts` to handle Meta's `hub.challenge` verification and nested `entry.changes` message payloads.
+- **AI Model Upgrade**: Switched OpenRouter model from Qwen 2.5 to **Qwen 3 (32b)** for better summary generation.
+- **Production URL**: Standardized `NEXT_PUBLIC_APP_URL` to `https://fitosys.alchemetryx.com`.
+
+### 📧 Content Updates
+- **Email Migration**: Updated all contact and support email references to **`fitosys@alchemetryx.com`**.
+- **Contact Section**: Removed redundant website links from the "Get Started" channels.
+
+### 🚀 Deployment
+- **Vercel Production**: Successfully deployed the site to [https://fitosys.alchemetryx.com](https://fitosys.alchemetryx.com).
+- **Environment Variables**: Updated `.env.example` and Vercel dashboard with Meta Cloud API and Qwen 3 credentials.
+
+---
+
 ## [2026-03-08] — Playfair Display Font & Technical Requirements Compliance
 
 ### 🎨 Typography Updates

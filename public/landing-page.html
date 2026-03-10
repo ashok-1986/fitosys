@@ -1,0 +1,2027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitosys — The System Behind The Result | Built for Indian Coaches</title>
+    <meta name="description" content="Stop losing clients to missed follow-ups. Fitosys automates client onboarding, weekly check-ins, and renewal reminders — natively on WhatsApp.">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Urbanist:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.14.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.14.2/ScrollTrigger.min.js"></script>
+    
+    <style>
+        /* ========================================
+           CSS VARIABLES & RESET
+        ======================================== */
+        :root {
+            --red: #F20000;
+            --black: #0A0A0A;
+            --surface: #111111;
+            --card: #141414;
+            --border: #222222;
+            --white: #FFFFFF;
+            --grey: #A0A0A0;
+            --dim: #555555;
+            --wa: #25D366;
+            
+            --font-display: 'Barlow Condensed', sans-serif;
+            --font-serif: 'Playfair Display', serif;
+            --font-body: 'Urbanist', sans-serif;
+            
+            --max: 1280px;
+            --gutter: clamp(24px, 5vw, 80px);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            background-color: var(--black);
+            color: var(--white);
+            font-family: var(--font-body);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* ========================================
+           TYPOGRAPHY
+        ======================================== */
+        .display-text {
+            font-family: var(--font-display);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            line-height: 1.05;
+        }
+        
+        .body-text {
+            font-family: var(--font-body);
+            line-height: 1.7;
+        }
+        
+        .serif-italic {
+            font-family: var(--font-serif);
+            font-style: italic;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 500;
+        }
+        
+        p {
+            font-weight: 400;
+        }
+        
+        /* ========================================
+           NAVIGATION
+        ======================================== */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .nav.scrolled {
+            background: rgba(10, 10, 10, 0.92);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .nav-container {
+            max-width: var(--max);
+            margin: 0 auto;
+            padding: 0 var(--gutter);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--white);
+            text-decoration: none;
+        }
+        
+        .logo-mark {
+            width: 24px;
+            height: 24px;
+            background: var(--red);
+            clip-path: polygon(0 0, 100% 0, 80% 100%, 0% 100%);
+        }
+        
+        .logo-sys {
+            color: var(--red);
+        }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+        
+        .nav-link {
+            font-family: var(--font-body);
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--white);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--grey);
+        }
+        
+        .nav-cta {
+            background: var(--red);
+            color: var(--white);
+            padding: 12px 24px;
+            font-family: var(--font-body);
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(242, 0, 0, 0.3);
+        }
+        
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 8px;
+        }
+        
+        .hamburger span {
+            width: 24px;
+            height: 2px;
+            background: var(--white);
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu {
+            position: fixed;
+            inset: 0;
+            background: var(--black);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .mobile-menu.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .mobile-menu-links {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 32px;
+        }
+        
+        .mobile-menu-link {
+            font-family: var(--font-display);
+            font-size: 48px;
+            font-weight: 500;
+            text-transform: uppercase;
+            color: var(--white);
+            text-decoration: none;
+        }
+        
+        /* ========================================
+           HERO SECTION
+        ======================================== */
+        .hero {
+            min-height: 100vh;
+            padding: 140px var(--gutter) var(--gutter);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-grid {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(242, 0, 0, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(242, 0, 0, 0.04) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(circle at center, black 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .hero-glow {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(242, 0, 0, 0.12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .hero-container {
+            max-width: var(--max);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: var(--font-body);
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--grey);
+            margin-bottom: 24px;
+        }
+        
+        .hero-eyebrow::before {
+            content: '';
+            width: 24px;
+            height: 2px;
+            background: var(--red);
+        }
+        
+        .hero-title {
+            font-size: clamp(52px, 8vw, 96px);
+            margin-bottom: 24px;
+        }
+        
+        .hero-title-line {
+            display: block;
+        }
+        
+        .hero-title-solid {
+            color: var(--white);
+        }
+        
+        .hero-title-outline {
+            color: transparent;
+            -webkit-text-stroke: 2px var(--white);
+        }
+        
+        .hero-title-red {
+            color: var(--red);
+        }
+        
+        .hero-subtitle {
+            font-size: 18px;
+            color: var(--grey);
+            max-width: 480px;
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+        
+        .hero-ctas {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 48px;
+        }
+        
+        .btn {
+            padding: 16px 32px;
+            font-family: var(--font-body);
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: var(--red);
+            color: var(--white);
+            border: 2px solid var(--red);
+        }
+        
+        .btn-primary:hover {
+            background: transparent;
+            color: var(--red);
+        }
+        
+        .btn-ghost {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid var(--border);
+        }
+        
+        .btn-ghost:hover {
+            border-color: var(--white);
+        }
+        
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+        }
+        
+        .hero-stat-number {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 500;
+            color: var(--white);
+            margin-bottom: 4px;
+        }
+        
+        .hero-stat-label {
+            font-family: var(--font-body);
+            font-size: 14px;
+            color: var(--grey);
+        }
+        
+        /* ========================================
+           PHONE MOCKUP & TABS
+        ======================================== */
+        .hero-phone-wrapper {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .phone-tab-switcher {
+            display: flex;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 4px;
+            margin-bottom: 24px;
+            gap: 4px;
+        }
+        
+        .phone-tab {
+            padding: 8px 16px;
+            font-family: var(--font-body);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--grey);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .phone-tab.active[data-tab="whatsapp"] {
+            background: var(--wa);
+            color: var(--black);
+        }
+        
+        .phone-tab.active[data-tab="dashboard"] {
+            background: var(--red);
+            color: var(--white);
+        }
+        
+        .phone-frame {
+            width: 290px;
+            height: 580px;
+            background: #1A1A1A;
+            border-radius: 38px;
+            padding: 12px;
+            box-shadow: 
+                0 0 0 2px var(--border),
+                0 20px 60px rgba(0, 0, 0, 0.6),
+                0 0 100px rgba(242, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: var(--black);
+            border-radius: 26px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .phone-view {
+            position: absolute;
+            inset: 0;
+            transition: all 0.4s ease;
+        }
+        
+        .phone-view.whatsapp {
+            background: #075E54;
+        }
+        
+        .phone-view.dashboard {
+            background: var(--black);
+            opacity: 0;
+            transform: translateX(100%);
+        }
+        
+        .phone-view.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        /* WhatsApp View */
+        .whatsapp-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: #075E54;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .whatsapp-avatar {
+            width: 32px;
+            height: 32px;
+            background: var(--red);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--white);
+        }
+        
+        .whatsapp-info {
+            flex: 1;
+        }
+        
+        .whatsapp-name {
+            font-family: var(--font-body);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--white);
+        }
+        
+        .whatsapp-status {
+            font-family: var(--font-body);
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .whatsapp-badge {
+            background: var(--red);
+            color: var(--white);
+            font-family: var(--font-body);
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        
+        .whatsapp-chat {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .whatsapp-bubble {
+            max-width: 85%;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-family: var(--font-body);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        
+        .whatsapp-bubble.bot {
+            background: #34B7F1;
+            color: var(--black);
+            border-left: 3px solid var(--red);
+            align-self: flex-start;
+        }
+        
+        .whatsapp-bubble.client {
+            background: #25D366;
+            color: var(--black);
+            align-self: flex-end;
+        }
+        
+        /* Dashboard View */
+        .dashboard-header {
+            padding: 20px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .dashboard-title {
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--white);
+            margin-bottom: 4px;
+        }
+        
+        .dashboard-subtitle {
+            font-family: var(--font-body);
+            font-size: 12px;
+            color: var(--grey);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .live-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--wa);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .dashboard-content {
+            padding: 16px;
+        }
+        
+        .dashboard-stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .dashboard-stat-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+        
+        .dashboard-stat-number {
+            font-family: var(--font-display);
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .dashboard-stat-number.green { color: var(--wa); }
+        .dashboard-stat-number.amber { color: #FFB800; }
+        .dashboard-stat-number.red { color: var(--red); }
+        
+        .dashboard-stat-label {
+            font-family: var(--font-body);
+            font-size: 10px;
+            color: var(--grey);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .dashboard-chart {
+            margin-bottom: 20px;
+        }
+        
+        .dashboard-chart-title {
+            font-family: var(--font-body);
+            font-size: 12px;
+            color: var(--grey);
+            margin-bottom: 12px;
+        }
+        
+        .dashboard-chart-bars {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 4px;
+            height: 80px;
+        }
+        
+        .dashboard-bar {
+            flex: 1;
+            background: var(--red);
+            border-radius: 2px;
+            transition: height 0.6s ease;
+        }
+        
+        .dashboard-bar.green { background: var(--wa); }
+        .dashboard-bar.amber { background: #FFB800; }
+        
+        .dashboard-timeline {
+            margin-bottom: 20px;
+        }
+        
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .timeline-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        .timeline-dot.green { background: var(--wa); }
+        .timeline-dot.amber { background: #FFB800; }
+        .timeline-dot.red { background: var(--red); }
+        
+        .timeline-text {
+            font-family: var(--font-body);
+            font-size: 12px;
+            color: var(--white);
+        }
+        
+        .dashboard-clients {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .client-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+        
+        .client-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--white);
+        }
+        
+        .client-info {
+            flex: 1;
+        }
+        
+        .client-name {
+            font-family: var(--font-body);
+            font-size: 12px;
+            color: var(--white);
+            margin-bottom: 2px;
+        }
+        
+        .client-status {
+            font-family: var(--font-body);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        
+        .client-status.at-risk { background: rgba(242, 0, 0, 0.2); color: var(--red); }
+        .client-status.strong { background: rgba(37, 211, 102, 0.2); color: var(--wa); }
+        .client-status.renewal { background: rgba(255, 184, 0, 0.2); color: #FFB800; }
+        
+        /* Floating Stat Cards */
+        .floating-card {
+            position: absolute;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            width: 220px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            z-index: 10;
+        }
+        
+        .floating-card-1 {
+            top: 80px;
+            right: -40px;
+        }
+        
+        .floating-card-2 {
+            bottom: 120px;
+            left: -40px;
+        }
+        
+        .floating-card-title {
+            font-family: var(--font-body);
+            font-size: 11px;
+            color: var(--grey);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+        
+        .floating-card-value {
+            font-family: var(--font-display);
+            font-size: 28px;
+            font-weight: 500;
+            color: var(--white);
+            margin-bottom: 8px;
+        }
+        
+        .floating-card-desc {
+            font-family: var(--font-body);
+            font-size: 11px;
+            color: var(--grey);
+            margin-bottom: 8px;
+        }
+        
+        .floating-card-bar {
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .floating-card-bar-fill {
+            height: 100%;
+            background: var(--red);
+            width: 73%;
+        }
+        
+        /* ========================================
+           RESPONSIVE
+        ======================================== */
+        @media (max-width: 1024px) {
+            .hero-container {
+                grid-template-columns: 1fr;
+                gap: 60px;
+            }
+            
+            .hero-phone-wrapper {
+                display: none;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .hamburger {
+                display: flex;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero-stats {
+                flex-direction: column;
+                gap: 24px;
+            }
+            
+            .hero-ctas {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav" id="nav">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <div class="logo-mark"></div>
+                FITO<span class="logo-sys">SYS</span>
+            </a>
+            <div class="nav-links">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#how-it-works" class="nav-link">How It Works</a>
+                <a href="#pricing" class="nav-link">Pricing</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#" class="nav-cta">Get Started</a>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-links">
+            <a href="#features" class="mobile-menu-link" onclick="closeMobileMenu()">Features</a>
+            <a href="#how-it-works" class="mobile-menu-link" onclick="closeMobileMenu()">How It Works</a>
+            <a href="#pricing" class="mobile-menu-link" onclick="closeMobileMenu()">Pricing</a>
+            <a href="#about" class="mobile-menu-link" onclick="closeMobileMenu()">About</a>
+            <a href="#" class="mobile-menu-link" onclick="closeMobileMenu()">Get Started</a>
+        </div>
+    </div>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-grid"></div>
+        <div class="hero-glow"></div>
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-eyebrow">Built for Indian Coaches — Runs on WhatsApp</div>
+                <h1 class="hero-title display-text">
+                    <span class="hero-title-line hero-title-solid">THE SYSTEM</span>
+                    <span class="hero-title-line hero-title-outline">BEHIND</span>
+                    <span class="hero-title-line hero-title-red">THE RESULT.</span>
+                </h1>
+                <p class="hero-subtitle body-text">
+                    Stop losing clients to missed follow-ups. Fitosys automates client onboarding, 
+                    weekly check-ins, and renewal reminders — natively on WhatsApp. 30 minutes to 
+                    set up. Runs automatically after that.
+                </p>
+                <div class="hero-ctas">
+                    <a href="#" class="btn btn-primary">Start Free Trial</a>
+                    <a href="#how-it-works" class="btn btn-ghost">See How It Works</a>
+                </div>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <div class="hero-stat-number">2–3 hrs</div>
+                        <div class="hero-stat-label">saved per week</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-number">₹72K+</div>
+                        <div class="hero-stat-label">avg annual revenue recovered</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-number">30 min</div>
+                        <div class="hero-stat-label">setup</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hero-phone-wrapper">
+                <div class="phone-tab-switcher">
+                    <div class="phone-tab active" data-tab="whatsapp" onclick="switchTab('whatsapp')">Client View</div>
+                    <div class="phone-tab" data-tab="dashboard" onclick="switchTab('dashboard')">Dashboard</div>
+                </div>
+                
+                <div class="phone-frame">
+                    <div class="phone-screen">
+                        <!-- WhatsApp View -->
+                        <div class="phone-view whatsapp active" id="view-whatsapp">
+                            <div class="whatsapp-header">
+                                <div class="whatsapp-avatar">F</div>
+                                <div class="whatsapp-info">
+                                    <div class="whatsapp-name">Fitosys Bot</div>
+                                    <div class="whatsapp-status">for Coach Priya · automated</div>
+                                </div>
+                                <div class="whatsapp-badge">AUTO</div>
+                            </div>
+                            <div class="whatsapp-chat">
+                                <div class="whatsapp-bubble bot">
+                                    Hi! Time for your weekly check-in 💪<br><br>
+                                    1. Energy level (1-10)?<br>
+                                    2. Sessions completed?<br>
+                                    3. Any wins or challenges?
+                                </div>
+                                <div class="whatsapp-bubble client">
+                                    Energy 8/10! Completed 4 sessions this week. 
+                                    Also ran 5km yesterday 🏃‍♂️
+                                </div>
+                                <div class="whatsapp-bubble bot">
+                                    Amazing progress! 🎉 Your coach will review 
+                                    this on Wednesday. Keep crushing it!
+                                </div>
+                                <div class="whatsapp-bubble client">
+                                    Thank you! This system is so convenient 😊
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Dashboard View -->
+                        <div class="phone-view dashboard" id="view-dashboard">
+                            <div class="dashboard-header">
+                                <div class="dashboard-title display-text">FITOSYS</div>
+                                <div class="dashboard-subtitle">
+                                    Coach Priya · Week 12
+                                    <div class="live-dot"></div>
+                                </div>
+                            </div>
+                            <div class="dashboard-content">
+                                <div class="dashboard-stats-row">
+                                    <div class="dashboard-stat-card">
+                                        <div class="dashboard-stat-number green">28</div>
+                                        <div class="dashboard-stat-label">Active Clients</div>
+                                    </div>
+                                    <div class="dashboard-stat-card">
+                                        <div class="dashboard-stat-number amber">73%</div>
+                                        <div class="dashboard-stat-label">Check-in Rate</div>
+                                    </div>
+                                    <div class="dashboard-stat-card">
+                                        <div class="dashboard-stat-number red">3</div>
+                                        <div class="dashboard-stat-label">Renewals Due</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="dashboard-chart">
+                                    <div class="dashboard-chart-title">Weekly Activity</div>
+                                    <div class="dashboard-chart-bars">
+                                        <div class="dashboard-bar green" style="height: 80%"></div>
+                                        <div class="dashboard-bar green" style="height: 65%"></div>
+                                        <div class="dashboard-bar amber" style="height: 45%"></div>
+                                        <div class="dashboard-bar green" style="height: 70%"></div>
+                                        <div class="dashboard-bar red" style="height: 30%"></div>
+                                        <div class="dashboard-bar amber" style="height: 50%"></div>
+                                        <div class="dashboard-bar green" style="height: 75%"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="dashboard-timeline">
+                                    <div class="timeline-item">
+                                        <div class="timeline-dot green"></div>
+                                        <div class="timeline-text">Check-ins sent · 28 clients</div>
+                                    </div>
+                                    <div class="timeline-item">
+                                        <div class="timeline-dot green"></div>
+                                        <div class="timeline-text">AI Summary delivered</div>
+                                    </div>
+                                    <div class="timeline-item">
+                                        <div class="timeline-dot amber"></div>
+                                        <div class="timeline-text">3 renewals reminder sent</div>
+                                    </div>
+                                    <div class="timeline-item">
+                                        <div class="timeline-dot red"></div>
+                                        <div class="timeline-text">Follow-up 48h pending</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="dashboard-clients">
+                                    <div class="client-item">
+                                        <div class="client-avatar">AM</div>
+                                        <div class="client-info">
+                                            <div class="client-name">Anjali Mehta</div>
+                                            <div class="client-status at-risk">At Risk</div>
+                                        </div>
+                                    </div>
+                                    <div class="client-item">
+                                        <div class="client-avatar" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%)">RS</div>
+                                        <div class="client-info">
+                                            <div class="client-name">Rahul Sharma</div>
+                                            <div class="client-status strong">Strong</div>
+                                        </div>
+                                    </div>
+                                    <div class="client-item">
+                                        <div class="client-avatar" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)">VJ</div>
+                                        <div class="client-info">
+                                            <div class="client-name">Vikram Joshi</div>
+                                            <div class="client-status renewal">Renewal Due</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Floating Cards -->
+                <div class="floating-card floating-card-1">
+                    <div class="floating-card-title">Weekly Response Rate</div>
+                    <div class="floating-card-value">73%</div>
+                    <div class="floating-card-desc">22 of 30 clients checked in</div>
+                    <div class="floating-card-bar">
+                        <div class="floating-card-bar-fill"></div>
+                    </div>
+                </div>
+                
+                <div class="floating-card floating-card-2">
+                    <div class="floating-card-title">Renewal Alert</div>
+                    <div class="floating-card-desc">3 clients expiring in 7 days</div>
+                    <div class="floating-card-desc" style="color: var(--wa)">Reminders sent ✓</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Pain Ticker Section -->
+    <section class="pain-ticker">
+        <div class="ticker-track">
+            <div class="ticker-content">
+                <span class="ticker-item">42% of Indian coaches lose ₹50K+ annually to missed renewals</span>
+                <span class="ticker-dot"></span>
+                <span class="ticker-item">8-12 hours/week spent on non-coaching admin work</span>
+                <span class="ticker-dot"></span>
+                <span class="ticker-item">67% client churn happens due to lack of engagement tracking</span>
+                <span class="ticker-dot"></span>
+                <span class="ticker-item">Sunday evenings: 2-3 hours chasing WhatsApp check-ins</span>
+                <span class="ticker-dot"></span>
+                <span class="ticker-item">Manual payment reminders feel awkward and unprofessional</span>
+                <span class="ticker-dot"></span>
+                <span class="ticker-item">No early warning when clients are about to quit</span>
+                <span class="ticker-dot"></span>
+            </div>
+            <div class="ticker-content">
+                <span class="ticker-item">42% of Indian coaches lose ₹50K+ annually to missed renewals</span>
+                <span class="ticker-dot"></span>
+                <span class="ticker-item">8-12 hours/week spent on non-coaching admin work</span>
+                <span class="ticker-dot"></span>
+                <span class="ticker-item">67% client churn happens due to lack of engagement tracking</span>
+                <span class="ticker-dot"></span>
+                <span class="ticker-item">Sunday evenings: 2-3 hours chasing WhatsApp check-ins</span>
+                <span class="ticker-dot"></span>
+                <span class="ticker-item">Manual payment reminders feel awkward and unprofessional</span>
+                <span class="ticker-dot"></span>
+                <span class="ticker-item">No early warning when clients are about to quit</span>
+                <span class="ticker-dot"></span>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Problem Section -->
+    <section class="problem-section">
+        <div class="container">
+            <div class="problem-grid">
+                <div class="problem-left">
+                    <div class="section-label">THE PROBLEM</div>
+                    <h2 class="problem-title display-text">
+                        <span class="problem-title-line">YOUR COACHING</span>
+                        <span class="problem-title-line problem-title-red">IS EXCELLENT.</span>
+                        <span class="problem-title-line problem-title-outline">YOUR SYSTEM</span>
+                        <span class="problem-title-line">IS BROKEN.</span>
+                    </h2>
+                    <div class="problem-cards">
+                        <div class="problem-card">
+                            <div class="problem-card-number">01</div>
+                            <div class="problem-card-title">REVENUE LEAKAGE</div>
+                            <div class="problem-card-body">Renewals Slipping Through Gaps<br>Programs expire unnoticed. No system. No reminders.</div>
+                            <div class="problem-card-badge">₹72K–₹1.08L lost annually per coach</div>
+                        </div>
+                        <div class="problem-card">
+                            <div class="problem-card-number">02</div>
+                            <div class="problem-card-title">ENGAGEMENT BLIND SPOT</div>
+                            <div class="problem-card-body">No Early Warning for Disengagement<br>Without check-ins, coaches only know clients struggle when they drop out.</div>
+                            <div class="problem-card-badge">10–20% annual churn from retention blindness</div>
+                        </div>
+                        <div class="problem-card">
+                            <div class="problem-card-number">03</div>
+                            <div class="problem-card-title">ADMIN BURNOUT</div>
+                            <div class="problem-card-body">2–4 Hours Per Week on Non-Coaching Work<br>WhatsApp follow-ups. Payment chasing. Manual onboarding.</div>
+                            <div class="problem-card-badge">8–12 hours/week average admin overhead</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="problem-right">
+                    <div class="quote-block">
+                        <div class="quote-mark">"</div>
+                        <blockquote class="serif-italic">
+                            "Every Sunday, I spend 2-3 hours messaging each client individually. 
+                            Most don't reply. By Monday morning, I'm exhausted before the week even starts."
+                        </blockquote>
+                        <div class="quote-author">
+                            <div class="quote-name">Coach Priya</div>
+                            <div class="quote-subtext"><span style="color: var(--red)">2.5 hours recovered per week after Fitosys</span></div>
+                        </div>
+                    </div>
+                    <div class="promise-block">
+                        <div class="promise-text display-text">manage 40 clients with effort of 15</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <div class="features-header">
+                <div class="features-left">
+                    <div class="section-label">FEATURES</div>
+                    <h2 class="features-title display-text">
+                        <span class="features-title-line">THREE THINGS.</span>
+                        <span class="features-title-line features-title-red">ZERO</span>
+                        <span class="features-title-line">MANUAL WORK.</span>
+                    </h2>
+                </div>
+                <div class="features-right">
+                    <p class="features-desc body-text">
+                        Everything you need to automate your coaching business. 
+                        Set it up once. Let it run forever.
+                    </p>
+                </div>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card" data-tilt>
+                    <div class="feature-ghost-number">01</div>
+                    <div class="feature-icon-wrapper">
+                        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <line x1="19" y1="8" x2="19" y2="14"></line>
+                            <line x1="22" y1="11" x2="16" y2="11"></line>
+                        </svg>
+                    </div>
+                    <div class="feature-tag tag-green">WhatsApp</div>
+                    <h3 class="feature-title">Automated Client Onboarding</h3>
+                    <p class="feature-body">Share your link. Clients self-onboard via WhatsApp. Zero manual data entry.</p>
+                    <div class="feature-category">Automation</div>
+                </div>
+                
+                <div class="feature-card" data-tilt>
+                    <div class="feature-ghost-number">02</div>
+                    <div class="feature-icon-wrapper">
+                        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                    </div>
+                    <div class="feature-tag tag-green">WhatsApp</div>
+                    <h3 class="feature-title">Weekly Check-in System</h3>
+                    <p class="feature-body">Automated messages every week. Clients reply in chat. AI captures everything.</p>
+                    <div class="feature-category">Engagement</div>
+                </div>
+                
+                <div class="feature-card" data-tilt>
+                    <div class="feature-ghost-number">03</div>
+                    <div class="feature-icon-wrapper">
+                        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2v20M2 12h20"></path>
+                            <circle cx="12" cy="12" r="10"></circle>
+                        </svg>
+                    </div>
+                    <div class="feature-tag tag-green">WhatsApp</div>
+                    <h3 class="feature-title">Renewal Reminder System</h3>
+                    <p class="feature-body">Smart reminders 7 days before expiry. Payment link included. Close more renewals.</p>
+                    <div class="feature-category">Revenue</div>
+                </div>
+                
+                <div class="feature-card" data-tilt>
+                    <div class="feature-ghost-number">04</div>
+                    <div class="feature-icon-wrapper">
+                        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"></path>
+                            <path d="M12 6v6l4 2"></path>
+                        </svg>
+                    </div>
+                    <div class="feature-tag tag-red">AI Powered</div>
+                    <h3 class="feature-title">AI Monday Summary</h3>
+                    <p class="feature-body">Every Monday: AI-generated insights on client progress, risks, and priorities.</p>
+                    <div class="feature-category">Intelligence</div>
+                </div>
+                
+                <div class="feature-card" data-tilt>
+                    <div class="feature-ghost-number">05</div>
+                    <div class="feature-icon-wrapper">
+                        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                    </div>
+                    <div class="feature-tag tag-red">Compliance Built-in</div>
+                    <h3 class="feature-title">GST Invoice Generation</h3>
+                    <p class="feature-body">Auto-generate compliant invoices. Send to clients. Download anytime.</p>
+                    <div class="feature-category">Compliance</div>
+                </div>
+                
+                <div class="feature-card" data-tilt>
+                    <div class="feature-ghost-number">06</div>
+                    <div class="feature-icon-wrapper">
+                        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="20" x2="18" y2="10"></line>
+                            <line x1="12" y1="20" x2="12" y2="4"></line>
+                            <line x1="6" y1="20" x2="6" y2="14"></line>
+                        </svg>
+                    </div>
+                    <div class="feature-tag tag-red">Real-time Data</div>
+                    <h3 class="feature-title">Coach Dashboard</h3>
+                    <p class="feature-body">Live metrics on check-in rates, revenue, at-risk clients. All in one view.</p>
+                    <div class="feature-category">Analytics</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- How It Works Section -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <div class="section-label">HOW IT WORKS</div>
+            <h2 class="hiw-title display-text">FROM SIGNUP TO<br/>AUTOMATION IN 30 MINUTES</h2>
+            <div class="hiw-grid">
+                <div class="hiw-step">
+                    <div class="hiw-ghost-number">01</div>
+                    <div class="hiw-number-badge">1</div>
+                    <h3 class="hiw-step-title">Sign Up & Create Profile</h3>
+                    <p class="hiw-step-body">Set your coaching type, availability, and preferences. Customize your intake form.</p>
+                    <div class="hiw-time">
+                        <svg class="hiw-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        <span>5 min</span>
+                    </div>
+                    <div class="hiw-arrow"></div>
+                </div>
+                
+                <div class="hiw-step">
+                    <div class="hiw-ghost-number">02</div>
+                    <div class="hiw-number-badge">2</div>
+                    <h3 class="hiw-step-title">Create Your First Program</h3>
+                    <p class="hiw-step-body">Define duration, pricing, and what's included. Set your check-in schedule.</p>
+                    <div class="hiw-time">
+                        <svg class="hiw-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        <span>8 min</span>
+                    </div>
+                    <div class="hiw-arrow"></div>
+                </div>
+                
+                <div class="hiw-step">
+                    <div class="hiw-ghost-number">03</div>
+                    <div class="hiw-number-badge">3</div>
+                    <h3 class="hiw-step-title">Share Your Onboarding Link</h3>
+                    <p class="hiw-step-body">Share via WhatsApp, Instagram, email. Clients click and onboard themselves.</p>
+                    <div class="hiw-time">
+                        <svg class="hiw-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        <span>15 min to first client</span>
+                    </div>
+                    <div class="hiw-arrow"></div>
+                </div>
+                
+                <div class="hiw-step">
+                    <div class="hiw-ghost-number">04</div>
+                    <div class="hiw-number-badge">4</div>
+                    <h3 class="hiw-step-title">Fitosys Runs the Rest</h3>
+                    <p class="hiw-step-body">Check-ins sent automatically. Renewals tracked. AI summaries delivered. You just coach.</p>
+                    <div class="hiw-time">
+                        <svg class="hiw-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                        <span>runs forever</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- WhatsApp Showcase Section -->
+    <section class="whatsapp-showcase">
+        <div class="container">
+            <div class="wa-grid">
+                <div class="wa-left">
+                    <div class="section-label">WHATSAPP FIRST</div>
+                    <h2 class="wa-title display-text">
+                        <span class="wa-title-line">YOUR CLIENTS</span>
+                        <span class="wa-title-line wa-title-outline">NEVER</span>
+                        <span class="wa-title-line wa-title-red">NEED AN</span>
+                        <span class="wa-title-line wa-title-red">APP.</span>
+                    </h2>
+                    <div class="wa-features">
+                        <div class="wa-feature-item">
+                            <div class="wa-feature-icon">💬</div>
+                            <div class="wa-feature-content">
+                                <h4>Check-ins via WhatsApp</h4>
+                                <p>Clients respond in-chat. No app download. No login. No friction.</p>
+                            </div>
+                        </div>
+                        <div class="wa-feature-item">
+                            <div class="wa-feature-icon">🤖</div>
+                            <div class="wa-feature-content">
+                                <h4>AI-Powered Responses</h4>
+                                <p>Fitosys Bot congratulates, motivates, and flags concerns automatically.</p>
+                            </div>
+                        </div>
+                        <div class="wa-feature-item">
+                            <div class="wa-feature-icon">📊</div>
+                            <div class="wa-feature-content">
+                                <h4>Dashboard Sync</h4>
+                                <p>All responses auto-populate your coach dashboard with insights.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#" class="btn btn-primary">See It In Action →</a>
+                </div>
+                
+                <div class="wa-right">
+                    <div class="wa-phone-mockup">
+                        <div class="wa-notch"></div>
+                        <div class="wa-screen">
+                            <div class="wa-chat-header">
+                                <div class="wa-chat-avatar">F</div>
+                                <div class="wa-chat-info">
+                                    <div class="wa-chat-name">Fitosys Bot</div>
+                                    <div class="wa-chat-status">for Coach Priya · automated</div>
+                                </div>
+                                <div class="wa-chat-badge">AUTO</div>
+                            </div>
+                            
+                            <div class="wa-chat-body">
+                                <div class="wa-bubble bot">
+                                    <div class="wa-bubble-text">Hi Anjali! 👋 Weekly check-in from Fitosys:</div>
+                                    <div class="wa-bubble-text">How would you rate your energy levels this week? (1-10)</div>
+                                    <div class="wa-bubble-time">9:00 AM</div>
+                                </div>
+                                
+                                <div class="wa-bubble client">
+                                    <div class="wa-bubble-text">8/10! 💪 Much better than last week</div>
+                                    <div class="wa-bubble-time">9:15 AM</div>
+                                </div>
+                                
+                                <div class="wa-bubble bot">
+                                    <div class="wa-bubble-text">That's fantastic! 🎉 What's one win you had this week?</div>
+                                    <div class="wa-bubble-time">9:16 AM</div>
+                                </div>
+                                
+                                <div class="wa-bubble client">
+                                    <div class="wa-bubble-text">Completed all 4 workouts + ran 5km on Sunday!</div>
+                                    <div class="wa-bubble-time">9:18 AM</div>
+                                </div>
+                                
+                                <div class="wa-bubble bot">
+                                    <div class="wa-bubble-text">Amazing progress! 🔥 Your consistency is paying off. Keep it up!</div>
+                                    <div class="wa-bubble-time">9:19 AM</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- AI Section -->
+    <section class="ai-section">
+        <div class="container">
+            <div class="ai-grid">
+                <div class="ai-left">
+                    <div class="ai-phone">
+                        <div class="ai-notch"></div>
+                        <div class="ai-screen">
+                            <div class="ai-message-preview">
+                                <div class="ai-icon">✨</div>
+                                <div class="ai-text">
+                                    <strong>AI Insight Generated</strong>
+                                    <p>Anjali's engagement score ↑ 23% this week. Recommend: Celebrate win + suggest 5km goal increase.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="ai-right">
+                    <div class="section-label">AI COACH</div>
+                    <h2 class="ai-title display-text">
+                        <span class="ai-title-line">NOT JUST</span>
+                        <span class="ai-title-line ai-title-red">AUTOMATION.</span>
+                        <span class="ai-title-line">INTELLIGENCE.</span>
+                    </h2>
+                    <p class="ai-description body-text">
+                        Fitosys doesn't just collect data — it understands it. Our AI analyzes client behavior, 
+                        spots trends, and gives you actionable recommendations.
+                    </p>
+                    
+                    <div class="ai-features-list">
+                        <div class="ai-feature">
+                            <div class="ai-feature-dot"></div>
+                            <div>
+                                <h4>Churn Risk Detection</h4>
+                                <p>Flags at-risk clients before they quit based on engagement patterns</p>
+                            </div>
+                        </div>
+                        <div class="ai-feature">
+                            <div class="ai-feature-dot"></div>
+                            <div>
+                                <h4>Personalized Messaging</h4>
+                                <p>AI crafts responses that match your coaching style and tone</p>
+                            </div>
+                        </div>
+                        <div class="ai-feature">
+                            <div class="ai-feature-dot"></div>
+                            <div>
+                                <h4>Progress Insights</h4>
+                                <p>Weekly summaries highlight wins, struggles, and recommended actions</p>
+                            </div>
+                        </div>
+                        <div class="ai-feature">
+                            <div class="ai-feature-dot"></div>
+                            <div>
+                                <h4>Renewal Predictions</h4>
+                                <p>Predicts which clients will renew + optimal timing for outreach</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Pricing Section -->
+    <section class="pricing-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">PRICING</div>
+                <h2 class="pricing-title display-text">
+                    <span class="pricing-title-line">LESS THAN A</span>
+                    <span class="pricing-title-line pricing-title-red">PERSONAL TRAINER.</span>
+                    <span class="pricing-title-line">MORE VALUABLE.</span>
+                </h2>
+                <p class="pricing-description body-text">
+                    Transparent pricing. No hidden fees. Cancel anytime.
+                </p>
+            </div>
+            
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-badge">STARTER</div>
+                    <h3 class="pricing-plan-name">Starter</h3>
+                    <div class="pricing-price">
+                        <span class="pricing-currency">₹</span>
+                        <span class="pricing-amount">999</span>
+                        <span class="pricing-period">/month</span>
+                    </div>
+                    <p class="pricing-subtitle">For new coaches building their practice</p>
+                    
+                    <ul class="pricing-features">
+                        <li class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Up to 10 active clients
+                        </li>
+                        <li class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Automated WhatsApp check-ins
+                        </li>
+                        <li class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Basic dashboard & analytics
+                        </li>
+                        <li class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Email support
+                        </li>
+                    </ul>
+                    
+                    <a href="#" class="btn btn-outline full-width">Start Free Trial</a>
+                </div>
+                
+                <div class="pricing-card featured">
+                    <div class="pricing-badge popular">MOST POPULAR</div>
+                    <h3 class="pricing-plan-name">Professional</h3>
+                    <div class="pricing-price">
+                        <span class="pricing-currency">₹</span>
+                        <span class="pricing-amount">1,999</span>
+                        <span class="pricing-period">/month</span>
+                    </div>
+                    <p class="pricing-subtitle">For growing coaches scaling impact</p>
+                    
+                    <ul class="pricing-features">
+                        <li class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Up to 50 active clients
+                        </li>
+                        <li class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Everything in Starter +
+                        </li>
+                        <li class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            AI-powered insights & summaries
+                        </li>
+                        <li class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Renewal tracking & alerts
+                        </li>
+                        <li class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Priority WhatsApp support
+                        </li>
+                    </ul>
+                    
+                    <a href="#" class="btn btn-primary full-width">Start Free Trial</a>
+                </div>
+                
+                <div class="pricing-card">
+                    <div class="pricing-badge">BUSINESS</div>
+                    <h3 class="pricing-plan-name">Business</h3>
+                    <div class="pricing-price">
+                        <span class="pricing-currency">₹</span>
+                        <span class="pricing-amount">3,999</span>
+                        <span class="pricing-period">/month</span>
+                    </div>
+                    <p class="pricing-subtitle">For established coaches with teams</p>
+                    
+                    <ul class="pricing-features">
+                        <li class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Unlimited active clients
+                        </li>
+                        <li class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Everything in Professional +
+                        </li>
+                        <li class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Multi-coach team access
+                        </li>
+                        <li class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Custom branding & white-label
+                        </li>
+                        <li class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Dedicated success manager
+                        </li>
+                    </ul>
+                    
+                    <a href="#" class="btn btn-outline full-width">Contact Sales</a>
+                </div>
+            </div>
+            
+            <div class="pricing-guarantee">
+                <div class="guarantee-icon">🛡️</div>
+                <div class="guarantee-text">
+                    <strong>14-Day Money-Back Guarantee</strong>
+                    <p>Try Fitosys risk-free. If you don't save 5+ hours in your first 2 weeks, we'll refund every rupee.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials Section -->
+    <section class="testimonials-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">SOCIAL PROOF</div>
+                <h2 class="testimonials-title display-text">
+                    <span class="testimonials-title-line">COACHES</span>
+                    <span class="testimonials-title-line testimonials-title-red">LOVE US.</span>
+                </h2>
+            </div>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">★★★★★</div>
+                    <blockquote class="testimonial-quote">
+                        "I was losing 3-4 clients every month to poor follow-ups. 
+                        Fitosys brought that down to zero. The ROI is insane — 
+                        paid for itself in the first week."
+                    </blockquote>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">RK</div>
+                        <div class="testimonial-info">
+                            <div class="testimonial-name">Rajesh Kumar</div>
+                            <div class="testimonial-role">Certified Personal Trainer, Mumbai</div>
+                            <div class="testimonial-stats">
+                                <span>42 active clients</span>
+                                <span>•</span>
+                                <span>₹2.3L/month revenue</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">★★★★★</div>
+                    <blockquote class="testimonial-quote">
+                        "The WhatsApp integration is genius. My clients 
+                        already live there — why make them download another app? 
+                        Check-in response rate went from 45% to 89%."
+                    </blockquote>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">PS</div>
+                        <div class="testimonial-info">
+                            <div class="testimonial-name">Priya Sharma</div>
+                            <div class="testimonial-role">Yoga & Wellness Coach, Bangalore</div>
+                            <div class="testimonial-stats">
+                                <span>38 active clients</span>
+                                <span>•</span>
+                                <span>95% retention rate</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">★★★★★</div>
+                    <blockquote class="testimonial-quote">
+                        "Fitosys saves me 10+ hours every week. That's time 
+                        I can spend coaching or with my family. The AI insights 
+                        help me spot at-risk clients before they quit."
+                    </blockquote>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">AM</div>
+                        <div class="testimonial-info">
+                            <div class="testimonial-name">Amit Mehta</div>
+                            <div class="testimonial-role">Strength & Conditioning Coach, Delhi</div>
+                            <div class="testimonial-stats">
+                                <span>56 active clients</span>
+                                <span>•</span>
+                                <span>₹4.1L/month revenue</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonials-cta">
+                <div class="testimonials-stat">
+                    <div class="stat-number display-text">4.9/5</div>
+                    <div class="stat-label">Average Rating</div>
+                </div>
+                <div class="testimonials-stat">
+                    <div class="stat-number display-text">200+</div>
+                    <div class="stat-label">Active Coaches</div>
+                </div>
+                <div class="testimonials-stat">
+                    <div class="stat-number display-text">94%</div>
+                    <div class="stat-label">Retention Rate</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- About Section -->
+    <section class="about-section">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-left">
+                    <div class="section-label">ABOUT US</div>
+                    <h2 class="about-title display-text">
+                        <span class="about-title-line">BUILT BY</span>
+                        <span class="about-title-line about-title-red">COACHES,</span>
+                        <span class="about-title-line">FOR COACHES.</span>
+                    </h2>
+                    <p class="about-description body-text">
+                        We're a team of 12 fitness professionals and engineers who believe 
+                        technology should amplify human potential — not replace it.
+                    </p>
+                    <p class="about-description body-text">
+                        Every feature in Fitosys comes from real coach feedback. 
+                        Every automation is designed to give you back time for what matters: 
+                        changing lives through fitness.
+                    </p>
+                    
+                    <div class="about-stats">
+                        <div class="about-stat">
+                            <div class="stat-number display-text">200+</div>
+                            <div class="stat-label">Coaches Served</div>
+                        </div>
+                        <div class="about-stat">
+                            <div class="stat-number display-text">5,000+</div>
+                            <div class="stat-label">Clients Managed</div>
+                        </div>
+                        <div class="about-stat">
+                            <div class="stat-number display-text">₹12Cr+</div>
+                            <div class="stat-label">Revenue Tracked</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="about-right">
+                    <div class="about-image">
+                        <div class="about-placeholder">
+                            <div class="placeholder-icon">🏢</div>
+                            <p>Our Hyderabad Office</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Final CTA Banner -->
+    <section class="cta-banner">
+        <div class="container">
+            <div class="cta-content">
+                <h2 class="cta-title display-text">
+                    READY TO STOP LOSING
+                    <span class="cta-title-red">CLIENTS?</span>
+                </h2>
+                <p class="cta-description body-text">
+                    Join 200+ Indian coaches who've automated their busywork and scaled their impact.
+                </p>
+                
+                <div class="cta-offer">
+                    <div class="offer-badge">LIMITED TIME</div>
+                    <div class="offer-text">
+                        <strong>Get 2 Months Free</strong>
+                        <p>with annual Professional or Business plan</p>
+                    </div>
+                </div>
+                
+                <div class="cta-buttons">
+                    <a href="#" class="btn btn-primary btn-large">Start Your 14-Day Free Trial</a>
+                    <a href="#" class="btn btn-ghost btn-large">Book a Demo Call</a>
+                </div>
+                
+                <div class="cta-trust">
+                    <div class="trust-item">
+                        <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        No credit card required
+                    </div>
+                    <div class="trust-item">
+                        <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        Setup in 30 minutes
+                    </div>
+                    <div class="trust-item">
+                        <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        Cancel anytime
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <span class="logo-text">FITOSYS</span>
+                        <span class="logo-mark"></span>
+                    </div>
+                    <p class="footer-tagline">The Operating System for Independent Fitness Coaches.</p>
+                    <div class="footer-social">
+                        <a href="#" class="social-link" aria-label="Instagram">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-link" aria-label="LinkedIn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                                <rect x="2" y="9" width="4" height="12"></rect>
+                                <circle cx="4" cy="4" r="2"></circle>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-link" aria-label="WhatsApp">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <ul>
+                            <li><a href="#features">Features</a></li>
+                            <li><a href="#pricing">Pricing</a></li>
+                            <li><a href="#">Case Studies</a></li>
+                            <li><a href="#">Changelog</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Coach Blog</a></li>
+                            <li><a href="#">Video Tutorials</a></li>
+                            <li><a href="#">API Docs</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#about">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Terms of Service</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2026 Fitosys. All rights reserved.</p>
+                <p>Made with ❤️ in Hyderabad, India</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Initialize GSAP ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger);
+        
+        // Hero animations
+        gsap.from(".hero-title-line", {
+            duration: 1,
+            y: 100,
+            opacity: 0,
+            stagger: 0.1,
+            ease: "power4.out"
+        });
+        
+        gsap.from(".hero-eyebrow", {
+            duration: 0.8,
+            x: -50,
+            opacity: 0,
+            delay: 0.5,
+            ease: "power3.out"
+        });
+        
+        gsap.from(".hero-description", {
+            duration: 0.8,
+            y: 30,
+            opacity: 0,
+            delay: 0.7,
+            ease: "power3.out"
+        });
+        
+        gsap.from(".hero-cta-group", {
+            duration: 0.8,
+            y: 30,
+            opacity: 0,
+            delay: 0.9,
+            ease: "power3.out"
+        });
+        
+        gsap.from(".floating-stat", {
+            duration: 1,
+            scale: 0,
+            opacity: 0,
+            stagger: 0.2,
+            delay: 1,
+            ease: "back.out(1.7)"
+        });
+        
+        // Pain ticker animation
+        gsap.to(".ticker-content", {
+            xPercent: -50,
+            repeat: -1,
+            duration: 30,
+            ease: "linear"
+        });
+        
+        // Section headers
+        gsap.utils.toArray('.section-label').forEach(label => {
+            gsap.from(label, {
+                scrollTrigger: {
+                    trigger: label,
+                    start: "top 80%",
+                },
+                x: -30,
+                opacity: 0,
+                duration: 0.6,
+                ease: "power3.out"
+            });
+        });
+        
+        // Problem cards
+        gsap.from(".problem-card", {
+            scrollTrigger: {
+                trigger: ".problem-section",
+                start: "top 70%",
+            },
+            y: 50,
+            opacity: 0,
+            stagger: 0.2,
+            duration: 0.8,
+            ease: "power3.out"
+        });
+        
+        // Feature cards
+        gsap.from(".feature-card", {
+            scrollTrigger: {
+                trigger: ".features-grid",
+                start: "top 70%",
+            },
+            y: 50,
+            opacity: 0,
+            stagger: 0.2,
+            duration: 0.8,
+            ease: "power3.out"
+        });
+        
+        // Pricing cards
+        gsap.from(".pricing-card", {
+            scrollTrigger: {
+                trigger: ".pricing-section",
+                start: "top 70%",
+            },
+            y: 50,
+            opacity: 0,
+            stagger: 0.2,
+            duration: 0.8,
+            ease: "power3.out"
+        });
+        
+        // Testimonial cards
+        gsap.from(".testimonial-card", {
+            scrollTrigger: {
+                trigger: ".testimonials-section",
+                start: "top 70%",
+            },
+            y: 50,
+            opacity: 0,
+            stagger: 0.2,
+            duration: 0.8,
+            ease: "power3.out"
+        });
+        
+        // CTA banner
+        gsap.from(".cta-content", {
+            scrollTrigger: {
+                trigger: ".cta-banner",
+                start: "top 70%",
+            },
+            y: 50,
+            opacity: 0,
+            duration: 0.8,
+            ease: "power3.out"
+        });
+    </script>
+</body>
+</html>
