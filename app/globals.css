@@ -470,6 +470,7 @@
   font-size: 13px;
   font-weight: 600;
   color: #FFFFFF;
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
   text-transform: none;
   letter-spacing: 0;
 }
@@ -481,7 +482,7 @@
   cursor: pointer;
   background: none;
   border: none;
-  font-family: var(--font-sans);
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -498,6 +499,7 @@
   font-size: 14px;
   font-weight: 700;
   color: #FFFFFF;
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
 }
 
 .cal-navs {
@@ -632,6 +634,7 @@
   flex: 1;
   font-size: 13px;
   color: #888888;
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -673,7 +676,7 @@
   border: none;
   border-radius: 7px;
   padding: 8px 14px;
-  font-family: var(--font-sans);
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
@@ -730,6 +733,7 @@
   flex: 1;
   font-size: 13px;
   color: #FFFFFF;
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
 }
 
 .pcheck-text.completed {
@@ -744,6 +748,7 @@
   font-size: 12px;
   font-weight: 600;
   color: #888888;
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
 }
 
 .pdot {
@@ -805,6 +810,7 @@
 .upd-meta {
   font-size: 10px;
   color: #888888;
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
   margin-bottom: 1px;
   white-space: nowrap;
   overflow: hidden;
@@ -819,6 +825,7 @@
   font-size: 12px;
   font-weight: 600;
   color: #FFFFFF;
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -864,11 +871,13 @@
   font-size: 10px;
   font-weight: 700;
   color: #F20000;
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
 }
 
 .tag-desc {
   font-size: 10px;
   color: #444444;
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
 }
 
 /* Program Card (Red Background) */
@@ -939,12 +948,14 @@
 .prog-owner-lbl {
   font-size: 9px;
   color: rgba(255, 255, 255, 0.58);
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
 }
 
 .prog-owner-name {
   font-size: 11px;
   font-weight: 700;
   color: #fff;
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
 }
 
 .prog-icons {
@@ -1110,6 +1121,7 @@
 .chart-sub {
   font-size: 10px;
   color: #888888;
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
 }
 
 .chart-toggle {
@@ -1128,7 +1140,7 @@
   cursor: pointer;
   color: #888888;
   transition: all 0.18s;
-  font-family: var(--font-sans);
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
   background: none;
   border: none;
 }
@@ -1216,6 +1228,7 @@
   font-size: 10px;
   font-weight: 500;
   color: #444444;
+  font-family: var(--font-urbanist), 'Urbanist', sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -1559,7 +1572,7 @@
   padding: 13px 15px 9px;
 }
 
-.cal-month { font-size: 14px; font-weight: 700; color: var(--t1); }
+.cal-month { font-size: 14px; font-weight: 700; color: var(--t1); font-family: var(--fb); }
 
 .cal-navs { display: flex; gap: 4px; }
 
@@ -1655,7 +1668,7 @@
   color: var(--t3);
 }
 
-.task-name { flex: 1; font-size: 13px; color: var(--t2); }
+.task-name { flex: 1; font-size: 13px; color: var(--t2); font-family: var(--fb); }
 .task-row:hover .task-name { color: var(--t1); }
 
 .task-faces { display: flex; }
@@ -1723,7 +1736,7 @@
 .pcheck:hover { border-color: var(--red); }
 .pcheck.done { background: var(--red); border-color: var(--red); }
 
-.pcheck-text { flex: 1; font-size: 13px; color: var(--t1); }
+.pcheck-text { flex: 1; font-size: 13px; color: var(--t1); font-family: var(--fb); }
 
 .pcheck.done + .pcheck-text {
   text-decoration: line-through;
@@ -1780,6 +1793,7 @@
 .upd-meta {
   font-size: 10px;
   color: var(--t2);
+  font-family: var(--fb);
   margin-bottom: 1px;
   white-space: nowrap;
   overflow: hidden;
@@ -1824,9 +1838,9 @@
 
 .tag-top { display: flex; align-items: center; justify-content: space-between; }
 
-.tag-name { font-size: 10px; font-weight: 700; color: var(--red); }
+.tag-name { font-size: 10px; font-weight: 700; color: var(--red); font-family: var(--fb); }
 
-.tag-desc { font-size: 10px; color: var(--t3); }
+.tag-desc { font-size: 10px; color: var(--t3); font-family: var(--fb); }
 
 /* Program Card */
 .prog-card {
@@ -2111,6 +2125,7 @@
   font-size: 10px;
   font-weight: 500;
   color: var(--t3);
+  font-family: var(--fb);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
