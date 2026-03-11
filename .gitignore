@@ -47,3 +47,4 @@ stitch/
 *.docx
 
 .vercel
+.env*.local

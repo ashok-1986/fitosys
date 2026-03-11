@@ -105,9 +105,10 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-urbanist), 'Urbanist', sans-serif;
   }
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-display);
+    font-family: var(--font-barlow), 'Barlow Condensed', sans-serif;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.02em;
@@ -1316,8 +1317,8 @@
   --amber-dim: rgba(245,158,11,0.12);
   --green: #10B981;
   --green-dim: rgba(16,185,129,0.10);
-  --fd: 'Barlow Condensed', sans-serif;
-  --fb: 'Urbanist', sans-serif;
+  --fd: var(--font-barlow), 'Barlow Condensed', sans-serif;
+  --fb: var(--font-urbanist), 'Urbanist', sans-serif;
   --r: 10px;
   --r2: 7px;
 }
