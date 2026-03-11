@@ -4,10 +4,186 @@ All notable changes to the Fitosys landing page and application are documented h
 
 ---
 
+## [2026-03-11] — Dashboard Data Integration Complete
+
+### 🔌 Dashboard Data API Endpoint
+
+**New File:** `app/api/dashboard/data/route.ts`
+
+Created comprehensive dashboard data endpoint that aggregates all dashboard data in a single request:
+- Coach profile
+- Active programs with enrollment counts
+- Active clients count
+- Renewals due in next 7 days
+- Recent check-ins (last 10)
+- Check-in counts by day (last 7 days)
+- Latest AI summary
+- Pending tasks (AI summary review + renewal reminders)
+
+**Features:**
+- Parallel data fetching with `Promise.all()` for optimal performance
+- Authentication via Supabase auth
+- Processed data ready for UI components (chart data, renewals with days remaining, client initials, gradients)
+- Single API call reduces dashboard load time
+
+---
+
+### 🪝 Custom Dashboard Hook
+
+**New File:** `hooks/use-dashboard.ts`
+
+Created `useDashboard()` custom hook for dashboard data fetching:
+- TypeScript interfaces for all data types
+- Auto-fetch on mount
+- Optional refresh interval
+- Loading and error states
+- Manual refetch capability
+
+**Interface:**
+```typescript
+const { data, loading, error, refetch, setData } = useDashboard({
+  autoFetch: true,
+  refreshInterval: 30000 // optional
+});
+```
+
+---
+
+### 📄 Dashboard Page Updated
+
+**File Modified:** `app/dashboard/page.tsx`
+
+- Integrated `useDashboard` hook
+- Added loading state with spinner
+- Added error state with retry button
+- Connected all components to real API data:
+  - **TaskOverview**: Displays programs with active enrollment counts
+  - **PendingActions**: Shows AI summary task + renewal reminders
+  - **LatestUpdates**: Displays recent check-in replies
+  - **ProgramCard**: Shows first program with average check-in rate
+  - **PillBarChart**: Displays weekly check-in percentage data
+
+---
+
+### 🧪 Build Status
+
+✅ **Build successful** — Compiled in 6.4s, no TypeScript errors
+✅ New route: `/api/dashboard/data` — Dynamic server-rendered
+✅ Dashboard page: `/dashboard` — Static generation
+
+### 📊 Data Flow
+
+```
+Dashboard Page (client)
+    ↓ fetch
+/api/dashboard/data (API route)
+    ↓ Supabase queries
+Database (8 tables)
+    ↓ Processed data
+Dashboard Components
+```
+
+### 🔧 Technical Details
+
+**Data Transformations:**
+- Chart data: Converts check-in counts to percentages based on active client count
+- Renewals: Calculates days remaining from end dates
+- Client initials: Extracts initials from full names for avatars
+- Gradient colors: Generates consistent gradient colors based on client names
+- Pending tasks: Combines AI summary review + upcoming renewals into unified task list
+
+**Error Handling:**
+- 401: Unauthorized (redirect to login)
+- 500: Server error (show error message)
+- Network errors: Caught and displayed with retry option
+
+---
+
+## [2026-03-11] — Coach Dashboard UI Implementation
+
+### 🎨 New Dashboard Design Implemented
+
+**Files Created:**
+- `components/dashboard/calendar.tsx` — Interactive calendar with event markers, month navigation
+- `components/dashboard/task-overview.tsx` — Program/task list with client avatars and category icons
+- `components/dashboard/pending-actions.tsx` — Checkbox task list with priority indicators (today/days)
+- `components/dashboard/latest-updates.tsx` — Recent check-in updates with hashtag filter pills
+- `components/dashboard/program-card.tsx` — Red-themed program progress card with weekly report + send button
+- `components/dashboard/pill-bar-chart.tsx` — Animated bar chart with Week/Month toggle, peak highlighting
+
+**Files Modified:**
+- `app/dashboard/page.tsx` — Replaced old stats layout with new grid-based dashboard
+- `app/dashboard/layout.tsx` — Updated to use shell layout with IconSidebar + Topbar
+- `app/globals.css` — Added ~600 lines of dashboard-specific CSS styles
+
+### 🎯 Design Features
+
+**Layout Structure:**
+- Left icon sidebar (68px) with navigation icons and notifications
+- Top bar with greeting, search, and avatar
+- Content grid: Left column (Calendar + Task Overview) | Right column (Pending Actions + 3-panel row)
+
+**Brand Compliance:**
+- Fitosys Red `#F20000` for CTAs, active states, and program card background
+- Dark background `#0A0A0A` with card surfaces at `#141414`
+- Barlow Condensed for headings, Urbanist for body text
+- Consistent border radius (10px cards, 7px buttons)
+
+**Interactive Elements:**
+- Calendar with today highlight, event dots, month navigation
+- Task overview with program icons and client face avatars
+- Pending actions with color-coded priority dots (red=today, amber=days, green=week)
+- Latest updates with client initials avatars and hashtag filter pills
+- Program progress card with animated progress bar and send button
+- Check-in rate chart with animated bars, Week/Month toggle, average footer
+
+**Animations:**
+- Entrance fade-up animations (staggered for left-col, right-top, right-bot)
+- Bar chart fill animation with cubic-bezier easing
+- Hover effects on all interactive elements
+- Peak value highlighting with badge and triangle indicator
+
+### 📦 Component Architecture
+
+All dashboard components are:
+- Client-side (`"use client"`)
+- Fully typed with TypeScript interfaces
+- Customizable via props with sensible defaults
+- Using Lucide React icons
+- Following Fitosys brand identity
+
+### 🔧 CSS Architecture
+
+Added comprehensive CSS in `globals.css`:
+- Shell layout (`.shell`, `.sidebar`, `.main`)
+- Top bar (`.topbar`, `.topbar-search`, `.topbar-avatar`)
+- Content grid (`.content`, `.left-col`, `.right-top`, `.right-bot`)
+- Card system (`.card`, `.card-hd`, `.card-hd-title`)
+- Calendar (`.cal-*`)
+- Task overview (`.task-*`)
+- Pending actions (`.pending-*`, `.pcheck`, `.pdot`)
+- Latest updates (`.upd-*`, `.tag-*`)
+- Program card (`.prog-*`)
+- Pill bar chart (`.chart-*`, `.bar-*`)
+- Responsive breakpoints for mobile
+
+### 🧪 Build Status
+
+✅ **Build successful** — Compiled in 4.8s, no TypeScript errors
+✅ Route: `/dashboard` — Static generation
+
+### 📱 Responsive Design
+
+- Desktop: Full grid layout with icon sidebar
+- Mobile: Collapsing grid, bottom tab bar (via existing `TabBar` component)
+- Tablet: Stacked 3-panel row in right-bot section
+
+---
+
 ## [2026-03-10] — Finalized WhatsApp & Automation Loop
 
 ### 🔌 WhatsApp Service (Meta Direct)
-- **Direct Meta Integration**: Moved from Interakt/AiSensy to a direct Meta Cloud API implementation in `lib/whatsapp/templates.ts`.
+- **WhatsApp Refactor**: Migration to Meta Direct API finalized with versioned templates in `lib/whatsapp/templates.ts`.
 - **Template Alignment**: Fully synced the codebase with 6 Meta-approved templates:
     - `fitosys_weekly_checkin`
     - `fitosys_client_welcome`

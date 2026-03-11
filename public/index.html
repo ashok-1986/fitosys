@@ -2235,8 +2235,11 @@
     }
 
     .cta-banner-inner {
-      position: relative; z-index: 1;
-      max-width: var(--max); margin: 0 auto; width: 100%;
+      position: relative;
+      z-index: 1;
+      max-width: var(--max);
+      margin: 0 auto;
+      width: 100%;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -2244,9 +2247,9 @@
       flex-wrap: wrap;
     }
 
-    .cta-banner-left { 
+    .cta-banner-left {
       flex: 1;
-      max-width: 680px; 
+      max-width: 680px;
     }
 
     .cta-banner-eyebrow {
@@ -3770,79 +3773,294 @@
     </div>
   </section>
 
-  <!-- ── TESTIMONIALS ──────────────────────────────────────────────────────────── -->
-  <section id="testimonials">
-    <div class="container">
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:end; margin-bottom:60px;">
-        <div>
-          <div class="section-label gsap-left">
-            <div class="section-label-line"></div>
-            <span>Coach Stories</span>
-          </div>
-          <h2 class="section-title gsap-up">
-            COACHES WHO<br>
-            <span class="accent">GOT THEIR</span><br>
-            <span class="outline">SUNDAYS BACK.</span>
-          </h2>
+  <!-- ── TESTIMONIALS (Modern Carousel) ────────────────────────────────────────── -->
+  <style>
+    #testimonials-modern {
+      width: 100%;
+      padding: 3em;
+      background: var(--black);
+    }
+
+    .testi-carousel-container {
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .testi-header-row {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      margin-bottom: 64px;
+    }
+
+    @media (min-width: 768px) {
+      .testi-header-row {
+        flex-direction: row;
+        align-items: flex-end;
+        justify-content: space-between;
+      }
+    }
+
+    .testi-main-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 32px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      min-height: 400px;
+    }
+
+    /* --- Testimonials Modern --- */
+    #testimonials-modern {
+      background: #000000;
+      padding: 120px 3em;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .testi-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 5vw;
+      align-items: center;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .testi-left {
+      max-width: 600px;
+    }
+
+    .testi-card {
+      background: #0A0A0C;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 40px;
+      padding: 60px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+    }
+
+    .testi-image-container {
+      width: 100%;
+      height: 480px;
+      border-radius: 30px;
+      overflow: hidden;
+      background: #111;
+      margin-bottom: 40px;
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .testi-image-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.4s ease, transform 0.6s ease;
+    }
+
+    .testi-quote-text {
+      font-family: var(--font-accent);
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 1.5;
+      color: white;
+      margin-bottom: 40px;
+      min-height: 4.5em;
+      transition: opacity 0.3s ease;
+    }
+
+    .testi-nav-btn {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.03);
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .testi-nav-btn:hover {
+      background: var(--red);
+      border-color: var(--red);
+      transform: scale(1.1);
+    }
+
+    @media (max-width: 1100px) {
+      .testi-grid {
+        grid-template-columns: 1fr;
+        gap: 80px;
+      }
+
+      .testi-left {
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      #testimonials-modern {
+        padding: 80px 1.5em;
+      }
+
+      .testi-card {
+        padding: 30px;
+      }
+
+      .testi-image-container {
+        height: 320px;
+      }
+    }
+  </style>
+
+  <section id="testimonials-modern">
+    <div class="testi-grid">
+      <!-- Left: Header & Mission -->
+      <div class="testi-left">
+        <div class="section-label gsap-left">
+          <div class="section-label-line"></div>
+          <span>Coach Stories</span>
         </div>
-        <p class="section-body gsap-up" style="align-self:end;">
-          Real coaches. Real numbers. These are the outcomes that happen when systems replace spreadsheets.
+        <h2 class="section-title gsap-up" style="margin-top: 24px; margin-bottom: 32px;">
+          COACHES WHO GOT THEIR<br>
+          <span class="accent">SUNDAYS BACK.</span>
+        </h2>
+        <p class="section-body gsap-up" style="font-size: 20px; line-height: 1.6; max-width: 500px;">
+          Real coaches. Real numbers. These are the outcomes that happen when <span class="white">systems replace
+            spreadsheets</span>. Fitosys doesn't just manage clients—it recovers your time.
         </p>
+        <div class="gsap-up" style="margin-top: 48px;">
+          <a href="#contact" class="pricing-cta primary"
+            style="display:inline-flex; width: auto; padding: 18px 40px;">Read
+            All Stories</a>
+        </div>
       </div>
-      <div class="testi-grid">
-        <div class="testi-card gsap-up">
-          <div class="testi-quote">"</div>
-          <div class="testi-text">I used to spend every Sunday sending check-in messages manually to 28 clients. Now I
-            wake up Monday morning to an AI summary and spend the time on an actual rest day. The product just works.
-          </div>
-          <div class="testi-roi">
-            <div class="testi-roi-num">2.5h</div>
-            <div class="testi-roi-text">saved every week. 130 hours per year given back to coaching.</div>
-          </div>
-          <div class="testi-author">
-            <div class="testi-avatar" style="background:linear-gradient(135deg,#F20000,#7C0000);">P</div>
-            <div>
-              <div class="testi-name">Priya Sharma</div>
-              <div class="testi-role">Fitness Coach · Mumbai · 28 active clients</div>
-            </div>
-          </div>
+
+      <!-- Right: Premium Carousel Card -->
+      <div class="testi-card gsap-up">
+        <!-- Decoration Grid -->
+        <div
+          style="position: absolute; inset: 0; opacity: 0.03; pointer-events: none; background-image: radial-gradient(white 1px, transparent 1px); background-size: 30px 30px">
         </div>
-        <div class="testi-card gsap-up">
-          <div class="testi-quote">"</div>
-          <div class="testi-text">I was losing 2–3 renewals per month simply because I forgot to follow up. Fitosys
-            caught 4 renewals in the first month alone. That's more than ₹15,000 in revenue I would have just left on
-            the table.</div>
-          <div class="testi-roi">
-            <div class="testi-roi-num">₹1.8L</div>
-            <div class="testi-roi-text">annual renewal revenue recovered. ROI in the first week.</div>
-          </div>
-          <div class="testi-author">
-            <div class="testi-avatar" style="background:linear-gradient(135deg,#0F3460,#0A1628);">R</div>
-            <div>
-              <div class="testi-name">Rahul Verma</div>
-              <div class="testi-role">Yoga Instructor · Delhi · 22 active clients</div>
-            </div>
-          </div>
+        <div
+          style="position: absolute; top:0; right:0; width: 300px; height: 300px; background: radial-gradient(circle, rgba(242,0,0,0.05) 0%, transparent 70%); pointer-events: none;">
         </div>
-        <div class="testi-card gsap-up">
-          <div class="testi-quote">"</div>
-          <div class="testi-text">My clients actually comment that the check-in system feels personal. They don't know
-            it's automated. The AI replies match the tone I set — it genuinely feels like a message from me. That's the
-            detail that matters.</div>
-          <div class="testi-roi">
-            <div class="testi-roi-num">94%</div>
-            <div class="testi-roi-text">check-in response rate. Up from 60% with manual messages.</div>
-          </div>
-          <div class="testi-author">
-            <div class="testi-avatar" style="background:linear-gradient(135deg,#166534,#052E16);">A</div>
+
+        <!-- Image Sec -->
+        <div class="testi-image-container">
+          <img src="https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?q=80&w=1000&auto=format&fit=crop"
+            alt="Coach Profile" id="testimonial-img">
+        </div>
+
+        <!-- Content Sec -->
+        <div class="testi-content">
+          <div
+            style="color: var(--red); font-size: 80px; line-height: 0.4; font-family: var(--font-accent); margin-bottom: 20px;">
+            “</div>
+
+          <blockquote class="testi-quote-text" id="testimonial-quote">
+            I used to spend every Sunday sending check-in messages manually to 28 clients. Now I wake up Monday morning
+            to an AI summary.
+          </blockquote>
+
+          <div
+            style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 32px; display: flex; justify-content: space-between; align-items: flex-end;">
             <div>
-              <div class="testi-name">Ananya Krishnan</div>
-              <div class="testi-role">Nutrition Coach · Bangalore · 35 active clients</div>
+              <h4 id="testimonial-name"
+                style="font-size: 24px; font-weight: 600; color: white; margin-bottom: 6px; font-family: var(--font-display);">
+                Priya Sharma</h4>
+              <p id="testimonial-role" style="font-size: 16px; color: var(--grey); font-family: var(--font-body);">
+                Fitness
+                Coach · Mumbai · 28 active clients</p>
+            </div>
+
+            <div style="display: flex; gap: 12px;">
+              <button onclick="window.prevTestimonial()" class="testi-nav-btn" aria-label="Previous story">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m15 18-6-6 6-6" />
+                </svg>
+              </button>
+              <button onclick="window.nextTestimonial()" class="testi-nav-btn" aria-label="Next story">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m9 18 6-6 6-6" />
+                </svg>
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+    <script>
+      (function () {
+        const testimonials = [
+          {
+            quote: "I used to spend every Sunday sending check-in messages manually to 28 clients. Now I wake up Monday morning to an AI summary and spend the time on an actual rest day. The product just works.",
+            name: "Priya Sharma",
+            role: "Fitness Coach · Mumbai · 28 active clients",
+            img: "images/testimonials/priya.jpg"
+          },
+          {
+            quote: "I was losing 2–3 renewals per month simply because I forgot to follow up. Fitosys caught 4 renewals in the first month alone. That's more than ₹15,000 in revenue recovered.",
+            name: "Rahul Verma",
+            role: "Yoga Instructor · Delhi · 22 active clients",
+            img: "images/testimonials/rahul.jpg"
+          },
+          {
+            quote: "My clients actually comment that the check-in system feels personal. They don't know it's automated. The AI replies match the tone I set — it genuinely feels like a message from me.",
+            name: "Ananya Krishnan",
+            role: "Nutrition Coach · Bangalore · 35 active clients",
+            img: "images/testimonials/ananya.jpg"
+          }
+        ];
+
+        let currentIndex = 0;
+        const imgEl = document.getElementById('testimonial-img');
+        const quoteEl = document.getElementById('testimonial-quote');
+        const nameEl = document.getElementById('testimonial-name');
+        const roleEl = document.getElementById('testimonial-role');
+
+        function update(index) {
+          const t = testimonials[index];
+          if (typeof gsap !== 'undefined' && imgEl && quoteEl && nameEl && roleEl) {
+            const tl = gsap.timeline();
+            tl.to([quoteEl, imgEl], { opacity: 0, y: 10, duration: 0.3, ease: 'power2.in' })
+              .call(() => {
+                imgEl.src = t.img;
+                quoteEl.innerText = t.quote;
+                nameEl.innerText = t.name;
+                roleEl.innerText = t.role;
+              })
+              .fromTo(imgEl, { opacity: 0, scale: 1.1 }, { opacity: 1, scale: 1, duration: 0.6, ease: 'power3.out' })
+              .fromTo(quoteEl, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, "-=0.4");
+          } else if (imgEl && quoteEl && nameEl && roleEl) {
+            imgEl.src = t.img;
+            quoteEl.innerText = t.quote;
+            nameEl.innerText = t.name;
+            roleEl.innerText = t.role;
+          }
+        }
+
+        window.nextTestimonial = function () {
+          currentIndex = (currentIndex + 1) % testimonials.length;
+          update(currentIndex);
+        };
+
+        window.prevTestimonial = function () {
+          currentIndex = (currentIndex - 1 + testimonials.length) % testimonials.length;
+          update(currentIndex);
+        };
+      })();
+    </script>
   </section>
 
   <!-- ── ABOUT ─────────────────────────────────────────────────────────────────── -->

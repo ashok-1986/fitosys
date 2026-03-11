@@ -1,0 +1,184 @@
+﻿
+FITOSYS
+Typography System & UI Wireframe Specification
+
+This document is the single source of truth for all typography and layout decisions on the Fitosys website and coach dashboard. Audited from the live site. Any deviation requires product lead sign-off before shipping.
+Scope: Marketing Website + Coach Dashboard   |   March 2026
+
+
+
+1. Live Site Audit ù Issues Found
+
+Audited from https://fitosys.alchemetryx.com ù March 2026. These are the specific misalignments this specification corrects. Every issue is linked to a rule later in this document.
+
+
+
+
+2. Font System
+
+2.1 The Two Typefaces
+Fitosys uses exactly two typefaces. If any other font appears in production code, remove it.
+
+
+
+2.2 Google Fonts Import
+Use this exact import string. Do not add additional weights ù each extra weight is an HTTP request that slows the page.
+
+
+2.3 CSS Custom Properties
+Define these variables at :root. Use only these variables in component CSS ù no hardcoded px values anywhere in the codebase.
+
+
+
+3. Type Scale ù All 8 Levels
+
+Every text element maps to exactly one level. If something new does not fit, escalate ù do not invent a size.
+
+
+D-levels use Barlow Condensed. B-levels use Urbanist. Never mix fonts within a level.
+
+
+
+4. Component Typography Rules
+
+4.1 Navigation
+
+4.2 Hero Section
+
+4.3 Feature Cards
+
+4.4 Pricing Cards
+
+4.5 Coach Dashboard UI
+Dashboard uses a denser sub-system. Marketing site sizes do not apply inside the dashboard.
+
+
+
+5. Breakpoints & Responsive Scale
+
+Three breakpoints. Mobile-first CSS. Do not add breakpoints without product lead agreement.
+
+
+5.1 Full Scale by Breakpoint
+
+
+
+6. Desktop Wireframe ù Marketing Website
+
+All blocks represent full 1280px desktop layout. Numbers in brackets refer to type levels from Section 3.
+
+NAVIGATION ù Sticky, height 72px, dark background
+Nav stays sticky on scroll. Background transitions from transparent to solid #111 at 80px scroll.
+
+HERO SECTION ù min-height 100vh, dark background
+
+
+
+
+Stats: number and label always stacked vertically. Number = Barlow D5. Label = Urbanist B4. Never same treatment.
+
+PROBLEM SECTION ù white background
+
+
+Problem cards: top border 4px red. Card number [B4 red] above title. Description max 3 lines.
+
+FEATURES SECTION ù 3-column grid
+
+
+Card title D4 must be visually dominant over card body B3. Minimum 17px size gap enforced.
+
+HOW IT WORKS ù 4 numbered steps
+
+Step numbers use Barlow 500 at 80px ù large, decorative, behind content at 8% opacity. Not readable text.
+
+PRICING SECTION ù 4-column cards
+
+Most Popular card gets red border + red price. All other cards identical treatment regardless of actual plan level.
+
+AI SECTION ù dark background
+
+
+CTA BANNER ù dark background, min-height 80vh
+
+CTA giant text = Barlow 500 only. Outline effect via -webkit-text-stroke:1px white. Do NOT change weight to simulate outline.
+
+FOOTER ù dark background
+
+
+
+7. Mobile Wireframe ù 375px Viewport
+
+All blocks represent full width at 375px. Single column throughout. Section spacing minimum 48px. Tap targets minimum 44px height.
+
+MOBILE NAVIGATION ù sticky, height 56px
+Hamburger opens full-screen overlay. Links: Urbanist 500, 20px, uppercase. Row height 56px per link. Close = X icon top right.
+
+MOBILE HERO ù dark background
+
+
+
+
+
+
+Stats: 2-column grid on mobile (not 3). Number stacked above label. Both centered.
+
+MOBILE PROBLEM SECTION
+
+
+
+
+Cards: top border 4px red. Internal padding 24px all sides. Cards do not have horizontal borders.
+
+MOBILE FEATURES SECTION ù single column
+
+
+
+Card spacing 16px between cards. Title D4 must visually dominate body B3. If not, the size is wrong.
+
+MOBILE PRICING ù tab switcher pattern
+
+
+Tab switcher prevents 4-column overflow on mobile. Active tab = bold + red underline. Swipe between tabs optional.
+
+MOBILE TESTIMONIALS ù single card carousel
+
+
+Carousel: swipe gesture on mobile. Dots below card. No visible prev/next arrows on mobile.
+
+MOBILE CTA BANNER ù dark background
+
+
+
+
+
+8. Dashboard Wireframe
+
+The coach dashboard is a SPA with persistent sidebar on desktop and bottom nav on mobile. These are the key screens.
+
+DASHBOARD DESKTOP ù sidebar + main content
+KPI numbers go red ONLY for problem values: Renewals Due, At Risk count. Revenue and response rate stay black.
+
+DASHBOARD MOBILE ù bottom nav + single column
+
+
+
+
+
+Bottom nav: 5 icons + labels. Icon 24px. Label: Urbanist 400 11px. Active item label = red. Min tap area 44x44px.
+
+
+9. Non-Negotiable Rules
+
+These apply to every developer and designer. No exceptions without written product lead approval.
+
+
+
+
+FITOSYS
+Typography defines quality.
+Enforce it without exception.
+
+
+
+fitosys.alchemetryx.com
+Internal document ù not for distribution.

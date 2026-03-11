@@ -2,18 +2,28 @@ import docx
 import json
 import sys
 
+
 def extract_text_from_docx(file_path):
     doc = docx.Document(file_path)
     full_text = []
     for para in doc.paragraphs:
         full_text.append(para.text)
-    return '\n'.join(full_text)
+
+    # Extract tables
+    for table in doc.tables:
+        for row in table.rows:
+            row_text = [cell.text.strip() for cell in row.cells if cell.text.strip()]
+            if row_text:
+                full_text.append(" | ".join(row_text))
+
+    return "\n".join(full_text)
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: python3 extract_docx.py <path_to_docx>")
         sys.exit(1)
-    
+
     file_path = sys.argv[1]
     try:
         text = extract_text_from_docx(file_path)
