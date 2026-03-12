@@ -27,10 +27,16 @@ export async function PUT(request: Request) {
     const body = await request.json();
     const allowed = [
         "full_name",
+        "email",
         "whatsapp_number",
         "country_code",
         "timezone",
         "coaching_type",
+        "business_name",
+        "gst_number",
+        "billing_address",
+        "checkin_day",
+        "checkin_time",
     ];
     const updates: Record<string, unknown> = { updated_at: new Date().toISOString() };
     for (const key of allowed) {

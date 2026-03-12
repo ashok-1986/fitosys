@@ -1,106 +1,425 @@
 "use client";
 
-import React, { useState } from "react";
-import { Avatar, Badge, Switch } from "@/components/ui/design-system";
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardDescription, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
 import { NavBar } from "@/components/ui/navigation";
-import { ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { User, Bell, CreditCard, Save } from "lucide-react";
 
-export default function SettingsScreen() {
-  const [automationState, setAutomationState] = useState({
-    schedule: true,
-    summary: true,
-    renewal: true,
-    instant: false,
+interface CoachProfile {
+  id: string;
+  full_name: string;
+  email: string;
+  whatsapp_number: string;
+  timezone: string;
+  coaching_type: string[];
+  business_name?: string;
+  gst_number?: string;
+  billing_address?: string;
+  checkin_day: number;
+  checkin_time: string;
+}
+
+type SettingsTab = "profile" | "notifications" | "billing";
+
+const COACHING_TYPES = [
+  { value: "fitness", label: "Fitness" },
+  { value: "yoga", label: "Yoga" },
+  { value: "wellness", label: "Wellness" },
+  { value: "nutrition", label: "Nutrition" },
+];
+
+const DAYS = [
+  { value: "0", label: "Sunday" },
+  { value: "1", label: "Monday" },
+  { value: "2", label: "Tuesday" },
+  { value: "3", label: "Wednesday" },
+  { value: "4", label: "Thursday" },
+  { value: "5", label: "Friday" },
+  { value: "6", label: "Saturday" },
+];
+
+export default function SettingsPage() {
+  const [activeTab, setActiveTab] = useState<SettingsTab>("profile");
+  const [loading, setLoading] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [profile, setProfile] = useState<CoachProfile | null>(null);
+
+  const [formData, setFormData] = useState({
+    full_name: "",
+    email: "",
+    whatsapp_number: "",
+    coaching_type: [] as string[],
+    business_name: "",
+    gst_number: "",
+    billing_address: "",
+    checkin_day: "0",
+    checkin_time: "19:00",
+    whatsapp_notifications: true,
+    email_notifications: false,
   });
 
-  const handleToggle = (key: keyof typeof automationState) => {
-    setAutomationState(prev => ({ ...prev, [key]: !prev[key] }));
-  };
+  useEffect(() => {
+    fetchProfile();
+  }, []);
 
-  const sections = [
-    {
-      title: "Account",
-      items: [
-        { icon: "👤", label: "Profile Details", sub: "Ashok Kumar · ashok@gmail.com", action: <ChevronRight className="h-5 w-5 text-white/30" /> },
-        { icon: "💳", label: "Billing & Plan", sub: "Pro · ₹2,499/month", action: <ChevronRight className="h-5 w-5 text-white/30" /> },
-        { icon: "🔔", label: "Notifications", sub: "WhatsApp, Push, Email", action: <ChevronRight className="h-5 w-5 text-white/30" /> },
-      ]
-    },
-    {
-      title: "Automation",
-      items: [
-        { icon: "📅", label: "Check-in Schedule", sub: "Sunday 7:00 PM", action: <Switch on={automationState.schedule} onToggle={() => handleToggle('schedule')} /> },
-        { icon: "🤖", label: "Monday AI Summary", sub: "Monday 7:00 AM", action: <Switch on={automationState.summary} onToggle={() => handleToggle('summary')} /> },
-        { icon: "🔄", label: "Renewal Reminders", sub: "7 days before expiry", action: <Switch on={automationState.renewal} onToggle={() => handleToggle('renewal')} /> },
-        { icon: "⚡", label: "Instant Notifications", sub: "Client payment & sign-up", action: <Switch on={automationState.instant} onToggle={() => handleToggle('instant')} /> },
-      ]
-    },
-    {
-      title: "Integration",
-      items: [
-        { icon: "💬", label: "WhatsApp (Interakt)", sub: "🟡 Setup Pending", action: <ChevronRight className="h-5 w-5 text-white/30" /> },
-        { icon: "💰", label: "Razorpay Payments", sub: "✅ Connected", action: <ChevronRight className="h-5 w-5 text-white/30" /> },
-        { icon: "🤖", label: "Gemini AI", sub: "✅ Active", action: <ChevronRight className="h-5 w-5 text-white/30" /> },
-      ]
-    },
-  ];
+  async function fetchProfile() {
+    try {
+      const res = await fetch("/api/coaches/profile");
+      if (!res.ok) throw new Error("Failed to fetch profile");
+      const data = await res.json();
+      setProfile(data);
+      setFormData({
+        full_name: data.full_name || "",
+        email: data.email || "",
+        whatsapp_number: data.whatsapp_number || "",
+        coaching_type: data.coaching_type || [],
+        business_name: data.business_name || "",
+        gst_number: data.gst_number || "",
+        billing_address: data.billing_address || "",
+        checkin_day: String(data.checkin_day || 0),
+        checkin_time: data.checkin_time || "19:00",
+        whatsapp_notifications: true,
+        email_notifications: false,
+      });
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+    }
+  }
+
+  async function handleSave() {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/coaches/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          full_name: formData.full_name,
+          email: formData.email,
+          whatsapp_number: formData.whatsapp_number,
+          coaching_type: formData.coaching_type,
+          business_name: formData.business_name,
+          gst_number: formData.gst_number,
+          billing_address: formData.billing_address,
+          checkin_day: parseInt(formData.checkin_day),
+          checkin_time: formData.checkin_time,
+        }),
+      });
+
+      if (!res.ok) throw new Error("Failed to save");
+
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (error) {
+      console.error("Error saving profile:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <div className="flex-1 w-full bg-[#0A0A0A] text-white font-sans overflow-y-auto pb-24">
-      <NavBar title="Settings" back="Dashboard" backHref="/dashboard" />
+      <NavBar
+        title="Settings"
+        back="Home"
+        backHref="/dashboard"
+      />
 
-      {/* ── Profile Card ── */}
-      <div className="mx-4 my-4 bg-[#1C1C1E] border border-white/10 rounded-[20px] p-5 flex gap-[14px] items-center">
-        <Avatar name="Ashok Kumar" size={56} />
-        <div>
-          <p className="text-lg font-bold font-sans">Ashok Kumar</p>
-          <p className="text-[13px] text-white/60 font-sans mt-0.5">Fitness Coach · Mumbai</p>
-          <div className="mt-2">
-            <Badge label="PRO MANAGER" color="#F20000" />
-          </div>
+      {/* Tab Navigation */}
+      <div className="px-4 mt-4 mb-6">
+        <div className="flex gap-2 border-b border-white/10">
+          <TabButton
+            icon={<User className="h-4 w-4" />}
+            label="Profile"
+            active={activeTab === "profile"}
+            onClick={() => setActiveTab("profile")}
+          />
+          <TabButton
+            icon={<Bell className="h-4 w-4" />}
+            label="Notifications"
+            active={activeTab === "notifications"}
+            onClick={() => setActiveTab("notifications")}
+          />
+          <TabButton
+            icon={<CreditCard className="h-4 w-4" />}
+            label="Billing"
+            active={activeTab === "billing"}
+            onClick={() => setActiveTab("billing")}
+          />
         </div>
       </div>
 
-      {/* ── Settings Sections ── */}
-      {sections.map(section => (
-        <div key={section.title} className="mb-6">
-          <p className="px-5 py-2 text-xs text-white/40 font-semibold tracking-widest uppercase font-sans">
-            {section.title}
-          </p>
-          <div className="mx-4 bg-[#1C1C1E] border border-white/10 rounded-2xl overflow-hidden">
-            {section.items.map((item, i) => (
-              <div 
-                key={item.label} 
-                className={cn(
-                  "flex items-center gap-[14px] p-4 cursor-pointer hover:bg-white/5 transition-colors active:bg-white/10",
-                  i < section.items.length - 1 ? "border-b border-white/5" : ""
-                )}
-              >
-                <div className="w-[34px] h-[34px] rounded-[10px] bg-white/5 flex items-center justify-center text-base shrink-0">
-                  {item.icon}
-                </div>
-                <div className="flex-1">
-                  <p className="text-[14px] font-medium font-sans text-white/90">{item.label}</p>
-                  <p className="text-xs text-white/40 mt-0.5 font-sans">{item.sub}</p>
-                </div>
-                <div className="shrink-0 flex items-center justify-center">
-                  {item.action}
+      {/* Profile Tab */}
+      {activeTab === "profile" && (
+        <div className="px-4 space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Coach Profile</CardTitle>
+              <CardDescription>Update your personal and business information</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="full_name">Full Name</Label>
+                <Input
+                  id="full_name"
+                  value={formData.full_name}
+                  onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="whatsapp">WhatsApp Number</Label>
+                <Input
+                  id="whatsapp"
+                  value={formData.whatsapp_number}
+                  onChange={(e) => setFormData({ ...formData, whatsapp_number: e.target.value })}
+                  placeholder="+91 98765 43210"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Coaching Types</Label>
+                <div className="flex flex-wrap gap-2">
+                  {COACHING_TYPES.map((type) => (
+                    <Badge
+                      key={type.value}
+                      variant={formData.coaching_type.includes(type.value) ? "default" : "outline"}
+                      className="cursor-pointer"
+                      onClick={() => {
+                        setFormData({
+                          ...formData,
+                          coaching_type: formData.coaching_type.includes(type.value)
+                            ? formData.coaching_type.filter((t) => t !== type.value)
+                            : [...formData.coaching_type, type.value],
+                        });
+                      }}
+                    >
+                      {type.label}
+                    </Badge>
+                  ))}
                 </div>
               </div>
-            ))}
-          </div>
+              <div className="pt-4 border-t">
+                <p className="text-sm font-semibold mb-3">Business Information (for invoices)</p>
+                <div className="space-y-2">
+                  <Label htmlFor="business_name">Business Name</Label>
+                  <Input
+                    id="business_name"
+                    value={formData.business_name}
+                    onChange={(e) => setFormData({ ...formData, business_name: e.target.value })}
+                    placeholder="Your coaching business name"
+                  />
+                </div>
+                <div className="space-y-2 mt-3">
+                  <Label htmlFor="gst">GST Number (optional)</Label>
+                  <Input
+                    id="gst"
+                    value={formData.gst_number}
+                    onChange={(e) => setFormData({ ...formData, gst_number: e.target.value })}
+                    placeholder="29ABCDE1234F1Z5"
+                  />
+                </div>
+                <div className="space-y-2 mt-3">
+                  <Label htmlFor="address">Billing Address</Label>
+                  <Textarea
+                    id="address"
+                    value={formData.billing_address}
+                    onChange={(e) => setFormData({ ...formData, billing_address: e.target.value })}
+                    placeholder="Your business address"
+                    rows={3}
+                  />
+                </div>
+              </div>
+              <div className="pt-4 border-t">
+                <p className="text-sm font-semibold mb-3">Check-in Schedule</p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="checkin_day">Check-in Day</Label>
+                    <Select
+                      value={formData.checkin_day}
+                      onValueChange={(value) => setFormData({ ...formData, checkin_day: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {DAYS.map((day) => (
+                          <SelectItem key={day.value} value={day.value}>
+                            {day.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="checkin_time">Check-in Time</Label>
+                    <Input
+                      id="checkin_time"
+                      type="time"
+                      value={formData.checkin_time}
+                      onChange={(e) => setFormData({ ...formData, checkin_time: e.target.value })}
+                    />
+                  </div>
+                </div>
+              </div>
+              <Button
+                onClick={handleSave}
+                disabled={loading}
+                className="w-full bg-brand hover:bg-brand/90"
+              >
+                <Save className="h-4 w-4 mr-2" />
+                {loading ? "Saving..." : saved ? "Saved!" : "Save Changes"}
+              </Button>
+            </CardContent>
+          </Card>
         </div>
-      ))}
+      )}
 
-      {/* ── Sign Out Button ── */}
-      <button className="mx-4 mb-4 w-[calc(100%-32px)] bg-transparent border border-[#F20000]/40 rounded-xl p-[14px] text-[#F20000] text-[15px] font-medium font-sans cursor-pointer hover:bg-[#F20000]/10 transition-colors active:scale-[0.98]">
-        Sign Out
-      </button>
+      {/* Notifications Tab */}
+      {activeTab === "notifications" && (
+        <div className="px-4 space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Notification Preferences</CardTitle>
+              <CardDescription>Choose how you want to be notified</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div>
+                  <p className="font-medium">WhatsApp Notifications</p>
+                  <p className="text-sm text-muted-foreground">
+                    Receive client check-in replies and alerts on WhatsApp
+                  </p>
+                </div>
+                <Switch
+                  checked={formData.whatsapp_notifications}
+                  onCheckedChange={(checked) =>
+                    setFormData({ ...formData, whatsapp_notifications: checked })
+                  }
+                />
+              </div>
+              <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div>
+                  <p className="font-medium">Email Notifications</p>
+                  <p className="text-sm text-muted-foreground">
+                    Receive weekly summaries and invoices via email
+                  </p>
+                </div>
+                <Switch
+                  checked={formData.email_notifications}
+                  onCheckedChange={(checked) =>
+                    setFormData({ ...formData, email_notifications: checked })
+                  }
+                />
+              </div>
+              <Button
+                onClick={handleSave}
+                disabled={loading}
+                className="w-full bg-brand hover:bg-brand/90"
+              >
+                <Save className="h-4 w-4 mr-2" />
+                Save Preferences
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
-      <p className="text-center text-[11px] text-white/30 font-sans mb-8">
-        Fitosys v1.0.0 · Designed with Alchemetryx
-      </p>
+      {/* Billing Tab */}
+      {activeTab === "billing" && (
+        <div className="px-4 space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Current Plan</CardTitle>
+              <CardDescription>Manage your subscription and billing</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="p-4 border rounded-lg bg-brand/5">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="font-bold text-lg">Pro Plan</p>
+                  <Badge>Active</Badge>
+                </div>
+                <p className="text-sm text-muted-foreground mb-4">
+                  ₹2,999/month • Next billing on April 1, 2026
+                </p>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span>Clients enrolled</span>
+                    <span>12 / 50</span>
+                  </div>
+                  <div className="w-full bg-muted rounded-full h-2">
+                    <div className="bg-brand h-2 rounded-full" style={{ width: "24%" }} />
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    38 clients remaining on your plan
+                  </p>
+                </div>
+              </div>
+              <Button className="w-full" variant="outline">
+                Upgrade Plan
+              </Button>
+              <div className="pt-4 border-t">
+                <p className="text-sm font-semibold mb-3">Invoice History</p>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between p-3 border rounded">
+                    <div>
+                      <p className="text-sm font-medium">March 2026 Invoice</p>
+                      <p className="text-xs text-muted-foreground">₹2,999 • Paid</p>
+                    </div>
+                    <Button size="sm" variant="outline">
+                      Download
+                    </Button>
+                  </div>
+                  <div className="flex items-center justify-between p-3 border rounded">
+                    <div>
+                      <p className="text-sm font-medium">February 2026 Invoice</p>
+                      <p className="text-xs text-muted-foreground">₹2,999 • Paid</p>
+                    </div>
+                    <Button size="sm" variant="outline">
+                      Download
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
+  );
+}
+
+function TabButton({ icon, label, active, onClick }: { icon: React.ReactNode; label: string; active: boolean; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors border-b-2 ${
+        active
+          ? "border-brand text-white"
+          : "border-transparent text-white/40 hover:text-white"
+      }`}
+    >
+      {icon}
+      {label}
+    </button>
   );
 }
