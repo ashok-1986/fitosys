@@ -90,11 +90,11 @@ export default function SuccessPage({ params }: { params: Promise<{ clientId?: s
                 Need help? Contact your coach directly:
               </p>
               <div className="flex gap-2 justify-center">
-                <Button size="sm" variant="outline" className="text-xs">
+                <Button size="sm" variant="outline" className="text-xs" onClick={() => alert('Email functionality coming soon')}>
                   <Mail className="h-3 w-3 mr-1" />
                   Email
                 </Button>
-                <Button size="sm" variant="outline" className="text-xs">
+                <Button size="sm" variant="outline" className="text-xs" onClick={() => alert('WhatsApp functionality coming soon')}>
                   <Phone className="h-3 w-3 mr-1" />
                   WhatsApp
                 </Button>

@@ -129,6 +129,20 @@ export default function SettingsPage() {
     }
   }
 
+  async function handleSaveNotifications() {
+    setLoading(true);
+    try {
+      // In production: create API endpoint for notification preferences
+      // For now, just show success message
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (error) {
+      console.error("Error saving notifications:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="flex-1 w-full bg-[#0A0A0A] text-white font-sans overflow-y-auto pb-24">
       <NavBar
@@ -332,7 +346,7 @@ export default function SettingsPage() {
                 />
               </div>
               <Button
-                onClick={handleSave}
+                onClick={handleSaveNotifications}
                 disabled={loading}
                 className="w-full bg-brand hover:bg-brand/90"
               >

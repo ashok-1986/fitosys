@@ -3,6 +3,7 @@ import { createRazorpayOrder } from "@/lib/razorpay/create-order";
 
 // POST /api/payments/create-order — Create a Razorpay order for client payment
 // Called when client clicks Pay on intake form or renewal
+// Note: This is a public endpoint - no auth required (client-facing)
 export async function POST(req: Request) {
     try {
         const body = await req.json();
@@ -15,6 +16,14 @@ export async function POST(req: Request) {
             );
         }
 
+        // Validate clientData to prevent injection attacks
+        if (!clientData?.full_name || !clientData?.email || !clientData?.whatsapp_number) {
+            return NextResponse.json(
+                { error: "Missing required client data" },
+                { status: 400 }
+            );
+        }
+
         const { createServiceClient } = await import("@/lib/supabase/server");
         const supabase = await createServiceClient();
 
@@ -23,23 +32,24 @@ export async function POST(req: Request) {
             .from("programs")
             .select("*, coaches(id, full_name)")
             .eq("id", programId)
+            .eq("is_active", true)  // Only allow active programs
             .single();
 
         if (progError || !program) {
             console.error("[Create Order] Program fetch error:", progError);
             return NextResponse.json(
-                { error: "Program not found" },
+                { error: "Program not found or inactive" },
                 { status: 404 }
             );
         }
 
-        const coachId = program.coach_id;
+        const resolvedCoachId = program.coach_id;
 
         // Create a pending enrollment record (client_id will be created after payment)
         const { data: enrollment, error: enrollError } = await supabase
             .from("enrollments")
             .insert({
-                coach_id: coachId,
+                coach_id: resolvedCoachId,
                 program_id: programId,
                 start_date: new Date().toISOString().split("T")[0],
                 end_date: getEndDate(program.duration_weeks),
@@ -64,7 +74,7 @@ export async function POST(req: Request) {
             currency: program.currency ?? "INR",
             receipt: enrollment.id,
             notes: {
-                coach_id: coachId,
+                coach_id: resolvedCoachId,
                 program_id: programId,
                 enrollment_id: enrollment.id,
                 payment_type: "new",

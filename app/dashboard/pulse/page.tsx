@@ -39,6 +39,7 @@ function getInitials(name: string): string {
 export default function WeeklyPulsePage() {
   const [data, setData] = useState<PulseData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"all" | "at-risk" | "strong" | "watch">("all");
 
   useEffect(() => {
@@ -48,11 +49,15 @@ export default function WeeklyPulsePage() {
   async function fetchPulseData() {
     try {
       const res = await fetch("/api/pulse/data");
-      if (!res.ok) throw new Error("Failed to fetch pulse data");
+      if (!res.ok) {
+        throw new Error("Failed to load Weekly Pulse data");
+      }
       const result = await res.json();
       setData(result);
-    } catch (error) {
-      console.error("Error fetching pulse data:", error);
+      setError(null);
+    } catch (err) {
+      console.error("Error fetching pulse data:", err);
+      setError("Failed to load Weekly Pulse data. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -60,10 +65,32 @@ export default function WeeklyPulsePage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-center">
-          <div className="animate-spin h-8 w-8 border-4 border-brand border-t-transparent rounded-full mx-auto mb-4" />
-          <p className="text-muted-foreground">Loading Weekly Pulse...</p>
+      <div className="flex-1 w-full bg-background text-white font-sans overflow-y-auto pb-24">
+        <NavBar title="Weekly Pulse" back="Home" backHref="/dashboard" />
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center">
+            <div className="animate-spin h-8 w-8 border-4 border-brand border-t-transparent rounded-full mx-auto mb-4" />
+            <p className="text-muted-foreground">Loading Weekly Pulse...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex-1 w-full bg-background text-white font-sans overflow-y-auto pb-24">
+        <NavBar title="Weekly Pulse" back="Home" backHref="/dashboard" />
+        <div className="p-4">
+          <Card className="border-destructive/50">
+            <CardContent className="flex flex-col items-center justify-center py-8">
+              <AlertTriangle className="h-8 w-8 text-destructive mb-4" />
+              <p className="text-sm text-destructive font-medium">{error}</p>
+              <Button onClick={fetchPulseData} variant="outline" className="mt-4">
+                Retry
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </div>
     );
@@ -78,8 +105,15 @@ export default function WeeklyPulsePage() {
       ? data?.clients_strong || []
       : data?.clients_watch || [];
 
+  function handleMessage(clientName: string) {
+    // In production, fetch client's WhatsApp number from API
+    // For now, show a toast/placeholder
+    alert(`Opening WhatsApp chat with ${clientName}...`);
+    // window.open(`https://wa.me/${clientWhatsapp}`, '_blank');
+  }
+
   return (
-    <div className="flex-1 w-full bg-[#0A0A0A] text-white font-sans overflow-y-auto pb-24">
+    <div className="flex-1 w-full bg-background text-white font-sans overflow-y-auto pb-24">
       <NavBar
         title="Weekly Pulse"
         back="Home"
@@ -220,7 +254,7 @@ export default function WeeklyPulsePage() {
                       <p className="text-sm font-medium">{client.name}</p>
                       <p className="text-xs text-muted-foreground">{client.reason}</p>
                     </div>
-                    <Button size="sm" variant="outline" className="text-xs">
+                    <Button size="sm" variant="outline" className="text-xs" onClick={() => handleMessage(client.name)}>
                       Message
                     </Button>
                   </div>
