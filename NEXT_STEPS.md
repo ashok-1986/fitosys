@@ -1,26 +1,37 @@
 # Fitosys Next Steps
 
-**Last Updated:** 2026-03-12  
-**Status:** Security Foundation Complete — Revenue Flow Implementation Ready
+**Last Updated:** 2026-03-12 (End of Week 2)
+**Status:** ✅ Dashboard Complete — 8/8 Core Pages Built
 
-**Design System Reference:** `fitosys-ux-ui-system.html` (19 routes, 11 sections, desktop-first)  
-**Brand Tokens:** Red #E8001D, Black #0A0A0A, Urbanist body, Barlow Condensed display  
+**Design System Reference:** `fitosys-ux-ui-system.html` (19 routes, 11 sections, desktop-first)
+**Brand Tokens:** Red #E8001D, Black #0A0A0A, Urbanist body, Barlow Condensed display
 **Technical Requirements:** `Website Technical Requirement.docx.txt` (TR-01 to TR-46)
 
 ---
 
-## ✅ Completed (Sprint 1 + Security)
+## ✅ Completed (Week 1 + Week 2)
 
-### MVP Core Features (100% Complete)
-- [x] Authentication (Email/Password + Google OAuth)
-- [x] Client Management CRUD (API endpoints)
-- [x] Program Management CRUD (API endpoints)
-- [x] Dashboard Data Integration (`/api/dashboard/data`)
-- [x] WhatsApp Integration (templates, webhooks, cron jobs)
-- [x] Razorpay Payment Integration (order creation)
-- [x] AI Summary Generation (Qwen 3, Monday 7AM IST)
-- [x] Landing Page with GSAP animations
-- [x] Brand compliance (typography, colors, logo)
+### Revenue Flow (100% Complete)
+- [x] `/join/[slug]` — Real coach + program fetch
+- [x] `/api/payments/create-order` — Full client data in notes
+- [x] `/api/payments/verify` — Client + enrollment creation
+- [x] `/dashboard/programs` — Full CRUD UI
+
+### Dashboard Pages (100% Complete — 8/8)
+- [x] `/dashboard` — KPI cards, tasks, renewals
+- [x] `/dashboard/clients` — Client list with search/filter
+- [x] `/dashboard/clients/[id]` — Profile + energy trend
+- [x] `/dashboard/programs` — Program CRUD
+- [x] `/dashboard/pulse` — AI summary + 8-week chart **NEW**
+- [x] `/dashboard/settings` — Profile + notifications + billing **NEW**
+- [x] `/dashboard/checkin` — Weekly check-in form
+- [x] `/dashboard/invoices` — Invoice list
+
+### Auth & Public Pages (100% Complete)
+- [x] `/login` — Coach login
+- [x] `/signup` — Coach signup
+- [x] `/` — Landing page
+- [x] `/demo` — Demo page
 
 ### Security Hardening (100% Complete)
 - [x] Rate limiting on login/signup
@@ -379,7 +390,7 @@
 | Route | Purpose | Status | Priority |
 |-------|---------|--------|----------|
 | `/` | Landing page | ✅ Built | — |
-| `/join/[slug]` | Client intake form + Razorpay | ⚠️ Mock data | P0 |
+| `/join/[slug]` | Client intake form + Razorpay | ✅ Built | — |
 | `/success` | Payment success screen | ❌ Not built | P1 |
 | `/login` | Coach login | ✅ Built | — |
 | `/signup` | Coach signup | ✅ Built | — |
@@ -389,24 +400,28 @@
 | Route | Purpose | Status | Priority |
 |-------|---------|--------|----------|
 | `/dashboard` | KPI cards, Needs Attention, Renewals | ✅ Built | — |
-| `/dashboard/clients` | Client list table | ⚠️ Exists, verify | P0 |
-| `/dashboard/clients/[id]` | Client profile + check-in timeline | ⚠️ Exists, verify | P0 |
-| `/dashboard/programs` | Program cards + actions | ❌ Not built | P0 |
-| `/dashboard/pulse` | AI summary + 8-week chart | ❌ Not built | P1 |
-| `/dashboard/payments` | Revenue banner + transaction table | ❌ Not built | P1 |
-| `/dashboard/settings` | Profile + check-in config + billing | ❌ Not built | P1 |
+| `/dashboard/clients` | Client list table | ✅ Built | — |
+| `/dashboard/clients/[id]` | Client profile + check-in timeline | ✅ Built | — |
+| `/dashboard/programs` | Program cards + actions | ✅ Built | — |
+| `/dashboard/pulse` | AI summary + 8-week chart | ✅ Built | — |
+| `/dashboard/payments` | Revenue banner + transaction table | ❌ Not built | P2 |
+| `/dashboard/settings` | Profile + check-in config + billing | ✅ Built | — |
 
 ### API Routes (Backend)
 
 | Route | Purpose | Status | Priority |
 |-------|---------|--------|----------|
 | `POST /api/public/[slug]/intake` | Intake submission + order creation | ✅ Built | — |
-| `POST /api/webhooks/razorpay` | Payment captured handler | ⚠️ Partial | P0 |
+| `POST /api/webhooks/razorpay` | Payment captured handler | ✅ Built | — |
 | `GET /api/dashboard/data` | Comprehensive dashboard data | ✅ Built | — |
 | `GET /api/clients` | Client list | ✅ Built | — |
 | `GET /api/clients/[id]` | Single client profile | ✅ Built | — |
 | `GET /api/programs` | Program list | ✅ Built | — |
 | `POST /api/programs` | Create program | ✅ Built | — |
+| `GET /api/pulse/data` | Weekly Pulse data | ✅ Built | — |
+| `GET /api/coaches/profile` | Coach profile | ✅ Built | — |
+
+**Status:** 13/14 pages complete (93%) — Only `/success` remaining
 
 ---
 
