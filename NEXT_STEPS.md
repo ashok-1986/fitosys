@@ -1,7 +1,11 @@
 # Fitosys Next Steps
 
 **Last Updated:** 2026-03-12  
-**Status:** Security Foundation Complete — Ready for Feature Development
+**Status:** Security Foundation Complete — Revenue Flow Implementation Ready
+
+**Design System Reference:** `fitosys-ux-ui-system.html` (19 routes, 11 sections, desktop-first)  
+**Brand Tokens:** Red #E8001D, Black #0A0A0A, Urbanist body, Barlow Condensed display  
+**Technical Requirements:** `Website Technical Requirement.docx.txt` (TR-01 to TR-46)
 
 ---
 
@@ -9,12 +13,12 @@
 
 ### MVP Core Features (100% Complete)
 - [x] Authentication (Email/Password + Google OAuth)
-- [x] Client Management CRUD
-- [x] Program Management CRUD
-- [x] Dashboard Data Integration
+- [x] Client Management CRUD (API endpoints)
+- [x] Program Management CRUD (API endpoints)
+- [x] Dashboard Data Integration (`/api/dashboard/data`)
 - [x] WhatsApp Integration (templates, webhooks, cron jobs)
-- [x] Razorpay Payment Integration
-- [x] AI Summary Generation (Qwen 3)
+- [x] Razorpay Payment Integration (order creation)
+- [x] AI Summary Generation (Qwen 3, Monday 7AM IST)
 - [x] Landing Page with GSAP animations
 - [x] Brand compliance (typography, colors, logo)
 
@@ -31,7 +35,17 @@
 
 ---
 
-## 🎯 Next Priorities (Sprint 2)
+## ⚠️ Partially Built (Needs Wiring)
+
+| Feature | File | Status | Gap |
+|---------|------|--------|-----|
+| Intake page | `app/join/[slug]/page.tsx` | 80% | Uses `MOCK_COACH` + `MOCK_PROGRAMS` |
+| Razorpay webhook | `app/api/webhooks/razorpay/route.ts` | 70% | Doesn't create client/enrollment on first payment |
+| Dashboard data API | `app/api/dashboard/data/route.ts` | 90% | Exists, UI components need wiring |
+
+---
+
+## 🎯 Next Priorities (Sprint 2) — Revenue Flow First
 
 ### P0 — Critical Path (Week 1-2)
 
@@ -358,5 +372,102 @@
 
 ---
 
+## 📋 Appendix A — Complete Route Inventory (from UX/UI System)
+
+### Public Routes (No Auth)
+
+| Route | Purpose | Status | Priority |
+|-------|---------|--------|----------|
+| `/` | Landing page | ✅ Built | — |
+| `/join/[slug]` | Client intake form + Razorpay | ⚠️ Mock data | P0 |
+| `/success` | Payment success screen | ❌ Not built | P1 |
+| `/login` | Coach login | ✅ Built | — |
+| `/signup` | Coach signup | ✅ Built | — |
+
+### Coach Dashboard Routes (Auth Required)
+
+| Route | Purpose | Status | Priority |
+|-------|---------|--------|----------|
+| `/dashboard` | KPI cards, Needs Attention, Renewals | ✅ Built | — |
+| `/dashboard/clients` | Client list table | ⚠️ Exists, verify | P0 |
+| `/dashboard/clients/[id]` | Client profile + check-in timeline | ⚠️ Exists, verify | P0 |
+| `/dashboard/programs` | Program cards + actions | ❌ Not built | P0 |
+| `/dashboard/pulse` | AI summary + 8-week chart | ❌ Not built | P1 |
+| `/dashboard/payments` | Revenue banner + transaction table | ❌ Not built | P1 |
+| `/dashboard/settings` | Profile + check-in config + billing | ❌ Not built | P1 |
+
+### API Routes (Backend)
+
+| Route | Purpose | Status | Priority |
+|-------|---------|--------|----------|
+| `POST /api/public/[slug]/intake` | Intake submission + order creation | ✅ Built | — |
+| `POST /api/webhooks/razorpay` | Payment captured handler | ⚠️ Partial | P0 |
+| `GET /api/dashboard/data` | Comprehensive dashboard data | ✅ Built | — |
+| `GET /api/clients` | Client list | ✅ Built | — |
+| `GET /api/clients/[id]` | Single client profile | ✅ Built | — |
+| `GET /api/programs` | Program list | ✅ Built | — |
+| `POST /api/programs` | Create program | ✅ Built | — |
+
+---
+
+## 📋 Appendix B — Brand Tokens (from Brand Identity v2)
+
+### Colours
+```css
+--red: #E8001D        /* Primary signal colour */
+--black: #0A0A0A      /* Dominant background */
+--surface: #111111    /* Card surface */
+--white: #FFFFFF      /* Primary text */
+--grey: #A0A0A0       /* Secondary text */
+--warning: #F59E0B
+--success: #10B981
+--danger: #EF4444
+```
+
+### Typography
+```css
+/* Display: Barlow Condensed */
+font-family: 'Barlow Condensed', sans-serif;
+Weights: 600, 700, 800, 900
+Usage: Headlines, section titles, labels (uppercase)
+
+/* Body: Urbanist */
+font-family: 'Urbanist', sans-serif;
+Weights: 300, 400, 500, 600, 700
+Usage: Body copy, UI text, captions, buttons
+```
+
+### Visual Effects
+- Noise overlay: 4% opacity SVG turbulence filter
+- Red glow: `rgba(232,0,29,0.15)` radial gradient
+- Border accent: `rgba(232,0,29,0.2)` for active states
+
+---
+
+## 📋 Appendix C — Technical Requirements (Key TRs)
+
+### Layout (TR-01 to TR-04)
+- **TR-01:** Full-viewport sections (min-height: 100vh)
+- **TR-03:** Fixed nav (z-index: 100, blur after 60px scroll)
+- **TR-04:** Z-index stack defined (mobile menu: 999, nav: 100, content: 2, bg: 0)
+
+### Performance (TR-21 to TR-25)
+- **TR-21:** LCP < 2.5s on 4G, CLS < 0.1
+- **TR-24:** No third-party scripts on initial load
+- **TR-25:** Single HTML file, < 150KB excluding fonts
+
+### Accessibility (TR-36 to TR-39)
+- **TR-36:** WCAG AA contrast (4.5:1 body, 3:1 large text)
+- **TR-37:** Keyboard navigation with visible focus states
+- **TR-38:** Alt text on all images, aria-hidden on decorative SVG
+
+### Testing (TR-43 to TR-46)
+- **TR-43:** Browser support: Chrome, Safari, Firefox, **Samsung Internet**
+- **TR-44:** Device tests: iPhone 14, Galaxy A54, iPad Air, MacBook 13"
+- **TR-45:** Lighthouse 85+ across all categories
+
+---
+
 **Document Owner:** Ashok Verma  
-**Next Review:** 2026-03-19 (End of Week 1)
+**Next Review:** 2026-03-19 (End of Week 1)  
+**Design System Version:** v2.0 (2026)
