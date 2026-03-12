@@ -5,7 +5,8 @@ import { createRazorpayOrder } from "@/lib/razorpay/create-order";
 // Called when client clicks Pay on intake form or renewal
 export async function POST(req: Request) {
     try {
-        const { programId, clientData, coachId } = await req.json();
+        const body = await req.json();
+        const { programId, clientData, slug } = body;
 
         if (!programId) {
             return NextResponse.json(
@@ -17,27 +18,28 @@ export async function POST(req: Request) {
         const { createServiceClient } = await import("@/lib/supabase/server");
         const supabase = await createServiceClient();
 
-        // Fetch program details
-        const { data: program, error } = await supabase
+        // Fetch program details with coach info
+        const { data: program, error: progError } = await supabase
             .from("programs")
-            .select("*, coaches(full_name, id)")
+            .select("*, coaches(id, full_name)")
             .eq("id", programId)
             .single();
 
-        if (error || !program) {
+        if (progError || !program) {
+            console.error("[Create Order] Program fetch error:", progError);
             return NextResponse.json(
                 { error: "Program not found" },
                 { status: 404 }
             );
         }
 
-        const resolvedCoachId = coachId || program.coach_id;
+        const coachId = program.coach_id;
 
-        // Create a pending enrollment record (client_id is null until payment verified)
-        const { data: enrollment } = await supabase
+        // Create a pending enrollment record (client_id will be created after payment)
+        const { data: enrollment, error: enrollError } = await supabase
             .from("enrollments")
             .insert({
-                coach_id: resolvedCoachId,
+                coach_id: coachId,
                 program_id: programId,
                 start_date: new Date().toISOString().split("T")[0],
                 end_date: getEndDate(program.duration_weeks),
@@ -48,28 +50,31 @@ export async function POST(req: Request) {
             .select()
             .single();
 
-        if (!enrollment) {
+        if (enrollError || !enrollment) {
+            console.error("[Create Order] Enrollment creation error:", enrollError);
             return NextResponse.json(
-                { error: "Failed to create enrollment" },
+                { error: "Failed to create enrollment record" },
                 { status: 500 }
             );
         }
 
-        // Create Razorpay order
+        // Create Razorpay order with full client data in notes
         const order = await createRazorpayOrder({
             amount: program.price,
             currency: program.currency ?? "INR",
             receipt: enrollment.id,
             notes: {
-                coach_id: resolvedCoachId,
+                coach_id: coachId,
                 program_id: programId,
                 enrollment_id: enrollment.id,
-                ...(clientData
-                    ? {
-                        client_name: clientData.full_name,
-                        client_whatsapp: clientData.whatsapp_number,
-                    }
-                    : {}),
+                payment_type: "new",
+                // Client data for webhook to create client record
+                client_full_name: clientData?.full_name || "",
+                client_whatsapp: clientData?.whatsapp_number || "",
+                client_email: clientData?.email || "",
+                client_age: String(clientData?.age || ""),
+                client_primary_goal: clientData?.primary_goal || "",
+                client_health_notes: clientData?.health_notes || "",
             },
         });
 

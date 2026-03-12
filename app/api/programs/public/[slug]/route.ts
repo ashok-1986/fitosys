@@ -31,7 +31,7 @@ export async function GET(
     // Get active programs
     const { data: programs, error: progError } = await supabase
         .from("programs")
-        .select("id, name, description, duration_weeks, price, currency, checkin_type")
+        .select("id, name, description, duration_weeks, price, currency, is_active")
         .eq("coach_id", coach.id)
         .eq("is_active", true)
         .order("price", { ascending: true });
