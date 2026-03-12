@@ -43,7 +43,8 @@ export default function DashboardLayout({
           tabs={[
             { id: "home", label: "Home", href: "/dashboard", icon: <Bell className="h-5 w-5" /> },
             { id: "clients", label: "Clients", href: "/dashboard/clients", icon: <Bell className="h-5 w-5" /> },
-            { id: "checkin", label: "Check-in", href: "/dashboard/checkin", icon: <Bell className="h-5 w-5" /> },
+            { id: "programs", label: "Programs", href: "/dashboard/programs", icon: <Bell className="h-5 w-5" /> },
+            { id: "pulse", label: "Pulse", href: "/dashboard/pulse", icon: <Bell className="h-5 w-5" /> },
             { id: "settings", label: "Settings", href: "/dashboard/settings", icon: <Bell className="h-5 w-5" /> },
           ]}
         />
