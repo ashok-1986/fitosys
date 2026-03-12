@@ -12,13 +12,15 @@ import {
     getClientIP,
 } from "@/lib/rate-limit";
 import { generateGSTInvoice } from "@/lib/gst/generate-invoice";
+import { logRequest, logError } from "@/lib/loggerHelpers";
 
 // POST /api/payments/verify — Verify Razorpay payment signature + activate enrollment
 // Called immediately after the Razorpay modal closes successfully on frontend
 export async function POST(req: NextRequest) {
+    logRequest(req, "POST /api/payments/verify");
     // Rate limit: 20 requests per minute per IP
     const ip = getClientIP(req);
-    const { allowed, retryAfterMs } = checkRateLimit(`verify:${ip}`, {
+    const { allowed, retryAfterMs } = await checkRateLimit(`verify:${ip}`, {
         maxRequests: 20,
     });
     if (!allowed) {
@@ -293,7 +295,7 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({ success: true, clientId });
     } catch (error) {
-        console.error("[Razorpay] Payment verify error:", error);
+        logError(error, "POST /api/payments/verify");
         return NextResponse.json(
             { error: "Payment verification failed" },
             { status: 500 }

@@ -51,7 +51,7 @@ export default function SignupPage() {
 
         startTransition(async () => {
             const result = await signupAction(formData);
-            if (result?.error) {
+            if (!result.success) {
                 setError(result.error);
             }
         });

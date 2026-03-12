@@ -7,6 +7,7 @@ import {
     rateLimitResponse,
     getClientIP,
 } from "@/lib/rate-limit";
+import { logRequest, logError } from "@/lib/loggerHelpers";
 
 // Zod schema for intake validation
 const intakeSchema = z.object({
@@ -42,9 +43,10 @@ const intakeSchema = z.object({
 // POST /api/public/intake — Submit intake form + create Razorpay order
 // No auth required — this is the public client-facing endpoint
 export async function POST(request: NextRequest) {
+    logRequest(request, "POST /api/public/intake");
     // Rate limit: 10 requests per minute per IP
     const ip = getClientIP(request);
-    const { allowed, retryAfterMs } = checkRateLimit(`intake:${ip}`, {
+    const { allowed, retryAfterMs } = await checkRateLimit(`intake:${ip}`, {
         maxRequests: 10,
     });
     if (!allowed) {
@@ -113,7 +115,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json(
                 {
                     error: "Coach capacity reached",
-                    upgrade_required: true
+                    upgrade_required: true,
                 },
                 { status: 403 }
             );

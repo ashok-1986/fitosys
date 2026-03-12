@@ -1,28 +1,17 @@
 import { NextResponse } from "next/server";
-import crypto from "crypto";
+import { logError, logRequest } from "@/lib/loggerHelpers";
+import { verifyRazorpaySignature } from "@/lib/webhook/verifyRazorpay";
 
 // POST /api/webhooks/razorpay — Razorpay webhook handler
 // Handles: payment.captured, payment.failed, subscription.charged, subscription.halted
 export async function POST(req: Request) {
     try {
+        logRequest(req as any, "POST /api/webhooks/razorpay");
         const body = await req.text();
-        const signature = req.headers.get("x-razorpay-signature");
-
-        if (!signature) {
-            return NextResponse.json(
-                { error: "Missing signature" },
-                { status: 400 }
-            );
-        }
-
-        // Verify webhook signature
-        const expectedSig = crypto
-            .createHmac("sha256", process.env.RAZORPAY_WEBHOOK_SECRET!)
-            .update(body)
-            .digest("hex");
-
-        if (signature !== expectedSig) {
-            console.error("[Razorpay Webhook] Invalid signature");
+        const signature = req.headers.get("x-razorpay-signature") ?? "";
+        const isValid = verifyRazorpaySignature(body, signature);
+        if (!isValid) {
+            logError("Invalid signature", "razorpay-webhook");
             return NextResponse.json(
                 { error: "Invalid signature" },
                 { status: 400 }

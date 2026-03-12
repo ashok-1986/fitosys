@@ -4,6 +4,179 @@ All notable changes to the Fitosys landing page and application are documented h
 
 ---
 
+## [2026-03-12] — Security Hardening: 9 Critical Authentication Fixes
+
+### 🔐 Security Implementation Complete
+
+**All 9 prioritized security fixes implemented and verified.**
+
+---
+
+### 🛡️ Security Fixes Implemented
+
+| Priority | Issue | Status |
+|----------|-------|--------|
+| 1 | Rate limiting on login/signup | ✅ Complete |
+| 2 | Zod validation + typing | ✅ Complete |
+| 3 | Logging in auth actions | ✅ Complete |
+| 4 | Slug uniqueness | ✅ Complete |
+| 5 | Email normalisation + WhatsApp validation | ✅ Complete |
+| 6 | try/catch around Supabase calls | ✅ Complete |
+| 7 | OAuth redirect whitelist | ✅ Complete |
+| 8 | Password complexity | ✅ Complete |
+| 9 | Error propagation | ✅ Complete |
+
+---
+
+### 📝 Detailed Changes
+
+#### 1. Rate Limiting (P0 - Brute Force Prevention)
+
+**Files:** `app/actions/auth.ts`, `lib/rate-limit.ts`
+
+- **Login:** 10 requests per 15 minutes per IP
+- **Signup:** 3 requests per 60 minutes per IP
+- Returns `RATE_LIMITED` error code with clear user messaging
+
+```typescript
+const { success: allowed } = await loginRateLimit.limit(ip);
+if (!allowed) {
+  return { success: false, error: "Too many login attempts. Please try again in 15 minutes.", code: "RATE_LIMITED" };
+}
+```
+
+---
+
+#### 2. Zod Validation (P1 - Data Integrity)
+
+**Files:** `app/actions/auth.ts`, `lib/validation.ts`
+
+- Replaced all manual validation with Zod schemas
+- `loginSchema`: email + password (min 8 chars)
+- `signupSchema`: full_name, email, password, whatsapp_number, country
+- Password complexity enforced via regex (uppercase, lowercase, number)
+- Email auto-lowercased and trimmed at schema level
+
+```typescript
+const validation = validateRequest({ email, password }, loginSchema);
+if (!validation.success) {
+  return { success: false, error: msg, code: "VALIDATION" };
+}
+```
+
+---
+
+#### 3. Logging (P2 - Observability)
+
+**Files:** `app/actions/auth.ts`, `lib/loggerHelpers.ts`
+
+- `logEvent()` calls for all auth attempts, successes, and failures
+- `logError()` for exception handling
+- Events logged: `auth.login.attempt`, `auth.login.success`, `auth.login.failed`, `auth.signup.attempt`, `auth.signup.success`, `auth.signup.failed`
+- IP addresses captured for audit trail
+
+---
+
+#### 4. Slug Uniqueness (P3 - Data Integrity)
+
+**Files:** `lib/slug.ts`, `app/actions/auth.ts`
+
+- New `generateUniqueSlug()` function with retry loop
+- Checks existing slugs before insert
+- Appends numeric suffix (`priya-sharma-1`, `priya-sharma-2`) on collision
+- Fallback to timestamp suffix after 10 attempts
+- Prevents 500 errors on duplicate coach names
+
+---
+
+#### 5. Email Normalisation + WhatsApp Validation (P4 - Data Quality)
+
+**Files:** `lib/validation.ts`
+
+- Email: `.toLowerCase().trim()` in Zod schema
+- WhatsApp: E.164 regex validation (`/^\+[1-9]\d{6,14}$/`)
+- Country: ISO 3166-1 alpha-2 (2-char code) validation
+- Prevents downstream logic breaks from inconsistent data
+
+---
+
+#### 6. try/catch Around Supabase Calls (P5 - Error Handling)
+
+**Files:** `app/actions/auth.ts`
+
+- Separate error handling for Auth vs DB operations
+- Auth success + DB failure = clear user message ("Account created but profile setup failed")
+- Prevents silent failures where auth succeeds but DB insert fails
+- Proper error logging with context (`signupAction.coachInsert`)
+
+---
+
+#### 7. OAuth Redirect Whitelist (P6 - Open Redirect Prevention)
+
+**Files:** `lib/auth/getAllowedRedirectUrl.ts`, `app/actions/auth.ts`
+
+- Env-based whitelist (`NEXT_PUBLIC_APP_URL`, `http://localhost:3000`)
+- Validates redirect URLs against allowed origins
+- Falls back to `/dashboard` on invalid/malicious URLs
+- Prevents open redirect attacks via crafted callback URLs
+
+```typescript
+const allowedUrl = getAllowedRedirectUrl(callbackUrl);
+```
+
+---
+
+#### 8. Password Complexity (P7 - Account Security)
+
+**Files:** `lib/validation.ts`
+
+Enforced via `signupSchema`:
+```typescript
+password: z.string()
+  .min(8)
+  .regex(/[A-Z]/, "Must contain uppercase letter")
+  .regex(/[a-z]/, "Must contain lowercase letter")
+  .regex(/[0-9]/, "Must contain a number")
+```
+
+---
+
+#### 9. Error Code Propagation (P8 - Client UX)
+
+**Files:** `app/actions/auth.ts`, `app/(auth)/login/page.tsx`, `app/(auth)/signup/page.tsx`
+
+- New `AuthResult` discriminated union type:
+```typescript
+type AuthResult =
+  | { success: true }
+  | { success: false; error: string; code: "RATE_LIMITED" | "VALIDATION" | "AUTH" | "SERVER" };
+```
+- Client components updated to check `!result.success` instead of `result?.error`
+- Enables client-side UI differentiation (rate limit countdown, field highlighting, retry buttons)
+
+---
+
+### 🐛 Bug Fixes
+
+**File:** `app/api/public/intake/route.ts`
+
+- Removed duplicate code block (lines 214-326) causing TypeScript compilation errors
+- Fixed inconsistent indentation in POST handler
+
+**Files:** `app/(auth)/login/page.tsx`, `app/(auth)/signup/page.tsx`
+
+- Fixed TypeScript errors with `AuthResult` type handling
+- Changed from `result?.error` to `!result.success` pattern for discriminated union
+
+---
+
+### 🚀 Deployment
+
+✅ **Build successful** — Compiled in 6.8s, no TypeScript errors
+✅ **Production URL:** https://fitosys.alchemetryx.com
+
+---
+
 ## [2026-03-11] — Sprint 1 Complete: MVP Core Features
 
 ### 🎉 Sprint 1: 100% Complete (5/5 P0 Tasks)

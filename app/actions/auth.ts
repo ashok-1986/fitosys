@@ -1,121 +1,234 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
+import { createClient } from "@/lib/supabase/server";
+import { validateRequest, loginSchema, signupSchema } from "@/lib/validation";
+import { loginRateLimit, signupRateLimit } from "@/lib/rate-limit";
+import { logError, logEvent } from "@/lib/loggerHelpers";
+import { generateUniqueSlug } from "@/lib/slug";
+import { getAllowedRedirectUrl } from "@/lib/auth/getAllowedRedirectUrl";
 
-export async function loginAction(formData: FormData) {
+export type AuthResult =
+  | { success: true }
+  | {
+      success: false;
+      error: string;
+      code: "RATE_LIMITED" | "VALIDATION" | "AUTH" | "SERVER";
+    };
+
+export async function loginAction(formData: FormData): Promise<AuthResult> {
+  const ip = (await headers()).get("x-forwarded-for") ?? "unknown";
+
+  // 1. Rate limit
+  const { success: allowed } = await loginRateLimit.limit(ip);
+  if (!allowed) {
+    return {
+      success: false,
+      error: "Too many login attempts. Please try again in 15 minutes.",
+      code: "RATE_LIMITED",
+    };
+  }
+
+  logEvent("auth.login.attempt", { ip });
+
+  // 2. Validate
+  const validation = validateRequest(
+    {
+      email: formData.get("email"),
+      password: formData.get("password"),
+    },
+    loginSchema
+  );
+
+  if (!validation.success) {
+    const msg = Object.values(validation.errors)[0]?.[0] ?? "Invalid input";
+    return { success: false, error: msg, code: "VALIDATION" };
+  }
+
+  const { email, password } = validation.data;
+
+  // 3. Supabase Auth
+  try {
     const supabase = await createClient();
-
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-
-    if (!email || !password) {
-        return { error: "Email and password are required." };
-    }
-
     const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      email,
+      password,
     });
 
     if (error) {
-        return { error: error.message };
+      logEvent("auth.login.failed", { ip, reason: error.message });
+      return {
+        success: false,
+        error: "Invalid email or password.",
+        code: "AUTH",
+      };
     }
 
-    redirect("/dashboard");
+    logEvent("auth.login.success", { email });
+  } catch (err) {
+    logError(err, "loginAction");
+    return {
+      success: false,
+      error: "Login failed. Please try again.",
+      code: "SERVER",
+    };
+  }
+
+  redirect("/dashboard");
 }
 
-export async function signupAction(formData: FormData) {
+export async function signupAction(formData: FormData): Promise<AuthResult> {
+  const ip = (await headers()).get("x-forwarded-for") ?? "unknown";
+
+  // 1. Rate limit
+  const { success: allowed } = await signupRateLimit.limit(ip);
+  if (!allowed) {
+    return {
+      success: false,
+      error: "Too many signup attempts from this IP. Please try again in 60 minutes.",
+      code: "RATE_LIMITED",
+    };
+  }
+
+  logEvent("auth.signup.attempt", { ip });
+
+  // 2. Validate
+  const validation = validateRequest(
+    {
+      full_name: formData.get("full_name"),
+      email: formData.get("email"),
+      password: formData.get("password"),
+      whatsapp_number: formData.get("whatsapp_number"),
+      country: formData.get("country"),
+    },
+    signupSchema
+  );
+
+  if (!validation.success) {
+    const msg = Object.values(validation.errors)[0]?.[0] ?? "Invalid input";
+    return { success: false, error: msg, code: "VALIDATION" };
+  }
+
+  const { full_name, email, password, whatsapp_number, country } =
+    validation.data;
+
+  // 3. Supabase Auth + DB Insert
+  try {
     const supabase = await createClient();
-
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-    const fullName = formData.get("fullName") as string;
-    const whatsapp = formData.get("whatsapp") as string;
-    const country = formData.get("country") as string;
-    const dialCode = formData.get("dialCode") as string;
-
-    if (!email || !password || !fullName) {
-        return { error: "All required fields must be filled." };
-    }
-
-    if (password.length < 8) {
-        return { error: "Password must be at least 8 characters." };
-    }
-
-    const { data, error: authError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-            data: {
-                full_name: fullName,
-            },
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name,
         },
+      },
     });
 
     if (authError) {
-        return { error: authError.message };
+      logEvent("auth.signup.failed", { ip, reason: authError.message });
+      return {
+        success: false,
+        error: authError.message,
+        code: "AUTH",
+      };
     }
 
-    // Create coach record if signup was successful
-    if (data.user) {
-        const slug = fullName
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, "-")
-            .replace(/^-|-$/g, "");
-
-        const { error: insertError } = await supabase.from("coaches").insert({
-            id: data.user.id,
-            email,
-            full_name: fullName,
-            whatsapp_number: `${dialCode}${whatsapp}`,
-            country_code: country,
-            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-            coaching_type: ["fitness"],
-            plan: "trial",
-            checkin_day: 0,
-            checkin_time: "19:00",
-            slug,
-            status: "active",
-        });
-
-        if (insertError) {
-            console.error("Coach insert error:", insertError);
-            // Don't fail — auth succeeded, coach record can be created later
-        }
+    if (!authData.user) {
+      return {
+        success: false,
+        error: "Account creation failed. Please try again.",
+        code: "SERVER",
+      };
     }
 
-    redirect("/dashboard");
+    // 4. Generate unique slug
+    const slug = await generateUniqueSlug(full_name);
+
+    // 5. DB insert — separate failure mode (auth already succeeded)
+    const { error: dbError } = await supabase.from("coaches").insert({
+      id: authData.user.id,
+      email,
+      full_name,
+      whatsapp_number,
+      country_code: country,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      coaching_type: ["fitness"],
+      plan: "trial",
+      checkin_day: 0,
+      checkin_time: "19:00",
+      slug,
+      status: "active",
+    });
+
+    if (dbError) {
+      logError(dbError, "signupAction.coachInsert");
+      return {
+        success: false,
+        error: "Account created but profile setup failed. Please contact support.",
+        code: "SERVER",
+      };
+    }
+
+    logEvent("auth.signup.success", { email, country, slug });
+  } catch (err) {
+    logError(err, "signupAction");
+    return {
+      success: false,
+      error: "Signup failed. Please try again.",
+      code: "SERVER",
+    };
+  }
+
+  redirect("/dashboard");
 }
 
 export async function logoutAction() {
-    const supabase = await createClient();
-    await supabase.auth.signOut();
-    redirect("/login");
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  redirect("/login");
 }
 
 export async function googleSignInAction() {
-    const supabase = await createClient();
+  const supabase = await createClient();
 
-    const headersList = await headers();
-    const host = headersList.get("x-forwarded-host") ?? headersList.get("host") ?? "localhost:3000";
-    const protocol = headersList.get("x-forwarded-proto") ?? (host.includes("localhost") ? "http" : "https");
-    const callbackUrl = `${protocol}://${host}/api/auth/callback`;
+  const headersList = await headers();
+  const host =
+    headersList.get("x-forwarded-host") ??
+    headersList.get("host") ??
+    "localhost:3000";
+  const protocol = headersList.get("x-forwarded-proto") ??
+    (host.includes("localhost") ? "http" : "https");
+  const baseUrl = `${protocol}://${host}`;
+  const callbackUrl = `${baseUrl}/api/auth/callback`;
 
-    const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-            redirectTo: callbackUrl,
-        },
-    });
+  // Validate redirect URL
+  const allowedUrl = getAllowedRedirectUrl(callbackUrl);
 
-    if (error) {
-        console.error("Google OAuth error:", error);
-        return { error: error.message };
-    }
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: allowedUrl,
+    },
+  });
 
-    if (data.url) {
-        redirect(data.url);
-    }
+  if (error) {
+    logError(error, "googleSignInAction");
+    return {
+      success: false,
+      error: error.message,
+      code: "AUTH",
+    } as AuthResult;
+  }
+
+  if (data.url) {
+    redirect(data.url);
+  }
+
+  return {
+    success: false,
+    error: "OAuth initialization failed.",
+    code: "SERVER",
+  } as AuthResult;
 }

@@ -43,7 +43,18 @@ export async function middleware(request: NextRequest) {
     } = await supabase.auth.getUser();
 
     // Protected routes — redirect to login if unauthenticated
-    const isProtected = request.nextUrl.pathname.startsWith("/dashboard");
+    const protectedPaths = [
+        "/dashboard",
+        "/clients",
+        "/programs",
+        "/pulse",
+        "/payments",
+        "/settings",
+    ];
+    const isProtected = protectedPaths.some((p) =>
+        request.nextUrl.pathname.startsWith(p)
+    );
+
     if (isProtected && !user) {
         const url = request.nextUrl.clone();
         url.pathname = "/login";
@@ -51,10 +62,7 @@ export async function middleware(request: NextRequest) {
     }
 
     // Redirect authenticated users away from auth pages
-    const isAuthPage =
-        request.nextUrl.pathname === "/login" ||
-        request.nextUrl.pathname === "/signup";
-    if (isAuthPage && user) {
+    if (user && ["/login", "/signup"].includes(request.nextUrl.pathname)) {
         const url = request.nextUrl.clone();
         url.pathname = "/dashboard";
         return NextResponse.redirect(url);
@@ -64,5 +72,7 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ["/dashboard/:path*", "/login", "/signup"],
+    matcher: [
+        "/((?!_next/static|_next/image|favicon.ico|api/v1/public|api/v1/webhook).*)",
+    ],
 };

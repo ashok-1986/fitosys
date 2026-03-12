@@ -29,7 +29,7 @@ export default function LoginPage() {
 
         startTransition(async () => {
             const result = await loginAction(formData);
-            if (result?.error) {
+            if (!result.success) {
                 setError(result.error);
             }
         });

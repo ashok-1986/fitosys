@@ -1,90 +1,78 @@
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
+
+export const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+});
+
+// 5 requests per 10 minutes — intake form
+export const intakeRateLimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(5, "10 m"),
+  prefix: "rl:intake",
+});
+
+// 10 requests per 15 minutes — login
+export const loginRateLimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(10, "15 m"),
+  prefix: "rl:login",
+});
+
+// 3 requests per 60 minutes — signup
+export const signupRateLimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(3, "60 m"),
+  prefix: "rl:signup",
+});
+
+// 30 requests per 1 minute — razorpay webhook
+export const razorpayWebhookRateLimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(30, "1 m"),
+  prefix: "rl:razorpay",
+});
+
+// 60 requests per 1 minute — whatsapp webhook
+export const whatsappWebhookRateLimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(60, "1 m"),
+  prefix: "rl:whatsapp",
+});
+
+// Generic helpers for routes
 import { NextRequest, NextResponse } from "next/server";
 
-// Simple in-memory rate limiter for serverless environments
-// Resets on cold start (acceptable for MVP)
-const rateLimitMap = new Map<
-    string,
-    { count: number; resetAt: number }
->();
-
-const WINDOW_MS = 60 * 1000; // 1 minute window
-
-interface RateLimitConfig {
-    maxRequests: number; // max requests per window
-    windowMs?: number; // window duration in ms (default: 60s)
+export function getClientIP(req: NextRequest): string {
+  // trust x-forwarded-for header when present, otherwise fallback
+  return (
+    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    // @ts-ignore
+    req.ip ||
+    "unknown"
+  );
 }
 
-/**
- * Check rate limit for a given key (IP or userId).
- * Returns { allowed: boolean, remaining: number, retryAfterMs?: number }
- */
-export function checkRateLimit(
-    key: string,
-    config: RateLimitConfig
-): {
-    allowed: boolean;
-    remaining: number;
-    retryAfterMs?: number;
-} {
-    const window = config.windowMs || WINDOW_MS;
-    const now = Date.now();
+export async function checkRateLimit(
+  key: string,
+  options: { maxRequests: number } = { maxRequests: 60 }
+): Promise<{ allowed: boolean; retryAfterMs: number }> {
+  const limiter = new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(options.maxRequests, "1 m"),
+  });
+  const { success, reset } = await limiter.limit(key);
+  return { allowed: success, retryAfterMs: reset ?? 0 };
+}
 
-    const entry = rateLimitMap.get(key);
-
-    if (!entry || now > entry.resetAt) {
-        // New window
-        rateLimitMap.set(key, { count: 1, resetAt: now + window });
-        return { allowed: true, remaining: config.maxRequests - 1 };
+export function rateLimitResponse(retryAfterMs: number) {
+  return NextResponse.json(
+    { error: "Too many requests" },
+    {
+      status: 429,
+      headers: { "Retry-After": Math.ceil(retryAfterMs / 1000).toString() },
     }
-
-    if (entry.count >= config.maxRequests) {
-        return {
-            allowed: false,
-            remaining: 0,
-            retryAfterMs: entry.resetAt - now,
-        };
-    }
-
-    entry.count++;
-    return { allowed: true, remaining: config.maxRequests - entry.count };
+  );
 }
 
-/**
- * Return a 429 Too Many Requests response.
- */
-export function rateLimitResponse(retryAfterMs?: number): NextResponse {
-    return NextResponse.json(
-        { error: "Too many requests. Please try again later." },
-        {
-            status: 429,
-            headers: retryAfterMs
-                ? {
-                    "Retry-After": Math.ceil(
-                        retryAfterMs / 1000
-                    ).toString(),
-                }
-                : undefined,
-        }
-    );
-}
-
-/**
- * Get the client IP from request headers.
- */
-export function getClientIP(request: NextRequest): string {
-    return (
-        request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-        request.headers.get("x-real-ip") ||
-        "unknown"
-    );
-}
-
-// Periodically clean up expired entries (every 5 minutes)
-setInterval(() => {
-    const now = Date.now();
-    for (const [key, entry] of rateLimitMap) {
-        if (now > entry.resetAt) {
-            rateLimitMap.delete(key);
-        }
-    }
-}, 5 * 60 * 1000);
