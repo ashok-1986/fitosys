@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
 
 interface Program {
     id: string;
@@ -39,6 +40,7 @@ interface Program {
 
 export default function ProgramsPage() {
     const router = useRouter();
+    const { showSuccess, showError } = useToast();
     const [programs, setPrograms] = useState<Program[]>([]);
     const [loading, setLoading] = useState(true);
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
@@ -55,6 +57,23 @@ export default function ProgramsPage() {
         currency: "INR",
         checkin_type: "fitness",
     });
+    const [coachSlug, setCoachSlug] = useState<string>("");
+
+    useEffect(() => {
+        // Fetch coach slug for copy link functionality
+        async function fetchCoachSlug() {
+            try {
+                const res = await fetch("/api/coaches/profile");
+                if (res.ok) {
+                    const data = await res.json();
+                    setCoachSlug(data.slug || "");
+                }
+            } catch (error) {
+                console.error("Error fetching coach slug:", error);
+            }
+        }
+        fetchCoachSlug();
+    }, []);
 
     useEffect(() => {
         fetchPrograms();
@@ -90,8 +109,10 @@ export default function ProgramsPage() {
             await fetchPrograms();
             setCreateDialogOpen(false);
             resetForm();
+            showSuccess("Program created successfully!");
         } catch (error) {
             console.error("Error creating program:", error);
+            showError("Failed to create program. Please try again.");
         }
     }
 
@@ -183,8 +204,9 @@ export default function ProgramsPage() {
 
     function copyToIntakeLink(programId: string) {
         const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
-        // For now, show coach's public link - in production this would use the coach's slug
-        const link = `${baseUrl}/join/[slug]?program=${programId}`;
+        const link = coachSlug 
+            ? `${baseUrl}/join/${coachSlug}?program=${programId}`
+            : `${baseUrl}/join/[slug]?program=${programId}`;
         navigator.clipboard.writeText(link);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
@@ -580,24 +602,30 @@ export default function ProgramsPage() {
                     <div className="py-4">
                         <div className="flex gap-2">
                             <Input
-                                value={`${typeof window !== "undefined" ? window.location.origin : ""}/join/[slug]?program=${selectedProgram?.id}`}
+                                value={coachSlug 
+                                    ? `${typeof window !== "undefined" ? window.location.origin : ""}/join/${coachSlug}?program=${selectedProgram?.id}`
+                                    : "Loading..."
+                                }
                                 readOnly
                             />
                             <Button
                                 onClick={() => {
                                     if (selectedProgram) {
                                         copyToIntakeLink(selectedProgram.id);
+                                        showSuccess("Intake link copied to clipboard!");
                                     }
                                 }}
                                 variant="outline"
+                                disabled={!coachSlug}
                             >
                                 {copied ? "Copied!" : "Copy"}
                             </Button>
                         </div>
-                        <p className="text-sm text-muted-foreground mt-4">
-                            Replace <code className="bg-muted px-1 rounded">[slug]</code> with
-                            your coach slug before sharing
-                        </p>
+                        {!coachSlug && (
+                            <p className="text-sm text-muted-foreground mt-4">
+                                Loading your coach slug...
+                            </p>
+                        )}
                     </div>
                     <DialogFooter>
                         <Button onClick={() => setCopyDialogOpen(false)}>Close</Button>

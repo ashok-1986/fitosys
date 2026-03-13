@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Urbanist, Barlow_Condensed, Playfair_Display } from "next/font/google";
+import { Providers } from "@/components/providers";
 import "./globals.css";
 
 const urbanist = Urbanist({
@@ -92,7 +93,9 @@ export default function RootLayout({
         />
       </head>
       <body className={`${urbanist.variable} ${barlowCondensed.variable} ${playfairDisplay.variable} font-sans antialiased`}>
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );
