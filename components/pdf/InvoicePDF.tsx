@@ -98,8 +98,9 @@ export const InvoicePDF = ({ data }: { data: InvoiceDataProps }) => (
                 <Text style={styles.col4}>Amount (INR)</Text>
             </View>
             <View style={styles.tableRow}>
+                {/* SAC Code: 9983119 - Information Technology Consulting Services */}
                 <Text style={styles.col1}>{data.item.description}</Text>
-                <Text style={styles.col2}>9983</Text>
+                <Text style={styles.col2}>9983119</Text>
                 <Text style={styles.col3}>{data.tax.rate}%</Text>
                 <Text style={styles.col4}>₹{data.item.amountBeforeTax.toFixed(2)}</Text>
             </View>
