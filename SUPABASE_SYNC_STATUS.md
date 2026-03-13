@@ -276,11 +276,11 @@ Ensure your `.env.local` has correct values:
 ```bash
 # Supabase (REQUIRED)
 NEXT_PUBLIC_SUPABASE_URL=https://cwupeqgkahysocgzzjyp.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3dXBlcWdrYWh5c29jZ3p6anlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMDQ4NTYsImV4cCI6MjA4NzU4MDg1Nn0.fgIbJFwpKbQ3xvzHlx6W6XcFn6NK3dRVUmhyNLQUGe8
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3dXBlcWdrYWh5c29jZ3p6anlwIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MjAwNDg1NiwiZXhwIjoyMDg3NTgwODU2fQ.ISXF0J_d7n2Gbpa4Lw8sh-T0XLuncxexIP3EgNh72yE
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<YOUR_ANON_KEY>
+SUPABASE_SERVICE_ROLE_KEY=<YOUR_SERVICE_ROLE_KEY>
 ```
 
-✅ **Already configured** - Your `.env.local` has valid Supabase credentials!
+⚠️ **SECURITY NOTICE:** If you see actual JWT tokens here, this is a security incident. Rotate keys immediately and see `SECURITY_ALERT_CREDENTIALS_EXPOSED.md`
 
 ---
 
