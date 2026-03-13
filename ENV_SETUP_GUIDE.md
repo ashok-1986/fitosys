@@ -51,6 +51,85 @@
 
 ---
 
+## 3️⃣ PGBOUNCER CONNECTION POOLING (Recommended for Production)
+
+### What is PgBouncer?
+PgBouncer is a connection pooler for PostgreSQL that reduces database connection overhead. **Required for production** when expecting >100 concurrent users.
+
+### Enable PgBouncer in Supabase:
+
+**Step 1: Get Connection String**
+```
+1. Go to https://supabase.com/dashboard
+2. Select "Fitosys" project
+3. Settings → Database
+4. Under "Connection Pooling", toggle ON
+5. Copy the connection string (Transaction mode)
+```
+
+**Step 2: Add to Environment Variables**
+```bash
+# Add to .env.local (development)
+# Add to Vercel Dashboard (production)
+
+SUPABASE_DB_URL_WITH_POOLING="postgresql://postgres:[YOUR-PASSWORD]@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
+```
+
+**Step 3: Update Supabase Client (Optional)**
+For most cases, the existing client works fine. For high-traffic endpoints:
+
+```typescript
+// lib/supabase/server.ts
+export async function createPooledClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+  const poolingUrl = process.env.SUPABASE_DB_URL_WITH_POOLING;
+  
+  // Use pooling URL for heavy queries
+  const supabase = createClient(supabaseUrl, supabaseKey, {
+    db: { url: poolingUrl }
+  });
+  
+  return supabase;
+}
+```
+
+### When to Use PgBouncer:
+
+| Scenario | Direct Connection | PgBouncer |
+|----------|------------------|-----------|
+| Development | ✅ Recommended | ❌ Not needed |
+| Production (<100 users) | ✅ OK | ⚠️ Optional |
+| Production (>100 users) | ❌ Risk of exhaustion | ✅ Required |
+| Cron jobs / Batch operations | ❌ Can exhaust connections | ✅ Required |
+
+### Monitoring Connection Pool:
+
+```sql
+-- Check current connections
+SELECT count(*) FROM pg_stat_activity;
+
+-- Check pool status (Supabase Dashboard)
+-- Database → Connection Pooler → Stats
+```
+
+**Target:** Keep active connections <100 for free tier
+
+### Benefits:
+- ✅ Reduces connection overhead (60% faster)
+- ✅ Prevents "too many connections" errors
+- ✅ Better resource utilization
+- ✅ Required for scaling beyond 100 concurrent users
+
+### Trade-offs:
+- ⚠️ Slight latency increase (~2ms)
+- ⚠️ Some PostgreSQL features not supported (prepared statements)
+- ⚠️ Requires configuration tuning
+
+**Status:** ⏳ **RECOMMENDED** — Enable when approaching 100 concurrent users
+
+---
+
 ## 3️⃣ RAZORPAY VARIABLES (4 Required)
 
 ### Where to Get Them (Test Mode):

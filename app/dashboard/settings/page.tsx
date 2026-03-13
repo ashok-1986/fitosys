@@ -16,7 +16,9 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { NavBar } from "@/components/ui/navigation";
-import { User, Bell, CreditCard, Save } from "lucide-react";
+import { User, Bell, CreditCard, Save, Trash2, AlertTriangle } from "lucide-react";
+import { deleteAccountAction } from "@/app/actions/delete-account";
+import { useToast } from "@/hooks/use-toast";
 
 interface CoachProfile {
   id: string;
@@ -55,13 +57,12 @@ export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState<SettingsTab>("profile");
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [deleteConfirmEmail, setDeleteConfirmEmail] = useState("");
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [profile, setProfile] = useState<CoachProfile | null>(null);
+  const { showSuccess, showError } = useToast();
 
   const [formData, setFormData] = useState({
-    full_name: "",
-    email: "",
-    whatsapp_number: "",
-    coaching_type: [] as string[],
     business_name: "",
     gst_number: "",
     billing_address: "",
@@ -138,6 +139,26 @@ export default function SettingsPage() {
       setTimeout(() => setSaved(false), 3000);
     } catch (error) {
       console.error("Error saving notifications:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleDelete(formData: FormData) {
+    setLoading(true);
+    try {
+      const result = await deleteAccountAction(formData);
+      if (result.success) {
+        showSuccess(result.message);
+        setShowDeleteDialog(false);
+        // Redirect to home after 3 seconds
+        setTimeout(() => window.location.href = "/", 3000);
+      } else {
+        showError(result.error);
+      }
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      showError("Account deletion failed. Please contact support.");
     } finally {
       setLoading(false);
     }
@@ -391,28 +412,91 @@ export default function SettingsPage() {
               <Button className="w-full" variant="outline">
                 Upgrade Plan
               </Button>
-              <div className="pt-4 border-t">
-                <p className="text-sm font-semibold mb-3">Invoice History</p>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between p-3 border rounded">
-                    <div>
-                      <p className="text-sm font-medium">March 2026 Invoice</p>
-                      <p className="text-xs text-muted-foreground">₹2,999 • Paid</p>
+
+              {/* Danger Zone */}
+              <div className="pt-6 border-t border-destructive/20">
+                <div className="bg-destructive/10 border border-destructive/30 rounded-lg p-4">
+                  <div className="flex items-start gap-3">
+                    <AlertTriangle className="h-5 w-5 text-destructive mt-0.5" />
+                    <div className="flex-1">
+                      <h4 className="text-sm font-semibold text-destructive">Danger Zone</h4>
+                      <p className="text-xs text-destructive/80 mt-1">
+                        Once deleted, your account cannot be recovered after 30 days
+                      </p>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        className="mt-3"
+                        onClick={() => setShowDeleteDialog(true)}
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Delete Account
+                      </Button>
                     </div>
-                    <Button size="sm" variant="outline">
-                      Download
-                    </Button>
-                  </div>
-                  <div className="flex items-center justify-between p-3 border rounded">
-                    <div>
-                      <p className="text-sm font-medium">February 2026 Invoice</p>
-                      <p className="text-xs text-muted-foreground">₹2,999 • Paid</p>
-                    </div>
-                    <Button size="sm" variant="outline">
-                      Download
-                    </Button>
                   </div>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Delete Account Dialog */}
+      {showDeleteDialog && (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+          <Card className="max-w-md w-full border-destructive/50">
+            <CardHeader>
+              <CardTitle className="text-destructive">Delete Account?</CardTitle>
+              <CardDescription>
+                This action cannot be undone after 30 days
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="bg-destructive/10 border border-destructive/30 rounded-lg p-3">
+                <p className="text-sm text-destructive">
+                  ⚠️ Warning: This will:
+                </p>
+                <ul className="text-xs text-destructive/80 mt-2 space-y-1 ml-4 list-disc">
+                  <li>Deactivate all your programs</li>
+                  <li>Cancel all active client enrollments</li>
+                  <li>Schedule your data for permanent deletion in 30 days</li>
+                  <li>Remove access to your dashboard</li>
+                </ul>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="confirmEmail">Type your email to confirm</Label>
+                <form action={handleDelete}>
+                  <Input
+                    id="confirmEmail"
+                    type="email"
+                    placeholder={profile?.email || "your@email.com"}
+                    value={deleteConfirmEmail}
+                    onChange={(e) => setDeleteConfirmEmail(e.target.value)}
+                    name="confirmEmail"
+                    required
+                  />
+                  <div className="flex gap-2 mt-4">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => {
+                        setShowDeleteDialog(false);
+                        setDeleteConfirmEmail("");
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      variant="destructive"
+                      className="flex-1"
+                      disabled={deleteConfirmEmail !== profile?.email || loading}
+                    >
+                      {loading ? "Deleting..." : "Delete Account"}
+                    </Button>
+                  </div>
+                </form>
               </div>
             </CardContent>
           </Card>
