@@ -15,9 +15,9 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div className="content">
-        <div className="flex items-center justify-center" style={{ gridColumn: "1 / -1", gridRow: "1 / -1" }}>
+        <div className="flex items-center justify-center full-grid-span">
           <div className="flex flex-col items-center gap-4">
-            <Loader2 className="h-8 w-8 animate-spin text-[#F20000]" />
+            <Loader2 className="h-8 w-8 animate-spin text-brand" />
             <p className="text-sm text-muted-foreground">Loading dashboard...</p>
           </div>
         </div>
@@ -28,12 +28,12 @@ export default function DashboardPage() {
   if (error) {
     return (
       <div className="content">
-        <div className="flex items-center justify-center" style={{ gridColumn: "1 / -1", gridRow: "1 / -1" }}>
+        <div className="flex items-center justify-center full-grid-span">
           <div className="flex flex-col items-center gap-4">
             <p className="text-sm text-destructive">{error}</p>
             <button
-              onClick={refetch}
-              className="px-4 py-2 bg-[#F20000] text-white rounded-md text-sm font-medium hover:bg-[#C20000]"
+              onClick={() => refetch()}
+              className="px-4 py-2 bg-brand text-white rounded-md text-sm font-medium hover:bg-brand-hover"
             >
               Try Again
             </button>

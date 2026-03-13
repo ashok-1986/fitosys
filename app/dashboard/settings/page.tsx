@@ -63,6 +63,10 @@ export default function SettingsPage() {
   const { showSuccess, showError } = useToast();
 
   const [formData, setFormData] = useState({
+    full_name: "",
+    email: "",
+    whatsapp_number: "",
+    coaching_type: [] as string[],
     business_name: "",
     gst_number: "",
     billing_address: "",

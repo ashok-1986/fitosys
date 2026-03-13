@@ -126,6 +126,10 @@
   .font-playfair {
     font-family: var(--font-playfair);
   }
+  .full-grid-span {
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+  }
 }
 
 /* Fitosys Hero Component Styles */

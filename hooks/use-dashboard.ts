@@ -1,6 +1,4 @@
-"use client";
-
-import { useState, useEffect, useCallback } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 export interface DashboardData {
   coach: {
@@ -11,6 +9,7 @@ export interface DashboardData {
   stats: {
     active_clients: number;
     total_programs: number;
+
     renewals_due: number;
     response_rate: number;
   };
@@ -58,47 +57,30 @@ export interface DashboardData {
   } | null;
 }
 
-interface UseDashboardOptions {
-  autoFetch?: boolean;
-  refreshInterval?: number;
-}
+const fetchDashboardData = async (): Promise<DashboardData> => {
+  const res = await fetch("/api/dashboard/data");
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `HTTP ${res.status}`);
+  }
+  return res.json();
+};
 
-export function useDashboard(options: UseDashboardOptions = {}) {
-  const { autoFetch = true, refreshInterval } = options;
-  const [data, setData] = useState<DashboardData | null>(null);
-  const [loading, setLoading] = useState(autoFetch);
-  const [error, setError] = useState<string | null>(null);
+export function useDashboard() {
+  const { 
+    data, 
+    isLoading: loading, 
+    error, 
+    refetch 
+  } = useQuery<DashboardData, Error>({
+    queryKey: ["dashboardData"],
+    queryFn: fetchDashboardData,
+  });
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/dashboard/data");
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || `HTTP ${res.status}`);
-      }
-      const json = await res.json();
-      setData(json);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to fetch data");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (autoFetch) {
-      fetchData();
-    }
-  }, [autoFetch, fetchData]);
-
-  useEffect(() => {
-    if (refreshInterval && autoFetch) {
-      const interval = setInterval(fetchData, refreshInterval);
-      return () => clearInterval(interval);
-    }
-  }, [refreshInterval, autoFetch, fetchData]);
-
-  return { data, loading, error, refetch: fetchData, setData };
+  return { 
+    data, 
+    loading, 
+    error: error ? error.message : null, 
+    refetch 
+  };
 }

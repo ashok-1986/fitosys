@@ -26,6 +26,10 @@ export const metadata: Metadata = {
   description:
     "Automate client onboarding, weekly check-ins, and renewals. Manage 40 clients with the effort of 15.",
   keywords: ["coaching software India", "fitness coach app", "WhatsApp coaching", "Indian coaches", "client management"],
+  icons: {
+    icon: '/icon.png',
+    apple: '/apple-icon.png',
+  },
   openGraph: {
     title: "Fitosys — Business OS for Fitness Coaches",
     description: "Automate client onboarding, weekly check-ins, and renewals. Manage 40 clients with the effort of 15.",

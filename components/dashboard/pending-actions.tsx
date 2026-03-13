@@ -56,13 +56,13 @@ export function PendingActions({
   const getDotColor = (due: string) => {
     switch (due) {
       case "today":
-        return "bg-[#F20000]";
+        return "bg-brand";
       case "days":
-        return "bg-[#F59E0B]";
+        return "bg-warning";
       case "week":
-        return "bg-[#10B981]";
+        return "bg-success";
       default:
-        return "bg-[#F20000]";
+        return "bg-brand";
     }
   };
 

@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -37,7 +38,18 @@ export default function LoginPage() {
 
     return (
         <Card className="border-border/50 shadow-lg">
-            <CardHeader className="space-y-1">
+            <CardHeader className="space-y-1 text-center">
+                {/* Logo */}
+                <div className="flex justify-center mb-4">
+                    <Image
+                        src="/fitosys-logo.png"
+                        alt="Fitosys"
+                        width={120}
+                        height={40}
+                        className="object-contain"
+                        priority
+                    />
+                </div>
                 <CardTitle className="text-2xl font-semibold">Welcome back</CardTitle>
                 <CardDescription>
                     Sign in to your coaching dashboard

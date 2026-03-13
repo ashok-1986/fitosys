@@ -1,6 +1,7 @@
 "use client";
 
-import { use, useState, useEffect } from "react";
+import { use, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { CheckCircle, Heart, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,13 +36,29 @@ interface Program {
     is_active: boolean;
 }
 
+interface IntakeData {
+    coach: Coach;
+    programs: Program[];
+}
+
+const fetchIntakeData = async (slug: string): Promise<IntakeData> => {
+    const res = await fetch(`/api/programs/public/${slug}`);
+    if (!res.ok) {
+        if (res.status === 404) {
+            throw new Error("Coach not found or inactive");
+        }
+        throw new Error("Failed to load coach details");
+    }
+    return res.json();
+};
+
 export default function IntakePage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = use(params);
     
-    const [coach, setCoach] = useState<Coach | null>(null);
-    const [programs, setPrograms] = useState<Program[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [fetchError, setFetchError] = useState<string | null>(null);
+    const { data, isLoading: loading, error: fetchError } = useQuery<IntakeData, Error>({
+        queryKey: ["intakeData", slug],
+        queryFn: () => fetchIntakeData(slug),
+    });
 
     const [form, setForm] = useState({
         full_name: "",
@@ -56,30 +73,8 @@ export default function IntakePage({ params }: { params: Promise<{ slug: string 
     const [submitted, setSubmitted] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // Fetch coach and programs on mount
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                const res = await fetch(`/api/programs/public/${slug}`);
-                if (!res.ok) {
-                    if (res.status === 404) {
-                        setFetchError("Coach not found or inactive");
-                    } else {
-                        setFetchError("Failed to load coach details");
-                    }
-                    return;
-                }
-                const data = await res.json();
-                setCoach(data.coach);
-                setPrograms(data.programs || []);
-            } catch {
-                setFetchError("Failed to connect to server");
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchData();
-    }, [slug]);
+    const coach = data?.coach;
+    const programs = data?.programs || [];
 
     const selectedProgram = programs.find((p) => p.id === form.program_id);
 
@@ -104,7 +99,7 @@ export default function IntakePage({ params }: { params: Promise<{ slug: string 
             <div className="min-h-screen bg-background flex items-center justify-center px-4">
                 <Card className="max-w-md w-full text-center p-8 shadow-lg border-destructive/50">
                     <h2 className="text-2xl font-bold text-destructive">Coach Not Found</h2>
-                    <p className="text-muted-foreground mt-2">{fetchError}</p>
+                    <p className="text-muted-foreground mt-2">{fetchError?.message || "An unknown error occurred."}</p>
                 </Card>
             </div>
         );
@@ -305,7 +300,7 @@ export default function IntakePage({ params }: { params: Promise<{ slug: string 
                         </label>
 
                         {error && (
-                            <p className="text-sm text-red-500 bg-red-50 p-3 rounded-lg">
+                            <p className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg">
                                 {error}
                             </p>
                         )}
