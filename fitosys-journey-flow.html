@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Fitosys — Complete Customer Journey & Page Flow</title>
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700;800;900&family=Barlow+Condensed:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --red: #E8001D;
+  --red-dim: #9e0014;
+  --red-glow: rgba(232,0,29,0.12);
+  --red-border: rgba(232,0,29,0.25);
+  --white: #FFFFFF;
+  --off-white: #E8E8E8;
+  --grey: #A0A0A0;
+  --dark-grey: #1A1A1A;
+  --black: #0A0A0A;
+  --card-bg: #111111;
+  --card-bg2: #161616;
+  --border: rgba(232,0,29,0.2);
+  --border-subtle: rgba(255,255,255,0.06);
+  --warning: #F59E0B;
+  --success: #10B981;
+  --danger: #EF4444;
+  --info: #3B82F6;
+  --system: #818cf8;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--black);
+  color:var(--white);
+  font-family:'Urbanist',sans-serif;
+  font-weight:400;
+  line-height:1.6;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:0.5;
+}
+
+/* NAV */
+.nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(10,10,10,0.95);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border-subtle);
+  padding:0 40px;
+  display:flex;align-items:center;gap:0;
+  height:52px;
+}
+.nav-brand{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:20px;font-weight:900;letter-spacing:0.05em;
+  color:var(--white);white-space:nowrap;
+  margin-right:40px;flex-shrink:0;
+}
+.nav-brand span{color:var(--red);}
+.nav-links{display:flex;gap:4px;overflow-x:auto;flex:1;}
+.nav-links a{
+  font-size:11px;font-weight:700;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--grey);
+  text-decoration:none;white-space:nowrap;
+  padding:6px 12px;border-radius:3px;
+  transition:color 0.2s,background 0.2s;
+}
+.nav-links a:hover{color:var(--white);background:rgba(255,255,255,0.05);}
+.nav-cta{
+  margin-left:auto;flex-shrink:0;
+  background:var(--red);color:var(--white);
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:13px;font-weight:800;letter-spacing:0.08em;
+  text-transform:uppercase;
+  padding:7px 18px;border-radius:3px;
+  white-space:nowrap;
+}
+
+/* HERO */
+.hero{
+  position:relative;min-height:48vh;
+  display:flex;align-items:center;
+  padding:80px 60px;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 100% at 0% 50%, rgba(232,0,29,0.08) 0%, transparent 65%);
+}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 40%,transparent 100%);
+}
+.hero-line{position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--red),transparent);}
+.hero-content{position:relative;z-index:1;max-width:900px;}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--red);border:1px solid var(--border);
+  padding:6px 14px;border-radius:2px;margin-bottom:24px;
+}
+.hero-title{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:clamp(56px,7vw,88px);font-weight:900;
+  line-height:0.92;text-transform:uppercase;margin-bottom:20px;
+}
+.hero-title span{color:var(--red);}
+.hero-desc{font-size:17px;color:var(--grey);max-width:540px;line-height:1.7;}
+.hero-meta{
+  display:flex;gap:32px;margin-top:36px;
+  padding-top:28px;border-top:1px solid var(--border-subtle);
+}
+.hero-stat{text-align:left;}
+.hero-stat-val{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:32px;font-weight:900;color:var(--white);line-height:1;
+}
+.hero-stat-label{font-size:12px;color:var(--grey);margin-top:3px;}
+
+/* SECTION */
+.section{
+  position:relative;z-index:1;
+  padding:80px 60px;max-width:1440px;margin:0 auto;
+}
+.section-label{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:11px;font-weight:700;letter-spacing:0.2em;
+  text-transform:uppercase;color:var(--red);margin-bottom:10px;
+}
+.section-title{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:52px;font-weight:900;line-height:1;
+  text-transform:uppercase;margin-bottom:14px;
+}
+.section-sub{font-size:16px;color:var(--grey);max-width:620px;margin-bottom:56px;line-height:1.7;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border-subtle),transparent);margin:0;}
+.bg-alt{background:#0c0c0c;}
+
+/* LEGEND */
+.legend{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:36px;}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--grey);}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+
+/* ── JOURNEY FLOW ── */
+.journey-wrapper{overflow-x:auto;padding-bottom:20px;}
+.journey-table{min-width:1200px;width:100%;}
+
+.phase-header{
+  display:grid;grid-template-columns:180px 1fr 1fr 1fr;
+  gap:1px;background:var(--border-subtle);
+  border-radius:8px 8px 0 0;overflow:hidden;
+  margin-bottom:1px;
+}
+.phase-cell{
+  padding:14px 20px;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:13px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;
+}
+.phase-cell.label{background:#0d0d0d;color:var(--grey);}
+.phase-cell.coach{background:rgba(232,0,29,0.07);color:var(--red);}
+.phase-cell.system{background:rgba(129,140,248,0.07);color:var(--system);}
+.phase-cell.client{background:rgba(16,185,129,0.07);color:var(--success);}
+
+.phase-block{margin-bottom:2px;}
+.phase-label-row{
+  display:grid;grid-template-columns:180px 1fr 1fr 1fr;
+  gap:1px;background:var(--border-subtle);
+}
+.phase-name{
+  background:var(--card-bg2);
+  padding:12px 20px;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:12px;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;
+  display:flex;align-items:center;gap:10px;
+}
+.phase-number{
+  width:24px;height:24px;border-radius:50%;
+  background:var(--red);
+  font-size:11px;font-weight:900;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.phase-steps-row{
+  display:grid;grid-template-columns:180px 1fr 1fr 1fr;
+  gap:1px;background:var(--border-subtle);
+}
+.phase-steps-cell{
+  background:var(--card-bg);
+  padding:20px;
+  display:flex;flex-direction:column;gap:10px;
+}
+.phase-steps-cell.label-cell{background:#0d0d0d;padding:16px 20px;}
+
+.step-node{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:10px 12px;
+  border-radius:5px;
+  border:1px solid var(--border-subtle);
+  background:rgba(255,255,255,0.02);
+  transition:border-color 0.2s;
+}
+.step-node:hover{border-color:rgba(255,255,255,0.12);}
+.step-node.key{border-color:var(--red-border);background:var(--red-glow);}
+.step-node.system{border-color:rgba(129,140,248,0.2);background:rgba(129,140,248,0.05);}
+.step-node.success{border-color:rgba(16,185,129,0.25);background:rgba(16,185,129,0.05);}
+.step-node.warning{border-color:rgba(245,158,11,0.25);background:rgba(245,158,11,0.05);}
+
+.step-icon{
+  width:28px;height:28px;border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;flex-shrink:0;background:rgba(255,255,255,0.05);
+}
+.step-icon.red{background:rgba(232,0,29,0.15);}
+.step-icon.blue{background:rgba(129,140,248,0.15);}
+.step-icon.green{background:rgba(16,185,129,0.15);}
+.step-icon.amber{background:rgba(245,158,11,0.15);}
+
+.step-body{}
+.step-title{font-size:13px;font-weight:700;line-height:1.3;margin-bottom:2px;}
+.step-sub{font-size:11px;color:var(--grey);line-height:1.4;}
+.step-route{
+  display:inline-flex;align-items:center;gap:4px;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:10px;font-weight:700;letter-spacing:0.08em;
+  color:var(--red);background:rgba(232,0,29,0.08);
+  padding:2px 7px;border-radius:2px;margin-top:4px;
+}
+.arrow-down{
+  text-align:center;font-size:16px;color:var(--grey);
+  padding:4px 0;opacity:0.4;
+}
+
+/* ── PAGE INVENTORY ── */
+.page-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+.page-card{
+  background:var(--card-bg);
+  border:1px solid var(--border-subtle);
+  border-radius:8px;padding:20px;
+  transition:border-color 0.2s,transform 0.2s;
+}
+.page-card:hover{border-color:var(--red-border);transform:translateY(-2px);}
+.page-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px;}
+.page-card-num{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:11px;font-weight:800;letter-spacing:0.12em;
+  color:var(--grey);
+}
+.page-type-badge{
+  font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  padding:3px 8px;border-radius:2px;
+}
+.badge-public{background:rgba(16,185,129,0.12);color:var(--success);}
+.badge-auth{background:rgba(59,130,246,0.12);color:#60a5fa;}
+.badge-dashboard{background:rgba(232,0,29,0.1);color:var(--red);}
+.badge-static{background:rgba(255,255,255,0.06);color:var(--grey);}
+.page-card-name{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:22px;font-weight:900;text-transform:uppercase;
+  line-height:1;margin-bottom:6px;
+}
+.page-card-route{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:11px;font-weight:600;letter-spacing:0.05em;
+  color:var(--grey);margin-bottom:10px;
+}
+.page-card-desc{font-size:12px;color:var(--grey);line-height:1.5;}
+.page-card-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;}
+.page-tag{
+  font-size:10px;font-weight:600;letter-spacing:0.05em;
+  padding:3px 8px;border-radius:2px;
+  border:1px solid var(--border-subtle);color:var(--grey);
+}
+.page-tag.red{border-color:var(--red-border);color:var(--red);}
+
+/* ── DASHBOARD MOCKUP ── */
+.db-shell{
+  background:var(--card-bg);
+  border:1px solid var(--border-subtle);
+  border-radius:12px;overflow:hidden;
+}
+.db-titlebar{
+  background:#0d0d0d;
+  border-bottom:1px solid var(--border-subtle);
+  padding:10px 16px;
+  display:flex;align-items:center;gap:8px;
+}
+.db-dot{width:10px;height:10px;border-radius:50%;}
+.db-url{
+  flex:1;text-align:center;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:11px;font-weight:600;letter-spacing:0.08em;
+  color:var(--grey);
+}
+.db-inner{display:grid;grid-template-columns:220px 1fr;min-height:620px;}
+
+/* Sidebar */
+.db-sidebar{
+  background:#0a0a0a;
+  border-right:1px solid var(--border-subtle);
+  padding:24px 0;
+  display:flex;flex-direction:column;
+}
+.db-logo{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:22px;font-weight:900;letter-spacing:0.05em;
+  padding:0 20px 24px;
+  border-bottom:1px solid var(--border-subtle);
+  margin-bottom:16px;
+}
+.db-logo span{color:var(--red);}
+.db-nav-section{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:9px;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;
+  color:rgba(160,160,160,0.4);padding:8px 20px 4px;margin-top:8px;
+}
+.db-nav-item{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 20px;font-size:13px;font-weight:600;
+  color:var(--grey);cursor:pointer;
+  border-left:2px solid transparent;
+  transition:all 0.15s;
+}
+.db-nav-item:hover{color:var(--white);background:rgba(255,255,255,0.03);}
+.db-nav-item.active{
+  color:var(--white);
+  border-left-color:var(--red);
+  background:rgba(232,0,29,0.06);
+}
+.db-nav-item.active .db-nav-icon{color:var(--red);}
+.db-nav-icon{font-size:15px;width:18px;text-align:center;flex-shrink:0;}
+.db-nav-badge{
+  margin-left:auto;
+  background:var(--red);color:var(--white);
+  font-size:10px;font-weight:800;
+  padding:2px 6px;border-radius:3px;
+  min-width:18px;text-align:center;
+}
+.db-nav-badge.amber{background:var(--warning);}
+.db-sidebar-bottom{margin-top:auto;padding:16px 20px;border-top:1px solid var(--border-subtle);}
+.db-coach-pill{
+  display:flex;align-items:center;gap:10px;
+}
+.db-coach-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(135deg,#1f1f1f,#2a2a2a);
+  border:1px solid var(--red-border);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:14px;font-weight:900;color:var(--red);
+  flex-shrink:0;
+}
+.db-coach-name{font-size:13px;font-weight:700;line-height:1.2;}
+.db-coach-plan{font-size:10px;color:var(--grey);}
+
+/* Main */
+.db-main{background:var(--black);padding:28px;overflow:auto;}
+.db-topbar{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  margin-bottom:28px;
+}
+.db-greeting{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:30px;font-weight:900;text-transform:uppercase;line-height:1;
+}
+.db-greeting span{color:var(--red);}
+.db-date{font-size:12px;color:var(--grey);margin-top:4px;}
+.db-btn-ghost{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:12px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;
+  padding:8px 16px;border-radius:3px;
+  border:1px solid var(--border-subtle);color:var(--grey);
+  cursor:pointer;white-space:nowrap;
+  transition:all 0.2s;
+}
+.db-btn-ghost:hover{border-color:var(--red);color:var(--red);}
+.db-btn-red{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:12px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;
+  padding:8px 16px;border-radius:3px;
+  background:var(--red);color:var(--white);
+  cursor:pointer;white-space:nowrap;
+}
+
+/* KPIs */
+.db-kpi-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:12px;margin-bottom:20px;
+}
+.db-kpi{
+  background:var(--card-bg);
+  border:1px solid var(--border-subtle);
+  border-radius:8px;padding:18px 20px;
+  position:relative;overflow:hidden;
+}
+.db-kpi::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--border-subtle);
+}
+.db-kpi.alert::before{background:var(--red);}
+.db-kpi.warn::before{background:var(--warning);}
+.db-kpi.good::before{background:var(--success);}
+.db-kpi-label{font-size:11px;color:var(--grey);font-weight:600;letter-spacing:0.04em;margin-bottom:8px;text-transform:uppercase;}
+.db-kpi-val{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:38px;font-weight:900;line-height:1;margin-bottom:6px;
+}
+.db-kpi-val.red{color:var(--red);}
+.db-kpi-val.amber{color:var(--warning);}
+.db-kpi-val.green{color:var(--success);}
+.db-kpi-change{font-size:11px;font-weight:600;}
+.db-kpi-change.up{color:var(--success);}
+.db-kpi-change.neutral{color:var(--grey);}
+
+/* Body grid */
+.db-body-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.db-card{
+  background:var(--card-bg);
+  border:1px solid var(--border-subtle);
+  border-radius:8px;overflow:hidden;
+}
+.db-card-header{
+  padding:14px 18px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border-subtle);
+  background:rgba(255,255,255,0.01);
+}
+.db-card-title{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:14px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;
+}
+.db-card-action{font-size:11px;color:var(--red);font-weight:700;cursor:pointer;}
+.db-card-body{padding:14px 18px;}
+
+/* Attention items */
+.db-alert-item{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 0;
+  border-bottom:1px solid var(--border-subtle);
+}
+.db-alert-item:last-child{border-bottom:none;}
+.db-alert-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.db-alert-dot.red{background:var(--red);}
+.db-alert-dot.amber{background:var(--warning);}
+.db-alert-info{flex:1;}
+.db-alert-name{font-size:13px;font-weight:700;}
+.db-alert-reason{font-size:11px;color:var(--grey);margin-top:1px;}
+.db-mini-btn{
+  font-size:10px;font-weight:700;letter-spacing:0.05em;
+  padding:4px 10px;border-radius:3px;
+  border:1px solid var(--border-subtle);color:var(--grey);
+  cursor:pointer;white-space:nowrap;flex-shrink:0;
+}
+.db-mini-btn:hover{border-color:var(--red);color:var(--red);}
+
+/* Renewal items */
+.db-renewal-item{
+  display:flex;align-items:center;gap:12px;
+  padding:9px 0;border-bottom:1px solid var(--border-subtle);
+}
+.db-renewal-item:last-child{border-bottom:none;}
+.db-renewal-days{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:22px;font-weight:900;line-height:1;
+  width:40px;flex-shrink:0;text-align:center;
+}
+.db-renewal-days.urgent{color:var(--red);}
+.db-renewal-days.soon{color:var(--warning);}
+.db-renewal-label{font-size:9px;color:var(--grey);text-align:center;margin-top:1px;}
+.db-renewal-info{flex:1;}
+.db-renewal-name{font-size:13px;font-weight:700;}
+.db-renewal-prog{font-size:11px;color:var(--grey);}
+
+/* AI summary card */
+.db-ai-card{
+  background:linear-gradient(135deg,rgba(232,0,29,0.05),rgba(232,0,29,0.02));
+  border:1px solid var(--red-border);
+  border-radius:8px;padding:18px;margin-bottom:14px;
+}
+.db-ai-label{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:11px;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--red);margin-bottom:8px;
+  display:flex;align-items:center;gap:8px;
+}
+.db-ai-label::before{content:'◆';font-size:8px;}
+.db-ai-text{font-size:13px;color:var(--off-white);line-height:1.7;}
+.db-ai-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:12px;padding-top:12px;border-top:1px solid var(--red-border);
+}
+.db-ai-date{font-size:11px;color:var(--grey);}
+.db-ai-btn{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:11px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--red);cursor:pointer;
+}
+
+/* Check-in log preview */
+.db-checkin-row{
+  display:grid;grid-template-columns:1fr 60px 60px 60px 80px;
+  gap:8px;align-items:center;
+  padding:9px 0;border-bottom:1px solid var(--border-subtle);
+  font-size:12px;
+}
+.db-checkin-row:last-child{border-bottom:none;}
+.db-checkin-row.header{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--grey);padding-bottom:8px;
+}
+.db-checkin-name{font-weight:700;}
+.db-checkin-val{text-align:center;}
+.db-checkin-energy{text-align:center;font-weight:700;}
+.db-checkin-energy.high{color:var(--success);}
+.db-checkin-energy.mid{color:var(--warning);}
+.db-checkin-energy.low{color:var(--red);}
+.db-status-pill{
+  font-size:9px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
+  padding:3px 8px;border-radius:2px;text-align:center;
+}
+.pill-replied{background:rgba(16,185,129,0.12);color:var(--success);}
+.pill-missed{background:rgba(239,68,68,0.12);color:var(--danger);}
+.pill-pending{background:rgba(245,158,11,0.12);color:var(--warning);}
+
+/* CTA ANALYSIS */
+.cta-compare{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:40px;}
+.cta-box{
+  background:var(--card-bg);border:1px solid var(--border-subtle);
+  border-radius:8px;padding:24px;
+}
+.cta-box.bad{border-color:rgba(239,68,68,0.3);}
+.cta-box.good{border-color:rgba(16,185,129,0.3);}
+.cta-box-label{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:11px;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;
+  margin-bottom:12px;
+}
+.cta-box.bad .cta-box-label{color:var(--danger);}
+.cta-box.good .cta-box-label{color:var(--success);}
+.cta-text{font-size:15px;font-weight:700;margin-bottom:8px;}
+.cta-why{font-size:13px;color:var(--grey);line-height:1.6;}
+
+/* NAV MOCKUP */
+.nav-mockup{
+  background:var(--card-bg2);
+  border:1px solid var(--border-subtle);
+  border-radius:8px;padding:14px 24px;
+  display:flex;align-items:center;gap:32px;
+  margin-bottom:16px;
+}
+.nm-brand{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:18px;font-weight:900;
+}
+.nm-brand span{color:var(--red);}
+.nm-links{display:flex;gap:20px;flex:1;font-size:13px;font-weight:600;color:var(--grey);}
+.nm-cta{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:12px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;
+  padding:8px 18px;border-radius:3px;
+}
+.nm-cta.bad{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--danger);}
+.nm-cta.good{background:var(--red);color:var(--white);}
+
+.footer-mockup{
+  background:var(--card-bg2);
+  border:1px solid var(--border-subtle);
+  border-radius:8px;padding:24px;
+  margin-bottom:16px;
+}
+.fm-heading{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:28px;font-weight:900;text-transform:uppercase;
+  margin-bottom:8px;
+}
+.fm-heading span{color:var(--red);}
+.fm-sub{font-size:13px;color:var(--grey);margin-bottom:16px;}
+.fm-cta{
+  display:inline-block;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:13px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;
+  padding:10px 24px;border-radius:3px;
+}
+.fm-cta.bad{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--danger);}
+.fm-cta.good{background:var(--red);color:var(--white);}
+.fm-note{font-size:11px;color:var(--grey);margin-top:8px;}
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand"><span>FITO</span>SYS</div>
+  <div class="nav-links">
+    <a href="#journey">Journey Flow</a>
+    <a href="#pages">Page Inventory</a>
+    <a href="#dashboard">Dashboard</a>
+    <a href="#cta">CTA Analysis</a>
+  </div>
+  <div class="nav-cta">Start Free</div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-line"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Fitosys · Product Architecture v2.0</div>
+    <div class="hero-title">Complete<br>Customer<br><span>Journey</span></div>
+    <p class="hero-desc">Full flow architecture across all 19 pages. Coach journey, client journey, system automation, and dashboard design — in one document.</p>
+    <div class="hero-meta">
+      <div class="hero-stat"><div class="hero-stat-val">19</div><div class="hero-stat-label">Total Pages</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">4</div><div class="hero-stat-label">Journey Phases</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">3</div><div class="hero-stat-label">Journey Lanes</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">1</div><div class="hero-stat-label">Unified CTA</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ── SECTION 1: JOURNEY FLOW ── -->
+<section class="section" id="journey">
+  <div class="section-label">Section 01</div>
+  <div class="section-title">Complete<br>Journey Flow</div>
+  <p class="section-sub">Four phases from discovery to weekly loop. Three lanes: Coach, System, Client. Every touchpoint mapped to its page route.</p>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div> Coach Action / Key Step</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--system)"></div> System / Automated</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--success)"></div> Client Action / Success</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--warning)"></div> Decision / Conditional</div>
+  </div>
+
+  <div class="journey-wrapper">
+  <div class="journey-table">
+
+    <!-- Column Headers -->
+    <div class="phase-header">
+      <div class="phase-cell label">Phase</div>
+      <div class="phase-cell coach">🏋️ Coach</div>
+      <div class="phase-cell system">⚙️ System / Backend</div>
+      <div class="phase-cell client">👤 Client</div>
+    </div>
+
+    <!-- ── PHASE 1: ACQUISITION ── -->
+    <div class="phase-block">
+      <div class="phase-label-row">
+        <div class="phase-name" style="grid-column:1/-1;">
+          <div class="phase-number">1</div>
+          ACQUISITION — Coach discovers and signs up
+        </div>
+      </div>
+      <div class="phase-steps-row">
+        <div class="phase-steps-cell label-cell"></div>
+        <div class="phase-steps-cell">
+          <div class="step-node key">
+            <div class="step-icon red">🌐</div>
+            <div class="step-body">
+              <div class="step-title">Lands on Marketing Site</div>
+              <div class="step-sub">Finds Fitosys via referral, social, or search. Sees value prop.</div>
+              <div class="step-route">/ (landing)</div>
+            </div>
+          </div>
+          <div class="arrow-down">↓</div>
+          <div class="step-node key">
+            <div class="step-icon red">👁️</div>
+            <div class="step-body">
+              <div class="step-title">Explores Demo</div>
+              <div class="step-sub">Views interactive product demo before committing.</div>
+              <div class="step-route">/demo</div>
+            </div>
+          </div>
+          <div class="arrow-down">↓</div>
+          <div class="step-node key">
+            <div class="step-icon red">✍️</div>
+            <div class="step-body">
+              <div class="step-title">Creates Coach Account</div>
+              <div class="step-sub">Name, email, WhatsApp number, country. Free — no card.</div>
+              <div class="step-route">/signup</div>
+            </div>
+          </div>
+          <div class="arrow-down">↓</div>
+          <div class="step-node">
+            <div class="step-icon">✉️</div>
+            <div class="step-body">
+              <div class="step-title">Verifies Email</div>
+              <div class="step-sub">Clicks link in Supabase Auth email.</div>
+              <div class="step-route">/verify-email</div>
+            </div>
+          </div>
+        </div>
+        <div class="phase-steps-cell">
+          <div class="step-node system">
+            <div class="step-icon blue">🗄️</div>
+            <div class="step-body">
+              <div class="step-title">Creates Coach Record</div>
+              <div class="step-sub">coaches table insert. Generates unique slug from name. Sets status: trial.</div>
+            </div>
+          </div>
+          <div class="arrow-down">↓</div>
+          <div class="step-node system">
+            <div class="step-icon blue">📧</div>
+            <div class="step-body">
+              <div class="step-title">Sends Welcome Email</div>
+              <div class="step-sub">Via Resend. Contains onboarding checklist and intake link preview.</div>
+            </div>
+          </div>
+          <div class="arrow-down">↓</div>
+          <div class="step-node system">
+            <div class="step-icon blue">🔑</div>
+            <div class="step-body">
+              <div class="step-title">Activates Session</div>
+              <div class="step-sub">JWT issued. Coach redirected to dashboard.</div>
+              <div class="step-route">/dashboard</div>
+            </div>
+          </div>
+        </div>
+        <div class="phase-steps-cell">
+          <!-- No client in this phase -->
+          <div style="padding:20px;text-align:center;color:var(--grey);font-size:12px;opacity:0.4;">— No client involvement —</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PHASE 2: ONBOARDING ── -->
+    <div class="phase-block" style="margin-top:2px;">
+      <div class="phase-label-row">
+        <div class="phase-name" style="grid-column:1/-1;">
+          <div class="phase-number">2</div>
+          ONBOARDING — Coach sets up programs, shares intake link
+        </div>
+      </div>
+      <div class="phase-steps-row">
+        <div class="phase-steps-cell label-cell"></div>
+        <div class="phase-steps-cell">
+          <div class="step-node key">
+            <div class="step-icon red">📋</div>
+            <div class="step-body">
+              <div class="step-title">Creates First Program</div>
+              <div class="step-sub">Name, duration, price, check-in type. Minimum one program required.</div>
+              <div class="step-route">/dashboard/programs</div>
+            </div>
+          </div>
+          <div class="arrow-down">↓</div>
+          <div class="step-node key">
+            <div class="step-icon red">🔗</div>
+            <div class="step-body">
+              <div class="step-title">Copies Intake Link</div>
+              <div class="step-sub">fitosys.com/join/[coach-slug] — shares on WhatsApp, Instagram, bio link.</div>
+              <div class="step-route">/dashboard/programs</div>
+            </div>
+          </div>
+          <div class="arrow-down">↓</div>
+          <div class="step-node">
+            <div class="step-icon">⚙️</div>
+            <div class="step-body">
+              <div class="step-title">Configures Settings</div>
+              <div class="step-sub">Check-in day/time, timezone, WhatsApp number, profile details.</div>
+              <div class="step-route">/dashboard/settings</div>
+            </div>
+          </div>
+        </div>
+        <div class="phase-steps-cell">
+          <div class="step-node system">
+            <div class="step-icon blue">🌐</div>
+            <div class="step-body">
+              <div class="step-title">Activates Public Intake Page</div>
+              <div class="step-sub">GET /api/v1/public/[slug] — fetches coach profile + active programs.</div>
+              <div class="step-route">/join/[slug]</div>
+            </div>
+          </div>
+          <div class="arrow-down">↓</div>
+          <div class="step-node system">
+            <div class="step-icon blue">✅</div>
+            <div class="step-body">
+              <div class="step-title">Validates Slug</div>
+              <div class="step-sub">Returns 404 if coach inactive or no programs. Returns coach data if valid.</div>
+            </div>
+          </div>
+        </div>
+        <div class="phase-steps-cell">
+          <div style="padding:20px;text-align:center;color:var(--grey);font-size:12px;opacity:0.4;">— Awaiting intake link —</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PHASE 3: CLIENT INTAKE & PAYMENT ── -->
+    <div class="phase-block" style="margin-top:2px;">
+      <div class="phase-label-row">
+        <div class="phase-name" style="grid-column:1/-1;">
+          <div class="phase-number">3</div>
+          INTAKE & PAYMENT — Client enrolls and pays
+        </div>
+      </div>
+      <div class="phase-steps-row">
+        <div class="phase-steps-cell label-cell"></div>
+        <div class="phase-steps-cell">
+          <div class="step-node">
+            <div class="step-icon">👀</div>
+            <div class="step-body">
+              <div class="step-title">Receives Notification</div>
+              <div class="step-sub">WhatsApp alert: new client enrolled, program, amount. Appears in dashboard.</div>
+              <div class="step-route">/dashboard</div>
+            </div>
+          </div>
+          <div class="arrow-down">↓</div>
+          <div class="step-node">
+            <div class="step-icon">👥</div>
+            <div class="step-body">
+              <div class="step-title">Client in Active List</div>
+              <div class="step-sub">No action needed. Client record auto-created. Can view profile.</div>
+              <div class="step-route">/dashboard/clients</div>
+            </div>
+          </div>
+        </div>
+        <div class="phase-steps-cell">
+          <div class="step-node system">
+            <div class="step-icon blue">💳</div>
+            <div class="step-body">
+              <div class="step-title">Creates Razorpay Order</div>
+              <div class="step-sub">POST /api/v1/public/intake — validates form, creates order_id, returns to client.</div>
+            </div>
+          </div>
+          <div class="arrow-down">↓</div>
+          <div class="step-node system">
+            <div class="step-icon blue">🔔</div>
+            <div class="step-body">
+              <div class="step-title">Webhook Fires</div>
+              <div class="step-sub">Razorpay sends payment.captured event. Signature verified. Idempotency checked.</div>
+              <div class="step-route">/api/v1/webhook/razorpay</div>
+            </div>
+          </div>
+          <div class="arrow-down">↓</div>
+          <div class="step-node system">
+            <div class="step-icon blue">🗄️</div>
+            <div class="step-body">
+              <div class="step-title">Creates Records</div>
+              <div class="step-sub">clients table → enrollments table → payments table. Sets start_date, end_date.</div>
+            </div>
+          </div>
+          <div class="arrow-down">↓</div>
+          <div class="step-node system">
+            <div class="step-icon blue">💬</div>
+            <div class="step-body">
+              <div class="step-title">Sends WhatsApp Templates</div>
+              <div class="step-sub">T3 welcome to client. Coach notification. Both fire within 60 seconds.</div>
+            </div>
+          </div>
+        </div>
+        <div class="phase-steps-cell">
+          <div class="step-node success">
+            <div class="step-icon green">🔗</div>
+            <div class="step-body">
+              <div class="step-title">Opens Intake Link</div>
+              <div class="step-sub">Sees coach profile, active programs, pricing. Clean public page.</div>
+              <div class="step-route">/join/[slug]</div>
+            </div>
+          </div>
+          <div class="arrow-down">↓</div>
+          <div class="step-node success">
+            <div class="step-icon green">📝</div>
+            <div class="step-body">
+              <div class="step-title">Fills Intake Form</div>
+              <div class="step-sub">Name, age, WhatsApp, email, goal, health conditions. Selects program. Consents.</div>
+              <div class="step-route">/join/[slug]</div>
+            </div>
+          </div>
+          <div class="arrow-down">↓</div>
+          <div class="step-node success">
+            <div class="step-icon green">💰</div>
+            <div class="step-body">
+              <div class="step-title">Pays via Razorpay</div>
+              <div class="step-sub">UPI, card, net banking. Razorpay modal opens in-page. Under 2 minutes.</div>
+            </div>
+          </div>
+          <div class="arrow-down">↓</div>
+          <div class="step-node success">
+            <div class="step-icon green">🎯</div>
+            <div class="step-body">
+              <div class="step-title">Sees Success Screen</div>
+              <div class="step-sub">Enrollment confirmed. Program details shown. WhatsApp welcome incoming.</div>
+              <div class="step-route">/join/[slug]/success</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PHASE 4: WEEKLY LOOP ── -->
+    <div class="phase-block" style="margin-top:2px;">
+      <div class="phase-label-row">
+        <div class="phase-name" style="grid-column:1/-1;">
+          <div class="phase-number">4</div>
+          WEEKLY COACHING LOOP — Ongoing automation until renewal
+        </div>
+      </div>
+      <div class="phase-steps-row">
+        <div class="phase-steps-cell label-cell"></div>
+        <div class="phase-steps-cell">
+          <div class="step-node key">
+            <div class="step-icon red">📊</div>
+            <div class="step-body">
+              <div class="step-title">Reviews Monday Summary</div>
+              <div class="step-sub">AI-generated client pulse. Sees attention flags, energy trends, non-responders.</div>
+              <div class="step-route">/dashboard/pulse</div>
+            </div>
+          </div>
+          <div class="arrow-down">↓</div>
+          <div class="step-node key">
+            <div class="step-icon red">💬</div>
+            <div class="step-body">
+              <div class="step-title">Reaches Out to Flagged Clients</div>
+              <div class="step-sub">Personal WhatsApp. Dashboard shows who needs attention. One-tap message.</div>
+              <div class="step-route">/dashboard/clients/[id]</div>
+            </div>
+          </div>
+          <div class="arrow-down">↓</div>
+          <div class="step-node warning">
+            <div class="step-icon amber">🔄</div>
+            <div class="step-body">
+              <div class="step-title">Renewal Decision</div>
+              <div class="step-sub">At 7 days before end_date: coach sees renewal alert in dashboard. Client gets WhatsApp reminder.</div>
+              <div class="step-route">/dashboard</div>
+            </div>
+          </div>
+          <div class="arrow-down">↓</div>
+          <div class="step-node">
+            <div class="step-icon">📑</div>
+            <div class="step-body">
+              <div class="step-title">Views Payments & Invoices</div>
+              <div class="step-sub">Revenue tracking, GST invoice management.</div>
+              <div class="step-route">/dashboard/payments · /dashboard/invoices</div>
+            </div>
+          </div>
+        </div>
+        <div class="phase-steps-cell">
+          <div class="step-node system">
+            <div class="step-icon blue">⏰</div>
+            <div class="step-body">
+              <div class="step-title">Sunday 7PM — Check-in Cron</div>
+              <div class="step-sub">Sends WhatsApp check-in (T1) to all active clients of every coach. 4 questions.</div>
+            </div>
+          </div>
+          <div class="arrow-down">↓</div>
+          <div class="step-node system">
+            <div class="step-icon blue">🤖</div>
+            <div class="step-body">
+              <div class="step-title">Monday 7AM — Gemini Summary</div>
+              <div class="step-sub">Processes all replies. Generates per-coach summary. Stores in ai_summaries. Sends via WhatsApp.</div>
+            </div>
+          </div>
+          <div class="arrow-down">↓</div>
+          <div class="step-node system">
+            <div class="step-icon blue">📅</div>
+            <div class="step-body">
+              <div class="step-title">Renewal Reminder Cron</div>
+              <div class="step-sub">7 days before end_date: sends T2 renewal WhatsApp to client. Flags in dashboard.</div>
+            </div>
+          </div>
+          <div class="arrow-down">↓</div>
+          <div class="step-node system">
+            <div class="step-icon blue">📥</div>
+            <div class="step-body">
+              <div class="step-title">Stores Check-in Replies</div>
+              <div class="step-sub">WhatsApp webhook parses replies. Stores in checkins table per enrollment.</div>
+              <div class="step-route">/api/v1/webhook/whatsapp</div>
+            </div>
+          </div>
+        </div>
+        <div class="phase-steps-cell">
+          <div class="step-node success">
+            <div class="step-icon green">📱</div>
+            <div class="step-body">
+              <div class="step-title">Receives Sunday Check-in</div>
+              <div class="step-sub">WhatsApp message. 4 questions: weight, sessions, energy, notes.</div>
+            </div>
+          </div>
+          <div class="arrow-down">↓</div>
+          <div class="step-node success">
+            <div class="step-icon green">✏️</div>
+            <div class="step-body">
+              <div class="step-title">Replies on WhatsApp</div>
+              <div class="step-sub">Free text reply. Takes 2 minutes. No app or login needed.</div>
+            </div>
+          </div>
+          <div class="arrow-down">↓</div>
+          <div class="step-node warning">
+            <div class="step-icon amber">🔔</div>
+            <div class="step-body">
+              <div class="step-title">Receives Renewal Reminder</div>
+              <div class="step-sub">T2 WhatsApp with renewal link. Optional: renews via /renew page.</div>
+              <div class="step-route">/renew · /renew/success</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- journey-table -->
+  </div><!-- journey-wrapper -->
+
+</section>
+
+<div class="divider"></div>
+
+<!-- ── SECTION 2: PAGE INVENTORY ── -->
+<section class="section bg-alt" id="pages">
+  <div class="section-label">Section 02</div>
+  <div class="section-title">Page<br>Inventory</div>
+  <p class="section-sub">All 19 routes. Categorised by type, phase, and function.</p>
+
+  <div style="margin-bottom:40px;">
+    <div class="section-label" style="margin-bottom:16px;">Public / Client-Facing</div>
+    <div class="page-grid">
+      <div class="page-card">
+        <div class="page-card-top"><div class="page-card-num">#01</div><div class="page-type-badge badge-public">Public</div></div>
+        <div class="page-card-name">Landing</div>
+        <div class="page-card-route">/</div>
+        <div class="page-card-desc">Marketing homepage. Hero, features, pricing tiers, social proof. Single CTA: Start Free.</div>
+        <div class="page-card-tags"><div class="page-tag red">Revenue Path</div><div class="page-tag">Phase 1</div></div>
+      </div>
+      <div class="page-card">
+        <div class="page-card-top"><div class="page-card-num">#02</div><div class="page-type-badge badge-public">Public</div></div>
+        <div class="page-card-name">Demo</div>
+        <div class="page-card-route">/demo</div>
+        <div class="page-card-desc">Interactive product tour. Shows dashboard, intake flow, check-in automation. No signup needed.</div>
+        <div class="page-card-tags"><div class="page-tag">Awareness</div><div class="page-tag">Phase 1</div></div>
+      </div>
+      <div class="page-card">
+        <div class="page-card-top"><div class="page-card-num">#03</div><div class="page-type-badge badge-public">Dynamic</div></div>
+        <div class="page-card-name">Intake Form</div>
+        <div class="page-card-route">/join/[slug]</div>
+        <div class="page-card-desc">Client-facing onboarding page. Coach profile, active programs, payment form. No auth required.</div>
+        <div class="page-card-tags"><div class="page-tag red">Revenue Path</div><div class="page-tag">Phase 3</div></div>
+      </div>
+      <div class="page-card">
+        <div class="page-card-top"><div class="page-card-num">#04</div><div class="page-type-badge badge-public">Dynamic</div></div>
+        <div class="page-card-name">Intake Success</div>
+        <div class="page-card-route">/join/[slug]/success</div>
+        <div class="page-card-desc">Post-payment confirmation. Shows enrollment details. Terminal page — no further action.</div>
+        <div class="page-card-tags"><div class="page-tag">Phase 3</div></div>
+      </div>
+      <div class="page-card">
+        <div class="page-card-top"><div class="page-card-num">#05</div><div class="page-type-badge badge-public">Static</div></div>
+        <div class="page-card-name">Renewal</div>
+        <div class="page-card-route">/renew</div>
+        <div class="page-card-desc">Client renewal page. Linked from WhatsApp T2 message. Simplified re-payment flow.</div>
+        <div class="page-card-tags"><div class="page-tag red">Revenue Path</div><div class="page-tag">Phase 4</div></div>
+      </div>
+      <div class="page-card">
+        <div class="page-card-top"><div class="page-card-num">#06</div><div class="page-type-badge badge-public">Static</div></div>
+        <div class="page-card-name">Renewal Success</div>
+        <div class="page-card-route">/renew/success</div>
+        <div class="page-card-desc">Confirmation after renewal payment. Terminal page.</div>
+        <div class="page-card-tags"><div class="page-tag">Phase 4</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:40px;">
+    <div class="section-label" style="margin-bottom:16px;">Authentication</div>
+    <div class="page-grid">
+      <div class="page-card">
+        <div class="page-card-top"><div class="page-card-num">#07</div><div class="page-type-badge badge-auth">Auth</div></div>
+        <div class="page-card-name">Signup</div>
+        <div class="page-card-route">/signup</div>
+        <div class="page-card-desc">Coach registration. Name, email, WhatsApp, country, password. Creates coach record on submit.</div>
+        <div class="page-card-tags"><div class="page-tag red">Revenue Path</div><div class="page-tag">Phase 1</div></div>
+      </div>
+      <div class="page-card">
+        <div class="page-card-top"><div class="page-card-num">#08</div><div class="page-type-badge badge-auth">Auth</div></div>
+        <div class="page-card-name">Login</div>
+        <div class="page-card-route">/login</div>
+        <div class="page-card-desc">Returning coach login. Email + password. Rate limited to 10 attempts per 15 minutes.</div>
+        <div class="page-card-tags"><div class="page-tag">Phase 1</div></div>
+      </div>
+      <div class="page-card">
+        <div class="page-card-top"><div class="page-card-num">#09</div><div class="page-type-badge badge-auth">Auth</div></div>
+        <div class="page-card-name">Verify Email</div>
+        <div class="page-card-route">/verify-email</div>
+        <div class="page-card-desc">Supabase email verification callback. Auto-redirects to dashboard on success.</div>
+        <div class="page-card-tags"><div class="page-tag">Phase 1</div></div>
+      </div>
+      <div class="page-card">
+        <div class="page-card-top"><div class="page-card-num">#10</div><div class="page-type-badge badge-auth">Auth</div></div>
+        <div class="page-card-name">Forgot Password</div>
+        <div class="page-card-route">/forgot-password</div>
+        <div class="page-card-desc">Password reset via Supabase. Email input only. Sends reset link.</div>
+        <div class="page-card-tags"><div class="page-tag">Support</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:40px;">
+    <div class="section-label" style="margin-bottom:16px;">Coach Dashboard (Protected)</div>
+    <div class="page-grid">
+      <div class="page-card">
+        <div class="page-card-top"><div class="page-card-num">#11</div><div class="page-type-badge badge-dashboard">Dashboard</div></div>
+        <div class="page-card-name">Home</div>
+        <div class="page-card-route">/dashboard</div>
+        <div class="page-card-desc">Command centre. KPI tiles, attention alerts, renewal list, AI summary preview, check-in log.</div>
+        <div class="page-card-tags"><div class="page-tag red">Primary</div><div class="page-tag">Daily Use</div></div>
+      </div>
+      <div class="page-card">
+        <div class="page-card-top"><div class="page-card-num">#12</div><div class="page-type-badge badge-dashboard">Dashboard</div></div>
+        <div class="page-card-name">Client List</div>
+        <div class="page-card-route">/dashboard/clients</div>
+        <div class="page-card-desc">All clients table. Filter by status, program, search by name. Sort by renewal date.</div>
+        <div class="page-card-tags"><div class="page-tag">Management</div></div>
+      </div>
+      <div class="page-card">
+        <div class="page-card-top"><div class="page-card-num">#13</div><div class="page-type-badge badge-dashboard">Dynamic</div></div>
+        <div class="page-card-name">Client Profile</div>
+        <div class="page-card-route">/dashboard/clients/[id]</div>
+        <div class="page-card-desc">Full client view. Enrollment info, check-in timeline, energy trend chart, notes.</div>
+        <div class="page-card-tags"><div class="page-tag">Management</div></div>
+      </div>
+      <div class="page-card">
+        <div class="page-card-top"><div class="page-card-num">#14</div><div class="page-type-badge badge-dashboard">Dashboard</div></div>
+        <div class="page-card-name">Programs</div>
+        <div class="page-card-route">/dashboard/programs</div>
+        <div class="page-card-desc">Program cards. Create, edit, deactivate. Copy intake link per program. Active/Draft toggle.</div>
+        <div class="page-card-tags"><div class="page-tag red">Setup</div></div>
+      </div>
+      <div class="page-card">
+        <div class="page-card-top"><div class="page-card-num">#15</div><div class="page-type-badge badge-dashboard">Dashboard</div></div>
+        <div class="page-card-name">Weekly Pulse</div>
+        <div class="page-card-route">/dashboard/pulse</div>
+        <div class="page-card-desc">Gemini AI summary. 8-week energy chart. Response rate per week. Non-responder list.</div>
+        <div class="page-card-tags"><div class="page-tag">Monday Use</div></div>
+      </div>
+      <div class="page-card">
+        <div class="page-card-top"><div class="page-card-num">#16</div><div class="page-type-badge badge-dashboard">Dashboard</div></div>
+        <div class="page-card-name">Check-in Log</div>
+        <div class="page-card-route">/dashboard/checkin</div>
+        <div class="page-card-desc">Full check-in history table. All clients, all weeks. Filter by client, date range. Export.</div>
+        <div class="page-card-tags"><div class="page-tag">Management</div></div>
+      </div>
+      <div class="page-card">
+        <div class="page-card-top"><div class="page-card-num">#17</div><div class="page-type-badge badge-dashboard">Dashboard</div></div>
+        <div class="page-card-name">Payments</div>
+        <div class="page-card-route">/dashboard/payments</div>
+        <div class="page-card-desc">Revenue banner (month, total). Transaction table with status. Filter by date, program.</div>
+        <div class="page-card-tags"><div class="page-tag">Finance</div></div>
+      </div>
+      <div class="page-card">
+        <div class="page-card-top"><div class="page-card-num">#18</div><div class="page-type-badge badge-dashboard">Dashboard</div></div>
+        <div class="page-card-name">Invoices</div>
+        <div class="page-card-route">/dashboard/invoices</div>
+        <div class="page-card-desc">GST invoice list. Download PDF. Shows invoice number, date, client, amount, GST.</div>
+        <div class="page-card-tags"><div class="page-tag">Finance</div><div class="page-tag">Phase 2</div></div>
+      </div>
+      <div class="page-card">
+        <div class="page-card-top"><div class="page-card-num">#19a</div><div class="page-type-badge badge-dashboard">Dashboard</div></div>
+        <div class="page-card-name">Settings</div>
+        <div class="page-card-route">/dashboard/settings</div>
+        <div class="page-card-desc">Profile, check-in schedule, WhatsApp config, notification preferences.</div>
+        <div class="page-card-tags"><div class="page-tag">Config</div></div>
+      </div>
+      <div class="page-card">
+        <div class="page-card-top"><div class="page-card-num">#19b</div><div class="page-type-badge badge-dashboard">Dynamic</div></div>
+        <div class="page-card-name">Billing</div>
+        <div class="page-card-route">/dashboard/settings/billing</div>
+        <div class="page-card-desc">Current plan, client usage vs limit, upgrade prompt. GST details for invoice generation.</div>
+        <div class="page-card-tags"><div class="page-tag">Finance</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="section-label" style="margin-bottom:16px;">Legal / Static</div>
+    <div class="page-grid">
+      <div class="page-card">
+        <div class="page-card-top"><div class="page-card-num">#20</div><div class="page-type-badge badge-static">Static</div></div>
+        <div class="page-card-name">Privacy Policy</div>
+        <div class="page-card-route">/privacy</div>
+        <div class="page-card-desc">GDPR + India DPDP compliant. Data inventory, consent basis, retention, subject rights. Must be live before first beta coach.</div>
+        <div class="page-card-tags"><div class="page-tag red">Legal — Required</div></div>
+      </div>
+      <div class="page-card">
+        <div class="page-card-top"><div class="page-card-num">#21</div><div class="page-type-badge badge-static">Static</div></div>
+        <div class="page-card-name">Terms of Service</div>
+        <div class="page-card-route">/terms</div>
+        <div class="page-card-desc">Platform terms for coaches. Acceptable use, payment terms, data processing. Required at launch.</div>
+        <div class="page-card-tags"><div class="page-tag red">Legal — Required</div></div>
+      </div>
+      <div class="page-card">
+        <div class="page-card-top"><div class="page-card-num">#22</div><div class="page-type-badge badge-static">Static</div></div>
+        <div class="page-card-name">Generic Success</div>
+        <div class="page-card-route">/success</div>
+        <div class="page-card-desc">Fallback success page for non-specific flows (e.g. email verification, form submissions).</div>
+        <div class="page-card-tags"><div class="page-tag">Utility</div></div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<div class="divider"></div>
+
+<!-- ── SECTION 3: DASHBOARD MOCKUP ── -->
+<section class="section" id="dashboard">
+  <div class="section-label">Section 03</div>
+  <div class="section-title">Dashboard<br>Home</div>
+  <p class="section-sub">The daily command centre. Finalised layout as discussed — KPIs, attention panel, renewals, AI summary, and check-in log in one view.</p>
+
+  <div class="db-shell">
+    <!-- Browser Chrome -->
+    <div class="db-titlebar">
+      <div class="db-dot" style="background:#EF4444;"></div>
+      <div class="db-dot" style="background:#F59E0B;"></div>
+      <div class="db-dot" style="background:#10B981;"></div>
+      <div class="db-url">fitosys.alchemetryx.com/dashboard</div>
+    </div>
+
+    <div class="db-inner">
+      <!-- SIDEBAR -->
+      <div class="db-sidebar">
+        <div class="db-logo"><span>FITO</span>SYS</div>
+
+        <div class="db-nav-section">Main</div>
+        <div class="db-nav-item active">
+          <span class="db-nav-icon">⊞</span>
+          Dashboard
+        </div>
+        <div class="db-nav-item">
+          <span class="db-nav-icon">👥</span>
+          Clients
+          <span class="db-nav-badge">34</span>
+        </div>
+        <div class="db-nav-item">
+          <span class="db-nav-icon">📋</span>
+          Programs
+        </div>
+
+        <div class="db-nav-section">Insights</div>
+        <div class="db-nav-item">
+          <span class="db-nav-icon">💓</span>
+          Weekly Pulse
+        </div>
+        <div class="db-nav-item">
+          <span class="db-nav-icon">✅</span>
+          Check-in Log
+        </div>
+
+        <div class="db-nav-section">Finance</div>
+        <div class="db-nav-item">
+          <span class="db-nav-icon">₹</span>
+          Payments
+        </div>
+        <div class="db-nav-item">
+          <span class="db-nav-icon">🧾</span>
+          Invoices
+        </div>
+
+        <div class="db-sidebar-bottom">
+          <div class="db-nav-item" style="padding:0;margin-bottom:12px;">
+            <span class="db-nav-icon">⚙️</span>
+            Settings
+          </div>
+          <div class="db-coach-pill">
+            <div class="db-coach-avatar">P</div>
+            <div>
+              <div class="db-coach-name">Priya Sharma</div>
+              <div class="db-coach-plan">Pro Plan · 34/50 clients</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN CONTENT -->
+      <div class="db-main">
+        <!-- Top bar -->
+        <div class="db-topbar">
+          <div>
+            <div class="db-greeting">Good Morning, <span>Priya</span></div>
+            <div class="db-date">Friday, 13 March 2026 · Week 11 of 52</div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;">
+            <div class="db-btn-ghost">📤 Share Link</div>
+            <div class="db-btn-red">+ Add Client</div>
+          </div>
+        </div>
+
+        <!-- KPI Grid -->
+        <div class="db-kpi-grid">
+          <div class="db-kpi alert">
+            <div class="db-kpi-label">Active Clients</div>
+            <div class="db-kpi-val red">34</div>
+            <div class="db-kpi-change up">↑ 4 this month</div>
+          </div>
+          <div class="db-kpi">
+            <div class="db-kpi-label">Revenue — March</div>
+            <div class="db-kpi-val">₹87,500</div>
+            <div class="db-kpi-change up">↑ 12% vs February</div>
+          </div>
+          <div class="db-kpi warn">
+            <div class="db-kpi-label">Renewals Due (7d)</div>
+            <div class="db-kpi-val amber">4</div>
+            <div class="db-kpi-change neutral">Earliest: Mar 14</div>
+          </div>
+          <div class="db-kpi good">
+            <div class="db-kpi-label">Check-in Rate</div>
+            <div class="db-kpi-val green">82%</div>
+            <div class="db-kpi-change neutral">28 of 34 responded</div>
+          </div>
+        </div>
+
+        <!-- AI Summary -->
+        <div class="db-ai-card">
+          <div class="db-ai-label">Gemini AI · Weekly Pulse — Week of Mar 10</div>
+          <div class="db-ai-text">Strong week overall. 28 of 34 clients responded. Rohan S. and Dev K. flagged — both missed two consecutive check-ins and energy scores dropped below 5. Ankita M. reported knee pain; recommend program modification. Revenue trajectory on track for ₹1.2L this month if current renewal rate holds.</div>
+          <div class="db-ai-footer">
+            <div class="db-ai-date">Generated Monday, 10 Mar · 7:04 AM</div>
+            <div class="db-ai-btn">View Full Pulse →</div>
+          </div>
+        </div>
+
+        <!-- 2-col grid -->
+        <div class="db-body-grid">
+          <!-- Attention -->
+          <div class="db-card">
+            <div class="db-card-header">
+              <div class="db-card-title">⚠ Needs Attention (3)</div>
+              <div class="db-card-action">View All →</div>
+            </div>
+            <div class="db-card-body">
+              <div class="db-alert-item">
+                <div class="db-alert-dot red"></div>
+                <div class="db-alert-info">
+                  <div class="db-alert-name">Rohan S.</div>
+                  <div class="db-alert-reason">Energy 4/10 · No reply 2 weeks</div>
+                </div>
+                <div class="db-mini-btn">Message</div>
+              </div>
+              <div class="db-alert-item">
+                <div class="db-alert-dot amber"></div>
+                <div class="db-alert-info">
+                  <div class="db-alert-name">Ankita M.</div>
+                  <div class="db-alert-reason">Energy 3/10 · Knee pain reported</div>
+                </div>
+                <div class="db-mini-btn">Message</div>
+              </div>
+              <div class="db-alert-item">
+                <div class="db-alert-dot amber"></div>
+                <div class="db-alert-info">
+                  <div class="db-alert-name">Dev K.</div>
+                  <div class="db-alert-reason">Missed last 2 check-ins</div>
+                </div>
+                <div class="db-mini-btn">Message</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Renewals -->
+          <div class="db-card">
+            <div class="db-card-header">
+              <div class="db-card-title">🔄 Renewals This Week (4)</div>
+              <div class="db-card-action">View All →</div>
+            </div>
+            <div class="db-card-body">
+              <div class="db-renewal-item">
+                <div>
+                  <div class="db-renewal-days urgent">1</div>
+                  <div class="db-renewal-label">day</div>
+                </div>
+                <div class="db-renewal-info">
+                  <div class="db-renewal-name">Meera R.</div>
+                  <div class="db-renewal-prog">8-Week Power Reset · Mar 14</div>
+                </div>
+                <div class="db-mini-btn" style="border-color:rgba(239,68,68,0.4);color:var(--danger);">Remind</div>
+              </div>
+              <div class="db-renewal-item">
+                <div>
+                  <div class="db-renewal-days soon">3</div>
+                  <div class="db-renewal-label">days</div>
+                </div>
+                <div class="db-renewal-info">
+                  <div class="db-renewal-name">Rahul T.</div>
+                  <div class="db-renewal-prog">12-Week Transform · Mar 16</div>
+                </div>
+                <div class="db-mini-btn">Remind</div>
+              </div>
+              <div class="db-renewal-item">
+                <div>
+                  <div class="db-renewal-days soon">5</div>
+                  <div class="db-renewal-label">days</div>
+                </div>
+                <div class="db-renewal-info">
+                  <div class="db-renewal-name">Sneha P.</div>
+                  <div class="db-renewal-prog">4-Week Starter · Mar 18</div>
+                </div>
+                <div class="db-mini-btn">Remind</div>
+              </div>
+              <div class="db-renewal-item">
+                <div>
+                  <div class="db-renewal-days" style="color:var(--grey);">7</div>
+                  <div class="db-renewal-label">days</div>
+                </div>
+                <div class="db-renewal-info">
+                  <div class="db-renewal-name">Karan L.</div>
+                  <div class="db-renewal-prog">8-Week Power Reset · Mar 20</div>
+                </div>
+                <div class="db-mini-btn">Remind</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Check-in Log Preview -->
+        <div class="db-card">
+          <div class="db-card-header">
+            <div class="db-card-title">✅ This Week's Check-ins — Mar 9</div>
+            <div class="db-card-action">Full Log →</div>
+          </div>
+          <div class="db-card-body">
+            <div class="db-checkin-row header">
+              <div>Client</div>
+              <div class="db-checkin-val">Weight</div>
+              <div class="db-checkin-val">Sessions</div>
+              <div class="db-checkin-energy">Energy</div>
+              <div class="db-checkin-val">Status</div>
+            </div>
+            <div class="db-checkin-row">
+              <div class="db-checkin-name">Rohan S.</div>
+              <div class="db-checkin-val" style="color:var(--grey);">—</div>
+              <div class="db-checkin-val" style="color:var(--grey);">—</div>
+              <div class="db-checkin-energy" style="color:var(--grey);">—</div>
+              <div><div class="db-status-pill pill-missed">Missed</div></div>
+            </div>
+            <div class="db-checkin-row">
+              <div class="db-checkin-name">Ankita M.</div>
+              <div class="db-checkin-val">62.1 kg</div>
+              <div class="db-checkin-val">2</div>
+              <div class="db-checkin-energy low">3/10</div>
+              <div><div class="db-status-pill pill-replied">Replied</div></div>
+            </div>
+            <div class="db-checkin-row">
+              <div class="db-checkin-name">Meera R.</div>
+              <div class="db-checkin-val">58.4 kg</div>
+              <div class="db-checkin-val">4</div>
+              <div class="db-checkin-energy high">9/10</div>
+              <div><div class="db-status-pill pill-replied">Replied</div></div>
+            </div>
+            <div class="db-checkin-row">
+              <div class="db-checkin-name">Dev K.</div>
+              <div class="db-checkin-val" style="color:var(--grey);">—</div>
+              <div class="db-checkin-val" style="color:var(--grey);">—</div>
+              <div class="db-checkin-energy" style="color:var(--grey);">—</div>
+              <div><div class="db-status-pill pill-missed">Missed</div></div>
+            </div>
+            <div class="db-checkin-row">
+              <div class="db-checkin-name">Rahul T.</div>
+              <div class="db-checkin-val">78.9 kg</div>
+              <div class="db-checkin-val">3</div>
+              <div class="db-checkin-energy mid">7/10</div>
+              <div><div class="db-status-pill pill-replied">Replied</div></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- db-main -->
+    </div><!-- db-inner -->
+  </div><!-- db-shell -->
+
+</section>
+
+<div class="divider"></div>
+
+<!-- ── SECTION 4: CTA ANALYSIS ── -->
+<section class="section bg-alt" id="cta">
+  <div class="section-label">Section 04</div>
+  <div class="section-title">CTA<br>Alignment</div>
+  <p class="section-sub">Why "Get Started" and "Request a Demo" are sending different signals — and what to replace them with.</p>
+
+  <div class="cta-compare">
+    <div class="cta-box bad">
+      <div class="cta-box-label">❌ Current — Misaligned</div>
+      <div class="cta-text">Nav: "Get Started" &nbsp;|&nbsp; Footer: "Request a Demo"</div>
+      <div class="cta-why">These are two different buyer intents on the same product. "Get Started" implies you can sign up immediately. "Request a Demo" implies the product is complex, expensive, or needs a sales call. For independent fitness coaches — your actual audience — a demo request is a conversion killer. It adds friction and signals enterprise pricing. They'll leave before filling the form.</div>
+    </div>
+    <div class="cta-box good">
+      <div class="cta-box-label">✅ Recommended — Unified</div>
+      <div class="cta-text">Nav: "Start Free" &nbsp;|&nbsp; Footer: "Start Free"</div>
+      <div class="cta-why">Same intent, same action, same page. Every CTA goes to /signup. "Free" removes the cost fear. "Start" creates momentum. The footer can have a supporting line: "No card needed · First 5 clients free." This aligns with your Starter tier freemium model and removes all ambiguity about what happens when they click.</div>
+    </div>
+  </div>
+
+  <!-- Nav mockup comparison -->
+  <div style="margin-bottom:32px;">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:var(--danger);margin-bottom:10px;">❌ Before</div>
+    <div class="nav-mockup">
+      <div class="nm-brand"><span>FITO</span>SYS</div>
+      <div class="nm-links">
+        <span>Features</span><span>Pricing</span><span>Demo</span>
+      </div>
+      <div class="nm-cta bad">Get Started</div>
+    </div>
+
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:var(--success);margin-bottom:10px;">✅ After</div>
+    <div class="nav-mockup" style="border-color:rgba(16,185,129,0.2);">
+      <div class="nm-brand"><span>FITO</span>SYS</div>
+      <div class="nm-links">
+        <span>Features</span><span>Pricing</span><span>Demo</span>
+      </div>
+      <div class="nm-cta good">Start Free</div>
+    </div>
+  </div>
+
+  <!-- Footer mockup comparison -->
+  <div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:var(--danger);margin-bottom:10px;">❌ Before — Footer CTA</div>
+    <div class="footer-mockup">
+      <div class="fm-heading">Ready to scale<br>your <span>coaching?</span></div>
+      <div class="fm-sub">Join hundreds of coaches automating their client workflow.</div>
+      <div class="fm-cta bad">Request a Demo</div>
+    </div>
+
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:var(--success);margin-bottom:10px;">✅ After — Footer CTA</div>
+    <div class="footer-mockup" style="border-color:rgba(16,185,129,0.2);">
+      <div class="fm-heading">Build the system.<br><span>Scale the results.</span></div>
+      <div class="fm-sub">Your coaching business on autopilot — starting today.</div>
+      <div class="fm-cta good">Start Free</div>
+      <div class="fm-note">No card needed &nbsp;·&nbsp; First 5 clients free &nbsp;·&nbsp; Setup in 10 minutes</div>
+    </div>
+  </div>
+
+</section>
+
+<div class="divider"></div>
+
+<!-- FOOTER -->
+<div style="position:relative;z-index:1;padding:40px 60px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border-subtle);">
+  <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;"><span style="color:var(--red);">FITO</span>SYS</div>
+  <div style="font-size:12px;color:var(--grey);">Journey Flow & Dashboard Architecture · v2.0 · Mar 2026</div>
+  <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey);">Where Systems Meet Strength</div>
+</div>
+
+</body>
+</html>

@@ -40,20 +40,15 @@ export async function deleteAccountAction(formData: FormData): Promise<DeleteAcc
     };
   }
 
-  // 3. Soft delete - mark as inactive (don't hard delete for audit trail)
+  // 3. Soft delete using database function (DPDP 2023 compliant)
   try {
-    const { error: updateError } = await supabase!
-      .from("coaches")
-      .update({
-        status: "deleted",
-        updated_at: new Date().toISOString(),
-        deletion_requested_at: new Date().toISOString(),
-        deletion_scheduled_for: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days grace period
-      })
-      .eq("id", coachId!);
+    // Call the database function to schedule deletion (sets 30-day grace period)
+    const { error: rpcError } = await supabase!.rpc("schedule_account_deletion", {
+      coach_uuid: coachId!
+    });
 
-    if (updateError) {
-      logError(updateError, "deleteAccountAction");
+    if (rpcError) {
+      logError(rpcError, "deleteAccountAction");
       return { success: false, error: "Failed to delete account", code: "SERVER" };
     }
 
@@ -89,16 +84,12 @@ export async function cancelDeletionAction(): Promise<DeleteAccountResult> {
   }
 
   try {
-    const { error: updateError } = await supabase!
-      .from("coaches")
-      .update({
-        status: "active",
-        deletion_requested_at: null,
-        deletion_scheduled_for: null,
-      })
-      .eq("id", coachId!);
+    // Call the database function to cancel deletion
+    const { data: success, error: rpcError } = await supabase!.rpc("cancel_account_deletion", {
+      coach_uuid: coachId!
+    });
 
-    if (updateError) {
+    if (rpcError || !success) {
       return { success: false, error: "Failed to cancel deletion", code: "SERVER" };
     }
 

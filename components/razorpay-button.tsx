@@ -104,7 +104,11 @@ export function RazorpayButton({
 
                         const verifyData = await verifyRes.json();
                         if (verifyRes.ok) {
-                            onSuccess(verifyData.clientId);
+                            // Redirect to success page with payment details
+                            const successUrl = slug
+                                ? `/join/${slug}/success?status=success&payment_id=${response.razorpay_payment_id}`
+                                : `/success?status=success&payment_id=${response.razorpay_payment_id}`;
+                            window.location.href = successUrl;
                         } else {
                             onError(verifyData.error || "Verification failed");
                         }

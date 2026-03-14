@@ -61,9 +61,10 @@ export function IconSidebar({ notificationsCount = 0 }: IconSidebarProps) {
                 "sb-btn",
                 isActive && "on"
               )}
+              aria-label={item.label}
               title={item.label}
             >
-              <item.icon className="h-4 w-4" />
+              <item.icon className="h-4 w-4" aria-hidden="true" />
               {item.hasNotification && <div className="sb-dot" />}
             </Link>
           );
@@ -72,10 +73,11 @@ export function IconSidebar({ notificationsCount = 0 }: IconSidebarProps) {
         {/* Add button */}
         <button
           className="sb-btn"
+          aria-label="Add new"
           title="Add new"
           onClick={handleAddClick}
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="h-4 w-4" aria-hidden="true" />
         </button>
       </nav>
 
@@ -84,16 +86,18 @@ export function IconSidebar({ notificationsCount = 0 }: IconSidebarProps) {
         <Link
           href="/dashboard/settings"
           className="sb-btn"
+          aria-label="Settings"
           title="Settings"
         >
-          <Settings className="h-4 w-4" />
+          <Settings className="h-4 w-4" aria-hidden="true" />
         </Link>
         <button
           className="sb-btn"
+          aria-label="Sign out"
           title="Sign out"
           onClick={handleSignOut}
         >
-          <LogOut className="h-4 w-4" />
+          <LogOut className="h-4 w-4" aria-hidden="true" />
         </button>
       </div>
     </aside>

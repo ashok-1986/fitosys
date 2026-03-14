@@ -275,9 +275,9 @@
 ## Priority Action Items
 
 ### P0 — Before Launch (Not Blocking)
-- [ ] Add `role="alert"` to toast notifications
-- [ ] Add aria-labels to icon buttons
-- [ ] Add skip-to-content link
+- [x] Add `role="alert"` to toast notifications
+- [x] Add aria-labels to icon buttons
+- [x] Add skip-to-content link
 
 ### P1 — Week 1 Post-Launch
 - [ ] Run axe DevTools audit

@@ -6,6 +6,27 @@ export const redis = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN!,
 });
 
+// Global API rate limit: 100 requests per minute
+export const apiRateLimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(100, "1 m"),
+  prefix: "rl:api",
+});
+
+// Stricter limit for sensitive operations
+export const sensitiveRateLimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(10, "1 m"),
+  prefix: "rl:sensitive",
+});
+
+// Higher limit for authenticated users
+export const authenticatedRateLimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(300, "1 m"),
+  prefix: "rl:auth",
+});
+
 // 5 requests per 10 minutes — intake form
 export const intakeRateLimit = new Ratelimit({
   redis,
@@ -40,39 +61,3 @@ export const whatsappWebhookRateLimit = new Ratelimit({
   limiter: Ratelimit.slidingWindow(60, "1 m"),
   prefix: "rl:whatsapp",
 });
-
-// Generic helpers for routes
-import { NextRequest, NextResponse } from "next/server";
-
-export function getClientIP(req: NextRequest): string {
-  // trust x-forwarded-for header when present, otherwise fallback
-  return (
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    // @ts-ignore
-    req.ip ||
-    "unknown"
-  );
-}
-
-export async function checkRateLimit(
-  key: string,
-  options: { maxRequests: number } = { maxRequests: 60 }
-): Promise<{ allowed: boolean; retryAfterMs: number }> {
-  const limiter = new Ratelimit({
-    redis,
-    limiter: Ratelimit.slidingWindow(options.maxRequests, "1 m"),
-  });
-  const { success, reset } = await limiter.limit(key);
-  return { allowed: success, retryAfterMs: reset ?? 0 };
-}
-
-export function rateLimitResponse(retryAfterMs: number) {
-  return NextResponse.json(
-    { error: "Too many requests" },
-    {
-      status: 429,
-      headers: { "Retry-After": Math.ceil(retryAfterMs / 1000).toString() },
-    }
-  );
-}
-

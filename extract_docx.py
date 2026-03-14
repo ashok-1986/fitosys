@@ -27,6 +27,6 @@ if __name__ == "__main__":
     file_path = sys.argv[1]
     try:
         text = extract_text_from_docx(file_path)
-        print(text)
+        sys.stdout.buffer.write(text.encode('utf-8'))
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)

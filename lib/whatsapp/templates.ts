@@ -283,3 +283,72 @@ export async function sendCoachNewClientNotification(
     clientName,
   ]);
 }
+
+// ---------------------------------------------------------------------------
+// Template 7: fitosys_renewal_confirmation (Use freeform message - no template needed)
+// ---------------------------------------------------------------------------
+// Sent when client successfully renews their program
+// This is a freeform message (not template) - sent within 24h service window
+// ---------------------------------------------------------------------------
+
+export async function sendRenewalConfirmation(
+  clientPhone: string,
+  clientName: string,
+  programName: string,
+  newEndDate: string
+): Promise<WhatsAppSendResult> {
+  // Freeform message (not template) - uses regular send
+  const normalizedPhone = clientPhone.replace(/\s+/g, "").replace(/^\+/, "");
+  
+  const message = `Hi ${clientName}! 🎉\n\nYour *${programName}* program has been renewed successfully!\n\nNew end date: ${newEndDate}\n\nKeep up the great work! Your coach is here to support you every step of the way.\n\nReply if you have any questions.`;
+
+  const payload = {
+    messaging_product: "whatsapp" as const,
+    to: normalizedPhone,
+    type: "text" as const,
+    text: {
+      body: message,
+    },
+  };
+
+  try {
+    const response = await fetch(
+      `https://graph.facebook.com/v19.0/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.WHATSAPP_ACCESS_TOKEN}`,
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      return {
+        success: false,
+        templateName: "renewal_confirmation",
+        recipient: clientPhone,
+        error: responseData?.error?.message ?? "Unknown error",
+      };
+    }
+
+    const messageId = responseData?.messages?.[0]?.id;
+    return {
+      success: true,
+      templateName: "renewal_confirmation",
+      recipient: clientPhone,
+      messageId,
+    };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    return {
+      success: false,
+      templateName: "renewal_confirmation",
+      recipient: clientPhone,
+      error: message,
+    };
+  }
+}

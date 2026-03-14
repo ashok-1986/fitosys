@@ -32,7 +32,7 @@ export function NavBar({ title, back, backHref, action, onAction, transparent }:
             className="flex items-center gap-1 overflow-hidden"
           >
             <div className="flex items-center gap-1 bg-white/5 border border-white/10 rounded-full px-3 py-1 hover:bg-white/10 transition-colors">
-                <ChevronLeft className="h-4 w-4 text-white/70 -ml-1" />
+                <ChevronLeft className="h-4 w-4 text-white/70 -ml-1" aria-hidden="true" />
                 <span className="text-[13px] font-medium text-white/70 font-sans truncate max-w-[80px]">
                     {back}
                 </span>
@@ -89,7 +89,7 @@ export function TabBar({ tabs }: TabBarProps) {
               isActive ? "text-[#F20000]" : "text-white/40 hover:text-white/70"
             )}
           >
-            <div className="text-[22px] flex items-center justify-center h-7 w-7">
+            <div className="text-[22px] flex items-center justify-center h-7 w-7" aria-hidden="true">
                 {tab.icon}
             </div>
             <span className="text-[10px] font-semibold font-sans">

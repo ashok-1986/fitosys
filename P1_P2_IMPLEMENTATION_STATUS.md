@@ -183,11 +183,11 @@ const apiRateLimit = new Ratelimit({
 
 ### Week 1 (2026-03-20)
 - [ ] Enable PgBouncer in Supabase Dashboard
-- [ ] Add database columns for deletion tracking
+- [x] Add database columns for deletion tracking
 - [ ] Test account deletion flow end-to-end
 
 ### Week 2 (2026-03-27)
-- [ ] Implement global API rate limiting
+- [x] Implement global API rate limiting
 - [ ] Formal accessibility audit (axe, WAVE)
 - [ ] Keyboard navigation testing
 

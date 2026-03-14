@@ -2,5 +2,23 @@
   "framework": "nextjs",
   "buildCommand": "npm run build",
   "devCommand": "npm run dev",
-  "installCommand": "npm install"
+  "installCommand": "npm install",
+  "crons": [
+    {
+      "path": "/api/cron/checkins",
+      "schedule": "0 13 * * 0"
+    },
+    {
+      "path": "/api/cron/renewals",
+      "schedule": "0 10 * * *"
+    },
+    {
+      "path": "/api/cron/summaries",
+      "schedule": "30 1 * * 1"
+    },
+    {
+      "path": "/api/cron/process-deletions",
+      "schedule": "0 0 * * *"
+    }
+  ]
 }
