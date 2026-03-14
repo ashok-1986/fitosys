@@ -4,13 +4,10 @@ import { getRazorpay } from "@/lib/razorpay/client";
 import {
     sendClientWelcome,
     sendCoachNewClientNotification,
+    sendRenewalConfirmation,
 } from "@/lib/whatsapp";
 import { checkClientLimit } from "@/lib/plans/check-limit";
-import {
-    checkRateLimit,
-    rateLimitResponse,
-    getClientIP,
-} from "@/lib/rate-limit";
+import { sensitiveRateLimit } from "@/lib/rate-limit";
 import { generateGSTInvoice } from "@/lib/gst/generate-invoice";
 import { logRequest, logError } from "@/lib/loggerHelpers";
 
@@ -18,13 +15,11 @@ import { logRequest, logError } from "@/lib/loggerHelpers";
 // Called immediately after the Razorpay modal closes successfully on frontend
 export async function POST(req: NextRequest) {
     logRequest(req, "POST /api/payments/verify");
-    // Rate limit: 20 requests per minute per IP
-    const ip = getClientIP(req);
-    const { allowed, retryAfterMs } = await checkRateLimit(`verify:${ip}`, {
-        maxRequests: 20,
-    });
-    if (!allowed) {
-        return rateLimitResponse(retryAfterMs);
+    
+    const ip = req.headers.get("x-forwarded-for") ?? "127.0.0.1";
+    const { success } = await sensitiveRateLimit.limit(ip);
+    if (!success) {
+        return new NextResponse("Too many requests", { status: 429 });
     }
 
     try {
@@ -84,23 +79,42 @@ export async function POST(req: NextRequest) {
         const { createServiceClient } = await import("@/lib/supabase/server");
         const supabase = await createServiceClient();
 
+        // Check if this is a renewal payment
+        const isRenewal = notes.payment_type === "renewal";
+
         // Step 3: Get enrollment — verify it matches the order
         const { data: enrollment } = await supabase
             .from("enrollments")
             .select(
-                "*, programs(name, duration_weeks), coaches(full_name, whatsapp_number, checkin_day, business_name, gst_number, billing_address)"
+                "*, programs(name, duration_weeks, price, currency), coaches(full_name, whatsapp_number, checkin_day, business_name, gst_number, billing_address)"
             )
             .eq("id", enrollmentId)
             .eq("coach_id", notes.coach_id)
-            .eq("status", "pending") // Only activate pending enrollments
+            .eq("status", isRenewal ? "active" : "pending")
             .single();
 
         if (!enrollment) {
             return NextResponse.json(
-                { error: "Enrollment not found or already activated" },
+                { error: "Enrollment not found or already processed" },
                 { status: 404 }
             );
         }
+
+        // Extract program and coach from enrollment (type assertion for nested data)
+        const program = enrollment.programs as unknown as {
+            name: string;
+            duration_weeks: number;
+            price: number;
+            currency: string;
+        };
+        const coach = enrollment.coaches as unknown as {
+            full_name: string;
+            whatsapp_number: string;
+            checkin_day: number;
+            business_name?: string;
+            gst_number?: string;
+            billing_address?: string;
+        };
 
         // Step 4: Create or find client record
         let clientId: string;
@@ -168,15 +182,34 @@ export async function POST(req: NextRequest) {
         }
 
         // Step 5: Update enrollment to active with client_id
-        await supabase
-            .from("enrollments")
-            .update({
-                client_id: clientId,
-                status: "active",
-                gateway_payment_id: razorpay_payment_id,
-                payment_gateway: "razorpay",
-            })
-            .eq("id", enrollmentId);
+        if (isRenewal) {
+            // For renewals, extend the end_date by program duration
+            const newEndDate = new Date(enrollment.end_date);
+            newEndDate.setDate(newEndDate.getDate() + (program.duration_weeks || 12) * 7);
+            
+            await supabase
+                .from("enrollments")
+                .update({
+                    client_id: clientId,
+                    end_date: newEndDate.toISOString().split("T")[0],
+                    gateway_payment_id: razorpay_payment_id,
+                    payment_gateway: "razorpay",
+                    renewal_reminder_1_sent: false,
+                    renewal_reminder_2_sent: false,
+                })
+                .eq("id", enrollmentId);
+        } else {
+            // For new enrollments, set to active
+            await supabase
+                .from("enrollments")
+                .update({
+                    client_id: clientId,
+                    status: "active",
+                    gateway_payment_id: razorpay_payment_id,
+                    payment_gateway: "razorpay",
+                })
+                .eq("id", enrollmentId);
+        }
 
         // Step 6: Record payment
         await supabase.from("payments").insert({
@@ -185,7 +218,7 @@ export async function POST(req: NextRequest) {
             enrollment_id: enrollmentId,
             amount: enrollment.amount_paid,
             currency: enrollment.currency,
-            payment_type: "new",
+            payment_type: isRenewal ? "renewal" : "new",
             gateway_payment_id: razorpay_payment_id,
             gateway_order_id: razorpay_order_id,
             payment_gateway: "razorpay",
@@ -194,19 +227,6 @@ export async function POST(req: NextRequest) {
         });
 
         // Step 7: Send WhatsApp notifications (fire and forget)
-        const coach = enrollment.coaches as unknown as {
-            full_name: string;
-            whatsapp_number: string;
-            checkin_day: number;
-            business_name?: string;
-            gst_number?: string;
-            billing_address?: string;
-        };
-        const program = enrollment.programs as unknown as {
-            name: string;
-            duration_weeks: number;
-        };
-
         try {
             const endDate = enrollment.end_date
                 ? new Date(enrollment.end_date).toLocaleDateString("en-IN", {
@@ -226,25 +246,38 @@ export async function POST(req: NextRequest) {
                     month: "long",
                     year: "numeric",
                 });
-            const dayNames = [
-                "Sunday",
-                "Monday",
-                "Tuesday",
-                "Wednesday",
-                "Thursday",
-                "Friday",
-                "Saturday",
-            ];
+
+            // For renewals, calculate new end date
+            const newEndDate = isRenewal
+                ? (() => {
+                    const d = new Date(enrollment.end_date);
+                    d.setDate(d.getDate() + (program.duration_weeks || 12) * 7);
+                    return d.toLocaleDateString("en-IN", {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                    });
+                })()
+                : endDate;
 
             await Promise.allSettled([
-                sendClientWelcome(
-                    clientData.whatsapp_number,
-                    coach?.full_name || "Your Coach",
-                    clientData.full_name.split(" ")[0],
-                    program?.name || "Fitness Program",
-                    startDate
-                ),
-                coach?.whatsapp_number
+                // Send welcome for new enrollments, renewal confirmation for renewals
+                isRenewal
+                    ? sendRenewalConfirmation(
+                        clientData.whatsapp_number,
+                        clientData.full_name.split(" ")[0],
+                        program?.name || "Fitness Program",
+                        newEndDate
+                    )
+                    : sendClientWelcome(
+                        clientData.whatsapp_number,
+                        coach?.full_name || "Your Coach",
+                        clientData.full_name.split(" ")[0],
+                        program?.name || "Fitness Program",
+                        startDate
+                    ),
+                // Coach notification (only for new enrollments)
+                !isRenewal && coach?.whatsapp_number
                     ? sendCoachNewClientNotification(
                         coach.whatsapp_number,
                         coach?.full_name || "Coach",

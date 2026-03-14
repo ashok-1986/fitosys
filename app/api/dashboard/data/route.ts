@@ -29,6 +29,8 @@ export async function GET() {
       recentCheckinsResult,
       checkinsByDayResult,
       aiSummaryResult,
+      totalRevenueResult,
+      mrrResult,
     ] = await Promise.all([
       adminSupabase.from("coaches").select("id, full_name, email").eq("id", coachId).single(),
       adminSupabase.from("programs").select("*").eq("coach_id", coachId).eq("status", "active").limit(5),
@@ -37,7 +39,13 @@ export async function GET() {
       adminSupabase.from("checkins").select(`id, energy_score, sessions_completed, check_date, clients (full_name)`).eq("coach_id", coachId).order("check_date", { ascending: false }).limit(10),
       adminSupabase.from("checkins").select("check_date").eq("coach_id", coachId).gte("check_date", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]),
       adminSupabase.from("ai_summaries").select("*").eq("coach_id", coachId).order("week_end_date", { ascending: false }).limit(1).maybeSingle(),
+      adminSupabase.from("payments").select("amount").eq("coach_id", coachId).eq("gateway_payment_status", "captured"),
+      adminSupabase.from("payments").select("amount").eq("coach_id", coachId).eq("gateway_payment_status", "captured").gte("paid_at", new Date(now.getFullYear(), now.getMonth(), 1).toISOString()).lt("paid_at", new Date(now.getFullYear(), now.getMonth() + 1, 1).toISOString()),
     ]);
+
+    // Calculate revenue
+    const totalRevenue = totalRevenueResult.data?.reduce((sum, p) => sum + p.amount, 0) || 0;
+    const mrr = mrrResult.data?.reduce((sum, p) => sum + p.amount, 0) || 0;
 
     // Process chart data
     const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -101,6 +109,8 @@ export async function GET() {
         total_programs: programsResult.data?.length || 0,
         renewals_due: renewals.length,
         response_rate: Math.round((recentCheckinsResult.data?.length || 0) / 10 * 100),
+        total_revenue: totalRevenue,
+        mrr: mrr,
       },
       programs: programsResult.data || [],
       renewals,

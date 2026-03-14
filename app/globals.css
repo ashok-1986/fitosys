@@ -54,10 +54,10 @@
 :root {
   --radius: 0.75rem;
 
-  /* Fitosys Brand Palette — Dark-first */
-  --brand: #F20000;
+  /* Fitosys Brand Palette — Dark-first (Authoritative: Brand Identity HTML) */
+  --brand: #E8001D;
   --brand-hover: #C20000;
-  --brand-glow: rgba(242,0,0,0.18);
+  --brand-glow: rgba(232,0,29,0.18);
   --success: #34C759;
   --warning: #FF9F0A;
 
@@ -68,7 +68,7 @@
   --card-foreground: #FFFFFF;
   --popover: #111111;
   --popover-foreground: #FFFFFF;
-  --primary: #F20000;
+  --primary: #E8001D;
   --primary-foreground: #FFFFFF;
   --secondary: #1A1A1A;
   --secondary-foreground: #FFFFFF;
@@ -77,12 +77,18 @@
   --accent: #1A1A1A;
   --accent-foreground: #FFFFFF;
   --destructive: #EF4444;
-  --border: #222222;
-  --input: #222222;
-  --ring: #F20000;
+  --border: rgba(232,0,29,0.25);
+  --input: rgba(232,0,29,0.25);
+  --ring: #E8001D;
+
+  /* Structural separators (white-subtle for non-brand borders) */
+  --border-subtle: rgba(255,255,255,0.06);
+
+  /* Secondary card background (documented extension) */
+  --card-bg2: #161616;
 
   /* Charts */
-  --chart-1: #F20000;
+  --chart-1: #E8001D;
   --chart-2: #34C759;
   --chart-3: #FF9F0A;
   --chart-4: #6366F1;
@@ -91,12 +97,12 @@
   /* Sidebar */
   --sidebar: #0A0A0A;
   --sidebar-foreground: #FFFFFF;
-  --sidebar-primary: #F20000;
+  --sidebar-primary: #E8001D;
   --sidebar-primary-foreground: #FFFFFF;
   --sidebar-accent: #1A1A1A;
   --sidebar-accent-foreground: #FFFFFF;
-  --sidebar-border: #222222;
-  --sidebar-ring: #F20000;
+  --sidebar-border: rgba(232,0,29,0.25);
+  --sidebar-ring: #E8001D;
 }
 
 @layer base {
@@ -106,6 +112,20 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-urbanist), 'Urbanist', sans-serif;
+    position: relative;
+  }
+  /* Noise texture overlay (Brand Identity HTML) */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: 9999;
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-barlow), 'Barlow Condensed', sans-serif;

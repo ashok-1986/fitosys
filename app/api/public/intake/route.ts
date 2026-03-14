@@ -2,11 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createRazorpayOrder } from "@/lib/razorpay/create-order";
 import { checkClientLimit } from "@/lib/plans/check-limit";
-import {
-    checkRateLimit,
-    rateLimitResponse,
-    getClientIP,
-} from "@/lib/rate-limit";
+import { intakeRateLimit } from "@/lib/rate-limit";
 import { logRequest, logError } from "@/lib/loggerHelpers";
 
 // Zod schema for intake validation
@@ -44,13 +40,11 @@ const intakeSchema = z.object({
 // No auth required — this is the public client-facing endpoint
 export async function POST(request: NextRequest) {
     logRequest(request, "POST /api/public/intake");
-    // Rate limit: 10 requests per minute per IP
-    const ip = getClientIP(request);
-    const { allowed, retryAfterMs } = await checkRateLimit(`intake:${ip}`, {
-        maxRequests: 10,
-    });
-    if (!allowed) {
-        return rateLimitResponse(retryAfterMs);
+    
+    const ip = request.headers.get("x-forwarded-for") ?? "127.0.0.1";
+    const { success } = await intakeRateLimit.limit(ip);
+    if (!success) {
+        return new NextResponse("Too many requests", { status: 429 });
     }
 
     // Parse and validate input

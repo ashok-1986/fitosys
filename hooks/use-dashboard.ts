@@ -9,7 +9,8 @@ export interface DashboardData {
   stats: {
     active_clients: number;
     total_programs: number;
-
+    total_revenue: number;
+    mrr: number;
     renewals_due: number;
     response_rate: number;
   };
