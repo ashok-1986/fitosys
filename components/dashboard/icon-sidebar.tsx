@@ -10,10 +10,22 @@ import {
   FileText,
   Plus,
   Settings,
-  LogOut
+  LogOut,
+  UserPlus,
+  Dumbbell
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 interface IconSidebarProps {
   notificationsCount?: number;
@@ -21,6 +33,8 @@ interface IconSidebarProps {
 
 export function IconSidebar({ notificationsCount = 0 }: IconSidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [quickAddOpen, setQuickAddOpen] = useState(false);
 
   const navItems = [
     { icon: LayoutDashboard, href: "/dashboard", label: "Dashboard" },
@@ -31,13 +45,26 @@ export function IconSidebar({ notificationsCount = 0 }: IconSidebarProps) {
   ];
 
   const handleAddClick = () => {
-    // TODO: Open quick add modal
-    console.log("Add new client/program");
+    setQuickAddOpen(true);
+  };
+
+  const handleAddClient = () => {
+    setQuickAddOpen(false);
+    router.push("/dashboard/intake");
+  };
+
+  const handleAddProgram = () => {
+    setQuickAddOpen(false);
+    router.push("/dashboard/programs");
   };
 
   const handleSignOut = async () => {
-    // TODO: Implement sign out
-    console.log("Sign out");
+    try {
+      const { logoutAction } = await import("@/app/actions/auth");
+      await logoutAction();
+    } catch (error) {
+      console.error("Sign out failed:", error);
+    }
   };
 
   return (
@@ -100,6 +127,36 @@ export function IconSidebar({ notificationsCount = 0 }: IconSidebarProps) {
           <LogOut className="h-4 w-4" aria-hidden="true" />
         </button>
       </div>
+
+      {/* Quick Add Modal */}
+      <Dialog open={quickAddOpen} onOpenChange={setQuickAddOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Quick Add</DialogTitle>
+            <DialogDescription>
+              Add a new client or program to get started quickly
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-2 gap-4 py-4">
+            <Button
+              onClick={handleAddClient}
+              variant="outline"
+              className="h-24 flex flex-col gap-2 hover:bg-brand hover:text-white hover:border-brand"
+            >
+              <UserPlus className="h-8 w-8" />
+              <span className="font-semibold">Add Client</span>
+            </Button>
+            <Button
+              onClick={handleAddProgram}
+              variant="outline"
+              className="h-24 flex flex-col gap-2 hover:bg-brand hover:text-white hover:border-brand"
+            >
+              <Dumbbell className="h-8 w-8" />
+              <span className="font-semibold">Add Program</span>
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </aside>
   );
 }

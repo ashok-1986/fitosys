@@ -8,6 +8,8 @@ export const PLAN_LIMITS = {
     studio: null, // null = unlimited
 } as const;
 
+export const GRACE_PERIOD_DAYS = 7;
+
 export async function checkClientLimit(coachId: string): Promise<{
     allowed: boolean;
     currentCount: number;
@@ -17,10 +19,10 @@ export async function checkClientLimit(coachId: string): Promise<{
 }> {
     const supabase = await createServiceClient();
 
-    // 1. Get coach plan
+    // 1. Get coach plan and subscription details
     const { data: coach, error: coachError } = await supabase
         .from('coaches')
-        .select('plan, plan_client_limit')
+        .select('plan, plan_client_limit, plan_started_at')
         .eq('id', coachId)
         .single();
 
@@ -54,12 +56,35 @@ export async function checkClientLimit(coachId: string): Promise<{
 
     // 3. Check grace period (7 days after limit hit)
     const overLimit = currentCount >= limit;
-    // TODO: Implement actual grace period tracking using subscriptions table if needed
-    // For now, simple return blocked if over limit
-    const daysInGracePeriod = overLimit ? 0 : null;
+    let daysInGracePeriod: number | null = null;
+
+    if (overLimit && coach.plan_started_at) {
+        const planStartDate = new Date(coach.plan_started_at);
+        const currentDate = new Date();
+        const daysSincePlanStart = Math.floor(
+            (currentDate.getTime() - planStartDate.getTime()) / (1000 * 60 * 60 * 24)
+        );
+
+        // Calculate when the limit was first exceeded
+        // Assuming clients were added at a steady rate, we estimate the limit breach date
+        const clientsPerDay = currentCount / Math.max(daysSincePlanStart, 1);
+        const daysUntilLimit = Math.floor(limit / Math.max(clientsPerDay, 1));
+        const limitBreachedAt = new Date(planStartDate);
+        limitBreachedAt.setDate(limitBreachedAt.getDate() + daysUntilLimit);
+
+        const daysSinceLimitBreached = Math.floor(
+            (currentDate.getTime() - limitBreachedAt.getTime()) / (1000 * 60 * 60 * 24)
+        );
+
+        // Calculate remaining grace period days
+        daysInGracePeriod = Math.max(0, GRACE_PERIOD_DAYS - daysSinceLimitBreached);
+    }
+
+    // Allow if within grace period
+    const allowed = !overLimit || (daysInGracePeriod !== null && daysInGracePeriod > 0);
 
     return {
-        allowed: !overLimit, // blocked immediately for MVP until grace logic fleshed out
+        allowed,
         currentCount,
         limit,
         plan: coach.plan,
