@@ -11,7 +11,7 @@ Font.register({
 const styles = StyleSheet.create({
     page: { padding: 40, fontFamily: 'Helvetica', fontSize: 10, color: '#333' },
     header: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 40 },
-    logoText: { fontSize: 24, fontWeight: 'bold', color: '#F20000' },
+    logoText: { fontSize: 24, fontWeight: 'bold', color: '#E8001D' },
     invoiceTitle: { fontSize: 20, fontWeight: 'bold', textAlign: 'right' },
     metaData: { textAlign: 'right', marginTop: 8 },
     section: { marginBottom: 20 },

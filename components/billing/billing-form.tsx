@@ -77,7 +77,7 @@ export function BillingForm({ initialData }: BillingFormProps) {
                             value={formData.business_name}
                             onChange={handleChange}
                             placeholder="e.g. FitCoach Jane"
-                            className="w-full bg-[#1C1C1E] border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-[#F20000]/50"
+                            className="w-full bg-[#1C1C1E] border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-[#E8001D]/50"
                         />
                     </div>
 
@@ -89,7 +89,7 @@ export function BillingForm({ initialData }: BillingFormProps) {
                             value={formData.gst_number}
                             onChange={handleChange}
                             placeholder="e.g. 22AAAAA0000A1Z5"
-                            className="w-full bg-[#1C1C1E] border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-[#F20000]/50"
+                            className="w-full bg-[#1C1C1E] border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-[#E8001D]/50"
                         />
                         <p className="text-xs text-white/40">If unregistered, leave this blank.</p>
                     </div>
@@ -102,7 +102,7 @@ export function BillingForm({ initialData }: BillingFormProps) {
                             onChange={handleChange}
                             placeholder="Complete address including state and PIN code"
                             rows={3}
-                            className="w-full bg-[#1C1C1E] border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-[#F20000]/50 resize-none"
+                            className="w-full bg-[#1C1C1E] border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-[#E8001D]/50 resize-none"
                         />
                     </div>
 
@@ -115,7 +115,7 @@ export function BillingForm({ initialData }: BillingFormProps) {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-[#F20000] hover:bg-[#D90000] active:scale-[0.98] transition-all text-white font-semibold rounded-xl py-3.5 mt-4 disabled:opacity-50"
+                        className="w-full bg-[#E8001D] hover:bg-[#D90000] active:scale-[0.98] transition-all text-white font-semibold rounded-xl py-3.5 mt-4 disabled:opacity-50"
                     >
                         {loading ? "Saving..." : "Save Billing Settings"}
                     </button>

@@ -106,7 +106,7 @@ export default function WeeklyProgressCard({ stats }: { stats?: EngagementStat[]
   return (
     <div className="bg-[#1C1C1E] border border-white/5 rounded-2xl p-5 sm:p-7 relative overflow-hidden group hover:border-white/10 transition-colors">
       {/* Top accent line */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#F20000] to-transparent opacity-50" />
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#E8001D] to-transparent opacity-50" />
 
       {/* Header */}
       <div className="flex items-center justify-between mb-5">
@@ -125,7 +125,7 @@ export default function WeeklyProgressCard({ stats }: { stats?: EngagementStat[]
             className={cn(
               "px-3 py-1.5 rounded-full text-[11px] font-bold font-barlow tracking-widest uppercase transition-all",
               view === "week"
-                ? "bg-[#F20000] text-white shadow-sm"
+                ? "bg-[#E8001D] text-white shadow-sm"
                 : "text-white/40 hover:text-white/60"
             )}
           >
@@ -181,7 +181,7 @@ export default function WeeklyProgressCard({ stats }: { stats?: EngagementStat[]
       {/* Legend */}
       <div className="mt-5 flex items-center justify-between text-[11px] text-white/40">
         <div className="flex items-center gap-2">
-          <span className="inline-block w-2.5 h-2.5 rounded-full bg-[#F20000]/70 border border-[#F20000]/30" />
+          <span className="inline-block w-2.5 h-2.5 rounded-full bg-[#E8001D]/70 border border-[#E8001D]/30" />
           <span>Responses per day</span>
         </div>
         <p className="font-medium">

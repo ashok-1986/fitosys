@@ -8,7 +8,7 @@ interface RiskDotProps {
 }
 
 export function RiskDot({ score, className }: RiskDotProps) {
-  const colorClass = score >= 4 ? "bg-[#F20000] shadow-[0_0_6px_#F20000]" 
+  const colorClass = score >= 4 ? "bg-[#E8001D] shadow-[0_0_6px_#E8001D]" 
                    : score >= 3 ? "bg-[#FF9F0A] shadow-[0_0_6px_#FF9F0A]" 
                    : "bg-[#34C759] shadow-[0_0_6px_#34C759]";
 
@@ -26,11 +26,11 @@ export function RiskDot({ score, className }: RiskDotProps) {
 // ─── BADGE ─────────────────────────────────────────────────────────────────
 interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   label: string;
-  color?: string; // Expecting hex like #F20000
+  color?: string; // Expecting hex like #E8001D
   size?: "sm" | "md";
 }
 
-export function Badge({ label, color = "#F20000", size = "sm", className, ...props }: BadgeProps) {
+export function Badge({ label, color = "#E8001D", size = "sm", className, ...props }: BadgeProps) {
   // We use inline styles here because Tailwind doesn't support dynamic arbitrary hex values well
   return (
     <span 
@@ -64,7 +64,7 @@ export function Chip({ icon, label, active, className, ...props }: ChipProps) {
       className={cn(
         "flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-medium font-sans transition-all whitespace-nowrap cursor-pointer",
         active 
-          ? "bg-[#F20000] border-[#F20000] text-white" 
+          ? "bg-[#E8001D] border-[#E8001D] text-white" 
           : "bg-white/5 border-white/10 text-white/60 hover:text-white/80",
         "border",
         className
@@ -116,7 +116,7 @@ export function StatCard({ label, value, sub, accent = "#FFFFFF", icon, trend, c
           {trend !== undefined && (
             <span 
               className="mr-1" 
-              style={{ color: trend > 0 ? "#34C759" : "#F20000" }}
+              style={{ color: trend > 0 ? "#34C759" : "#E8001D" }}
             >
               {trend > 0 ? "↑" : "↓"}{Math.abs(trend)}%
             </span>
@@ -138,12 +138,12 @@ interface AvatarProps {
 
 export function Avatar({ name, size = 36, risk, className }: AvatarProps) {
   const initials = name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
-  const colors = ["#F20000", "#0A84FF", "#34C759", "#BF5AF2", "#FF9F0A"];
+  const colors = ["#E8001D", "#0A84FF", "#34C759", "#BF5AF2", "#FF9F0A"];
   // Simple deterministic color based on name string
   const idx = name.charCodeAt(0) % colors.length;
   const color = colors[idx];
 
-  const dotColor = risk !== undefined && risk >= 4 ? "#F20000" 
+  const dotColor = risk !== undefined && risk >= 4 ? "#E8001D" 
                  : risk !== undefined && risk >= 3 ? "#FF9F0A" 
                  : "#34C759";
 
@@ -188,7 +188,7 @@ interface ProgressBarProps {
   className?: string;
 }
 
-export function ProgressBar({ value, max = 10, color = "#F20000", className }: ProgressBarProps) {
+export function ProgressBar({ value, max = 10, color = "#E8001D", className }: ProgressBarProps) {
   return (
     <div className={cn("bg-white/5 rounded-full h-1 overflow-hidden", className)}>
       <div 
@@ -215,7 +215,7 @@ export function Switch({ on, onToggle, className }: SwitchProps) {
       onClick={() => onToggle && onToggle(!on)}
       className={cn(
         "w-11 h-[26px] rounded-full relative cursor-pointer transition-colors duration-200 border",
-        on ? "bg-[#F20000] border-[#F20000]" : "bg-white/10 border-white/10",
+        on ? "bg-[#E8001D] border-[#E8001D]" : "bg-white/10 border-white/10",
         className
       )}
     >
