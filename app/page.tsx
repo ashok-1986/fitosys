@@ -92,13 +92,13 @@ function HeroSection() {
     <section id="hero" className="relative min-h-screen bg-[#0A0A0A] flex items-center pt-20 overflow-hidden">
       {/* Grid background */}
       <div className="absolute inset-0 z-0" style={{
-        backgroundImage: "linear-gradient(rgba(242,0,0,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(242,0,0,0.04) 1px, transparent 1px)",
+        backgroundImage: "linear-gradient(rgba(232,0,29,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(232,0,29,0.04) 1px, transparent 1px)",
         backgroundSize: "60px 60px",
         maskImage: "radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent)"
       }} />
       
       {/* Glow effect */}
-      <div className="absolute top-[-200px] left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-[radial-gradient(circle,rgba(242,0,0,0.12)_0%,transparent_65%)] pointer-events-none z-0" />
+      <div className="absolute top-[-200px] left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-[radial-gradient(circle,rgba(232,0,29,0.12)_0%,transparent_65%)] pointer-events-none z-0" />
 
       <div ref={ref} className="relative z-10 max-w-[1400px] mx-auto px-4 w-full">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -106,8 +106,8 @@ function HeroSection() {
           <div className="text-left">
             {/* Eyebrow */}
             <div data-hero-eyebrow className="flex items-center gap-3 mb-7">
-              <div className="w-10 h-px bg-[#F20000]" />
-              <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#F20000]">
+              <div className="w-10 h-px bg-[#E8001D]" />
+              <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#E8001D]">
                 Built for Indian Coaches - Runs on WhatsApp
               </span>
             </div>
@@ -121,7 +121,7 @@ function HeroSection() {
                 <span className="inline-block" style={{ WebkitTextStroke: "1.5px rgba(255,255,255,0.3)", color: "transparent" }}>BEHIND</span>
               </span>
               <span data-hero-title-line className="block overflow-hidden">
-                <span className="inline-block text-[#F20000]">THE RESULT.</span>
+                <span className="inline-block text-[#E8001D]">THE RESULT.</span>
               </span>
             </h1>
 
@@ -148,15 +148,15 @@ function HeroSection() {
             {/* Stats */}
             <div data-hero-stats className="flex flex-wrap gap-12 pt-10 border-t border-[#222222]">
               <div>
-                <div className="font-display text-4xl font-black text-white">2-3<span className="text-[#F20000]">hrs</span></div>
+                <div className="font-display text-4xl font-black text-white">2-3<span className="text-[#E8001D]">hrs</span></div>
                 <div className="text-xs text-[#A0A0A0] mt-1 font-light">saved per week<br />per coach</div>
               </div>
               <div>
-                <div className="font-display text-4xl font-black text-white">₹72<span className="text-[#F20000]">K+</span></div>
+                <div className="font-display text-4xl font-black text-white">₹72<span className="text-[#E8001D]">K+</span></div>
                 <div className="text-xs text-[#A0A0A0] mt-1 font-light">avg annual revenue<br />recovered from renewals</div>
               </div>
               <div>
-                <div className="font-display text-4xl font-black text-white">30<span className="text-[#F20000]">min</span></div>
+                <div className="font-display text-4xl font-black text-white">30<span className="text-[#E8001D]">min</span></div>
                 <div className="text-xs text-[#A0A0A0] mt-1 font-light">setup time.<br />zero tech skills needed.</div>
               </div>
             </div>
@@ -167,10 +167,10 @@ function HeroSection() {
             {/* Float Card 1 */}
             <div ref={floatCard1Ref} className="absolute top-[8%] right-[-5%] lg:right-[-8%] bg-[#141414] border border-[#222222] rounded-xl px-5 py-4 z-20 min-w-[200px]">
               <div className="text-[10px] font-bold uppercase tracking-wider text-[#A0A0A0] mb-2">This Week&apos;s Response Rate</div>
-              <div className="font-display text-3xl font-black text-white">73<span className="text-[#F20000]">%</span></div>
+              <div className="font-display text-3xl font-black text-white">73<span className="text-[#E8001D]">%</span></div>
               <div className="text-[11px] text-[#A0A0A0] mt-1">22 of 30 clients checked in</div>
               <div className="h-0.5 bg-[#222222] rounded-full mt-3 overflow-hidden">
-                <div className="h-full w-[73%] bg-[#F20000] rounded-full" />
+                <div className="h-full w-[73%] bg-[#E8001D] rounded-full" />
               </div>
             </div>
 
@@ -187,7 +187,7 @@ function HeroSection() {
                 </button>
                 <button 
                   onClick={() => { setActiveTab('dashboard'); setAutoCycle(false); }}
-                  className={`px-5 py-2 rounded-[36px] font-sans text-[11px] font-bold tracking-[0.08em] uppercase flex items-center gap-1.5 transition-all duration-300 ${activeTab === 'dashboard' ? 'bg-[#F20000] text-white' : 'bg-transparent text-[#A0A0A0]'}`}
+                  className={`px-5 py-2 rounded-[36px] font-sans text-[11px] font-bold tracking-[0.08em] uppercase flex items-center gap-1.5 transition-all duration-300 ${activeTab === 'dashboard' ? 'bg-[#E8001D] text-white' : 'bg-transparent text-[#A0A0A0]'}`}
                 >
                   <span className={`w-1.5 h-1.5 rounded-full transition-opacity duration-300 ${activeTab === 'dashboard' ? 'bg-white opacity-100' : 'bg-current opacity-50'}`} /> Dashboard
                 </button>
@@ -195,7 +195,7 @@ function HeroSection() {
 
               {/* Phone Frame */}
               <div className="relative z-10 w-[290px]">
-                <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-[38px] p-[13px] shadow-[0_40px_80px_rgba(0,0,0,0.9),0_8px_32px_rgba(242,0,0,0.08),0_0_0_1px_rgba(255,255,255,0.04)]">
+                <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-[38px] p-[13px] shadow-[0_40px_80px_rgba(0,0,0,0.9),0_8px_32px_rgba(232,0,29,0.08),0_0_0_1px_rgba(255,255,255,0.04)]">
                   <div className="rounded-[28px] overflow-hidden min-h-[490px] relative bg-[#0A0A0A]">
                     
                     {/* View: WhatsApp */}
@@ -203,17 +203,17 @@ function HeroSection() {
                       <div className="bg-[#075E54] h-full flex flex-col">
                         {/* WA Header */}
                         <div className="bg-[#075E54] px-[14px] pt-[14px] pb-[12px] flex items-center gap-2.5">
-                          <div className="w-9 h-9 rounded-full bg-[#F20000] flex items-center justify-center font-sans font-bold text-xs text-white shrink-0">F</div>
+                          <div className="w-9 h-9 rounded-full bg-[#E8001D] flex items-center justify-center font-sans font-bold text-xs text-white shrink-0">F</div>
                           <div>
                             <div className="font-sans text-[13px] font-bold text-white leading-tight">Fitosys Bot</div>
                             <div className="font-sans text-[10px] text-white/60">for Coach Priya · automated</div>
                           </div>
-                          <div className="ml-auto bg-[#F20000]/90 text-white text-[9px] font-bold px-2 py-0.5 rounded-full tracking-[0.08em] shrink-0">AUTO</div>
+                          <div className="ml-auto bg-[#E8001D]/90 text-white text-[9px] font-bold px-2 py-0.5 rounded-full tracking-[0.08em] shrink-0">AUTO</div>
                         </div>
 
                         {/* WA Body */}
                         <div className="bg-[#ECE5DD] px-[9px] py-2.5 flex-1 flex flex-col gap-[7px]">
-                          <div className="max-w-[82%] bg-[#E8D5FF] rounded-lg p-[7px_11px] text-[11px] leading-[1.5] text-[#333] self-start border-l-[3px] border-l-[#F20000] relative">
+                          <div className="max-w-[82%] bg-[#E8D5FF] rounded-lg p-[7px_11px] text-[11px] leading-[1.5] text-[#333] self-start border-l-[3px] border-l-[#E8001D] relative">
                             <strong>Hi Anjali! 👋</strong><br/>
                             Weekly check-in from Coach Priya:<br/><br/>
                             1. Energy this week (1-10)?<br/>
@@ -225,7 +225,7 @@ function HeroSection() {
                             Energy 8/10, 4 sessions done. Win: ran 5km non-stop! 🏃
                             <div className="text-[9px] text-[#999] text-right mt-0.5">Sun 8:14 PM</div>
                           </div>
-                          <div className="max-w-[82%] bg-[#E8D5FF] rounded-lg p-[7px_11px] text-[11px] leading-[1.5] text-[#333] self-start border-l-[3px] border-l-[#F20000] relative">
+                          <div className="max-w-[82%] bg-[#E8D5FF] rounded-lg p-[7px_11px] text-[11px] leading-[1.5] text-[#333] self-start border-l-[3px] border-l-[#E8001D] relative">
                             Amazing Anjali! 🔥 5km is a huge milestone. Coach Priya will review this Wednesday. Keep it up!
                             <div className="text-[9px] text-[#999] text-right mt-0.5">Sun 8:14 PM · AI-generated</div>
                           </div>
@@ -260,7 +260,7 @@ function HeroSection() {
                             <div className="font-sans text-[9px] text-[#A0A0A0] mt-[3px] leading-[1.4] tracking-[0.03em]">Check-in Rate</div>
                           </div>
                           <div className="bg-[#111111] border border-[#222222] p-[8px_6px] text-center rounded-md">
-                            <div className="font-display text-[20px] font-medium text-[#F20000] leading-none tracking-[0.04em]">3</div>
+                            <div className="font-display text-[20px] font-medium text-[#E8001D] leading-none tracking-[0.04em]">3</div>
                             <div className="font-sans text-[9px] text-[#A0A0A0] mt-[3px] leading-[1.4] tracking-[0.03em]">Renewals Due</div>
                           </div>
                         </div>
@@ -275,7 +275,7 @@ function HeroSection() {
                               { day: 'W', h: '60%', color: 'bg-[#F59E0B]' },
                               { day: 'T', h: '88%', color: 'bg-[#22C55E]' },
                               { day: 'F', h: '45%', color: 'bg-[#F59E0B]' },
-                              { day: 'S', h: '30%', color: 'bg-[#F20000]' },
+                              { day: 'S', h: '30%', color: 'bg-[#E8001D]' },
                               { day: 'S', h: '73%', color: 'bg-[#22C55E]' },
                             ].map((bar, i) => (
                               <div key={i} className="flex flex-col items-center gap-[3px] flex-1">
@@ -314,9 +314,9 @@ function HeroSection() {
                               <div className="text-[9px] text-[#A0A0A0] whitespace-nowrap"><strong className="text-white font-medium">3 renewals</strong> reminder sent</div>
                             </div>
                             <div className="flex items-center gap-2">
-                              <div className="w-1.5 h-1.5 rounded-full shrink-0 bg-[#F20000]"></div>
+                              <div className="w-1.5 h-1.5 rounded-full shrink-0 bg-[#E8001D]"></div>
                               <div className="flex-1 h-px bg-[#222222] relative overflow-hidden">
-                                <div className="absolute left-0 top-0 bottom-0 bg-[#F20000] transition-all duration-1000 delay-500" style={{ width: activeTab === 'dashboard' ? '40%' : '0%' }}></div>
+                                <div className="absolute left-0 top-0 bottom-0 bg-[#E8001D] transition-all duration-1000 delay-500" style={{ width: activeTab === 'dashboard' ? '40%' : '0%' }}></div>
                               </div>
                               <div className="text-[9px] text-[#A0A0A0] whitespace-nowrap"><strong className="text-white font-medium">Follow-up</strong> 48h pending</div>
                             </div>
@@ -328,9 +328,9 @@ function HeroSection() {
                           <div className="text-[9px] font-bold tracking-[0.1em] uppercase text-[#A0A0A0] mb-1 mt-1">Priority Clients</div>
                           <div className="flex flex-col gap-1">
                             <div className="flex items-center gap-2 p-[5px_8px] bg-[#111111] rounded-[5px]">
-                              <div className="w-5 h-5 rounded-full shrink-0 flex items-center justify-center font-sans text-[9px] font-bold text-white bg-[#F20000]">A</div>
+                              <div className="w-5 h-5 rounded-full shrink-0 flex items-center justify-center font-sans text-[9px] font-bold text-white bg-[#E8001D]">A</div>
                               <div className="text-[10px] text-white font-medium flex-1">Anjali Mehta</div>
-                              <div className="text-[8px] font-bold tracking-[0.06em] uppercase px-[6px] py-0.5 rounded-[10px] bg-[#F20000]/15 text-[#F20000]">At Risk</div>
+                              <div className="text-[8px] font-bold tracking-[0.06em] uppercase px-[6px] py-0.5 rounded-[10px] bg-[#E8001D]/15 text-[#E8001D]">At Risk</div>
                             </div>
                             <div className="flex items-center gap-2 p-[5px_8px] bg-[#111111] rounded-[5px]">
                               <div className="w-5 h-5 rounded-full shrink-0 flex items-center justify-center font-sans text-[9px] font-bold text-white bg-[#22C55E]">R</div>
@@ -357,7 +357,7 @@ function HeroSection() {
               <div className="text-[10px] font-bold uppercase tracking-wider text-[#A0A0A0] mb-2">Renewal Alert</div>
               <div className="font-display text-xl font-black text-[#F59E0B]">3 clients</div>
               <div className="text-[11px] text-[#A0A0A0] mt-1">programs expiring in 7 days</div>
-              <div className="mt-2 text-[10px] text-[#F20000] font-bold uppercase tracking-wider">Reminders sent automatically ✓</div>
+              <div className="mt-2 text-[10px] text-[#E8001D] font-bold uppercase tracking-wider">Reminders sent automatically ✓</div>
             </div>
           </div>
         </div>
@@ -421,8 +421,8 @@ function WhatsAppMockup() {
         </div>
 
         <div className="flex items-center gap-3 px-4 py-2.5 bg-[#0A0A0A] border-b border-[#222222]">
-          <div className="h-8 w-8 rounded-full bg-[#F20000]/20 flex items-center justify-center">
-            <span className="text-xs font-bold text-[#F20000]">F</span>
+          <div className="h-8 w-8 rounded-full bg-[#E8001D]/20 flex items-center justify-center">
+            <span className="text-xs font-bold text-[#E8001D]">F</span>
           </div>
           <div>
             <p className="text-sm font-semibold text-white">Fitosys</p>
@@ -441,20 +441,20 @@ function WhatsAppMockup() {
           <div data-chat className="flex justify-start">
             <div className="max-w-[80%] bg-[#111111] rounded-xl rounded-tl-sm px-3.5 py-2.5 shadow-sm">
               <p className="text-[13px] text-slate-200 leading-relaxed">
-                Hey Anjali 👋 Quick weekly check-in from <span className="text-[#F20000] font-medium">Coach Priya</span>. 4 questions, 2 minutes. How was your week?
+                Hey Anjali 👋 Quick weekly check-in from <span className="text-[#E8001D] font-medium">Coach Priya</span>. 4 questions, 2 minutes. How was your week?
               </p>
               <span className="text-[9px] text-[#A0A0A0] mt-1 block text-right">7:00 PM</span>
             </div>
           </div>
 
           <div data-chat className="flex justify-end">
-            <div className="max-w-[80%] bg-[#F20000]/10 border border-[#F20000]/20 rounded-xl rounded-tr-sm px-3.5 py-2.5 shadow-sm">
+            <div className="max-w-[80%] bg-[#E8001D]/10 border border-[#E8001D]/20 rounded-xl rounded-tr-sm px-3.5 py-2.5 shadow-sm">
               <p className="text-[13px] text-slate-200 leading-relaxed">
                 Energy: 8/10, 4 sessions. Win: ran 5km non-stop! 🏃
               </p>
               <div className="flex items-center justify-end gap-1 mt-1">
                 <span className="text-[9px] text-[#A0A0A0]">8:14 PM</span>
-                <svg className="w-3 h-3 text-[#F20000]" fill="currentColor" viewBox="0 0 24 24"><path d="M18 7l-1.41-1.41-6.34 6.34 1.41 1.41L18 7zm4.24-1.41L11.66 16.17 7.48 12l-1.41 1.41L11.66 19l12-12-1.42-1.41zM.41 13.41L6 19l1.41-1.41L1.83 12 .41 13.41z" /></svg>
+                <svg className="w-3 h-3 text-[#E8001D]" fill="currentColor" viewBox="0 0 24 24"><path d="M18 7l-1.41-1.41-6.34 6.34 1.41 1.41L18 7zm4.24-1.41L11.66 16.17 7.48 12l-1.41 1.41L11.66 19l12-12-1.42-1.41zM.41 13.41L6 19l1.41-1.41L1.83 12 .41 13.41z" /></svg>
               </div>
             </div>
           </div>
@@ -471,22 +471,22 @@ function WhatsAppMockup() {
           <div data-insight className="mt-4">
             <div className="bg-[#111111] border border-[#222222] rounded-xl px-4 py-3 shadow-lg">
               <div className="flex items-center gap-2 mb-2">
-                <div className="h-2 w-2 rounded-full bg-[#F20000] animate-pulse" />
+                <div className="h-2 w-2 rounded-full bg-[#E8001D] animate-pulse" />
                 <span className="text-xs font-semibold text-white">Anjali — Strong week</span>
               </div>
               <div className="flex items-center gap-2 mb-1.5">
                 <span className="text-[10px] text-[#A0A0A0] w-12">Energy</span>
                 <div className="flex-1 h-1.5 bg-[#222222] rounded-full overflow-hidden">
-                  <div className="h-full w-[80%] bg-[#F20000] rounded-full" />
+                  <div className="h-full w-[80%] bg-[#E8001D] rounded-full" />
                 </div>
-                <span className="text-[10px] text-[#F20000] font-medium w-8 text-right">8/10</span>
+                <span className="text-[10px] text-[#E8001D] font-medium w-8 text-right">8/10</span>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-[#F20000]/5 blur-3xl rounded-full" />
+      <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-[#E8001D]/5 blur-3xl rounded-full" />
     </div>
   );
 }
@@ -507,7 +507,7 @@ function PainTicker() {
       <div className="flex animate-ticker gap-0 whitespace-nowrap">
         {[...items, ...items].map((item, i) => (
           <div key={i} className="flex items-center gap-4 px-10 py-4.5 border-r border-[#222222] flex-shrink-0">
-            <div className="w-1.5 h-1.5 rounded-full bg-[#F20000] flex-shrink-0" />
+            <div className="w-1.5 h-1.5 rounded-full bg-[#E8001D] flex-shrink-0" />
             <span className="text-[13px] text-[#A0A0A0]">
               <strong className="text-white font-medium">{item.severity}</strong> - {item.text}
             </span>
@@ -573,7 +573,7 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#0A0A0A] font-sans selection:bg-[#F20000]/30 selection:text-white">
+    <main className="min-h-screen bg-[#0A0A0A] font-sans selection:bg-[#E8001D]/30 selection:text-white">
       {/* Hero Section */}
       <HeroSection />
 
@@ -584,15 +584,15 @@ export default function LandingPage() {
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-[#0A0A0A]/92 backdrop-blur-md border-b border-white/5" : "bg-transparent"}`}>
         <div className="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <div className="w-7 h-7 bg-[#F20000]" style={{ clipPath: "polygon(0 0, 70% 0, 100% 100%, 30% 100%)" }} />
-            <span className="font-display font-black text-2xl tracking-tight text-white">FITO<span className="text-[#F20000]">SYS</span></span>
+            <div className="w-7 h-7 bg-[#E8001D]" style={{ clipPath: "polygon(0 0, 70% 0, 100% 100%, 30% 100%)" }} />
+            <span className="font-display font-black text-2xl tracking-tight text-white">FITO<span className="text-[#E8001D]">SYS</span></span>
           </Link>
           <div className="hidden md:flex items-center gap-8 text-sm font-semibold text-[#A0A0A0]">
             <Link href="#features" className="hover:text-white transition-colors">Features</Link>
             <Link href="#how" className="hover:text-white transition-colors">How It Works</Link>
             <Link href="#pricing" className="hover:text-white transition-colors">Pricing</Link>
             <Link href="#about" className="hover:text-white transition-colors">About</Link>
-            <Button asChild className="bg-[#F20000] hover:bg-[#C20000] text-white rounded-full font-bold px-6 border-0">
+            <Button asChild className="bg-[#E8001D] hover:bg-[#C20000] text-white rounded-full font-bold px-6 border-0">
               <Link href="/join">Start Free</Link>
             </Button>
           </div>
@@ -612,7 +612,7 @@ export default function LandingPage() {
           <Link href="#how" className="font-display font-black text-3xl uppercase text-white" onClick={() => setMobileMenuOpen(false)}>How It Works</Link>
           <Link href="#pricing" className="font-display font-black text-3xl uppercase text-white" onClick={() => setMobileMenuOpen(false)}>Pricing</Link>
           <Link href="#about" className="font-display font-black text-3xl uppercase text-white" onClick={() => setMobileMenuOpen(false)}>About</Link>
-          <Link href="#contact" className="font-display font-black text-3xl uppercase text-[#F20000]" onClick={() => setMobileMenuOpen(false)}>Contact</Link>
+          <Link href="#contact" className="font-display font-black text-3xl uppercase text-[#E8001D]" onClick={() => setMobileMenuOpen(false)}>Contact</Link>
         </div>
       )}
 
@@ -622,11 +622,11 @@ export default function LandingPage() {
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-px bg-[#F20000]" />
-                <span className="text-[11px] font-bold tracking-widest uppercase text-[#F20000]">The Problem</span>
+                <div className="w-10 h-px bg-[#E8001D]" />
+                <span className="text-[11px] font-bold tracking-widest uppercase text-[#E8001D]">The Problem</span>
               </div>
               <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-white leading-tight mb-6">
-                YOUR COACHING IS <span className="text-[#F20000]">EXCELLENT.</span><br />
+                YOUR COACHING IS <span className="text-[#E8001D]">EXCELLENT.</span><br />
                 <span className="text-white/20">YOUR SYSTEM</span> IS BROKEN.
               </h2>
               <p className="text-lg text-[#A0A0A0] leading-relaxed mb-12 max-w-lg">
@@ -634,37 +634,37 @@ export default function LandingPage() {
               </p>
 
               <div className="space-y-0">
-                <div className="bg-[#111111] border-l-3 border-l-[#F20000] hover:bg-[#141414] transition-colors p-8 cursor-default">
+                <div className="bg-[#111111] border-l-3 border-l-[#E8001D] hover:bg-[#141414] transition-colors p-8 cursor-default">
                   <div className="text-[11px] font-bold tracking-widest uppercase text-[#555555] mb-2">01 - REVENUE LEAKAGE</div>
                   <h3 className="text-xl font-bold text-white mb-2">Renewals Slipping Through Gaps</h3>
                   <p className="text-[#A0A0A0] text-sm leading-relaxed mb-3">Programs expire and coaches find out only when the client stops responding. No system. No reminders. No recovery.</p>
-                  <div className="inline-flex items-center gap-2 bg-[#F20000]/10 border border-[#F20000]/20 px-3 py-1 rounded-full text-[#F20000] text-xs font-bold">₹72K-₹1.08L lost annually per coach</div>
+                  <div className="inline-flex items-center gap-2 bg-[#E8001D]/10 border border-[#E8001D]/20 px-3 py-1 rounded-full text-[#E8001D] text-xs font-bold">₹72K-₹1.08L lost annually per coach</div>
                 </div>
-                <div className="bg-[#111111] border-l-[3px] border-l-transparent hover:border-l-[#F20000] hover:bg-[#141414] transition-colors p-8 cursor-default">
+                <div className="bg-[#111111] border-l-[3px] border-l-transparent hover:border-l-[#E8001D] hover:bg-[#141414] transition-colors p-8 cursor-default">
                   <div className="text-[11px] font-bold tracking-widest uppercase text-[#555555] mb-2">02 - ENGAGEMENT BLIND SPOT</div>
                   <h3 className="text-xl font-bold text-white mb-2">No Early Warning for Disengagement</h3>
                   <p className="text-[#A0A0A0] text-sm leading-relaxed mb-3">Without structured check-ins, coaches have no data on client progress until the client complains or drops out.</p>
-                  <div className="inline-flex items-center gap-2 bg-[#F20000]/10 border border-[#F20000]/20 px-3 py-1 rounded-full text-[#F20000] text-xs font-bold">10-20% annual churn from retention blindness</div>
+                  <div className="inline-flex items-center gap-2 bg-[#E8001D]/10 border border-[#E8001D]/20 px-3 py-1 rounded-full text-[#E8001D] text-xs font-bold">10-20% annual churn from retention blindness</div>
                 </div>
-                <div className="bg-[#111111] border-l-[3px] border-l-transparent hover:border-l-[#F20000] hover:bg-[#141414] transition-colors p-8 cursor-default">
+                <div className="bg-[#111111] border-l-[3px] border-l-transparent hover:border-l-[#E8001D] hover:bg-[#141414] transition-colors p-8 cursor-default">
                   <div className="text-[11px] font-bold tracking-widest uppercase text-[#555555] mb-2">03 - ADMIN BURNOUT</div>
                   <h3 className="text-xl font-bold text-white mb-2">2-4 Hours Per Week on Non-Coaching Work</h3>
                   <p className="text-[#A0A0A0] text-sm leading-relaxed mb-3">WhatsApp follow-ups. Payment reconciliation. Manual onboarding. Time that should go to clients, content, or recovery.</p>
-                  <div className="inline-flex items-center gap-2 bg-[#F20000]/10 border border-[#F20000]/20 px-3 py-1 rounded-full text-[#F20000] text-xs font-bold">8-12 hours/week average admin overhead</div>
+                  <div className="inline-flex items-center gap-2 bg-[#E8001D]/10 border border-[#E8001D]/20 px-3 py-1 rounded-full text-[#E8001D] text-xs font-bold">8-12 hours/week average admin overhead</div>
                 </div>
               </div>
             </div>
 
             <div className="pl-10">
-              <div className="text-[120px] leading-none text-[#F20000]/30 font-serif mb-6">&quot;</div>
+              <div className="text-[120px] leading-none text-[#E8001D]/30 font-serif mb-6">&quot;</div>
               <blockquote className="font-serif text-2xl md:text-3xl text-white leading-relaxed mb-8 italic">
                 I was spending every Sunday sending check-in messages manually to 28 clients. By Monday morning I was already exhausted before the week started.
               </blockquote>
               <div className="text-sm text-[#A0A0A0] mb-10">
                 <strong className="text-white">Priya Sharma</strong> - Independent Fitness Coach, Mumbai<br />
-                <span className="text-[#F20000] text-xs">2.5 hours recovered per week after Fitosys</span>
+                <span className="text-[#E8001D] text-xs">2.5 hours recovered per week after Fitosys</span>
               </div>
-              <div className="bg-[#111111] border-l-[3px] border-l-[#F20000] p-7">
+              <div className="bg-[#111111] border-l-[3px] border-l-[#E8001D] p-7">
                 <p className="text-[#A0A0A0] text-sm leading-relaxed">
                   Fitosys gives a coach the ability to manage <strong className="text-white">40 clients</strong> with the same effort it currently takes to manage <strong className="text-white">15</strong>.
                 </p>
@@ -680,13 +680,13 @@ export default function LandingPage() {
           <div className="grid lg:grid-cols-2 gap-16 mb-20">
             <div>
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-px bg-[#F20000]" />
-                <span className="text-[11px] font-bold tracking-widest uppercase text-[#F20000]">Core Features</span>
+                <div className="w-10 h-px bg-[#E8001D]" />
+                <span className="text-[11px] font-bold tracking-widest uppercase text-[#E8001D]">Core Features</span>
               </div>
               <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-white leading-tight">
                 THREE THINGS.<br />
                 <span className="text-white/20">ZERO</span><br />
-                <span className="text-[#F20000]">MANUAL WORK.</span>
+                <span className="text-[#E8001D]">MANUAL WORK.</span>
               </h2>
             </div>
             <p className="text-lg text-[#A0A0A0] leading-relaxed self-end max-w-lg">
@@ -699,15 +699,15 @@ export default function LandingPage() {
               { num: "01", icon: Users, title: "Automated Client Onboarding", desc: "Share one link. Client fills a form, pays via Razorpay UPI/card, and gets a WhatsApp welcome message - all automatically.", tag: "WhatsApp Native", tagColor: "text-[#25D366] bg-[#25D366]/10 border-[#25D366]/25" },
               { num: "02", icon: MessageCircle, title: "Weekly Check-in System", desc: "Every Sunday, every active client gets a structured check-in message. Their reply is stored automatically. You review a clean summary on Monday.", tag: "WhatsApp Native", tagColor: "text-[#25D366] bg-[#25D366]/10 border-[#25D366]/25" },
               { num: "03", icon: RefreshCw, title: "Renewal Reminder System", desc: "Programs expiring in 7 days trigger automatic WhatsApp reminders. A follow-up fires after 48 hours if no reply. Never lose a renewal again.", tag: "WhatsApp Native", tagColor: "text-[#25D366] bg-[#25D366]/10 border-[#25D366]/25" },
-              { num: "04", icon: Brain, title: "AI Monday Summary", desc: "Gemini AI reads all check-ins and sends you a 150-word brief every Monday at 7AM. Response rates, energy trends, at-risk clients - prioritised.", tag: "AI Powered", tagColor: "text-[#F20000] bg-[#F20000]/10 border-[#F20000]/25" },
-              { num: "05", icon: CreditCard, title: "GST Invoice Generation", desc: "Every Razorpay payment automatically generates a GST-compliant invoice delivered via email. No manual invoice creation.", tag: "Compliance Built-in", tagColor: "text-[#F20000] bg-[#F20000]/10 border-[#F20000]/25" },
-              { num: "06", icon: BarChart3, title: "Coach Dashboard", desc: "Every client's status, check-in history, payment timeline, and renewal date - in one clean view. No spreadsheets. No app switching.", tag: "Real-time Data", tagColor: "text-[#F20000] bg-[#F20000]/10 border-[#F20000]/25" },
+              { num: "04", icon: Brain, title: "AI Monday Summary", desc: "Gemini AI reads all check-ins and sends you a 150-word brief every Monday at 7AM. Response rates, energy trends, at-risk clients - prioritised.", tag: "AI Powered", tagColor: "text-[#E8001D] bg-[#E8001D]/10 border-[#E8001D]/25" },
+              { num: "05", icon: CreditCard, title: "GST Invoice Generation", desc: "Every Razorpay payment automatically generates a GST-compliant invoice delivered via email. No manual invoice creation.", tag: "Compliance Built-in", tagColor: "text-[#E8001D] bg-[#E8001D]/10 border-[#E8001D]/25" },
+              { num: "06", icon: BarChart3, title: "Coach Dashboard", desc: "Every client's status, check-in history, payment timeline, and renewal date - in one clean view. No spreadsheets. No app switching.", tag: "Real-time Data", tagColor: "text-[#E8001D] bg-[#E8001D]/10 border-[#E8001D]/25" },
             ].map((feature, i) => (
               <div key={i} className="group bg-[#0A0A0A] p-10 hover:bg-[#141414] transition-colors relative overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-0.5 bg-transparent group-hover:bg-[#F20000] transition-colors" />
-                <div className="font-display text-6xl font-black text-[#222222] mb-6 group-hover:text-[#F20000]/15 transition-colors">{feature.num}</div>
-                <div className={`w-11 h-11 rounded-lg flex items-center justify-center mb-5 bg-[#F20000]/10 border border-[#F20000]/20 group-hover:bg-[#F20000]/20 transition-colors`}>
-                  <feature.icon className="w-5 h-5 text-[#F20000]" />
+                <div className="absolute top-0 left-0 right-0 h-0.5 bg-transparent group-hover:bg-[#E8001D] transition-colors" />
+                <div className="font-display text-6xl font-black text-[#222222] mb-6 group-hover:text-[#E8001D]/15 transition-colors">{feature.num}</div>
+                <div className={`w-11 h-11 rounded-lg flex items-center justify-center mb-5 bg-[#E8001D]/10 border border-[#E8001D]/20 group-hover:bg-[#E8001D]/20 transition-colors`}>
+                  <feature.icon className="w-5 h-5 text-[#E8001D]" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
                 <p className="text-[#A0A0A0] text-sm leading-relaxed mb-5">{feature.desc}</p>
@@ -724,12 +724,12 @@ export default function LandingPage() {
           <div className="grid lg:grid-cols-2 gap-16 mb-16">
             <div>
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-px bg-[#F20000]" />
-                <span className="text-[11px] font-bold tracking-widest uppercase text-[#F20000]">How It Works</span>
+                <div className="w-10 h-px bg-[#E8001D]" />
+                <span className="text-[11px] font-bold tracking-widest uppercase text-[#E8001D]">How It Works</span>
               </div>
               <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-white leading-tight">
                 FOUR STEPS TO<br />
-                <span className="text-[#F20000]">FULL</span><br />
+                <span className="text-[#E8001D]">FULL</span><br />
                 <span className="text-white/20">AUTOMATION.</span>
               </h2>
             </div>
@@ -739,7 +739,7 @@ export default function LandingPage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-0.5 relative">
-            <div className="absolute left-9 top-16 bottom-16 w-0.5 bg-gradient-to-b from-[#F20000] to-[#F20000]/10 hidden lg:block" />
+            <div className="absolute left-9 top-16 bottom-16 w-0.5 bg-gradient-to-b from-[#E8001D] to-[#E8001D]/10 hidden lg:block" />
             {[
               { num: "01", step: "1", title: "Sign Up & Create Profile", desc: "Create your Fitosys account. Add your coaching type, WhatsApp business number, and Razorpay details.", time: "5 minutes" },
               { num: "02", step: "2", title: "Create Your First Program", desc: "Define your coaching program - name, duration, price, and check-in schedule. Get your unique onboarding link.", time: "8 minutes" },
@@ -747,12 +747,12 @@ export default function LandingPage() {
               { num: "04", step: "4", title: "Fitosys Runs the Rest", desc: "Check-ins fire every Sunday. AI summary arrives Monday. Renewal reminders go out 7 days before program ends.", time: "Runs forever" },
             ].map((item, i) => (
               <div key={i} className="relative bg-[#111111] p-10 group hover:bg-[#141414] transition-colors">
-                <div className="absolute top-1/2 right-0 w-6 h-0.5 bg-[#F20000] transform translate-x-1/2 -translate-y-1/2 hidden lg:block" />
-                <div className="font-display text-7xl font-black text-[#F20000]/8 mb-4">{item.num}</div>
-                <div className="w-8 h-8 rounded-full bg-[#F20000] flex items-center justify-center text-white font-black text-sm mb-5">{item.step}</div>
+                <div className="absolute top-1/2 right-0 w-6 h-0.5 bg-[#E8001D] transform translate-x-1/2 -translate-y-1/2 hidden lg:block" />
+                <div className="font-display text-7xl font-black text-[#E8001D]/8 mb-4">{item.num}</div>
+                <div className="w-8 h-8 rounded-full bg-[#E8001D] flex items-center justify-center text-white font-black text-sm mb-5">{item.step}</div>
                 <h3 className="text-lg font-bold text-white mb-3">{item.title}</h3>
                 <p className="text-[#A0A0A0] text-sm leading-relaxed mb-5">{item.desc}</p>
-                <div className="flex items-center gap-2 text-[#F20000] text-xs font-bold uppercase tracking-wider">
+                <div className="flex items-center gap-2 text-[#E8001D] text-xs font-bold uppercase tracking-wider">
                   <Clock className="w-3 h-3" /> {item.time}
                 </div>
               </div>
@@ -767,14 +767,14 @@ export default function LandingPage() {
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-px bg-[#F20000]" />
-                <span className="text-[11px] font-bold tracking-widest uppercase text-[#F20000]">WhatsApp Native</span>
+                <div className="w-10 h-px bg-[#E8001D]" />
+                <span className="text-[11px] font-bold tracking-widest uppercase text-[#E8001D]">WhatsApp Native</span>
               </div>
               <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-white leading-tight mb-6">
                 YOUR CLIENTS<br />
                 <span className="text-white/20">NEVER</span><br />
                 NEED AN<br />
-                <span className="text-[#F20000]">APP.</span>
+                <span className="text-[#E8001D]">APP.</span>
               </h2>
               <p className="text-lg text-[#A0A0A0] leading-relaxed mb-12 max-w-lg">
                 95% of coach-client communication in India happens on WhatsApp. Fitosys works inside the channel your clients already use. No downloads. No logins. No friction.
@@ -809,17 +809,17 @@ export default function LandingPage() {
 
       {/* Section 6: AI Intelligence */}
       <section id="ai" className="bg-[#0A0A0A] py-32 relative overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-display text-[200px] md:text-[320px] font-black text-[#F20000]/3 uppercase whitespace-nowrap pointer-events-none select-none">INTELLIGENCE</div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-display text-[200px] md:text-[320px] font-black text-[#E8001D]/3 uppercase whitespace-nowrap pointer-events-none select-none">INTELLIGENCE</div>
         <div className="max-w-[1400px] mx-auto px-4 relative z-10">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-px bg-[#F20000]" />
-                <span className="text-[11px] font-bold tracking-widest uppercase text-[#F20000]">AI Intelligence</span>
+                <div className="w-10 h-px bg-[#E8001D]" />
+                <span className="text-[11px] font-bold tracking-widest uppercase text-[#E8001D]">AI Intelligence</span>
               </div>
               <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-white leading-tight mb-6">
                 YOUR AI<br />
-                <span className="text-[#F20000]">COACH</span><br />
+                <span className="text-[#E8001D]">COACH</span><br />
                 <span className="text-white/20">ASSISTANT.</span>
               </h2>
               <p className="text-lg text-[#A0A0A0] leading-relaxed mb-12 max-w-lg">
@@ -832,9 +832,9 @@ export default function LandingPage() {
                   { icon: Bell, title: "At-Risk Client Flagging", desc: "Clients showing low energy scores or missed check-ins are flagged before they drop out." },
                   { icon: Award, title: "Weekly Priority Surface", desc: "AI identifies the one specific thing you should prioritise this week." },
                 ].map((item, i) => (
-                  <div key={i} className="group bg-[#111111] border border-[#222222] hover:border-[#F20000]/40 transition-colors p-7 flex gap-5 cursor-default">
-                    <div className="w-10 h-10 bg-[#F20000]/10 border border-[#F20000]/20 flex items-center justify-center flex-shrink-0 group-hover:bg-[#F20000]/20 transition-colors">
-                      <item.icon className="w-5 h-5 text-[#F20000]" />
+                  <div key={i} className="group bg-[#111111] border border-[#222222] hover:border-[#E8001D]/40 transition-colors p-7 flex gap-5 cursor-default">
+                    <div className="w-10 h-10 bg-[#E8001D]/10 border border-[#E8001D]/20 flex items-center justify-center flex-shrink-0 group-hover:bg-[#E8001D]/20 transition-colors">
+                      <item.icon className="w-5 h-5 text-[#E8001D]" />
                     </div>
                     <div>
                       <h3 className="text-[15px] font-bold text-white mb-2">{item.title}</h3>
@@ -848,7 +848,7 @@ export default function LandingPage() {
             <div className="bg-[#111111] border border-[#222222] rounded-sm overflow-hidden">
               <div className="bg-[#141414] px-6 py-4 flex items-center justify-between border-b border-[#222222]">
                 <span className="text-xs font-bold text-white">Monday AI Summary - Week 12</span>
-                <span className="bg-[#F20000]/15 border border-[#F20000]/30 px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider text-[#F20000]">Gemini Powered</span>
+                <span className="bg-[#E8001D]/15 border border-[#E8001D]/30 px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider text-[#E8001D]">Gemini Powered</span>
               </div>
               <div className="p-6">
                 <div className="text-[11px] font-bold uppercase tracking-wider text-[#A0A0A0] mb-4">March 3-9, 2026 · 28 active clients</div>
@@ -862,12 +862,12 @@ export default function LandingPage() {
                     <div className="text-[10px] text-[#A0A0A0] mt-1">Avg Energy</div>
                   </div>
                   <div className="bg-[#0A0A0A] p-3.5 text-center">
-                    <div className="font-display text-2xl font-black text-[#F20000]">3</div>
+                    <div className="font-display text-2xl font-black text-[#E8001D]">3</div>
                     <div className="text-[10px] text-[#A0A0A0] mt-1">Need Attention</div>
                   </div>
                 </div>
-                <div className="bg-[#F20000]/6 border border-[#F20000]/15 p-4 mb-3">
-                  <div className="text-[10px] font-black uppercase tracking-wider text-[#F20000] mb-2">⚡ This Week&apos;s Priority</div>
+                <div className="bg-[#E8001D]/6 border border-[#E8001D]/15 p-4 mb-3">
+                  <div className="text-[10px] font-black uppercase tracking-wider text-[#E8001D] mb-2">⚡ This Week&apos;s Priority</div>
                   <p className="text-[#A0A0A0] text-sm">Anjali, Vikram, and Meera have not responded to check-ins for 2 consecutive weeks. Send a personal message this week - these clients are showing early churn signals.</p>
                 </div>
                 <div className="bg-[#22C55E]/6 border border-[#22C55E]/15 p-4 mb-5">
@@ -876,7 +876,7 @@ export default function LandingPage() {
                 </div>
                 <div className="space-y-2">
                   {[
-                    { name: "Anjali Mehta", status: "At Risk", statusClass: "bg-[#F20000]/15 text-[#F20000]" },
+                    { name: "Anjali Mehta", status: "At Risk", statusClass: "bg-[#E8001D]/15 text-[#E8001D]" },
                     { name: "Rahul Sharma", status: "Strong", statusClass: "bg-[#22C55E]/10 text-[#22C55E]" },
                     { name: "Deepa Nair", status: "Champion", statusClass: "bg-[#22C55E]/10 text-[#22C55E]" },
                     { name: "Vikram Joshi", status: "Watch", statusClass: "bg-[#F59E0B]/10 text-[#F59E0B]" },
@@ -898,13 +898,13 @@ export default function LandingPage() {
         <div className="max-w-[1400px] mx-auto px-4">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <div className="flex items-center justify-center gap-3 mb-6">
-              <div className="w-10 h-px bg-[#F20000]" />
-              <span className="text-[11px] font-bold tracking-widest uppercase text-[#F20000]">Pricing</span>
-              <div className="w-10 h-px bg-[#F20000]" />
+              <div className="w-10 h-px bg-[#E8001D]" />
+              <span className="text-[11px] font-bold tracking-widest uppercase text-[#E8001D]">Pricing</span>
+              <div className="w-10 h-px bg-[#E8001D]" />
             </div>
             <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-white leading-tight mb-6">
               BUILT FOR<br />
-              <span className="text-[#F20000]">INDIA.</span><br />
+              <span className="text-[#E8001D]">INDIA.</span><br />
               <span className="text-white/20">PRICED FOR</span><br />
               COACHES.
             </h2>
@@ -920,14 +920,14 @@ export default function LandingPage() {
               { tier: "Pro", price: "2,999", clients: "Up to 50 clients", featured: false, features: ["Everything in Basic", "Custom check-in questions", "Program-specific templates", "Renewal analytics", "Churn reason tracking", "WhatsApp priority support"] },
               { tier: "Studio", price: "5,999", clients: "Unlimited clients", featured: false, features: ["Everything in Pro", "Multi-location management", "White-label onboarding", "API access", "Dedicated onboarding call", "1-hour priority support"] },
             ].map((plan, i) => (
-              <div key={i} className={`relative p-10 ${plan.featured ? "bg-[#141414] border-t-2 border-t-[#F20000]" : "bg-[#0A0A0A]"}`}>
-                {plan.featured && <span className="absolute top-4 right-4 bg-[#F20000] text-white text-[9px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full">Most Popular</span>}
-                <div className="text-[11px] font-black uppercase tracking-widest text-[#F20000] mb-3">{plan.tier}</div>
+              <div key={i} className={`relative p-10 ${plan.featured ? "bg-[#141414] border-t-2 border-t-[#E8001D]" : "bg-[#0A0A0A]"}`}>
+                {plan.featured && <span className="absolute top-4 right-4 bg-[#E8001D] text-white text-[9px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full">Most Popular</span>}
+                <div className="text-[11px] font-black uppercase tracking-widest text-[#E8001D] mb-3">{plan.tier}</div>
                 <div className="font-display text-5xl font-black text-white mb-1">
                   <sub className="text-lg align-middle text-[#A0A0A0]">₹</sub>{plan.price}
                 </div>
                 <div className="text-sm text-[#A0A0A0] mb-2">per month</div>
-                <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold mb-7 ${plan.featured ? "bg-[#F20000]/8 text-white" : "bg-[#F20000]/8 text-[#F20000]"}`}>{plan.clients}</div>
+                <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold mb-7 ${plan.featured ? "bg-[#E8001D]/8 text-white" : "bg-[#E8001D]/8 text-[#E8001D]"}`}>{plan.clients}</div>
                 <div className="h-px bg-[#222222] mb-7" />
                 <ul className="space-y-3 mb-8">
                   {plan.features.map((f, j) => (
@@ -937,7 +937,7 @@ export default function LandingPage() {
                     </li>
                   ))}
                 </ul>
-                <Button asChild className={`w-full ${plan.featured ? "bg-[#F20000] hover:bg-[#C20000] text-white" : "bg-transparent border border-[#222222] text-[#A0A0A0] hover:border-white hover:text-white"}`}>
+                <Button asChild className={`w-full ${plan.featured ? "bg-[#E8001D] hover:bg-[#C20000] text-white" : "bg-transparent border border-[#222222] text-[#A0A0A0] hover:border-white hover:text-white"}`}>
                   <Link href="/join">Start Free</Link>
                 </Button>
               </div>
@@ -953,12 +953,12 @@ export default function LandingPage() {
           <div className="grid lg:grid-cols-2 gap-16 mb-16">
             <div>
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-px bg-[#F20000]" />
-                <span className="text-[11px] font-bold tracking-widest uppercase text-[#F20000]">Coach Stories</span>
+                <div className="w-10 h-px bg-[#E8001D]" />
+                <span className="text-[11px] font-bold tracking-widest uppercase text-[#E8001D]">Coach Stories</span>
               </div>
               <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-white leading-tight">
                 COACHES WHO<br />
-                <span className="text-[#F20000]">GOT THEIR</span><br />
+                <span className="text-[#E8001D]">GOT THEIR</span><br />
                 <span className="text-white/20">SUNDAYS BACK.</span>
               </h2>
             </div>
@@ -969,15 +969,15 @@ export default function LandingPage() {
 
           <div className="grid md:grid-cols-3 gap-0.5">
             {[
-              { quote: "I used to spend every Sunday sending check-in messages manually to 28 clients. Now I wake up Monday morning to an AI summary and spend the time on an actual rest day.", roi: "2.5h", roiDesc: "saved every week. 130 hours per year given back to coaching.", name: "Priya Sharma", role: "Fitness Coach · Mumbai · 28 active clients", initial: "P", gradient: "from-[#F20000] to-[#7C0000]" },
+              { quote: "I used to spend every Sunday sending check-in messages manually to 28 clients. Now I wake up Monday morning to an AI summary and spend the time on an actual rest day.", roi: "2.5h", roiDesc: "saved every week. 130 hours per year given back to coaching.", name: "Priya Sharma", role: "Fitness Coach · Mumbai · 28 active clients", initial: "P", gradient: "from-[#E8001D] to-[#7C0000]" },
               { quote: "I was losing 2-3 renewals per month simply because I forgot to follow up. Fitosys caught 4 renewals in the first month alone. That's more than ₹15,000 in revenue.", roi: "₹1.8L", roiDesc: "annual renewal revenue recovered. ROI in the first week.", name: "Rahul Verma", role: "Yoga Instructor · Delhi · 22 active clients", initial: "R", gradient: "from-[#0F3460] to-[#0A1628]" },
               { quote: "My clients actually comment that the check-in system feels personal. They don't know it's automated. The AI replies match the tone I set - it genuinely feels like a message from me. That's the detail that matters.", roi: "94%", roiDesc: "check-in response rate. Up from 60% with manual messages.", name: "Ananya Krishnan", role: "Nutrition Coach · Bangalore · 35 active clients", initial: "A", gradient: "from-[#166534] to-[#052E16]" },
             ].map((testi, i) => (
               <div key={i} className="bg-[#111111] p-10 hover:bg-[#141414] transition-colors group">
-                <div className="font-display text-6xl font-black text-[#F20000]/15 mb-5 leading-none">&quot;</div>
+                <div className="font-display text-6xl font-black text-[#E8001D]/15 mb-5 leading-none">&quot;</div>
                 <p className="text-[#A0A0A0] text-sm leading-relaxed italic mb-7 font-serif">{testi.quote}</p>
-                <div className="bg-[#F20000]/8 border border-[#F20000]/15 px-4 py-2.5 mb-6 flex items-center gap-3">
-                  <span className="font-display text-2xl font-black text-[#F20000]">{testi.roi}</span>
+                <div className="bg-[#E8001D]/8 border border-[#E8001D]/15 px-4 py-2.5 mb-6 flex items-center gap-3">
+                  <span className="font-display text-2xl font-black text-[#E8001D]">{testi.roi}</span>
                   <span className="text-xs text-[#A0A0A0]">{testi.roiDesc}</span>
                 </div>
                 <div className="flex items-center gap-3.5">
@@ -999,11 +999,11 @@ export default function LandingPage() {
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-px bg-[#F20000]" />
-                <span className="text-[11px] font-bold tracking-widest uppercase text-[#F20000]">About Fitosys</span>
+                <div className="w-10 h-px bg-[#E8001D]" />
+                <span className="text-[11px] font-bold tracking-widest uppercase text-[#E8001D]">About Fitosys</span>
               </div>
               <div className="font-serif text-2xl md:text-3xl text-white leading-relaxed italic mb-10">
-                Fitosys exists because <span className="text-[#F20000] font-display font-black not-italic uppercase">India&apos;s best coaches</span> shouldn&apos;t be drowning in WhatsApp messages. The system should run. <span className="text-[#F20000] font-display font-black not-italic uppercase">You should coach.</span>
+                Fitosys exists because <span className="text-[#E8001D] font-display font-black not-italic uppercase">India&apos;s best coaches</span> shouldn&apos;t be drowning in WhatsApp messages. The system should run. <span className="text-[#E8001D] font-display font-black not-italic uppercase">You should coach.</span>
               </div>
               <p className="text-lg text-[#A0A0A0] leading-relaxed mb-12 max-w-lg">
                 Built by Alchemetryx, a technology company that builds systems for independent professionals. We saw coaches with real skill and genuine client impact - operating on spreadsheets, memory, and manual follow-ups. Fitosys is the fix.
@@ -1016,7 +1016,7 @@ export default function LandingPage() {
                   { num: "03", title: "Coach Revenue is Sacred", desc: "Every feature is measured against one question: does this protect or grow the coach's revenue? If the answer is no, it does not ship." },
                 ].map((item, i) => (
                   <div key={i} className="flex gap-5 py-6 border-b border-[#222222] last:border-b-0">
-                    <span className="font-display text-sm font-black text-[#F20000] w-8 flex-shrink-0">{item.num}</span>
+                    <span className="font-display text-sm font-black text-[#E8001D] w-8 flex-shrink-0">{item.num}</span>
                     <div>
                       <h3 className="text-sm font-bold text-white mb-1">{item.title}</h3>
                       <p className="text-sm text-[#A0A0A0]">{item.desc}</p>
@@ -1028,7 +1028,7 @@ export default function LandingPage() {
 
             <div className="relative">
               <div className="font-display text-[120px] md:text-[160px] font-black text-transparent leading-none tracking-tighter" style={{ WebkitTextStroke: "1px rgba(255,255,255,0.08)" }}>
-                FITO<span className="text-[#F20000]/15" style={{ WebkitTextStrokeColor: "rgba(242,0,0,0.15)" }}>SYS</span>
+                FITO<span className="text-[#E8001D]/15" style={{ WebkitTextStrokeColor: "rgba(232,0,29,0.15)" }}>SYS</span>
               </div>
               <div className="space-y-0.5 mt-[-20px]">
                 {[
@@ -1049,7 +1049,7 @@ export default function LandingPage() {
       </section>
 
       {/* Section 10: CTA Banner */}
-      <section id="cta-banner" className="bg-[#F20000] py-20 md:py-28 relative overflow-hidden">
+      <section id="cta-banner" className="bg-[#E8001D] py-20 md:py-28 relative overflow-hidden">
         <div className="absolute inset-0" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
         <div className="max-w-[1400px] mx-auto px-4 relative z-10">
           <div className="flex flex-col md:flex-row items-center justify-between gap-10">
@@ -1060,7 +1060,7 @@ export default function LandingPage() {
               </h2>
               <p className="text-white/70 text-sm mt-3 font-light">No card needed · First 5 clients free · Setup in 10 minutes</p>
             </div>
-            <Button asChild size="lg" className="bg-white text-[#F20000] hover:bg-white/90 text-white px-10 h-14 text-sm font-black uppercase tracking-wider border-2 border-white">
+            <Button asChild size="lg" className="bg-white text-[#E8001D] hover:bg-white/90 text-white px-10 h-14 text-sm font-black uppercase tracking-wider border-2 border-white">
               <Link href="/join">Start Free</Link>
             </Button>
           </div>
@@ -1073,12 +1073,12 @@ export default function LandingPage() {
           <div className="grid lg:grid-cols-2 gap-16">
             <div>
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-px bg-[#F20000]" />
-                <span className="text-[11px] font-bold tracking-widest uppercase text-[#F20000]">Get In Touch</span>
+                <div className="w-10 h-px bg-[#E8001D]" />
+                <span className="text-[11px] font-bold tracking-widest uppercase text-[#E8001D]">Get In Touch</span>
               </div>
               <h2 className="text-3xl md:text-5xl font-medium text-white leading-tight mb-6">
                 LET&apos;S BUILD YOUR<br />
-                <span className="text-[#F20000]">SYSTEM.</span>
+                <span className="text-[#E8001D]">SYSTEM.</span>
               </h2>
               <p className="text-lg text-[#A0A0A0] leading-relaxed mb-10 max-w-md">
                 Questions about Fitosys? Reach out and we'll get back to you.
@@ -1088,13 +1088,13 @@ export default function LandingPage() {
                 {[
                   { icon: Heart, label: "Email", value: "hello@fitosys.com", href: "mailto:hello@fitosys.com" },
                 ].map((item, i) => (
-                  <a key={i} href={item.href} className="group flex items-center gap-4 p-5 bg-[#111111] border border-[#222222] hover:border-[#F20000] transition-colors">
-                    <div className="w-10 h-10 bg-[#F20000]/10 border border-[#F20000]/20 flex items-center justify-center">
-                      <item.icon className="w-4 h-4 text-[#F20000]" />
+                  <a key={i} href={item.href} className="group flex items-center gap-4 p-5 bg-[#111111] border border-[#222222] hover:border-[#E8001D] transition-colors">
+                    <div className="w-10 h-10 bg-[#E8001D]/10 border border-[#E8001D]/20 flex items-center justify-center">
+                      <item.icon className="w-4 h-4 text-[#E8001D]" />
                     </div>
                     <div>
                       <div className="text-[11px] font-black uppercase tracking-wider text-[#A0A0A0]">{item.label}</div>
-                      <div className="text-sm font-bold text-white group-hover:text-[#F20000] transition-colors">{item.value}</div>
+                      <div className="text-sm font-bold text-white group-hover:text-[#E8001D] transition-colors">{item.value}</div>
                     </div>
                   </a>
                 ))}
@@ -1111,7 +1111,7 @@ export default function LandingPage() {
         <div className="max-w-[1400px] mx-auto px-4">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 pb-12 border-b border-[#222222] mb-8">
             <div>
-              <div className="font-display font-black text-2xl tracking-tight text-white mb-4">FITO<span className="text-[#F20000]">SYS</span></div>
+              <div className="font-display font-black text-2xl tracking-tight text-white mb-4">FITO<span className="text-[#E8001D]">SYS</span></div>
               <p className="text-sm text-[#A0A0A0] leading-relaxed max-w-[260px]">The system behind the result. Built for independent coaches in India. Runs on WhatsApp.</p>
               <div className="mt-5 text-xs text-[#555555]">A product by <strong className="text-[#A0A0A0]">Alchemetryx</strong></div>
             </div>

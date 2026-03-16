@@ -81,9 +81,9 @@ export default function ClientListView({ initialClients, stats }: ClientListView
         </div>
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-1.5 text-[10px] font-bold text-white/30 uppercase tracking-widest">
-            <AlertCircle size={12} className="text-[#F20000]" /> At Risk
+            <AlertCircle size={12} className="text-[#E8001D]" /> At Risk
           </div>
-          <p className="text-2xl font-bold font-barlow tracking-wider text-[#F20000]">{stats.at_risk}</p>
+          <p className="text-2xl font-bold font-barlow tracking-wider text-[#E8001D]">{stats.at_risk}</p>
         </div>
       </div>
 
@@ -181,7 +181,7 @@ export default function ClientListView({ initialClients, stats }: ClientListView
                     <div className="w-24">
                       <ProgressBar 
                         value={client.energy} 
-                        color={client.energy >= 7 ? "#34C759" : client.energy >= 5 ? "#FF9F0A" : "#F20000"} 
+                        color={client.energy >= 7 ? "#34C759" : client.energy >= 5 ? "#FF9F0A" : "#E8001D"} 
                       />
                       <span className="text-[9px] text-white/30 mt-1 block">Level {client.energy}/10</span>
                     </div>
@@ -235,7 +235,7 @@ export default function ClientListView({ initialClients, stats }: ClientListView
                 <div className="flex-1">
                   <ProgressBar 
                     value={client.energy} 
-                    color={client.energy >= 7 ? "#34C759" : client.energy >= 5 ? "#FF9F0A" : "#F20000"} 
+                    color={client.energy >= 7 ? "#34C759" : client.energy >= 5 ? "#FF9F0A" : "#E8001D"} 
                   />
                 </div>
                 <span className="text-[10px] font-bold text-white/40 font-barlow">E{client.energy}</span>

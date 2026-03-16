@@ -191,7 +191,7 @@ export default function WeeklyPulsePage() {
           label="Renewals"
           value={data?.renewals_due || 0}
           icon={AlertTriangle}
-          color={data?.renewals_due && data.renewals_due > 0 ? "text-[#F20000]" : "text-white/40"}
+          color={data?.renewals_due && data.renewals_due > 0 ? "text-[#E8001D]" : "text-white/40"}
         />
       </div>
 
@@ -215,7 +215,7 @@ export default function WeeklyPulsePage() {
                         ? "linear-gradient(180deg, #34C759, #34C75988)"
                         : d.rate >= 40
                         ? "linear-gradient(180deg, #FF9F0A, #FF9F0A88)"
-                        : "linear-gradient(180deg, #F20000, #F2000088)",
+                        : "linear-gradient(180deg, #E8001D, #E8001D88)",
                     }}
                   />
                   <span className="text-[8px] text-white/40 font-medium uppercase">{d.week}</span>

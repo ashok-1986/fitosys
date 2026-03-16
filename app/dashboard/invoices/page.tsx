@@ -84,7 +84,7 @@ export default function InvoicesDashboard() {
                                 <div>
                                     <p className="font-medium text-white/90 text-[15px]">{inv.clients?.full_name || "Unknown Client"}</p>
                                     <div className="flex items-center gap-2 mt-1">
-                                        <p className="text-xs text-[#F20000] font-sans tracking-wide">{inv.invoice_number}</p>
+                                        <p className="text-xs text-[#E8001D] font-sans tracking-wide">{inv.invoice_number}</p>
                                         <span className="text-white/20 text-xs">•</span>
                                         <p className="text-xs text-white/50">{inv.invoice_date}</p>
                                     </div>
