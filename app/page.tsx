@@ -27,6 +27,7 @@ import {
   CalendarDays,
   PlayCircle,
   Menu,
+  Check,
   X
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -528,6 +529,198 @@ function PainTicker() {
   );
 }
 
+function ProblemSection() {
+  const problems = [
+    {
+      num: "01",
+      title: "Manual Coaching Doesn't Scale",
+      body: "Independent coaches often drown in WhatsApp messages, manual reminders, and follow-ups. Skill is high, but admin overhead limits impact.",
+      cost: "8-12 hrs/week lost"
+    },
+    {
+      num: "02",
+      title: "Retention Blindness",
+      body: "Without a system, you don't know who hasn't checked in until it's too late. Dropout happens silently.",
+      cost: "15-20% higher churn"
+    },
+    {
+      num: "03",
+      title: "Missed Renewal Revenue",
+      body: "Asking for money is awkward. Forgetting to ask is expensive. Missed renewal dates lose you clients by accident.",
+      cost: "₹72K+ lost annually"
+    }
+  ];
+
+  return (
+    <section id="problem" className="bg-[#0A0A0A] py-32 border-b border-[#222222]">
+      <div className="max-w-[1400px] mx-auto px-4">
+        <div className="grid lg:grid-cols-2 gap-20 items-center">
+          {/* Left - Problem Cards */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-10 h-px bg-[#E8001D]" />
+              <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#E8001D]">The Problem</span>
+            </div>
+            <h2 className="font-display text-5xl md:text-6xl text-white uppercase leading-none mb-12">
+              WHY GOOD COACHES<br />
+              <span className="text-transparent" style={{ WebkitTextStroke: "1px rgba(255,255,255,0.2)" }}>GET STUCK.</span>
+            </h2>
+
+            <div className="flex flex-col gap-0.5">
+              {problems.map((p, i) => (
+                <div key={i} className="bg-[#111111] p-8 border-l-4 border-l-transparent hover:border-l-[#E8001D] transition-all group">
+                  <div className="font-display text-[10px] font-bold tracking-widest text-[#444] mb-3 group-hover:text-[#E8001D] transition-colors uppercase">{p.num}</div>
+                  <h3 className="text-lg font-bold text-white mb-2">{p.title}</h3>
+                  <p className="text-sm text-[#A0A0A0] leading-relaxed mb-4">{p.body}</p>
+                  <div className="inline-flex items-center gap-2 bg-[#E8001D]/10 border border-[#E8001D]/20 px-3 py-1.5 rounded-full">
+                    <span className="text-[11px] font-bold text-[#E8001D] uppercase tracking-wider">{p.cost}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Right - Large Quote */}
+          <div className="lg:pl-10">
+            <div className="font-serif text-[120px] text-[#E8001D] opacity-20 leading-[0.1] mb-8">“</div>
+            <p className="font-serif text-3xl md:text-4xl lg:text-5xl text-white italic leading-tight mb-8">
+              I had the skill to coach 50 people, but only the <span className="text-[#E8001D]">mental bandwidth</span> to manage 15. The rest was just admin noise.
+            </p>
+            <div className="text-sm text-[#A0A0A0]">
+              — <strong className="text-white font-medium">Vikram Joshi</strong>, Strength Coach (via Fitosys Beta)
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SystemSection() {
+  const features = [
+    {
+      num: "01",
+      icon: Zap,
+      title: "One-Click WhatsApp Onboarding",
+      body: "Send a magic link. Client enters name and WhatsApp. System creates the profile, sends the welcome kit, and schedules the intake. Zero manual entry.",
+      tag: "India-First",
+      tagColor: "wa"
+    },
+    {
+      num: "02",
+      icon: MessageCircle,
+      title: "Automated Weekly Check-ins",
+      body: "Every Sunday, Fitosys pings your clients automatically. It collects energy levels, wins, and obstacles. You wake up Monday to a summary of who needs you most.",
+      tag: "Retention",
+      tagColor: "brand"
+    },
+    {
+      num: "03",
+      icon: RefreshCw,
+      title: "Frictionless Renewal Triggers",
+      body: "3 days before a program ends, Fitosys sends a renewal prompt with a Razorpay UPI link. 40% of clients renew before you even realize their program was expiring.",
+      tag: "Revenue",
+      tagColor: "brand"
+    }
+  ];
+
+  return (
+    <section id="features" className="bg-[#111111] py-32">
+      <div className="max-w-[1400px] mx-auto px-4">
+        <div className="flex flex-col lg:flex-row justify-between items-end gap-10 mb-20">
+          <div className="max-w-2xl">
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-10 h-px bg-[#E8001D]" />
+              <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#E8001D]">The System</span>
+            </div>
+            <h2 className="font-display text-5xl md:text-7xl text-white uppercase leading-none">
+              BUILT FOR SKILL.<br />
+              <span className="text-transparent" style={{ WebkitTextStroke: "1px rgba(255,255,255,0.2)" }}>SCALED BY SYSTEMS.</span>
+            </h2>
+          </div>
+          <p className="text-lg text-[#A0A0A0] leading-relaxed max-w-sm">
+            Fitosys doesn&apos;t try to be everything. It does three things perfectly. No fluff. Just the workflows that grow your business.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-0.5 bg-[#222222] border border-[#222222]">
+          {features.map((f, i) => (
+            <div key={i} className="bg-[#0A0A0A] p-12 relative overflow-hidden group hover:bg-[#111] transition-colors">
+              <div className="font-display text-[80px] font-black text-[#111] leading-none mb-4 group-hover:text-[#E8001D]/5 transition-colors">{f.num}</div>
+              <div className="w-12 h-12 bg-[#E8001D]/10 border border-[#E8001D]/20 rounded-xl flex items-center justify-center mb-10 group-hover:bg-[#E8001D]/20 transition-colors">
+                <f.icon className="w-6 h-6 text-[#E8001D]" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-4 leading-tight">{f.title}</h3>
+              <p className="text-sm text-[#A0A0A0] leading-relaxed mb-8">{f.body}</p>
+              <div className={`inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${f.tagColor === 'wa' ? 'bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/20' : 'bg-[#E8001D]/10 text-[#E8001D] border border-[#E8001D]/20'}`}>
+                {f.tag}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function PricingSection() {
+  const benefits = [
+    "Manage up to 40 clients",
+    "Automated Sunday check-ins",
+    "Razorpay UPI integration",
+    "Automatic GST invoicing",
+    "Revenue recovery dashboard",
+    "WhatsApp AI assistant"
+  ];
+
+  return (
+    <section id="pricing" className="bg-[#0A0A0A] py-32 border-t border-[#222222]">
+      <div className="max-w-[1400px] mx-auto px-4">
+        <div className="grid lg:grid-cols-2 gap-20 items-center">
+          <div>
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-10 h-px bg-[#E8001D]" />
+              <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#E8001D]">The Investment</span>
+            </div>
+            <h2 className="font-display text-5xl md:text-7xl text-white uppercase leading-none mb-12">
+              SIMPLE<br />
+              <span className="text-transparent" style={{ WebkitTextStroke: "1px rgba(255,255,255,0.2)" }}>PRICING.</span>
+            </h2>
+            <p className="text-lg text-[#A0A0A0] leading-relaxed max-w-md mb-8">
+              No tiers. No hidden fees. No &quot;custom enterprise&quot; quotes. One price for any independent coach who takes their business seriously.
+            </p>
+          </div>
+
+          <div className="bg-[#111111] border border-[#222222] p-12 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 bg-[#E8001D] text-white text-[10px] font-black px-6 py-1.5 uppercase tracking-widest rotate-0 md:rotate-45 md:translate-x-6 md:translate-y-4">Beta Access</div>
+
+            <div className="flex items-baseline gap-2 mb-10">
+              <span className="font-display text-7xl font-black text-white">₹999</span>
+              <span className="text-xl text-[#444] font-medium uppercase tracking-widest">/ Month</span>
+            </div>
+
+            <div className="space-y-4 mb-12">
+              {benefits.map((benefit, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <div className="w-5 h-5 rounded-full bg-[#E8001D]/10 border border-[#E8001D]/20 flex items-center justify-center">
+                    <Check className="w-3 h-3 text-[#E8001D]" />
+                  </div>
+                  <span className="text-sm text-[#A0A0A0]">{benefit}</span>
+                </div>
+              ))}
+            </div>
+
+            <Button asChild size="lg" className="w-full bg-[#E8001D] hover:bg-[#C20000] text-white h-16 text-sm font-black uppercase tracking-widest">
+              <Link href="/join">Get Started - First 5 Clients Free</Link>
+            </Button>
+            <p className="text-center text-[10px] text-[#444] mt-6 uppercase tracking-widest">Pricing locked for life for beta members</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* - MAIN LANDING PAGE - */
 export default function LandingPage() {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -581,25 +774,34 @@ export default function LandingPage() {
       {/* Pain Ticker */}
       <PainTicker />
 
+      {/* The Problem */}
+      <ProblemSection />
+
+      {/* The System */}
+      <SystemSection />
+
+      {/* Pricing */}
+      <PricingSection />
+
       {/* Sticky Transparent Navbar */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-background/92 backdrop-blur-md border-b border-white/5" : "bg-transparent"}`}>
         <div className="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <Image
-              src="/logo.png"
+              src="/logov2.png"
               alt="Fitosys Logo"
               width={140}
               height={32}
-              className="h-8 w-auto object-contain"
+              className="h-7 w-auto object-contain"
               priority
             />
           </Link>
-          <div className="hidden md:flex items-center gap-8 text-sm font-semibold text-[#A0A0A0]">
+          <div className="hidden md:flex items-center gap-8 text-[13px] font-medium tracking-[0.06em] uppercase text-[#A0A0A0]">
             <Link href="#features" className="hover:text-white transition-colors">Features</Link>
             <Link href="#how" className="hover:text-white transition-colors">How It Works</Link>
             <Link href="#pricing" className="hover:text-white transition-colors">Pricing</Link>
             <Link href="#about" className="hover:text-white transition-colors">About</Link>
-            <Button asChild className="bg-[#E8001D] hover:bg-[#C20000] text-white rounded-full font-bold px-6 border-0">
+            <Button asChild className="bg-[#E8001D] hover:bg-[#C20000] text-white rounded-full font-bold px-6 border-0 h-10 text-[11px] tracking-wider uppercase">
               <Link href="/join">Start Free</Link>
             </Button>
           </div>

@@ -2,16 +2,14 @@
 
 import { use, useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { CheckCircle, XCircle, Loader2, AlertCircle } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { CheckCircle, XCircle, Loader2, AlertCircle, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { RazorpayButton } from "@/components/razorpay-button";
 
 function RenewalContent({ params }: { params: Promise<{ slug?: string }> }) {
     const searchParams = useSearchParams();
     const orderId = searchParams.get("order");
     const enrollmentId = searchParams.get("enrollment");
-    
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [renewalData, setRenewalData] = useState<{
@@ -50,97 +48,83 @@ function RenewalContent({ params }: { params: Promise<{ slug?: string }> }) {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-background flex items-center justify-center px-4">
-                <Card className="max-w-md w-full text-center p-8 shadow-lg">
-                    <Loader2 className="h-16 w-16 animate-spin text-brand mx-auto mb-4" />
-                    <h2 className="text-2xl font-bold">Loading...</h2>
-                    <p className="text-muted-foreground mt-2">
-                        Please wait while we fetch your renewal details.
-                    </p>
-                </Card>
+            <div className="min-h-screen bg-black flex items-center justify-center">
+                <Loader2 className="h-12 w-12 animate-spin text-brand" />
             </div>
         );
     }
 
     if (error || !renewalData) {
         return (
-            <div className="min-h-screen bg-background flex items-center justify-center px-4">
-                <Card className="max-w-md w-full text-center p-8 shadow-lg">
-                    <XCircle className="h-16 w-16 text-destructive mx-auto mb-4" />
-                    <h2 className="text-2xl font-bold text-destructive">Renewal Error</h2>
-                    <p className="text-muted-foreground mt-2">{error || "Invalid renewal link"}</p>
-                    <p className="text-muted-foreground mt-4 text-sm">
-                        Please contact your coach or support for assistance.
-                    </p>
-                </Card>
+            <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6 text-center">
+                <XCircle className="h-16 w-16 text-destructive mb-4" />
+                <h1 className="text-3xl font-bold font-display uppercase">Renewal Error</h1>
+                <p className="text-[#A0A0A0] mt-2 max-w-sm">{error || "Invalid renewal link"}</p>
+                <Button asChild variant="outline" className="mt-8 border-white/10 text-white">
+                    <a href="/">Go to Homepage</a>
+                </Button>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-background flex items-center justify-center px-4 py-12">
-            <Card className="max-w-lg w-full shadow-xl">
-                <div className="p-8 space-y-6">
-                    {/* Header */}
-                    <div className="text-center space-y-3">
-                        <div className="h-16 w-16 rounded-full bg-brand/10 flex items-center justify-center mx-auto">
-                            <CheckCircle className="h-8 w-8 text-brand" />
-                        </div>
-                        <h1 className="text-2xl font-bold">Renew Your Program</h1>
-                        <p className="text-muted-foreground">
-                            Continue your journey with {renewalData.clientName}
-                        </p>
+        <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-6 font-sans">
+            <div className="w-full max-w-sm space-y-8">
+                {/* Header */}
+                <div className="space-y-2">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand/10 border border-brand/20 text-brand text-[10px] font-bold uppercase tracking-widest">
+                        <AlertCircle className="w-3 h-3" />
+                        {renewalData.daysRemaining} Days Left
+                    </div>
+                    <h1 className="text-5xl font-black font-display leading-none uppercase tracking-tighter">
+                        Renew Your<br /><span className="text-brand">Journey.</span>
+                    </h1>
+                    <p className="text-[#A0A0A0] text-sm">
+                        Continue your progress with the system, {renewalData.clientName}.
+                    </p>
+                </div>
+
+                {/* Program Card */}
+                <div className="bg-[#111111] border border-white/5 rounded-xl p-6 space-y-6 shadow-2xl">
+                    <div className="space-y-1">
+                        <div className="text-[10px] font-bold text-[#A0A0A0] uppercase tracking-widest">Selected Program</div>
+                        <div className="text-xl font-bold">{renewalData.programName}</div>
                     </div>
 
-                    {/* Program Details */}
-                    <div className="bg-brand/5 rounded-xl p-5 space-y-3 border border-brand/20">
-                        <div className="flex items-start justify-between">
-                            <div>
-                                <p className="text-sm text-muted-foreground">Program</p>
-                                <p className="text-lg font-semibold">{renewalData.programName}</p>
-                            </div>
-                            <div className="text-right">
-                                <p className="text-sm text-muted-foreground">Amount</p>
-                                <p className="text-2xl font-bold text-brand">
-                                    ₹{renewalData.amount.toLocaleString()}
-                                </p>
-                            </div>
+                    <div className="flex justify-between items-end pt-4 border-t border-white/5">
+                        <div className="space-y-1">
+                            <div className="text-[10px] font-bold text-[#A0A0A0] uppercase tracking-widest">Next Cycle</div>
+                            <div className="text-sm font-medium">30 Days Coaching</div>
                         </div>
-                        
-                        <div className="pt-3 border-t border-brand/20">
-                            <div className="flex items-center gap-2 text-amber-600">
-                                <AlertCircle className="h-4 w-4" />
-                                <span className="text-sm font-medium">
-                                    {renewalData.daysRemaining} days remaining in current program
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Payment Section */}
-                    <div className="space-y-4">
-                        <RenewalPaymentButton
-                            orderId={orderId!}
-                            enrollmentId={enrollmentId!}
-                            amount={renewalData.amount}
-                            currency={renewalData.currency}
-                        />
-                        
-                        <div className="text-center space-y-2">
-                            <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
-                                <CheckCircle className="h-3 w-3" />
-                                Secure payment via Razorpay
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                                By continuing, you agree to the{" "}
-                                <a href="/terms" className="text-brand underline">
-                                    Terms of Service
-                                </a>
-                            </p>
+                        <div className="text-right">
+                            <div className="text-[10px] font-bold text-[#A0A0A0] uppercase tracking-widest mb-1">Total Due</div>
+                            <div className="text-3xl font-black text-white">₹{renewalData.amount.toLocaleString()}</div>
                         </div>
                     </div>
                 </div>
-            </Card>
+
+                {/* Footer / CTA */}
+                <div className="space-y-6">
+                    <RenewalPaymentButton
+                        orderId={orderId!}
+                        enrollmentId={enrollmentId!}
+                        amount={renewalData.amount}
+                        currency={renewalData.currency}
+                        clientName={renewalData.clientName}
+                        programName={renewalData.programName}
+                    />
+
+                    <div className="flex flex-col items-center gap-4 text-center">
+                        <div className="flex items-center gap-2 text-[10px] font-bold text-[#A0A0A0] uppercase tracking-widest opacity-60">
+                            <ShieldCheck className="w-3 h-3 text-success" />
+                            Secure Encrypted Payment
+                        </div>
+                        <p className="text-[10px] text-[#A0A0A0] leading-relaxed max-w-[280px]">
+                            By renewing, you agree to our <a href="/terms" className="text-brand hover:underline">Terms of Service</a> and your current program's check-in schedule.
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
@@ -148,14 +132,8 @@ function RenewalContent({ params }: { params: Promise<{ slug?: string }> }) {
 export default function RenewalPage({ params }: { params: Promise<{ slug?: string }> }) {
     return (
         <Suspense fallback={
-            <div className="min-h-screen bg-background flex items-center justify-center px-4">
-                <Card className="max-w-md w-full text-center p-8 shadow-lg">
-                    <Loader2 className="h-16 w-16 animate-spin text-brand mx-auto mb-4" />
-                    <h2 className="text-2xl font-bold">Loading...</h2>
-                    <p className="text-muted-foreground mt-2">
-                        Please wait while we fetch your renewal details.
-                    </p>
-                </Card>
+            <div className="min-h-screen bg-black flex items-center justify-center">
+                <Loader2 className="h-12 w-12 animate-spin text-brand" />
             </div>
         }>
             <RenewalContent params={params} />
@@ -168,9 +146,11 @@ interface RenewalPaymentButtonProps {
     enrollmentId: string;
     amount: number;
     currency: string;
+    clientName: string;
+    programName: string;
 }
 
-function RenewalPaymentButton({ orderId, enrollmentId, amount, currency }: RenewalPaymentButtonProps) {
+function RenewalPaymentButton({ orderId, enrollmentId, amount, currency, clientName, programName }: RenewalPaymentButtonProps) {
     const [error, setError] = useState<string | null>(null);
     const [processing, setProcessing] = useState(false);
 
@@ -179,12 +159,11 @@ function RenewalPaymentButton({ orderId, enrollmentId, amount, currency }: Renew
         setError(null);
 
         try {
-            // Load Razorpay script
             await loadRazorpayScript();
 
             const options = {
                 key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
-                amount: amount * 100, // Convert to paise
+                amount: amount * 100,
                 currency: currency,
                 order_id: orderId,
                 name: "Fitosys",
@@ -206,7 +185,7 @@ function RenewalPaymentButton({ orderId, enrollmentId, amount, currency }: Renew
 
                         const verifyData = await verifyRes.json();
                         if (verifyRes.ok) {
-                            window.location.href = `/renew/success?payment_id=${response.razorpay_payment_id}`;
+                            window.location.href = `/renew/success?payment_id=${response.razorpay_payment_id}&amount=${amount}&name=${encodeURIComponent(clientName)}&program=${encodeURIComponent(programName)}`;
                         } else {
                             setError(verifyData.error || "Payment verification failed");
                         }
@@ -217,13 +196,13 @@ function RenewalPaymentButton({ orderId, enrollmentId, amount, currency }: Renew
                     }
                 },
                 prefill: {
-                    name: "",
+                    name: clientName,
                     email: "",
                     contact: "",
                 },
             };
 
-            const rzp = new window.Razorpay(options);
+            const rzp = new (window as any).Razorpay(options);
             rzp.open();
         } catch (err) {
             setError(err instanceof Error ? err.message : "Payment failed");
@@ -232,25 +211,25 @@ function RenewalPaymentButton({ orderId, enrollmentId, amount, currency }: Renew
     };
 
     return (
-        <div className="space-y-3">
+        <div className="space-y-4">
             {error && (
-                <div className="bg-destructive/10 text-destructive text-sm px-4 py-3 rounded-lg">
+                <div className="bg-destructive/10 text-destructive text-xs p-4 rounded-lg border border-destructive/20 animate-in fade-in slide-in-from-top-1">
                     {error}
                 </div>
             )}
-            
+
             <Button
                 onClick={handlePayment}
                 disabled={processing}
-                className="w-full h-14 bg-brand hover:bg-brand/90 text-white text-lg font-semibold"
+                className="w-full h-14 bg-white text-black hover:bg-[#E8E8E8] font-bold uppercase tracking-widest text-xs rounded-lg shadow-xl shadow-brand/5 transition-all active:scale-[0.98]"
             >
                 {processing ? (
                     <span className="flex items-center gap-2">
-                        <Loader2 className="h-5 w-5 animate-spin" />
+                        <Loader2 className="h-4 w-4 animate-spin" />
                         Processing...
                     </span>
                 ) : (
-                    `Pay ₹${amount.toLocaleString()} & Renew Now`
+                    `Complete Renewal →`
                 )}
             </Button>
         </div>
@@ -259,7 +238,7 @@ function RenewalPaymentButton({ orderId, enrollmentId, amount, currency }: Renew
 
 function loadRazorpayScript(): Promise<void> {
     return new Promise((resolve, reject) => {
-        if (typeof window !== "undefined" && window.Razorpay) {
+        if (typeof window !== "undefined" && (window as any).Razorpay) {
             resolve();
             return;
         }

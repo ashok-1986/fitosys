@@ -43,6 +43,8 @@ export function PillBarChart({
   useEffect(() => {
     setCurrentData(activeTab === "week" ? weekData : monthData);
     setAnimated(false);
+    const timer = setTimeout(() => setAnimated(true), 50);
+    return () => clearTimeout(timer);
   }, [activeTab, weekData, monthData]);
 
   const peakValue = Math.max(...currentData.map((d) => d.value));

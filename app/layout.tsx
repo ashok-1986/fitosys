@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Urbanist, Barlow_Condensed, Playfair_Display } from "next/font/google";
+import { Urbanist, Barlow_Condensed, Instrument_Serif } from "next/font/google";
 import { Providers } from "@/components/providers";
 import "./globals.css";
 
@@ -15,10 +15,11 @@ const barlowCondensed = Barlow_Condensed({
   weight: ["400", "500", "600"],
 });
 
-const playfairDisplay = Playfair_Display({
-  variable: "--font-playfair",
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400"],
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
@@ -92,7 +93,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={`${urbanist.variable} ${barlowCondensed.variable} ${playfairDisplay.variable} font-sans antialiased`}>
+      <body className={`${urbanist.variable} ${barlowCondensed.variable} ${instrumentSerif.variable} font-sans antialiased`}>
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-background focus:text-foreground">
           Skip to main content
         </a>

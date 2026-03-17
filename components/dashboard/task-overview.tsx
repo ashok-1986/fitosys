@@ -2,18 +2,17 @@
 
 import { cn } from "@/lib/utils";
 import {
-  Dumbbell,
-  Heart,
-  Users,
-  BarChart3,
-  Tag,
+  Activity,
+  Zap,
+  RefreshCw,
+  Target,
   Plus,
 } from "lucide-react";
 
 interface TaskOverviewItem {
   id: string;
   name: string;
-  icon: "dumbbell" | "heart" | "users" | "chart" | "tag";
+  icon: "onboarding" | "renewal" | "checkin" | "goal";
   clients: Array<{
     id: string;
     name: string;
@@ -30,57 +29,36 @@ interface TaskOverviewProps {
 }
 
 const iconMap = {
-  dumbbell: Dumbbell,
-  heart: Heart,
-  users: Users,
-  chart: BarChart3,
-  tag: Tag,
+  onboarding: Zap,
+  renewal: RefreshCw,
+  checkin: Activity,
+  goal: Target,
 };
 
 export function TaskOverview({
   tasks = [
     {
       id: "1",
-      name: "12-Week Body Recomposition",
-      icon: "dumbbell",
+      name: "Client Onboarding: Rahul M.",
+      icon: "onboarding",
       clients: [
-        { id: "1", name: "Rajesh K.", initials: "R", gradient: "linear-gradient(135deg,#7f0000,#c00)" },
-        { id: "2", name: "Anita M.", initials: "A", gradient: "linear-gradient(135deg,#003366,#0055a5)" },
+        { id: "1", name: "Rahul M.", initials: "RM", gradient: "linear-gradient(135deg,#7f0000,#c00)" },
       ],
-      additionalCount: 8,
     },
     {
       id: "2",
-      name: "8-Week Strength Foundation",
-      icon: "heart",
+      name: "Weekly Check-in: Priya S.",
+      icon: "checkin",
       clients: [
-        { id: "3", name: "Neha S.", initials: "N", gradient: "linear-gradient(135deg,#4a1942,#7b2d72)" },
+        { id: "3", name: "Priya S.", initials: "PS", gradient: "linear-gradient(135deg,#003366,#0055a5)" },
       ],
-      additionalCount: 5,
     },
     {
       id: "3",
-      name: "4-Week Yoga Flow Batch",
-      icon: "users",
+      name: "Renewal Due: Vikram Patil",
+      icon: "renewal",
       clients: [
-        { id: "4", name: "Deepa R.", initials: "D", gradient: "linear-gradient(135deg,#003d1f,#00703a)" },
-      ],
-      additionalCount: 3,
-    },
-    {
-      id: "4",
-      name: "Performance Metrics Review",
-      icon: "chart",
-      clients: [
-        { id: "5", name: "Vikram P.", initials: "V", gradient: "linear-gradient(135deg,#2c1654,#512da8)" },
-      ],
-    },
-    {
-      id: "5",
-      name: "Competitive Renewals 2026",
-      icon: "tag",
-      clients: [
-        { id: "6", name: "Multiple", initials: "+4", gradient: "linear-gradient(135deg,#1a3a1a,#2e7d32)" },
+        { id: "4", name: "Vikram P.", initials: "VP", gradient: "linear-gradient(135deg,#4a1942,#7b2d72)" },
       ],
     },
   ],
