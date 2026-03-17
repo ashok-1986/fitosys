@@ -257,7 +257,7 @@ export default function AIDemoPage() {
                                         </p>
                                     </div>
                                 </div>
-                                <CardContent className="p-0 bg-[#0A0A0A]">
+                                <CardContent className="p-0 bg-background">
                                     <div className="p-6 text-[#E0E0E0] text-[15px] leading-relaxed whitespace-pre-wrap font-playfair">
                                         {summary}
                                         {generating && <span className="ml-1 inline-block w-2.5 h-4 bg-brand animate-pulse align-middle" />}

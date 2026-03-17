@@ -6,13 +6,13 @@ import "./globals.css";
 const urbanist = Urbanist({
   variable: "--font-urbanist",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "500", "600"],
 });
 
 const barlowCondensed = Barlow_Condensed({
   variable: "--font-barlow",
   subsets: ["latin"],
-  weight: ["400", "600", "700", "800", "900"],
+  weight: ["400", "500", "600"],
 });
 
 const playfairDisplay = Playfair_Display({
@@ -86,10 +86,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Urbanist:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
         <link rel="canonical" href="https://fitosys.alchemetryx.com" />
         <script
           type="application/ld+json"

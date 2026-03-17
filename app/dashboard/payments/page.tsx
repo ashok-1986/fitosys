@@ -98,7 +98,7 @@ export default function PaymentsPage() {
     };
 
     return (
-        <div className="flex-1 w-full bg-[#0A0A0A] text-white font-sans overflow-y-auto pb-24">
+        <div className="flex-1 w-full bg-background text-white font-sans overflow-y-auto pb-24">
             <NavBar
                 title="Payments"
                 back="Dashboard"

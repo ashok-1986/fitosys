@@ -45,7 +45,7 @@ export default function InvoicesDashboard() {
     const totalRevenue = invoices.reduce((sum, inv) => sum + Number(inv.total_amount), 0);
 
     return (
-        <div className="flex-1 w-full bg-[#0A0A0A] text-white font-sans overflow-y-auto pb-24">
+        <div className="flex-1 w-full bg-background text-white font-sans overflow-y-auto pb-24">
             <NavBar title="GST Invoices" back="Dashboard" backHref="/dashboard" />
 
             <div className="mx-4 mt-6">

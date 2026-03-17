@@ -169,7 +169,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="flex-1 w-full bg-[#0A0A0A] text-white font-sans overflow-y-auto pb-24">
+    <div className="flex-1 w-full bg-background text-white font-sans overflow-y-auto pb-24">
       <NavBar
         title="Settings"
         back="Home"
@@ -514,11 +514,10 @@ function TabButton({ icon, label, active, onClick }: { icon: React.ReactNode; la
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors border-b-2 ${
-        active
+      className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors border-b-2 ${active
           ? "border-brand text-white"
           : "border-transparent text-white/40 hover:text-white"
-      }`}
+        }`}
     >
       {icon}
       {label}

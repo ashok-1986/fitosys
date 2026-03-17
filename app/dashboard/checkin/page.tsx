@@ -73,7 +73,7 @@ function CheckinScreenContent() {
 
   if (isDone) {
     return (
-      <div className="flex-1 w-full bg-[#0A0A0A] text-white flex flex-col items-center justify-center p-8 min-h-screen font-sans">
+      <div className="flex-1 w-full bg-background text-white flex flex-col items-center justify-center p-8 min-h-screen font-sans">
         <div className="text-6xl mb-6">✅</div>
         <h2 className="text-3xl font-bold font-barlow tracking-wider mb-3 text-center uppercase">
           Check-in Saved
@@ -94,7 +94,7 @@ function CheckinScreenContent() {
   const q = questions[step];
 
   return (
-    <div className="flex-1 w-full flex flex-col min-h-screen bg-[#0A0A0A] text-white font-sans overflow-hidden">
+    <div className="flex-1 w-full flex flex-col min-h-screen bg-background text-white font-sans overflow-hidden">
       <NavBar
         title="Log Check-in"
         back="Cancel"
@@ -170,7 +170,7 @@ function CheckinScreenContent() {
       </div>
 
       {/* ── Fixed Footer Actions ── */}
-      <div className="px-6 pb-8 pt-4 flex gap-3 bg-[#0A0A0A]">
+      <div className="px-6 pb-8 pt-4 flex gap-3 bg-background">
         {step > 0 && (
           <button
             type="button"
@@ -196,7 +196,7 @@ function CheckinScreenContent() {
 
 export default function CheckinScreen() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#0A0A0A]" />}>
+    <Suspense fallback={<div className="min-h-screen bg-background" />}>
       <CheckinScreenContent />
     </Suspense>
   );

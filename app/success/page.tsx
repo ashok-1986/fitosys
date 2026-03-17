@@ -30,7 +30,7 @@ export default function SuccessPage({ params }: { params: Promise<{ clientId?: s
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-white font-sans overflow-y-auto pb-24">
+    <div className="min-h-screen bg-background text-white font-sans overflow-y-auto pb-24">
       <NavBar
         title="Success"
         back="Home"
