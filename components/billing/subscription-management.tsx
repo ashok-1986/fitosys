@@ -111,7 +111,7 @@ export function SubscriptionManagement({ stats }: SubscriptionManagementProps) {
                         contact: "",
                     },
                     theme: {
-                        color: "#F20000",
+                        color: "#E8001D",
                     },
                     handler: resolve,
                     ondismiss: reject,

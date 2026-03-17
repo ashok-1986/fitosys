@@ -267,7 +267,7 @@
 .sb-mark {
   width: 34px;
   height: 34px;
-  background: #F20000;
+  background: #E8001D;
   clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
   display: flex;
   align-items: center;
@@ -324,7 +324,7 @@
   top: 28%;
   bottom: 28%;
   width: 2px;
-  background: #F20000;
+  background: #E8001D;
   border-radius: 0 2px 2px 0;
 }
 
@@ -334,7 +334,7 @@
   right: 8px;
   width: 6px;
   height: 6px;
-  background: #F20000;
+  background: #E8001D;
   border-radius: 50%;
   border: 1.5px solid #0A0A0A;
 }
@@ -423,7 +423,7 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #F20000 0%, #700 100%);
+  background: linear-gradient(135deg, #E8001D 0%, #700 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -502,7 +502,7 @@
 .card-hd-action {
   font-size: 11px;
   font-weight: 600;
-  color: #F20000;
+  color: #E8001D;
   cursor: pointer;
   background: none;
   border: none;
@@ -546,7 +546,7 @@
 }
 
 .cal-nav:hover {
-  border-color: #F20000;
+  border-color: #E8001D;
   color: #FFFFFF;
 }
 
@@ -599,7 +599,7 @@
 }
 
 .cal-d.today {
-  background: #F20000;
+  background: #E8001D;
   color: #fff;
   font-weight: 700;
 }
@@ -610,7 +610,7 @@
   bottom: 2px;
   width: 4px;
   height: 4px;
-  background: #F20000;
+  background: #E8001D;
   border-radius: 50%;
 }
 
@@ -695,7 +695,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #F20000;
+  background: #E8001D;
   color: #fff;
   border: none;
   border-radius: 7px;
@@ -745,12 +745,12 @@
 }
 
 .pcheck:hover {
-  border-color: #F20000;
+  border-color: #E8001D;
 }
 
 .pcheck.done {
-  background: #F20000;
-  border-color: #F20000;
+  background: #E8001D;
+  border-color: #E8001D;
 }
 
 .pcheck-text {
@@ -779,7 +779,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #F20000;
+  background: #E8001D;
 }
 
 .pdot.bg-\[\.F59E0B\] {
@@ -894,7 +894,7 @@
 .tag-name {
   font-size: 10px;
   font-weight: 700;
-  color: #F20000;
+  color: #E8001D;
   font-family: var(--font-urbanist), 'Urbanist', sans-serif;
 }
 
@@ -906,7 +906,7 @@
 
 /* Program Card (Red Background) */
 .prog-card {
-  background: #F20000;
+  background: #E8001D;
   border-radius: 10px;
   padding: 15px 15px 14px;
   display: flex;
@@ -1111,7 +1111,7 @@
 }
 
 .prog-send svg {
-  color: #F20000;
+  color: #E8001D;
 }
 
 /* Pill Bar Chart */
@@ -1170,7 +1170,7 @@
 }
 
 .chart-tab.on {
-  background: #F20000;
+  background: #E8001D;
   color: #fff;
 }
 
@@ -1235,7 +1235,7 @@
   left: 0;
   right: 0;
   border-radius: 99px;
-  background: #F20000;
+  background: #E8001D;
   opacity: 0.75;
   transition: height 0.65s cubic-bezier(.4, 0, .2, 1), opacity 0.2s;
 }
@@ -1282,7 +1282,7 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  border: 2px solid #F20000;
+  border: 2px solid #E8001D;
 }
 
 .chart-avg {
@@ -1338,7 +1338,7 @@
 /* These styles ensure the dashboard matches fitosys-dashboard.html exactly */
 
 :root {
-  --red: #F20000;
+  --red: #E8001D;
   --red-dim: rgba(242,0,0,0.10);
   --red-faint: rgba(242,0,0,0.06);
   --bg: #0D0D0D;
@@ -1576,7 +1576,7 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #F20000 0%, #700 100%);
+  background: linear-gradient(135deg, #E8001D 0%, #700 100%);
   display: flex;
   align-items: center;
   justify-content: center;

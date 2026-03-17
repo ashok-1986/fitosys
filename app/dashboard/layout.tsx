@@ -23,7 +23,7 @@ export default function DashboardLayout({
         <header className="md:hidden sticky top-0 z-40 bg-[#0A0A0A]/80 backdrop-blur-md border-b border-white/5 h-16 px-4 flex items-center justify-between">
           <Link href="/dashboard" className="flex items-center gap-2">
             <span className="font-barlow font-bold text-xl tracking-wide uppercase text-white">
-              Fito<span className="text-[#F20000]">sys</span>
+              Fito<span className="text-[#E8001D]">sys</span>
             </span>
           </Link>
           <button className="h-10 w-10 flex items-center justify-center rounded-full bg-[#111111] border border-white/5">

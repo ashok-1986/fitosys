@@ -83,7 +83,7 @@ function CheckinScreenContent() {
         </p>
         <button
           onClick={() => router.push("/dashboard")}
-          className="bg-[#F20000] hover:bg-[#C20000] text-white px-12 py-4 rounded-xl text-base font-bold font-barlow tracking-widest uppercase transition-colors shadow-[0_4px_24px_rgba(242,0,0,0.18)]"
+          className="bg-[#E8001D] hover:bg-[#C20000] text-white px-12 py-4 rounded-xl text-base font-bold font-barlow tracking-widest uppercase transition-colors shadow-[0_4px_24px_rgba(242,0,0,0.18)]"
         >
           Done
         </button>
@@ -106,7 +106,7 @@ function CheckinScreenContent() {
         <div className="flex justify-between mb-2">
           <p className="text-xs text-white/40">Step {step + 1} of {total}</p>
         </div>
-        <ProgressBar value={step + 1} max={total} color="#F20000" />
+        <ProgressBar value={step + 1} max={total} color="#E8001D" />
       </div>
 
       <div className="flex-1 px-6 pt-10 overflow-y-auto pb-4">
@@ -115,7 +115,7 @@ function CheckinScreenContent() {
         {/* ── Energy Scale Slider ── */}
         {q.type === "scale" && (
           <div className="w-full max-w-md mx-auto">
-            <div className="text-[64px] font-black font-barlow text-[#F20000] text-center mb-8 leading-none">
+            <div className="text-[64px] font-black font-barlow text-[#E8001D] text-center mb-8 leading-none">
               {energy}
             </div>
 
@@ -125,9 +125,9 @@ function CheckinScreenContent() {
               max={10}
               value={energy}
               onChange={e => setEnergy(parseInt(e.target.value))}
-              className="w-full h-1.5 bg-white/10 rounded-full appearance-none cursor-pointer outline-none accent-[#F20000]"
+              className="w-full h-1.5 bg-white/10 rounded-full appearance-none cursor-pointer outline-none accent-[#E8001D]"
               style={{
-                background: `linear-gradient(to right, #F20000 ${((energy - 1) / 9) * 100}%, rgba(255,255,255,0.1) ${((energy - 1) / 9) * 100}%)`
+                background: `linear-gradient(to right, #E8001D ${((energy - 1) / 9) * 100}%, rgba(255,255,255,0.1) ${((energy - 1) / 9) * 100}%)`
               }}
             />
 
@@ -148,7 +148,7 @@ function CheckinScreenContent() {
                 className={cn(
                   "w-14 h-14 rounded-2xl text-xl font-bold font-barlow tracking-widest transition-all",
                   sessions === n
-                    ? "bg-[#F20000] border-[#F20000] text-white shadow-[0_4px_16px_rgba(242,0,0,0.25)] scale-105"
+                    ? "bg-[#E8001D] border-[#E8001D] text-white shadow-[0_4px_16px_rgba(242,0,0,0.25)] scale-105"
                     : "bg-[#1C1C1E] border-white/10 text-white/50 border hover:bg-white/5"
                 )}
               >
@@ -185,7 +185,7 @@ function CheckinScreenContent() {
           type="button"
           onClick={handleNext}
           disabled={isPending || isFetchingCoach}
-          className="flex-[2] bg-[#F20000] hover:bg-[#C20000] border-none rounded-xl p-4 text-white text-base font-bold font-barlow tracking-widest uppercase transition-colors shadow-[0_4px_24px_rgba(242,0,0,0.18)] active:scale-[0.98] disabled:opacity-50"
+          className="flex-[2] bg-[#E8001D] hover:bg-[#C20000] border-none rounded-xl p-4 text-white text-base font-bold font-barlow tracking-widest uppercase transition-colors shadow-[0_4px_24px_rgba(242,0,0,0.18)] active:scale-[0.98] disabled:opacity-50"
         >
           {isFetchingCoach ? "Processing..." : isPending ? "Saving..." : step === total - 1 ? "Submit ✓" : "Continue →"}
         </button>
