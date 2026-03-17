@@ -16,7 +16,7 @@ export default async function ClientDetailScreen({ params }: { params: { id: str
   // Get the latest check-in for the top stats
   const latestCheckin = profile.recentCheckins[0] || null;
   const energy = latestCheckin?.energy_score || 0;
-  
+
   // Calculate risk safely
   let risk = 1;
   if (energy > 0) {
@@ -32,27 +32,27 @@ export default async function ClientDetailScreen({ params }: { params: { id: str
   while (chartData.length < 7) {
     chartData.unshift(0); // Insert 0 at the beginning for missing weeks
   }
-  
+
   const barMax = 10;
-  
+
   // Format the enrollment date safely
-  const enrolledDate = new Date(profile.created_at).toLocaleDateString('en-US', { 
-    month: 'short', day: 'numeric', year: 'numeric' 
+  const enrolledDate = new Date(profile.created_at).toLocaleDateString('en-US', {
+    month: 'short', day: 'numeric', year: 'numeric'
   });
 
   return (
-    <div className="flex-1 w-full bg-[#0A0A0A] text-white font-sans overflow-y-auto pb-24">
-      <NavBar 
-        title="Client Profile" 
-        back="Clients" 
-        backHref="/dashboard/clients" 
-        action="Message" 
+    <div className="flex-1 w-full bg-background text-white font-sans overflow-y-auto pb-24">
+      <NavBar
+        title="Client Profile"
+        back="Clients"
+        backHref="/dashboard/clients"
+        action="Message"
       />
 
       {/* ── Hero Profile ── */}
-      <div 
+      <div
         className="mx-4 mt-2 mb-6 rounded-[20px] p-5 border transition-colors"
-        style={{ 
+        style={{
           background: risk >= 4 ? `linear-gradient(135deg, #E8001D18, #1C1C1E)` : `linear-gradient(135deg, #34C75918, #1C1C1E)`,
           borderColor: risk >= 4 ? '#E8001D33' : '#34C75933'
         }}
@@ -75,8 +75,8 @@ export default async function ClientDetailScreen({ params }: { params: { id: str
           <div className="mt-5 p-3.5 rounded-xl border border-[#E8001D]/20 bg-[#E8001D]/5">
             <p className="text-xs text-[#E8001D] font-bold mb-1.5 font-sans tracking-wide">🤖 AI INSIGHT</p>
             <p className="text-[13px] text-white/70 leading-relaxed font-sans">
-              {profile.daysLeft <= 7 
-                ? `${profile.full_name}'s program ends in ${profile.daysLeft} days. Send a renewal link today.` 
+              {profile.daysLeft <= 7
+                ? `${profile.full_name}'s program ends in ${profile.daysLeft} days. Send a renewal link today.`
                 : `${profile.full_name}'s recent check-ins show critically low energy levels. Personal outreach is highly recommended.`}
             </p>
           </div>
@@ -122,15 +122,15 @@ export default async function ClientDetailScreen({ params }: { params: { id: str
             const isGreen = v > 6;
             const isEmpty = v === 0;
             const color = isRed ? "#E8001D" : isOrange ? "#FF9F0A" : isGreen ? "#34C759" : "#333333";
-            
+
             return (
               <div key={i} className="flex-1 flex flex-col items-center gap-2 h-full justify-end">
-                <div 
+                <div
                   className="w-full rounded-sm transition-all duration-500 max-w-[24px]"
                   style={{
                     height: isEmpty ? '4px' : `${(v / barMax) * 54}px`,
                     background: isEmpty ? color : `linear-gradient(180deg, ${color}, ${color}88)`,
-                  }} 
+                  }}
                 />
                 <span className="text-[9px] text-white/40 font-sans font-medium uppercase tracking-wider">
                   W{i + 1}
@@ -140,24 +140,24 @@ export default async function ClientDetailScreen({ params }: { params: { id: str
           })}
         </div>
       </div>
-      
+
       {/* ── Client Details Readonly ── */}
       <div className="px-5 mb-8">
-         <h3 className="text-sm font-bold font-barlow tracking-wider mb-3 text-white/60">CLIENT INFO</h3>
-         <div className="bg-[#1C1C1E] rounded-xl border border-white/10 divide-y divide-white/5 overflow-hidden">
-             <div className="p-3.5 flex justify-between items-center">
-                 <span className="text-sm text-white/50">Enrolled</span>
-                 <span className="text-sm font-medium">{enrolledDate}</span>
-             </div>
-             <div className="p-3.5 flex justify-between items-center">
-                 <span className="text-sm text-white/50">Primary Goal</span>
-                 <span className="text-sm font-medium">{profile.primary_goal || "Not specified"}</span>
-             </div>
-             <div className="p-3.5 flex justify-between items-center">
-                 <span className="text-sm text-white/50">WhatsApp</span>
-                 <span className="text-sm font-medium">{profile.whatsapp_number}</span>
-             </div>
-         </div>
+        <h3 className="text-sm font-bold font-barlow tracking-wider mb-3 text-white/60">CLIENT INFO</h3>
+        <div className="bg-[#1C1C1E] rounded-xl border border-white/10 divide-y divide-white/5 overflow-hidden">
+          <div className="p-3.5 flex justify-between items-center">
+            <span className="text-sm text-white/50">Enrolled</span>
+            <span className="text-sm font-medium">{enrolledDate}</span>
+          </div>
+          <div className="p-3.5 flex justify-between items-center">
+            <span className="text-sm text-white/50">Primary Goal</span>
+            <span className="text-sm font-medium">{profile.primary_goal || "Not specified"}</span>
+          </div>
+          <div className="p-3.5 flex justify-between items-center">
+            <span className="text-sm text-white/50">WhatsApp</span>
+            <span className="text-sm font-medium">{profile.whatsapp_number}</span>
+          </div>
+        </div>
       </div>
 
       {/* ── Action Buttons ── */}
@@ -165,7 +165,7 @@ export default async function ClientDetailScreen({ params }: { params: { id: str
         <button className="flex-1 bg-[#E8001D] hover:bg-[#C20000] border-none rounded-xl p-[14px] text-white text-sm font-bold font-barlow tracking-widest uppercase transition-colors active:scale-[0.98]">
           Send Renewal
         </button>
-        <Link 
+        <Link
           href={`/dashboard/checkin?clientId=${profile.id}`}
           className="flex-1 bg-[#1C1C1E] hover:bg-white/10 border border-white/10 rounded-xl p-[14px] text-white text-center text-sm font-semibold font-sans transition-colors active:scale-[0.98]"
         >

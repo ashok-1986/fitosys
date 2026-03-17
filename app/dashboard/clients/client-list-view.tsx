@@ -3,13 +3,13 @@
 import React, { useState } from "react";
 import { Avatar, Badge, Chip, RiskDot, ProgressBar, InputField } from "@/components/ui/design-system";
 import { NavBar } from "@/components/ui/navigation";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
 } from "@/components/ui/table";
 import { ChevronRight, Filter, SortAsc, Users, AlertCircle, Calendar } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -38,11 +38,11 @@ export default function ClientListView({ initialClients, stats }: ClientListView
   const filtered = initialClients.filter(c => {
     const matchesSearch = c.name.toLowerCase().includes(search.toLowerCase());
     const matchesStatus = statusFilter === "all" || c.status === statusFilter;
-    const matchesRisk = 
-      riskFilter === "all" || 
-      (riskFilter === "atrisk" && c.risk >= 3) || 
+    const matchesRisk =
+      riskFilter === "all" ||
+      (riskFilter === "atrisk" && c.risk >= 3) ||
       (riskFilter === "renewal" && c.daysLeft <= 7);
-    
+
     return matchesSearch && matchesStatus && matchesRisk;
   });
 
@@ -56,12 +56,12 @@ export default function ClientListView({ initialClients, stats }: ClientListView
   });
 
   return (
-    <div className="flex-1 w-full bg-[#0A0A0A] text-white font-sans overflow-y-auto pb-24">
-      <NavBar 
-        title="Roster" 
-        back="Home" 
-        backHref="/dashboard" 
-        action="+ Add Client" 
+    <div className="flex-1 w-full bg-background text-white font-sans overflow-y-auto pb-24">
+      <NavBar
+        title="Roster"
+        back="Home"
+        backHref="/dashboard"
+        action="+ Add Client"
         onAction={() => router.push("/dashboard/intake")}
       />
 
@@ -89,8 +89,8 @@ export default function ClientListView({ initialClients, stats }: ClientListView
 
       {/* ── Search & Primary Filters ── */}
       <div className="px-4 pt-6 pb-2">
-        <InputField 
-          placeholder="Find client..." 
+        <InputField
+          placeholder="Find client..."
           icon="🔍"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -105,8 +105,8 @@ export default function ClientListView({ initialClients, stats }: ClientListView
             onClick={() => setStatusFilter(status)}
             className={cn(
               "px-4 py-1.5 rounded-full text-xs font-bold font-barlow tracking-widest uppercase transition-all whitespace-nowrap",
-              statusFilter === status 
-                ? "bg-white/10 text-white border border-white/20" 
+              statusFilter === status
+                ? "bg-white/10 text-white border border-white/20"
                 : "text-white/40 hover:text-white/60 border border-transparent"
             )}
           >
@@ -117,20 +117,20 @@ export default function ClientListView({ initialClients, stats }: ClientListView
 
       {/* ── Sub-Filters & Sort ── */}
       <div className="flex gap-2.5 px-4 pb-4 overflow-x-auto hide-scrollbar">
-        <Chip 
-          label="Priority" 
+        <Chip
+          label="Priority"
           icon="⚡"
-          active={riskFilter === "atrisk"} 
-          onClick={() => setRiskFilter(riskFilter === "atrisk" ? "all" : "atrisk")} 
+          active={riskFilter === "atrisk"}
+          onClick={() => setRiskFilter(riskFilter === "atrisk" ? "all" : "atrisk")}
         />
-        <Chip 
-          label="Expiring" 
+        <Chip
+          label="Expiring"
           icon="⏳"
-          active={riskFilter === "renewal"} 
-          onClick={() => setRiskFilter(riskFilter === "renewal" ? "all" : "renewal")} 
+          active={riskFilter === "renewal"}
+          onClick={() => setRiskFilter(riskFilter === "renewal" ? "all" : "renewal")}
         />
         <div className="h-8 w-px bg-white/5 mx-1 self-center" />
-        <select 
+        <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value as SortOption)}
           className="bg-white/5 border border-white/10 rounded-full px-3 py-1 text-[11px] font-bold font-barlow tracking-widest uppercase outline-none text-white/60 focus:text-white"
@@ -158,7 +158,7 @@ export default function ClientListView({ initialClients, stats }: ClientListView
             </TableHeader>
             <TableBody>
               {sorted.map((client) => (
-                <TableRow 
+                <TableRow
                   key={client.id}
                   onClick={() => router.push(`/dashboard/clients/${client.id}`)}
                   className="border-white/5 hover:bg-white/[0.02] cursor-pointer transition-colors"
@@ -171,17 +171,17 @@ export default function ClientListView({ initialClients, stats }: ClientListView
                   </TableCell>
                   <TableCell className="text-xs text-white/50">{client.program}</TableCell>
                   <TableCell>
-                    <Badge 
-                      label={client.status} 
+                    <Badge
+                      label={client.status}
                       color={client.status === 'active' ? '#34C759' : client.status === 'trial' ? '#BF5AF2' : '#8E8E93'}
                       size="sm"
                     />
                   </TableCell>
                   <TableCell>
                     <div className="w-24">
-                      <ProgressBar 
-                        value={client.energy} 
-                        color={client.energy >= 7 ? "#34C759" : client.energy >= 5 ? "#FF9F0A" : "#E8001D"} 
+                      <ProgressBar
+                        value={client.energy}
+                        color={client.energy >= 7 ? "#34C759" : client.energy >= 5 ? "#FF9F0A" : "#E8001D"}
                       />
                       <span className="text-[9px] text-white/30 mt-1 block">Level {client.energy}/10</span>
                     </div>
@@ -207,41 +207,41 @@ export default function ClientListView({ initialClients, stats }: ClientListView
       {/* ── Mobile List View ── */}
       <div className="flex flex-col gap-2 px-4 md:hidden">
         {sorted.map(client => (
-          <div 
-            key={client.id} 
+          <div
+            key={client.id}
             onClick={() => router.push(`/dashboard/clients/${client.id}`)}
             className="flex items-center gap-3 bg-[#1C1C1E] border border-white/5 rounded-2xl p-4 cursor-pointer hover:bg-white/5 transition-colors active:scale-[0.99]"
           >
             <Avatar name={client.name} risk={client.risk} size={44} />
-            
+
             <div className="flex-1 min-w-0">
               <div className="flex justify-between items-center mb-0.5">
                 <p className="text-[15px] font-bold font-sans truncate pr-2">{client.name}</p>
                 <div className="flex gap-1.5 items-center shrink-0">
                   {client.daysLeft <= 7 && <Badge label={`${client.daysLeft}d`} color="#FF9F0A" />}
-                  <Badge 
-                    label={client.status.charAt(0).toUpperCase()} 
-                    color={client.status === 'active' ? '#34C759' : '#8E8E93'} 
+                  <Badge
+                    label={client.status.charAt(0).toUpperCase()}
+                    color={client.status === 'active' ? '#34C759' : '#8E8E93'}
                     className="w-5 h-5 p-0 flex items-center justify-center text-[9px]"
                   />
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-2 mb-2">
                 <p className="text-[10px] text-white/40 font-bold font-barlow tracking-widest uppercase truncate">{client.program}</p>
               </div>
-              
+
               <div className="flex items-center gap-3">
                 <div className="flex-1">
-                  <ProgressBar 
-                    value={client.energy} 
-                    color={client.energy >= 7 ? "#34C759" : client.energy >= 5 ? "#FF9F0A" : "#E8001D"} 
+                  <ProgressBar
+                    value={client.energy}
+                    color={client.energy >= 7 ? "#34C759" : client.energy >= 5 ? "#FF9F0A" : "#E8001D"}
                   />
                 </div>
                 <span className="text-[10px] font-bold text-white/40 font-barlow">E{client.energy}</span>
               </div>
             </div>
-            
+
             <ChevronRight className="h-5 w-5 text-white/20 shrink-0 ml-1" />
           </div>
         ))}

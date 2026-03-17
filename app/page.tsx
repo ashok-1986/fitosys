@@ -96,7 +96,7 @@ function HeroSection() {
         backgroundSize: "60px 60px",
         maskImage: "radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent)"
       }} />
-      
+
       {/* Glow effect */}
       <div className="absolute top-[-200px] left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-[radial-gradient(circle,rgba(242,0,0,0.12)_0%,transparent_65%)] pointer-events-none z-0" />
 
@@ -176,16 +176,16 @@ function HeroSection() {
 
             {/* Tabbed Phone Wrapper */}
             <div ref={phoneRef} className="relative z-10 flex flex-col items-center gap-0">
-              
+
               {/* Tab Switcher */}
               <div className="flex gap-0.5 bg-[#111111] border border-[#222222] rounded-[40px] p-1 mb-4 z-20 relative">
-                <button 
+                <button
                   onClick={() => { setActiveTab('wa'); setAutoCycle(false); }}
                   className={`px-5 py-2 rounded-[36px] font-sans text-[11px] font-bold tracking-[0.08em] uppercase flex items-center gap-1.5 transition-all duration-300 ${activeTab === 'wa' ? 'bg-[#25D366] text-white' : 'bg-transparent text-[#A0A0A0]'}`}
                 >
                   <span className={`w-1.5 h-1.5 rounded-full transition-opacity duration-300 ${activeTab === 'wa' ? 'bg-white opacity-100' : 'bg-current opacity-50'}`} /> Client View
                 </button>
-                <button 
+                <button
                   onClick={() => { setActiveTab('dashboard'); setAutoCycle(false); }}
                   className={`px-5 py-2 rounded-[36px] font-sans text-[11px] font-bold tracking-[0.08em] uppercase flex items-center gap-1.5 transition-all duration-300 ${activeTab === 'dashboard' ? 'bg-[#E8001D] text-white' : 'bg-transparent text-[#A0A0A0]'}`}
                 >
@@ -197,7 +197,7 @@ function HeroSection() {
               <div className="relative z-10 w-[290px]">
                 <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-[38px] p-[13px] shadow-[0_40px_80px_rgba(0,0,0,0.9),0_8px_32px_rgba(242,0,0,0.08),0_0_0_1px_rgba(255,255,255,0.04)]">
                   <div className="rounded-[28px] overflow-hidden min-h-[490px] relative bg-[#0A0A0A]">
-                    
+
                     {/* View: WhatsApp */}
                     <div className={`absolute inset-0 z-20 transition-all duration-[400ms] ease-in-out ${activeTab === 'wa' ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-3 pointer-events-none'}`}>
                       <div className="bg-[#075E54] h-full flex flex-col">
@@ -214,10 +214,10 @@ function HeroSection() {
                         {/* WA Body */}
                         <div className="bg-[#ECE5DD] px-[9px] py-2.5 flex-1 flex flex-col gap-[7px]">
                           <div className="max-w-[82%] bg-[#E8D5FF] rounded-lg p-[7px_11px] text-[11px] leading-[1.5] text-[#333] self-start border-l-[3px] border-l-[#E8001D] relative">
-                            <strong>Hi Anjali! 👋</strong><br/>
-                            Weekly check-in from Coach Priya:<br/><br/>
-                            1. Energy this week (1-10)?<br/>
-                            2. Sessions completed?<br/>
+                            <strong>Hi Anjali! 👋</strong><br />
+                            Weekly check-in from Coach Priya:<br /><br />
+                            1. Energy this week (1-10)?<br />
+                            2. Sessions completed?<br />
                             3. One win? 💪
                             <div className="text-[9px] text-[#999] text-right mt-0.5">Sun 7:00 PM · Auto-sent</div>
                           </div>
@@ -581,7 +581,7 @@ export default function LandingPage() {
       <PainTicker />
 
       {/* Sticky Transparent Navbar */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-[#0A0A0A]/92 backdrop-blur-md border-b border-white/5" : "bg-transparent"}`}>
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-background/92 backdrop-blur-md border-b border-white/5" : "bg-transparent"}`}>
         <div className="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <div className="w-7 h-7 bg-[#E8001D]" style={{ clipPath: "polygon(0 0, 70% 0, 100% 100%, 30% 100%)" }} />
@@ -604,7 +604,7 @@ export default function LandingPage() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-[60] bg-[#0A0A0A]/98 flex flex-col items-center justify-center gap-8">
+        <div className="fixed inset-0 z-[60] bg-background/98 flex flex-col items-center justify-center gap-8">
           <button className="absolute top-6 right-6 text-white" onClick={() => setMobileMenuOpen(false)}>
             <X className="w-8 h-8" />
           </button>
