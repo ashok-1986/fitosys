@@ -32,8 +32,8 @@ export async function GET() {
       totalRevenueResult,
       mrrResult,
     ] = await Promise.all([
-      adminSupabase.from("coaches").select("id, full_name, email").eq("id", coachId).single(),
-      adminSupabase.from("programs").select("*").eq("coach_id", coachId).eq("status", "active").limit(5),
+      adminSupabase.from("coaches").select("id, full_name, email").eq("id", coachId).maybeSingle(),
+      adminSupabase.from("programs").select("*").eq("coach_id", coachId).eq("is_active", true).limit(5),
       adminSupabase.from("clients").select("id", { count: "exact", head: true }).eq("coach_id", coachId).eq("status", "active"),
       adminSupabase.from("enrollments").select(`id, end_date, clients (full_name), programs (name)`).eq("coach_id", coachId).eq("status", "active").gte("end_date", today).lte("end_date", new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]),
       adminSupabase.from("checkins").select(`id, energy_score, sessions_completed, check_date, clients (full_name)`).eq("coach_id", coachId).order("check_date", { ascending: false }).limit(10),
@@ -42,6 +42,26 @@ export async function GET() {
       adminSupabase.from("payments").select("amount").eq("coach_id", coachId).eq("gateway_payment_status", "captured"),
       adminSupabase.from("payments").select("amount").eq("coach_id", coachId).eq("gateway_payment_status", "captured").gte("paid_at", new Date(now.getFullYear(), now.getMonth(), 1).toISOString()).lt("paid_at", new Date(now.getFullYear(), now.getMonth() + 1, 1).toISOString()),
     ]);
+
+    // Check for coach profile
+    if (!coachResult.data) {
+      console.warn(`[Dashboard API] Coach profile not found for ID: ${coachId}`);
+      // return empty state if coach profile is missing but user is authed
+      return NextResponse.json({
+        coach: { id: coachId, full_name: "Coach", email: user.email || "" },
+        stats: { active_clients: 0, total_programs: 0, renewals_due: 0, response_rate: 0, total_revenue: 0, mrr: 0 },
+        programs: [],
+        renewals: [],
+        recent_updates: [],
+        chart_data: { week: [], average: 0 },
+        pending_tasks: [],
+        ai_summary: null,
+      });
+    }
+
+    if (programsResult.error) {
+      console.error("[Dashboard API] Programs query error:", programsResult.error);
+    }
 
     // Calculate revenue
     const totalRevenue = totalRevenueResult.data?.reduce((sum, p) => sum + p.amount, 0) || 0;
