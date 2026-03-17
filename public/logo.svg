@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 64" fill="none">
   <!-- Angular arrow/chevron icon -->
-  <polygon points="4,44 20,16 48,16 40,32 48,48 20,48" fill="#F20000"/>
+  <polygon points="4,44 20,16 48,16 40,32 48,48 20,48" fill="#E8001D"/>
   <!-- FITO text - bold italic -->
-  <text x="58" y="46" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-style="italic" font-size="40" fill="#F20000" letter-spacing="1">FITO</text>
+  <text x="58" y="46" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-style="italic" font-size="40" fill="#E8001D" letter-spacing="1">FITO</text>
   <!-- sys text - bold italic dark -->
   <text x="185" y="46" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-style="italic" font-size="40" fill="#1A1A1A" letter-spacing="1">sys</text>
 </svg>

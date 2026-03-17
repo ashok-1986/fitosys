@@ -49,7 +49,7 @@ export function NavBar({ title, back, backHref, action, onAction, transparent }:
         {action && (
           <button 
             onClick={onAction}
-            className="text-[#F20000] text-[15px] font-medium font-sans hover:opacity-80 transition-opacity"
+            className="text-[#E8001D] text-[15px] font-medium font-sans hover:opacity-80 transition-opacity"
           >
             {action}
           </button>
@@ -86,7 +86,7 @@ export function TabBar({ tabs }: TabBarProps) {
             href={tab.href}
             className={cn(
               "flex flex-col items-center gap-1 min-w-[64px] transition-colors duration-200",
-              isActive ? "text-[#F20000]" : "text-white/40 hover:text-white/70"
+              isActive ? "text-[#E8001D]" : "text-white/40 hover:text-white/70"
             )}
           >
             <div className="text-[22px] flex items-center justify-center h-7 w-7" aria-hidden="true">

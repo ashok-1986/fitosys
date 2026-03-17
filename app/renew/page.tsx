@@ -189,7 +189,7 @@ function RenewalPaymentButton({ orderId, enrollmentId, amount, currency }: Renew
                 order_id: orderId,
                 name: "Fitosys",
                 description: "Program Renewal",
-                theme: { color: "#F20000" },
+                theme: { color: "#E8001D" },
                 handler: async (response: any) => {
                     try {
                         const verifyRes = await fetch("/api/payments/verify", {

@@ -53,8 +53,8 @@ export default async function ClientDetailScreen({ params }: { params: { id: str
       <div 
         className="mx-4 mt-2 mb-6 rounded-[20px] p-5 border transition-colors"
         style={{ 
-          background: risk >= 4 ? `linear-gradient(135deg, #F2000018, #1C1C1E)` : `linear-gradient(135deg, #34C75918, #1C1C1E)`,
-          borderColor: risk >= 4 ? '#F2000033' : '#34C75933'
+          background: risk >= 4 ? `linear-gradient(135deg, #E8001D18, #1C1C1E)` : `linear-gradient(135deg, #34C75918, #1C1C1E)`,
+          borderColor: risk >= 4 ? '#E8001D33' : '#34C75933'
         }}
       >
         <div className="flex gap-4 items-center">
@@ -63,7 +63,7 @@ export default async function ClientDetailScreen({ params }: { params: { id: str
             <h2 className="text-xl font-bold font-sans">{profile.full_name}</h2>
             <p className="text-[13px] text-white/60 font-sans mt-0.5">{profile.program}</p>
             <div className="flex flex-wrap gap-2 mt-2">
-              {risk >= 4 && <Badge label="⚠ High Risk" color="#F20000" />}
+              {risk >= 4 && <Badge label="⚠ High Risk" color="#E8001D" />}
               {profile.daysLeft <= 14 && <Badge label={`${profile.daysLeft} days left`} color="#FF9F0A" />}
               {profile.status === 'trial' && <Badge label="Trial" color="#0A84FF" />}
             </div>
@@ -72,8 +72,8 @@ export default async function ClientDetailScreen({ params }: { params: { id: str
 
         {/* ── AI Insight ── */}
         {(risk >= 4 || profile.daysLeft <= 7) && (
-          <div className="mt-5 p-3.5 rounded-xl border border-[#F20000]/20 bg-[#F20000]/5">
-            <p className="text-xs text-[#F20000] font-bold mb-1.5 font-sans tracking-wide">🤖 AI INSIGHT</p>
+          <div className="mt-5 p-3.5 rounded-xl border border-[#E8001D]/20 bg-[#E8001D]/5">
+            <p className="text-xs text-[#E8001D] font-bold mb-1.5 font-sans tracking-wide">🤖 AI INSIGHT</p>
             <p className="text-[13px] text-white/70 leading-relaxed font-sans">
               {profile.daysLeft <= 7 
                 ? `${profile.full_name}'s program ends in ${profile.daysLeft} days. Send a renewal link today.` 
@@ -87,7 +87,7 @@ export default async function ClientDetailScreen({ params }: { params: { id: str
       <div className="grid grid-cols-3 gap-2 px-4 mb-8 mt-2">
         <div className="bg-[#1C1C1E] border border-white/10 rounded-xl p-3 text-center flex flex-col items-center justify-center h-24">
           <p className="text-xl font-bold text-white font-barlow tracking-wide">
-            {energy > 0 ? <span className={energy <= 5 ? "text-[#F20000]" : "text-[#34C759]"}>{energy}</span> : "-"}
+            {energy > 0 ? <span className={energy <= 5 ? "text-[#E8001D]" : "text-[#34C759]"}>{energy}</span> : "-"}
             <span className="text-sm text-white/40">/10</span>
           </p>
           <p className="text-[11px] text-white/40 font-sans mt-1 uppercase tracking-wider font-semibold">Energy</p>
@@ -121,7 +121,7 @@ export default async function ClientDetailScreen({ params }: { params: { id: str
             const isOrange = v > 4 && v <= 6;
             const isGreen = v > 6;
             const isEmpty = v === 0;
-            const color = isRed ? "#F20000" : isOrange ? "#FF9F0A" : isGreen ? "#34C759" : "#333333";
+            const color = isRed ? "#E8001D" : isOrange ? "#FF9F0A" : isGreen ? "#34C759" : "#333333";
             
             return (
               <div key={i} className="flex-1 flex flex-col items-center gap-2 h-full justify-end">
@@ -162,7 +162,7 @@ export default async function ClientDetailScreen({ params }: { params: { id: str
 
       {/* ── Action Buttons ── */}
       <div className="px-4 flex gap-2.5">
-        <button className="flex-1 bg-[#F20000] hover:bg-[#C20000] border-none rounded-xl p-[14px] text-white text-sm font-bold font-barlow tracking-widest uppercase transition-colors active:scale-[0.98]">
+        <button className="flex-1 bg-[#E8001D] hover:bg-[#C20000] border-none rounded-xl p-[14px] text-white text-sm font-bold font-barlow tracking-widest uppercase transition-colors active:scale-[0.98]">
           Send Renewal
         </button>
         <Link 
