@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -584,8 +585,14 @@ export default function LandingPage() {
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-background/92 backdrop-blur-md border-b border-white/5" : "bg-transparent"}`}>
         <div className="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <div className="w-7 h-7 bg-[#E8001D]" style={{ clipPath: "polygon(0 0, 70% 0, 100% 100%, 30% 100%)" }} />
-            <span className="font-display font-black text-2xl tracking-tight text-white">FITO<span className="text-[#E8001D]">SYS</span></span>
+            <Image
+              src="/logo.png"
+              alt="Fitosys Logo"
+              width={140}
+              height={32}
+              className="h-8 w-auto object-contain"
+              priority
+            />
           </Link>
           <div className="hidden md:flex items-center gap-8 text-sm font-semibold text-[#A0A0A0]">
             <Link href="#features" className="hover:text-white transition-colors">Features</Link>
@@ -608,11 +615,11 @@ export default function LandingPage() {
           <button className="absolute top-6 right-6 text-white" onClick={() => setMobileMenuOpen(false)}>
             <X className="w-8 h-8" />
           </button>
-          <Link href="#features" className="font-display font-black text-3xl uppercase text-white" onClick={() => setMobileMenuOpen(false)}>Features</Link>
-          <Link href="#how" className="font-display font-black text-3xl uppercase text-white" onClick={() => setMobileMenuOpen(false)}>How It Works</Link>
-          <Link href="#pricing" className="font-display font-black text-3xl uppercase text-white" onClick={() => setMobileMenuOpen(false)}>Pricing</Link>
-          <Link href="#about" className="font-display font-black text-3xl uppercase text-white" onClick={() => setMobileMenuOpen(false)}>About</Link>
-          <Link href="#contact" className="font-display font-black text-3xl uppercase text-[#E8001D]" onClick={() => setMobileMenuOpen(false)}>Contact</Link>
+          <Link href="#features" className="font-sans font-bold text-3xl uppercase text-white" onClick={() => setMobileMenuOpen(false)}>Features</Link>
+          <Link href="#how" className="font-sans font-bold text-3xl uppercase text-white" onClick={() => setMobileMenuOpen(false)}>How It Works</Link>
+          <Link href="#pricing" className="font-sans font-bold text-3xl uppercase text-white" onClick={() => setMobileMenuOpen(false)}>Pricing</Link>
+          <Link href="#about" className="font-sans font-bold text-3xl uppercase text-white" onClick={() => setMobileMenuOpen(false)}>About</Link>
+          <Link href="#contact" className="font-sans font-bold text-3xl uppercase text-[#E8001D]" onClick={() => setMobileMenuOpen(false)}>Contact</Link>
         </div>
       )}
 
