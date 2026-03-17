@@ -136,7 +136,7 @@ function HeroSection() {
             <div data-hero-cta className="flex flex-col items-start gap-4 mb-14">
               <div className="flex flex-wrap gap-4">
                 <Button asChild size="lg" className="bg-[#E8001D] hover:bg-[#C20000] text-white px-8 h-14 text-[13px] font-bold uppercase tracking-wider border-2 border-[#E8001D]">
-                  <Link href="/join">Start Free</Link>
+                  <Link href="/signup">Start Free</Link>
                 </Button>
                 <Button asChild variant="outline" size="lg" className="bg-transparent hover:bg-white/5 text-white px-8 h-14 text-[13px] font-bold uppercase tracking-wider border-2 border-white/15">
                   <Link href="/demo">View Demo</Link>
@@ -711,7 +711,7 @@ function PricingSection() {
             </div>
 
             <Button asChild size="lg" className="w-full bg-[#E8001D] hover:bg-[#C20000] text-white h-16 text-sm font-black uppercase tracking-widest">
-              <Link href="/join">Get Started - First 5 Clients Free</Link>
+              <Link href="/signup">Get Started - First 5 Clients Free</Link>
             </Button>
             <p className="text-center text-[10px] text-[#444] mt-6 uppercase tracking-widest">Pricing locked for life for beta members</p>
           </div>
@@ -802,7 +802,7 @@ export default function LandingPage() {
             <Link href="#pricing" className="hover:text-white transition-colors">Pricing</Link>
             <Link href="#about" className="hover:text-white transition-colors">About</Link>
             <Button asChild className="bg-[#E8001D] hover:bg-[#C20000] text-white rounded-full font-bold px-6 border-0 h-10 text-[11px] tracking-wider uppercase">
-              <Link href="/join">Start Free</Link>
+              <Link href="/signup">Start Free</Link>
             </Button>
           </div>
           <button className="md:hidden text-white" onClick={() => setMobileMenuOpen(true)}>
@@ -1147,7 +1147,7 @@ export default function LandingPage() {
                   ))}
                 </ul>
                 <Button asChild className={`w-full ${plan.featured ? "bg-[#E8001D] hover:bg-[#C20000] text-white" : "bg-transparent border border-[#222222] text-[#A0A0A0] hover:border-white hover:text-white"}`}>
-                  <Link href="/join">Start Free</Link>
+                  <Link href="/signup">Start Free</Link>
                 </Button>
               </div>
             ))}
@@ -1270,7 +1270,7 @@ export default function LandingPage() {
               <p className="text-white/70 text-sm mt-3 font-light">No card needed · First 5 clients free · Setup in 10 minutes</p>
             </div>
             <Button asChild size="lg" className="bg-white text-[#E8001D] hover:bg-white/90 text-white px-10 h-14 text-sm font-black uppercase tracking-wider border-2 border-white">
-              <Link href="/join">Start Free</Link>
+              <Link href="/signup">Start Free</Link>
             </Button>
           </div>
         </div>

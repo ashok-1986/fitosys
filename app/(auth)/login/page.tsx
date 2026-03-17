@@ -37,16 +37,17 @@ export default function LoginPage() {
     };
 
     return (
-        <Card className="border-border/50 shadow-lg">
-            <CardHeader className="space-y-1 text-center">
+        <Card className="border-white/5 bg-[#111111] shadow-2xl overflow-hidden relative">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-[#E8001D]" />
+            <CardHeader className="space-y-1 text-center pt-10">
                 {/* Logo */}
-                <div className="flex justify-center mb-4">
+                <div className="flex justify-center mb-6">
                     <Image
-                        src="/fitosys-logo.png"
+                        src="/logov2.png"
                         alt="Fitosys"
-                        width={120}
-                        height={40}
-                        className="object-contain"
+                        width={140}
+                        height={32}
+                        className="object-contain brightness-0 invert"
                         priority
                     />
                 </div>
@@ -106,7 +107,7 @@ export default function LoginPage() {
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
+                        <Label htmlFor="email" className="text-[11px] font-bold uppercase tracking-widest text-[#A0A0A0]">Email</Label>
                         <Input
                             id="email"
                             name="email"
@@ -114,10 +115,11 @@ export default function LoginPage() {
                             placeholder="coach@example.com"
                             required
                             autoComplete="email"
+                            className="bg-white/5 border-white/10 focus:border-[#E8001D]/50 transition-all"
                         />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="password">Password</Label>
+                        <Label htmlFor="password" title="Password" className="text-[11px] font-bold uppercase tracking-widest text-[#A0A0A0]">Password</Label>
                         <div className="relative">
                             <Input
                                 id="password"
@@ -126,6 +128,7 @@ export default function LoginPage() {
                                 placeholder="••••••••"
                                 required
                                 autoComplete="current-password"
+                                className="bg-white/5 border-white/10 focus:border-[#E8001D]/50 transition-all"
                             />
                             <button
                                 type="button"

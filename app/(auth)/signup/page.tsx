@@ -59,16 +59,17 @@ export default function SignupPage() {
     };
 
     return (
-        <Card className="border-border/50 shadow-lg">
-            <CardHeader className="space-y-1 text-center">
+        <Card className="border-white/5 bg-[#111111] shadow-2xl overflow-hidden relative">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-[#E8001D]" />
+            <CardHeader className="space-y-1 text-center pt-10">
                 {/* Logo */}
-                <div className="flex justify-center mb-4">
+                <div className="flex justify-center mb-6">
                     <Image
-                        src="/fitosys-logo.png"
+                        src="/logov2.png"
                         alt="Fitosys"
-                        width={120}
-                        height={40}
-                        className="object-contain"
+                        width={140}
+                        height={32}
+                        className="object-contain brightness-0 invert"
                         priority
                     />
                 </div>
@@ -130,16 +131,17 @@ export default function SignupPage() {
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="fullName">Full Name</Label>
+                        <Label htmlFor="fullName" className="text-[11px] font-bold uppercase tracking-widest text-[#A0A0A0]">Full Name</Label>
                         <Input
                             id="fullName"
                             name="fullName"
                             placeholder="Priya Sharma"
                             required
+                            className="bg-white/5 border-white/10 focus:border-[#E8001D]/50 transition-all font-sans"
                         />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
+                        <Label htmlFor="email" className="text-[11px] font-bold uppercase tracking-widest text-[#A0A0A0]">Email</Label>
                         <Input
                             id="email"
                             name="email"
@@ -147,10 +149,11 @@ export default function SignupPage() {
                             placeholder="priya@example.com"
                             required
                             autoComplete="email"
+                            className="bg-white/5 border-white/10 focus:border-[#E8001D]/50 transition-all font-sans"
                         />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="password">Password</Label>
+                        <Label htmlFor="password" title="Password" className="text-[11px] font-bold uppercase tracking-widest text-[#A0A0A0]">Password</Label>
                         <div className="relative">
                             <Input
                                 id="password"
@@ -160,6 +163,7 @@ export default function SignupPage() {
                                 required
                                 minLength={8}
                                 autoComplete="new-password"
+                                className="bg-white/5 border-white/10 focus:border-[#E8001D]/50 transition-all font-sans"
                             />
                             <button
                                 type="button"
@@ -175,14 +179,14 @@ export default function SignupPage() {
                         </div>
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="country">Country</Label>
+                        <Label htmlFor="country" className="text-[11px] font-bold uppercase tracking-widest text-[#A0A0A0]">Country</Label>
                         <Select value={country} onValueChange={setCountry}>
-                            <SelectTrigger id="country">
+                            <SelectTrigger id="country" className="bg-white/5 border-white/10 focus:border-[#E8001D]/50 transition-all font-sans">
                                 <SelectValue placeholder="Select country" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="bg-[#111111] border-white/10">
                                 {COUNTRIES.map((c) => (
-                                    <SelectItem key={c.code} value={c.code}>
+                                    <SelectItem key={c.code} value={c.code} className="focus:bg-white/5 focus:text-white">
                                         {c.name}
                                     </SelectItem>
                                 ))}
@@ -190,9 +194,9 @@ export default function SignupPage() {
                         </Select>
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="whatsapp">WhatsApp Number</Label>
+                        <Label htmlFor="whatsapp" className="text-[11px] font-bold uppercase tracking-widest text-[#A0A0A0]">WhatsApp Number</Label>
                         <div className="flex gap-2">
-                            <div className="flex items-center px-3 bg-muted rounded-md text-sm text-muted-foreground min-w-[60px] justify-center">
+                            <div className="flex items-center px-3 bg-white/5 border border-white/10 rounded-md text-sm text-[#A0A0A0] min-w-[60px] justify-center font-sans">
                                 {selectedCountry?.dial}
                             </div>
                             <Input
@@ -201,7 +205,7 @@ export default function SignupPage() {
                                 type="tel"
                                 placeholder="9876543210"
                                 required
-                                className="flex-1"
+                                className="flex-1 bg-white/5 border-white/10 focus:border-[#E8001D]/50 transition-all font-sans"
                             />
                         </div>
                     </div>

@@ -26,7 +26,7 @@ export function IconSidebar({ notificationsCount = 0 }: IconSidebarProps) {
     { icon: LayoutDashboard, href: "/dashboard", label: "Dashboard" },
     { icon: Calendar, href: "/dashboard/calendar", label: "Calendar" },
     { icon: Users, href: "/dashboard/clients", label: "Clients", hasNotification: notificationsCount > 0 },
-    { icon: BarChart3, href: "/dashboard/analytics", label: "Analytics" },
+    { icon: BarChart3, href: "/dashboard/pulse", label: "Pulse" },
     { icon: FileText, href: "/dashboard/programs", label: "Programs" },
   ];
 
@@ -50,9 +50,9 @@ export function IconSidebar({ notificationsCount = 0 }: IconSidebarProps) {
       {/* Navigation */}
       <nav className="sb-nav">
         {navItems.map((item) => {
-          const isActive = pathname === item.href || 
+          const isActive = pathname === item.href ||
             (item.href !== "/dashboard" && pathname.startsWith(item.href));
-          
+
           return (
             <Link
               key={item.href}
@@ -69,7 +69,7 @@ export function IconSidebar({ notificationsCount = 0 }: IconSidebarProps) {
             </Link>
           );
         })}
-        
+
         {/* Add button */}
         <button
           className="sb-btn"
