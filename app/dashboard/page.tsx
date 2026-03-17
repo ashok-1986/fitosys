@@ -101,13 +101,13 @@ export default function DashboardPage() {
       <div className="left-col">
         <Calendar />
         <TaskOverview
-          tasks={data?.programs.map((program) => ({
+          tasks={data?.programs?.map((program) => ({
             id: program.id,
             name: program.name,
             icon: "onboarding" as const,
             clients: [],
             additionalCount: program.active_enrollments || 0,
-          }))}
+          })) || []}
         />
       </div>
 

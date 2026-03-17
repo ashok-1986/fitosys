@@ -68,20 +68,24 @@ const fetchDashboardData = async (): Promise<DashboardData> => {
 };
 
 export function useDashboard() {
-  const { 
-    data, 
-    isLoading: loading, 
-    error, 
-    refetch 
+  const {
+    data,
+    isLoading: loading,
+    error,
+    refetch
   } = useQuery<DashboardData, Error>({
     queryKey: ["dashboardData"],
     queryFn: fetchDashboardData,
+    staleTime: 30000, // 30 seconds
+    retry: 1,
   });
 
-  return { 
-    data, 
-    loading, 
-    error: error ? error.message : null, 
-    refetch 
+  console.log("[useDashboard] Query state:", { hasData: !!data, loading, hasError: !!error });
+
+  return {
+    data,
+    loading,
+    error: error ? error.message : null,
+    refetch
   };
 }

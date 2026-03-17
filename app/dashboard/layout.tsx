@@ -4,12 +4,37 @@ import { TabBar } from "@/components/ui/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Bell } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  let coachName = "Coach";
+  let coachInitials = "C";
+
+  if (user) {
+    const { data: coach } = await supabase
+      .from("coaches")
+      .select("full_name")
+      .eq("id", user.id)
+      .single();
+
+    if (coach?.full_name) {
+      coachName = coach.full_name.split(" ")[0];
+      coachInitials = coach.full_name
+        .split(" ")
+        .map((n: string) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2);
+    }
+  }
+
   return (
     <div className="shell">
       {/* Desktop icon sidebar */}
@@ -18,7 +43,7 @@ export default function DashboardLayout({
       {/* Main content area */}
       <main className="main">
         {/* Top bar with greeting */}
-        <Topbar coachName="Priya" coachInitials="PK" />
+        <Topbar coachName={coachName} coachInitials={coachInitials} />
 
         {/* Mobile header fallback (hidden on desktop) */}
         <header className="md:hidden sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-white/5 h-16 px-4 flex items-center justify-between">
