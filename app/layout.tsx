@@ -94,9 +94,12 @@ export default function RootLayout({
           Skip to main content
         </a>
         <Providers>
+          <Grain />
+          <Nav />
           <main id="main-content">
             {children}
           </main>
+          <Footer />
         </Providers>
       </body>
     </html>

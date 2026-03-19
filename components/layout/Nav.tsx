@@ -16,7 +16,7 @@ export function Nav() {
 
     return (
         <nav
-            className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled ? "bg-[var(--black)]/80 backdrop-blur-md border-b border-[var(--border)] py-3" : "bg-transparent py-5"
+            className={`fixed top-0 inset-x-0 z-[100] transition-all duration-300 ${scrolled ? "bg-[var(--black)]/80 backdrop-blur-md border-b border-[var(--border)] py-3" : "bg-transparent py-5"
                 }`}
         >
             <div className="max-w-[1400px] mx-auto px-4 flex items-center justify-between">
