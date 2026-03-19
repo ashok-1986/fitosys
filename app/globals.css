@@ -277,6 +277,7 @@
   height: 100vh;
   background: #0A0A0A;
   overflow: hidden;
+  font-size: 13px;
 }
 
 /* Sidebar (Icon Navigation) */
@@ -472,9 +473,7 @@
 }
 
 /* Content Grid */
-.content {
-  flex: 1;
-  overflow-y: auto;
+.dashboard-grid {
   padding: 16px 20px 20px;
   display: grid;
   grid-template-columns: 320px 1fr;
@@ -483,11 +482,11 @@
   align-content: start;
 }
 
-.content::-webkit-scrollbar {
+.scroll-area::-webkit-scrollbar {
   width: 3px;
 }
 
-.content::-webkit-scrollbar-thumb {
+.scroll-area::-webkit-scrollbar-thumb {
   background: #212121;
   border-radius: 4px;
 }

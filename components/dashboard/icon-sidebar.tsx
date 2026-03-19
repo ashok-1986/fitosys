@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import Image from "next/image";
+
 import {
   LayoutDashboard,
   Calendar,
@@ -44,7 +44,7 @@ export function IconSidebar({ notificationsCount = 0 }: IconSidebarProps) {
     <aside className="sidebar">
       {/* Logo */}
       <div className="sb-logo">
-        <Image src="/logov2.png" alt="Fitosys Logo" width={34} height={34} />
+        <div className="sb-mark"><span>F</span></div>
       </div>
 
       {/* Navigation */}

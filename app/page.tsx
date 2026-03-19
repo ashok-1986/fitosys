@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 
 import Link from "next/link";
@@ -28,7 +29,8 @@ import {
   PlayCircle,
   Menu,
   Check,
-  X
+  X,
+  ChevronDown
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -530,6 +532,89 @@ function PainTicker() {
 }
 
 
+/* - FAQ SECTION & SCHEMA - */
+const faqs = [
+  {
+    question: "Do my clients need to download an app?",
+    answer: "No. Your clients interact entirely through WhatsApp, which they already have installed. All check-ins, reminders, and onboarding messages feel like a natural conversation."
+  },
+  {
+    question: "Is this officially approved by WhatsApp?",
+    answer: "Yes, Fitosys uses the official WhatsApp Business API provided by Meta. Your account is completely safe from bans as long as you adhere to standard commerce policies."
+  },
+  {
+    question: "How do payments and invoices work?",
+    answer: "You connect your own Razorpay account. Payments go directly to your bank (we take 0% cut). Upon successful payment, Fitosys automatically generates and emails a GST-compliant invoice."
+  },
+  {
+    question: "Do you charge extra for WhatsApp messages?",
+    answer: "Standard WhatsApp API rates apply (approx ₹1.09 per marketing/outbound message). For 30 clients on a weekly check-in schedule, the variable cost is roughly ₹250-300 per month."
+  },
+  {
+    question: "Can I customize the check-in questions?",
+    answer: "Yes. On Pro and Studio plans, you can configure completely custom check-in questions, schedule different templates for different days, and set up program-specific flows."
+  }
+];
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map(faq => ({
+    "@type": "Question",
+    "name": faq.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.answer
+    }
+  }))
+};
+
+function FAQSection() {
+  const [openIdx, setOpenIdx] = useState<number | null>(0);
+
+  return (
+    <section id="faq" className="bg-[#0A0A0A] py-32 relative">
+      <div className="max-w-[1000px] mx-auto px-4">
+        <div className="text-center mb-16">
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="w-10 h-px bg-[#E8001D]" />
+            <span className="text-[11px] font-bold tracking-widest uppercase text-[#E8001D]">FAQ</span>
+            <div className="w-10 h-px bg-[#E8001D]" />
+          </div>
+          <h2 className="text-3xl md:text-5xl font-black text-white leading-tight">
+            COMMON <span className="text-[#E8001D]">QUESTIONS.</span>
+          </h2>
+        </div>
+
+        <div className="space-y-4">
+          {faqs.map((faq, i) => {
+            const isOpen = openIdx === i;
+            return (
+              <div key={i} className={`bg-[#111111] border ${isOpen ? 'border-[#E8001D]/40' : 'border-[#222222]'} transition-colors duration-300`}>
+                <button
+                  className="w-full flex items-center justify-between px-8 py-6 text-left"
+                  onClick={() => setOpenIdx(isOpen ? null : i)}
+                >
+                  <span className={`text-base font-bold ${isOpen ? 'text-white' : 'text-[#A0A0A0]'} transition-colors`}>{faq.question}</span>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${isOpen ? 'bg-[#E8001D] text-white rotate-180' : 'bg-[#141414] text-[#555555]'}`}>
+                    <ChevronDown className="w-4 h-4" />
+                  </div>
+                </button>
+                <div className={`overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'}`}>
+                  <div className="px-8 pb-8 pt-0 text-sm text-[#A0A0A0] leading-relaxed">
+                    {faq.answer}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
 /* - MAIN LANDING PAGE - */
 export default function LandingPage() {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -587,6 +672,11 @@ export default function LandingPage() {
 
   return (
     <main className="min-h-screen bg-[#0A0A0A] font-sans selection:bg-[#E8001D]/30 selection:text-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+
       {/* Hero Section */}
       <HeroSection />
 
@@ -1067,7 +1157,10 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Section 10: CTA Banner */}
+      {/* Section 10: FAQs */}
+      <FAQSection />
+
+      {/* Section 11: CTA Banner */}
       <section id="cta-banner" className="bg-[#E8001D] py-20 md:py-28 relative overflow-hidden">
         <div className="absolute inset-0" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
         <div className="max-w-[1400px] mx-auto px-4 relative z-10">
@@ -1105,7 +1198,9 @@ export default function LandingPage() {
 
               <div className="space-y-4">
                 {[
-                  { icon: Heart, label: "Email", value: "hello@fitosys.com", href: "mailto:hello@fitosys.com" },
+                  { icon: MessageCircle, label: "WhatsApp Support", value: "+91 98765 43210", href: "#" },
+                  { icon: Heart, label: "Email", value: "support@fitosys.com", href: "mailto:support@fitosys.com" },
+                  { icon: ShieldCheck, label: "Data Security", value: "Encrypted & Private", href: "/privacy" },
                 ].map((item, i) => (
                   <a key={i} href={item.href} className="group flex items-center gap-4 p-5 bg-[#111111] border border-[#222222] hover:border-[#E8001D] transition-colors">
                     <div className="w-10 h-10 bg-[#E8001D]/10 border border-[#E8001D]/20 flex items-center justify-center">

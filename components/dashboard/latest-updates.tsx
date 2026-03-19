@@ -82,7 +82,7 @@ export function LatestUpdates({
             </div>
             <div className="upd-body">
               <div className="upd-meta">
-                <strong>{update.clientName}</strong> in {update.programName}
+                <b>{update.clientName}</b> in {update.programName}
               </div>
               <div className="upd-line">{update.message}</div>
             </div>
@@ -95,10 +95,10 @@ export function LatestUpdates({
         {tags.map((tag) => (
           <div key={tag.id} className="tag-pill">
             <div className="tag-top">
-              <span className="tag-name">{tag.name}</span>
+              <div className="tag-name">{tag.name}</div>
               <ChevronDown className="h-2 w-2" />
             </div>
-            <span className="tag-desc">{tag.description}</span>
+            <div className="tag-desc">{tag.description}</div>
           </div>
         ))}
       </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, Settings, Bell, User, Layout, ExternalLink } from "lucide-react";
+import { Search, User, Layout, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { useState, useMemo, useRef, useEffect } from "react";
 import { useDashboard } from "@/hooks/use-dashboard";
@@ -66,21 +66,18 @@ export function Topbar({ coachName = "Coach", coachInitials = "C" }: TopbarProps
         <p>Check your daily coaching insights · {today}</p>
       </div>
 
-      <div className="topbar-search" ref={searchRef}>
-        <div className="relative w-full flex items-center">
-          <Search className="absolute left-3 h-3.5 w-3.5 text-muted-foreground" />
-          <input
-            type="text"
-            className="pl-9"
-            placeholder="Search clients, programs…"
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              setShowResults(true);
-            }}
-            onFocus={() => setShowResults(true)}
-          />
-        </div>
+      <div className="topbar-search relative" ref={searchRef}>
+        <Search className="h-3.5 w-3.5 text-[#444444]" />
+        <input
+          type="text"
+          placeholder="Search clients, programs…"
+          value={searchQuery}
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+            setShowResults(true);
+          }}
+          onFocus={() => setShowResults(true)}
+        />
 
         {/* Search Results Dropdown */}
         {showResults && searchQuery.trim() && (
@@ -116,23 +113,8 @@ export function Topbar({ coachName = "Coach", coachInitials = "C" }: TopbarProps
         )}
       </div>
 
-      <div className="flex items-center gap-4">
-        <button className="p-2 hover:bg-white/5 rounded-full transition-colors relative">
-          <Bell className="h-4 w-4 text-[#A0A0A0]" />
-          <div className="absolute top-2 right-2 w-1.5 h-1.5 bg-brand rounded-full border border-black" />
-        </button>
-
-        <Link
-          href="/dashboard/settings"
-          className="p-2 hover:bg-white/5 rounded-full transition-colors"
-          title="Settings"
-        >
-          <Settings className="h-4 w-4 text-[#A0A0A0]" />
-        </Link>
-
-        <div className="topbar-avatar">
-          {coachInitials}
-        </div>
+      <div className="topbar-avatar">
+        {coachInitials}
       </div>
     </div>
   );

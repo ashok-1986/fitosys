@@ -7,7 +7,6 @@ import { LatestUpdates } from "@/components/dashboard/latest-updates";
 import { PillBarChart } from "@/components/dashboard/pill-bar-chart";
 import { useDashboard } from "@/hooks/use-dashboard";
 import { Loader2, TrendingUp, Users, RefreshCw, IndianRupee } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat("en-IN", {
@@ -52,49 +51,49 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="content">
+    <div className="dashboard-grid">
       {/* KPI Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 col-span-2">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold font-display">{formatCurrency(data?.stats.total_revenue || 0)}</div>
-            <p className="text-xs text-muted-foreground">All time</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
-            <IndianRupee className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold font-display">{formatCurrency(data?.stats.mrr || 0)}</div>
-            <p className="text-xs text-muted-foreground">This month</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Clients</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold font-display">+{data?.stats.active_clients || 0}</div>
-            <p className="text-xs text-muted-foreground">Currently enrolled</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Renewals Due</CardTitle>
-            <RefreshCw className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold font-display">{data?.stats.renewals_due || 0}</div>
-            <p className="text-xs text-muted-foreground">In the next 7 days</p>
-          </CardContent>
-        </Card>
+        <div className="card p-5 flex flex-col gap-3">
+          <div className="flex flex-row items-center justify-between">
+            <div className="text-[13px] font-semibold text-white">Total Revenue</div>
+            <TrendingUp className="h-4 w-4 text-[#888888]" />
+          </div>
+          <div>
+            <div className="text-2xl font-bold font-sans text-white">{formatCurrency(data?.stats.total_revenue || 0)}</div>
+            <p className="text-xs text-[#888888] font-sans mt-0.5">All time</p>
+          </div>
+        </div>
+        <div className="card p-5 flex flex-col gap-3">
+          <div className="flex flex-row items-center justify-between">
+            <div className="text-[13px] font-semibold text-white">Monthly Revenue</div>
+            <IndianRupee className="h-4 w-4 text-[#888888]" />
+          </div>
+          <div>
+            <div className="text-2xl font-bold font-sans text-white">{formatCurrency(data?.stats.mrr || 0)}</div>
+            <p className="text-xs text-[#888888] font-sans mt-0.5">This month</p>
+          </div>
+        </div>
+        <div className="card p-5 flex flex-col gap-3">
+          <div className="flex flex-row items-center justify-between">
+            <div className="text-[13px] font-semibold text-white">Active Clients</div>
+            <Users className="h-4 w-4 text-[#888888]" />
+          </div>
+          <div>
+            <div className="text-2xl font-bold font-sans text-white">+{data?.stats.active_clients || 0}</div>
+            <p className="text-xs text-[#888888] font-sans mt-0.5">Currently enrolled</p>
+          </div>
+        </div>
+        <div className="card p-5 flex flex-col gap-3">
+          <div className="flex flex-row items-center justify-between">
+            <div className="text-[13px] font-semibold text-white">Renewals Due</div>
+            <RefreshCw className="h-4 w-4 text-[#888888]" />
+          </div>
+          <div>
+            <div className="text-2xl font-bold font-sans text-white">{data?.stats.renewals_due || 0}</div>
+            <p className="text-xs text-[#888888] font-sans mt-0.5">In the next 7 days</p>
+          </div>
+        </div>
       </div>
 
       {/* Left column - Calendar + Task Overview */}
