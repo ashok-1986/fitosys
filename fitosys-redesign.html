@@ -1,0 +1,1857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Fitosys — Redesign Reference · Master Prompt + Component Architecture</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500&family=Urbanist:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+/* ─────────────────────────────────────────
+   FITOSYS DESIGN SYSTEM — AUTHORITATIVE
+   Typography Spec + Brand Identity v2
+   Barlow Condensed max 500. Urbanist max 700 on CTAs only.
+───────────────────────────────────────── */
+:root {
+  /* Brand */
+  --red: #E8001D;
+  --red-dim: rgba(232,0,29,0.08);
+  --red-border: rgba(232,0,29,0.2);
+  --black: #0A0A0A;
+  --surface: #111111;
+  --surface2: #161616;
+  --border: rgba(255,255,255,0.06);
+  --white: #FFFFFF;
+  --grey: #888888;
+  --grey-mid: #444444;
+
+  /* Type scale — 8 levels only. No deviations. */
+  --fd: 'Barlow Condensed', sans-serif;
+  --fb: 'Urbanist', sans-serif;
+
+  --fs-d1: 80px;   /* Hero H1 */
+  --fs-d2: 56px;   /* Section heads */
+  --fs-d3: 44px;   /* Sub-section titles */
+  --fs-d4: 32px;   /* Feature card titles */
+  --fs-d5: 48px;   /* Price figures + stat numbers */
+  --fs-b1: 20px;   /* Lead paragraph */
+  --fs-b2: 17px;   /* Standard body */
+  --fs-b3: 15px;   /* Card desc / secondary */
+  --fs-b4: 13px;   /* Labels / nav / tags */
+  --fs-b5: 12px;   /* Fine print */
+
+  --lh-display: 1.0;
+  --lh-heading: 1.1;
+  --lh-body: 1.7;
+  --ls-display: 0.02em;
+  --ls-caps: 0.08em;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--fb);
+  font-weight: 400;
+  font-size: var(--fs-b2);
+  line-height: var(--lh-body);
+  overflow-x: hidden;
+}
+
+/* Grain */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.025; pointer-events: none; z-index: 0;
+}
+
+/* ─ NAV ─ */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 48px;
+  background: rgba(10,10,10,0.9);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: var(--fd);
+  font-weight: 500; font-size: 20px;
+  letter-spacing: var(--ls-display);
+  text-transform: uppercase;
+  color: var(--white);
+  text-decoration: none;
+}
+.nav-logo span { color: var(--red); }
+.nav-links {
+  display: flex; align-items: center; gap: 32px;
+  list-style: none;
+}
+.nav-links a {
+  font-family: var(--fb);
+  font-weight: 500; font-size: var(--fs-b4);
+  text-transform: uppercase; letter-spacing: var(--ls-caps);
+  color: var(--grey); text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--white); }
+.nav-cta {
+  font-family: var(--fb);
+  font-weight: 700; font-size: var(--fs-b4);
+  text-transform: uppercase; letter-spacing: 0.04em;
+  background: var(--red); color: var(--white);
+  padding: 10px 24px; border-radius: 2px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.nav-cta:hover { background: #C20000; }
+
+/* ─ GLOBAL LAYOUT ─ */
+.section {
+  position: relative; z-index: 1;
+  max-width: 1400px; margin: 0 auto;
+  padding: 120px 48px;
+}
+.divider {
+  height: 1px; z-index: 1; position: relative;
+  background: linear-gradient(90deg, transparent, var(--border-subtle, rgba(255,255,255,0.06)), transparent);
+}
+
+/* Eyebrow label pattern */
+.eyebrow {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 28px;
+}
+.eyebrow::before {
+  content: ''; display: block;
+  width: 40px; height: 1px; background: var(--red);
+  flex-shrink: 0;
+}
+.eyebrow-text {
+  font-family: var(--fb);
+  font-weight: 500; font-size: var(--fs-b4);
+  text-transform: uppercase; letter-spacing: var(--ls-caps);
+  color: var(--red);
+}
+
+/* ─ HERO ─ */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 80px;
+  padding-top: 144px;
+  padding-bottom: 80px;
+  position: relative; z-index: 1;
+  max-width: 1400px; margin: 0 auto;
+  padding-left: 48px; padding-right: 48px;
+}
+
+/* Grid background — subtle, not overpowering */
+.hero-grid-bg {
+  position: fixed; inset: 0; z-index: 0;
+  background-image:
+    linear-gradient(rgba(232,0,29,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232,0,29,0.03) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 40%, black 20%, transparent 80%);
+  pointer-events: none;
+}
+.hero-glow {
+  position: absolute;
+  top: -300px; left: 50%; transform: translateX(-50%);
+  width: 900px; height: 600px;
+  background: radial-gradient(ellipse, rgba(232,0,29,0.07) 0%, transparent 65%);
+  pointer-events: none; z-index: 0;
+}
+
+.hero-left { position: relative; z-index: 1; }
+
+/* D1 — Hero H1 */
+.h1 {
+  font-family: var(--fd);
+  font-weight: 500;
+  font-size: var(--fs-d1);
+  line-height: var(--lh-display);
+  letter-spacing: var(--ls-display);
+  text-transform: uppercase;
+  margin-bottom: 28px;
+}
+.h1 .outline {
+  -webkit-text-stroke: 1.5px rgba(255,255,255,0.2);
+  color: transparent;
+}
+.h1 .accent { color: var(--red); }
+
+/* B1 — Lead paragraph */
+.lead {
+  font-family: var(--fb);
+  font-weight: 400;
+  font-size: var(--fs-b1);
+  line-height: var(--lh-body);
+  color: var(--grey);
+  max-width: 480px;
+  margin-bottom: 40px;
+}
+.lead strong { color: var(--white); font-weight: 500; }
+
+.hero-ctas {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 60px;
+}
+.btn-primary {
+  font-family: var(--fb);
+  font-weight: 700; font-size: var(--fs-b4);
+  text-transform: uppercase; letter-spacing: 0.04em;
+  background: var(--red); color: var(--white);
+  padding: 14px 32px; border-radius: 2px;
+  text-decoration: none; border: 2px solid var(--red);
+  transition: background 0.2s;
+}
+.btn-primary:hover { background: #C20000; border-color: #C20000; }
+.btn-secondary {
+  font-family: var(--fb);
+  font-weight: 500; font-size: var(--fs-b4);
+  text-transform: uppercase; letter-spacing: 0.04em;
+  background: transparent; color: var(--white);
+  padding: 14px 32px; border-radius: 2px;
+  text-decoration: none; border: 2px solid rgba(255,255,255,0.12);
+  transition: border-color 0.2s;
+}
+.btn-secondary:hover { border-color: rgba(255,255,255,0.4); }
+.cta-note {
+  font-family: var(--fb);
+  font-size: var(--fs-b5); color: var(--grey);
+}
+
+/* D5 + B4 — Stat pair rule */
+.stat-strip {
+  display: flex; gap: 48px;
+  padding-top: 40px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.stat-item {}
+.stat-num {
+  font-family: var(--fd);
+  font-weight: 500;
+  font-size: 36px; /* D5 variant for hero strip */
+  line-height: var(--lh-display);
+  letter-spacing: var(--ls-display);
+  color: var(--red);
+  display: block;
+}
+.stat-label {
+  font-family: var(--fb);
+  font-weight: 400;
+  font-size: var(--fs-b4); /* 13px */
+  color: var(--grey);
+  display: block;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* Hero right — product visual */
+.hero-right {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; align-items: center; gap: 0;
+}
+
+/* Tab switcher */
+.tab-row {
+  display: flex; gap: 2px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 40px; padding: 4px;
+  margin-bottom: 16px; z-index: 2; position: relative;
+}
+.tab-btn {
+  font-family: var(--fb);
+  font-weight: 700; font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  padding: 8px 20px; border-radius: 36px;
+  border: none; cursor: pointer;
+  transition: all 0.25s;
+}
+.tab-btn.wa { background: #25D366; color: white; }
+.tab-btn.db { background: transparent; color: var(--grey); }
+.tab-btn.db:hover { color: var(--white); }
+
+/* Phone frame */
+.phone-frame {
+  width: 300px;
+  background: #1A1A1A;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 40px;
+  padding: 14px;
+  box-shadow: 0 48px 96px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.03);
+}
+.phone-inner {
+  border-radius: 30px;
+  overflow: hidden;
+  min-height: 500px;
+  background: var(--black);
+}
+
+/* WA screen */
+.wa-header {
+  background: #075E54;
+  padding: 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.wa-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--red);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 13px; color: white;
+  flex-shrink: 0;
+}
+.wa-name {
+  font-size: 13px; font-weight: 700; color: white;
+  line-height: 1.2;
+}
+.wa-sub { font-size: 10px; color: rgba(255,255,255,0.6); }
+.wa-auto {
+  margin-left: auto;
+  background: rgba(232,0,29,0.9);
+  font-size: 9px; font-weight: 700;
+  padding: 2px 8px; border-radius: 10px;
+  color: white; letter-spacing: 0.06em;
+}
+.wa-body {
+  background: #ECE5DD;
+  padding: 10px;
+  display: flex; flex-direction: column; gap: 8px;
+  min-height: 440px;
+}
+.wa-msg {
+  max-width: 84%;
+  padding: 8px 12px;
+  font-size: 12px; line-height: 1.5; color: #333;
+  border-radius: 8px;
+}
+.wa-msg.inbound {
+  background: #E8D5FF;
+  border-left: 3px solid var(--red);
+  align-self: flex-start;
+}
+.wa-msg.outbound {
+  background: #DCF8C6;
+  border-radius: 8px 8px 0 8px;
+  align-self: flex-end;
+}
+.wa-msg.ai-reply {
+  background: #E8D5FF;
+  border-left: 3px solid var(--red);
+  align-self: flex-start;
+}
+.wa-time { font-size: 9px; color: #999; text-align: right; margin-top: 2px; }
+
+/* Float cards */
+.float-card-1 {
+  position: absolute;
+  top: 12%;
+  right: -12%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  min-width: 190px;
+  z-index: 10;
+  animation: float-a 4s ease-in-out infinite;
+}
+.float-card-2 {
+  position: absolute;
+  bottom: 18%;
+  left: -12%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  min-width: 180px;
+  z-index: 10;
+  animation: float-b 3.5s ease-in-out infinite;
+}
+@keyframes float-a {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes float-b {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.float-label {
+  font-family: var(--fb);
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--grey); margin-bottom: 6px;
+}
+.float-num {
+  font-family: var(--fd);
+  font-weight: 500; font-size: 28px;
+  line-height: 1; letter-spacing: var(--ls-display);
+}
+.float-num.red { color: var(--red); }
+.float-num.amber { color: #F59E0B; }
+.float-sub { font-size: 11px; color: var(--grey); margin-top: 3px; }
+.float-bar {
+  height: 2px; background: rgba(255,255,255,0.06);
+  border-radius: 2px; margin-top: 10px; overflow: hidden;
+}
+.float-bar-fill { height: 100%; background: var(--red); border-radius: 2px; }
+
+/* ─ PAIN TICKER ─ */
+.ticker-wrap {
+  position: relative; z-index: 1;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden; padding: 0;
+}
+.ticker-track {
+  display: flex;
+  animation: ticker 36s linear infinite;
+  white-space: nowrap;
+}
+.ticker-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 40px;
+  border-right: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.ticker-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); flex-shrink: 0; }
+.ticker-severity {
+  font-family: var(--fd);
+  font-weight: 500; font-size: 20px;
+  color: var(--red); letter-spacing: var(--ls-display);
+  flex-shrink: 0;
+}
+.ticker-text {
+  font-family: var(--fb);
+  font-weight: 400; font-size: var(--fs-b4);
+  color: var(--grey);
+}
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ─ PROBLEM ─ */
+.problem-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+
+/* D2 — Section headline */
+.h2 {
+  font-family: var(--fd);
+  font-weight: 500;
+  font-size: var(--fs-d2);
+  line-height: var(--lh-display);
+  letter-spacing: var(--ls-display);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+.h2 .accent { color: var(--red); }
+.h2 .dim { color: rgba(255,255,255,0.15); }
+
+.problem-list { display: flex; flex-direction: column; gap: 0; }
+.problem-item {
+  padding: 28px 0;
+  border-bottom: 1px solid var(--border);
+}
+.problem-item:first-child { border-top: 1px solid var(--border); }
+.problem-num {
+  font-family: var(--fb);
+  font-weight: 500; font-size: var(--fs-b4);
+  text-transform: uppercase; letter-spacing: var(--ls-caps);
+  color: rgba(255,255,255,0.2); margin-bottom: 8px;
+}
+/* D3 — Sub-section title */
+.h3 {
+  font-family: var(--fd);
+  font-weight: 500;
+  font-size: 28px;
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-display);
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+.problem-desc {
+  font-family: var(--fb);
+  font-size: var(--fs-b3);
+  color: var(--grey);
+  line-height: var(--lh-body);
+  margin-bottom: 12px;
+}
+.badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--red-dim);
+  border: 1px solid var(--red-border);
+  padding: 4px 12px; border-radius: 2px;
+  font-family: var(--fb);
+  font-weight: 700; font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--red);
+}
+
+/* Quote block */
+.quote-block {
+  background: var(--surface);
+  border-left: 3px solid var(--red);
+  padding: 32px 36px;
+  margin-bottom: 32px;
+}
+.quote-mark {
+  font-family: Georgia, serif;
+  font-size: 80px; line-height: 1;
+  color: rgba(232,0,29,0.2);
+  margin-bottom: 8px; display: block;
+}
+.quote-text {
+  font-family: var(--fb);
+  font-size: var(--fs-b2);
+  font-style: italic;
+  color: var(--white);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+.quote-attr {
+  font-family: var(--fb);
+  font-weight: 600; font-size: var(--fs-b4);
+  color: var(--white);
+}
+.quote-role { color: var(--grey); font-weight: 400; }
+
+/* ─ FEATURES ─ */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+}
+.feature-card {
+  background: var(--black);
+  padding: 40px 32px;
+  position: relative; overflow: hidden;
+  transition: background 0.2s;
+}
+.feature-card:hover { background: var(--surface2); }
+.feature-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--red);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.3s;
+}
+.feature-card:hover::before { transform: scaleX(1); }
+.feature-num {
+  font-family: var(--fd);
+  font-weight: 500; font-size: 64px;
+  color: rgba(232,0,29,0.06);
+  line-height: 1; margin-bottom: 16px;
+  transition: color 0.2s;
+}
+.feature-card:hover .feature-num { color: rgba(232,0,29,0.12); }
+/* D4 — Feature card title */
+.h4 {
+  font-family: var(--fd);
+  font-weight: 500;
+  font-size: var(--fs-d4);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-display);
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 12px;
+}
+.feature-desc {
+  font-family: var(--fb);
+  font-size: var(--fs-b3);
+  color: var(--grey);
+  line-height: var(--lh-body);
+  margin-bottom: 20px;
+}
+.feature-tag {
+  font-family: var(--fb);
+  font-weight: 700; font-size: 10px;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  padding: 4px 10px; border-radius: 2px;
+  display: inline-block;
+}
+.tag-wa { background: rgba(37,211,102,0.1); color: #25D366; }
+.tag-ai { background: var(--red-dim); color: var(--red); }
+.tag-fin { background: rgba(59,130,246,0.1); color: #60a5fa; }
+
+/* ─ STEPS ─ */
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  margin-top: 64px;
+}
+.step-card {
+  background: var(--surface);
+  padding: 40px 28px;
+  position: relative;
+  transition: background 0.2s;
+}
+.step-card:hover { background: var(--surface2); }
+.step-step {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--red);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--fd);
+  font-weight: 500; font-size: 16px;
+  color: white; margin-bottom: 20px;
+}
+.step-title {
+  font-family: var(--fd);
+  font-weight: 500; font-size: 24px;
+  text-transform: uppercase;
+  letter-spacing: var(--ls-display);
+  color: var(--white); margin-bottom: 10px;
+  line-height: var(--lh-heading);
+}
+.step-desc {
+  font-family: var(--fb);
+  font-size: var(--fs-b3); color: var(--grey);
+  line-height: var(--lh-body);
+  margin-bottom: 16px;
+}
+.step-time {
+  font-family: var(--fb);
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--red);
+}
+
+/* ─ PRICING ─ */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  margin-top: 64px;
+}
+.pricing-card {
+  background: var(--surface);
+  padding: 40px 28px;
+  position: relative;
+  transition: background 0.2s;
+}
+.pricing-card.featured {
+  background: var(--surface2);
+  border-top: 2px solid var(--red);
+}
+.pricing-popular {
+  position: absolute; top: 16px; right: 16px;
+  background: var(--red); color: white;
+  font-family: var(--fb); font-weight: 700;
+  font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em;
+  padding: 3px 8px; border-radius: 2px;
+}
+.pricing-tier {
+  font-family: var(--fb);
+  font-weight: 500; font-size: var(--fs-b4);
+  text-transform: uppercase; letter-spacing: var(--ls-caps);
+  color: var(--red); margin-bottom: 16px;
+}
+/* D5 — Price figure */
+.pricing-price {
+  font-family: var(--fd);
+  font-weight: 500; font-size: var(--fs-d5);
+  line-height: var(--lh-display);
+  letter-spacing: var(--ls-display);
+  color: var(--white); margin-bottom: 4px;
+}
+.pricing-price sub { font-size: 18px; color: var(--grey); }
+.pricing-period {
+  font-family: var(--fb);
+  font-size: var(--fs-b4); color: var(--grey);
+  margin-bottom: 8px;
+}
+.pricing-clients {
+  font-family: var(--fb);
+  font-weight: 600; font-size: var(--fs-b3);
+  color: var(--white); margin-bottom: 24px;
+}
+.pricing-divider { height: 1px; background: var(--border); margin-bottom: 24px; }
+.pricing-features { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+.pricing-feature {
+  font-family: var(--fb);
+  font-size: var(--fs-b4); color: var(--grey);
+  display: flex; align-items: flex-start; gap: 8px;
+}
+.pricing-feature.active { color: rgba(255,255,255,0.8); }
+.pricing-feature.locked { color: rgba(255,255,255,0.2); }
+.pricing-feature .check { color: #22C55E; flex-shrink: 0; }
+.pricing-feature .cross { color: rgba(255,255,255,0.15); flex-shrink: 0; }
+.pricing-btn {
+  display: block; width: 100%;
+  font-family: var(--fb); font-weight: 700;
+  font-size: var(--fs-b4); text-transform: uppercase; letter-spacing: 0.04em;
+  padding: 12px; border-radius: 2px;
+  text-decoration: none; text-align: center;
+  transition: all 0.2s;
+}
+.pricing-btn.primary { background: var(--red); color: white; }
+.pricing-btn.primary:hover { background: #C20000; }
+.pricing-btn.ghost { background: transparent; border: 1px solid var(--border); color: var(--grey); }
+.pricing-btn.ghost:hover { border-color: rgba(255,255,255,0.3); color: var(--white); }
+
+/* ─ TESTIMONIALS ─ */
+.testi-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--border);
+  margin-top: 64px;
+}
+.testi-card {
+  background: var(--surface);
+  padding: 40px 32px;
+  transition: background 0.2s;
+}
+.testi-card:hover { background: var(--surface2); }
+.testi-quote-mark {
+  font-family: Georgia, serif;
+  font-size: 64px; line-height: 1;
+  color: rgba(232,0,29,0.15); margin-bottom: 16px; display: block;
+}
+.testi-text {
+  font-family: var(--fb);
+  font-size: var(--fs-b2); font-style: italic;
+  color: var(--grey); line-height: 1.6;
+  margin-bottom: 24px;
+}
+.testi-roi {
+  background: var(--red-dim); border: 1px solid var(--red-border);
+  padding: 12px 16px; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 12px;
+}
+.testi-roi-num {
+  font-family: var(--fd);
+  font-weight: 500; font-size: 28px;
+  color: var(--red); letter-spacing: var(--ls-display); flex-shrink: 0;
+}
+.testi-roi-desc {
+  font-family: var(--fb);
+  font-size: 11px; color: var(--grey); line-height: 1.4;
+}
+.testi-author { display: flex; align-items: center; gap: 12px; }
+.testi-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--fd); font-weight: 500; font-size: 16px; color: white;
+  flex-shrink: 0;
+}
+.testi-name {
+  font-family: var(--fb);
+  font-weight: 600; font-size: var(--fs-b4); color: var(--white);
+}
+.testi-role { font-size: 11px; color: var(--grey); }
+
+/* ─ ABOUT / STATS ─ */
+.about-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 80px; align-items: start;
+}
+.ghost-word {
+  font-family: var(--fd);
+  font-weight: 500; font-size: 96px;
+  text-transform: uppercase;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.05);
+  color: transparent; line-height: 1;
+  letter-spacing: var(--ls-display);
+  margin-bottom: 24px; display: block;
+  pointer-events: none; user-select: none;
+}
+.ghost-word span {
+  -webkit-text-stroke: 1px rgba(232,0,29,0.08);
+}
+.stat-rows { display: flex; flex-direction: column; gap: 1px; }
+.stat-row {
+  background: var(--black);
+  padding: 24px 28px;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  border: 1px solid var(--border);
+  transition: background 0.2s;
+}
+.stat-row:hover { background: var(--surface); }
+.stat-row-num {
+  font-family: var(--fd);
+  font-weight: 500; font-size: 40px;
+  color: var(--white); letter-spacing: var(--ls-display); flex-shrink: 0;
+}
+.stat-row-label {
+  font-family: var(--fb);
+  font-size: var(--fs-b4); color: var(--grey);
+  text-align: right; line-height: 1.4;
+}
+.pillars { display: flex; flex-direction: column; gap: 0; }
+.pillar {
+  padding: 24px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex; gap: 20px;
+}
+.pillar:first-child { border-top: 1px solid var(--border); }
+.pillar-num {
+  font-family: var(--fb);
+  font-weight: 700; font-size: var(--fs-b4);
+  color: var(--red); width: 24px; flex-shrink: 0;
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+.pillar-title {
+  font-family: var(--fb);
+  font-weight: 700; font-size: var(--fs-b4);
+  color: var(--white); margin-bottom: 4px;
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+.pillar-desc {
+  font-family: var(--fb);
+  font-size: var(--fs-b4); color: var(--grey); line-height: 1.6;
+}
+
+/* ─ CTA BANNER ─ */
+.cta-banner {
+  position: relative; z-index: 1;
+  background: var(--red);
+  padding: 100px 48px;
+  text-align: center;
+  overflow: hidden;
+}
+.cta-banner::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.cta-banner-inner { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; }
+.cta-h {
+  font-family: var(--fd);
+  font-weight: 500;
+  font-size: 72px; /* D2 variant */
+  line-height: var(--lh-display);
+  letter-spacing: var(--ls-display);
+  text-transform: uppercase;
+  color: white; margin-bottom: 16px;
+}
+.cta-h .outline {
+  -webkit-text-stroke: 1.5px rgba(255,255,255,0.4);
+  color: transparent;
+}
+.cta-note-banner {
+  font-family: var(--fb);
+  font-size: var(--fs-b4); color: rgba(255,255,255,0.65);
+  margin-bottom: 36px;
+}
+.btn-white {
+  display: inline-block;
+  font-family: var(--fb); font-weight: 700;
+  font-size: var(--fs-b4); text-transform: uppercase; letter-spacing: 0.04em;
+  background: white; color: var(--red);
+  padding: 16px 48px; border-radius: 2px;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.btn-white:hover { opacity: 0.9; }
+
+/* ─ FOOTER ─ */
+.footer {
+  position: relative; z-index: 1;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 64px 48px 40px;
+}
+.footer-grid {
+  display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 48px; max-width: 1400px; margin: 0 auto;
+  padding-bottom: 48px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 32px;
+}
+.footer-brand {
+  font-family: var(--fd);
+  font-weight: 500; font-size: 22px;
+  text-transform: uppercase; letter-spacing: var(--ls-display);
+  color: var(--white); margin-bottom: 12px; display: block;
+}
+.footer-brand span { color: var(--red); }
+.footer-tagline { font-size: var(--fs-b4); color: var(--grey); line-height: 1.6; margin-bottom: 16px; }
+.footer-by { font-size: 11px; color: rgba(255,255,255,0.25); }
+.footer-col-head {
+  font-family: var(--fb);
+  font-weight: 600; font-size: var(--fs-b4);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--white); margin-bottom: 20px;
+}
+.footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.footer-links a {
+  font-family: var(--fb);
+  font-size: var(--fs-b4); color: var(--grey);
+  text-decoration: none; transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--white); }
+.footer-bottom {
+  max-width: 1400px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.footer-copy { font-size: 11px; color: rgba(255,255,255,0.2); }
+.footer-legal { display: flex; gap: 20px; }
+.footer-legal a { font-size: 11px; color: rgba(255,255,255,0.2); text-decoration: none; }
+.footer-legal a:hover { color: var(--grey); }
+
+/* ─ DOC HEADER ─ */
+.doc-header {
+  position: relative; z-index: 1;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--red-border);
+  padding: 20px 48px;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 64px;
+}
+.doc-header-label {
+  font-family: var(--fd);
+  font-weight: 500; font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.2em;
+  color: var(--red);
+}
+.doc-header-title {
+  font-family: var(--fd);
+  font-weight: 500; font-size: 24px;
+  text-transform: uppercase; letter-spacing: var(--ls-display);
+}
+.doc-header-note { font-size: var(--fs-b4); color: var(--grey); }
+
+/* ─ ARCHITECTURE SPEC ─ */
+.spec-section {
+  position: relative; z-index: 1;
+  background: var(--surface);
+  max-width: 1400px; margin: 0 auto;
+  padding: 64px 48px;
+  border-bottom: 1px solid var(--border);
+}
+.spec-title {
+  font-family: var(--fd); font-weight: 500;
+  font-size: var(--fs-d3); text-transform: uppercase;
+  letter-spacing: var(--ls-display); margin-bottom: 32px;
+  padding-bottom: 16px; border-bottom: 1px solid var(--border);
+}
+.spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+.spec-col {}
+.spec-sub {
+  font-family: var(--fb); font-weight: 700;
+  font-size: var(--fs-b4); text-transform: uppercase;
+  letter-spacing: var(--ls-caps); color: var(--red);
+  margin-bottom: 16px;
+}
+.spec-table { width: 100%; border-collapse: collapse; }
+.spec-table th {
+  font-family: var(--fb); font-weight: 700;
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--grey); text-align: left;
+  padding: 8px 12px; border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.02);
+}
+.spec-table td {
+  font-family: var(--fb); font-size: var(--fs-b4);
+  padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.03);
+  color: rgba(255,255,255,0.7); vertical-align: top;
+}
+.spec-table td:first-child { color: var(--white); font-weight: 600; }
+.spec-table tr:hover td { background: rgba(255,255,255,0.02); }
+.level-badge {
+  display: inline-block;
+  font-family: var(--fd); font-weight: 500;
+  font-size: 11px; letter-spacing: 0.08em;
+  padding: 2px 8px; border-radius: 2px;
+}
+.level-d { background: rgba(232,0,29,0.12); color: var(--red); }
+.level-b { background: rgba(255,255,255,0.06); color: var(--grey); }
+.code-block {
+  background: #0d0d0d;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 4px;
+  padding: 20px 24px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px; line-height: 1.6;
+  color: rgba(255,255,255,0.7);
+  overflow-x: auto;
+  white-space: pre;
+}
+.code-comment { color: rgba(255,255,255,0.25); }
+.code-key { color: #E8001D; }
+.code-val { color: #93c5fd; }
+.code-fn { color: #86efac; }
+
+/* ─ MASTER PROMPT ─ */
+.prompt-section {
+  position: relative; z-index: 1;
+  max-width: 1400px; margin: 0 auto;
+  padding: 64px 48px;
+}
+.prompt-box {
+  background: #0a0a0a;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 32px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px; line-height: 1.8;
+  color: rgba(255,255,255,0.75);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.prompt-section-head {
+  color: var(--red); font-weight: bold;
+  display: block; margin-top: 24px; margin-bottom: 4px;
+}
+
+/* BG for alternating sections */
+.bg-surface { background: var(--surface); }
+
+</style>
+</head>
+<body>
+
+<!-- BACKGROUND ELEMENTS -->
+<div class="hero-grid-bg"></div>
+
+<!-- ═══════════ NAV ═══════════ -->
+<nav class="nav">
+  <a href="/" class="nav-logo"><span>FITO</span>SYS</a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="/signup" class="nav-cta">Start Free</a></li>
+  </ul>
+</nav>
+
+<!-- ═══════════ HERO ═══════════ -->
+<div class="hero-glow"></div>
+<div class="hero">
+  <!-- Left: Copy -->
+  <div class="hero-left">
+    <div class="eyebrow">
+      <span class="eyebrow-text">Built for Indian Coaches · Runs on WhatsApp</span>
+    </div>
+
+    <h1 class="h1">
+      Stop<br>
+      <span class="outline">Losing</span><br>
+      <span class="accent">Clients.</span>
+    </h1>
+
+    <p class="lead">
+      Fitosys automates client onboarding, weekly check-ins, and renewal reminders — <strong>natively on WhatsApp</strong>. 30 minutes to set up. Runs automatically after that.
+    </p>
+
+    <div class="hero-ctas">
+      <a href="/signup" class="btn-primary">Start Free</a>
+      <a href="/demo" class="btn-secondary">View Demo</a>
+    </div>
+    <p class="cta-note">No card needed &middot; First 5 clients free &middot; Setup in 10 minutes</p>
+
+    <!-- D5 stat numbers + B4 labels — NEVER same weight -->
+    <div class="stat-strip">
+      <div class="stat-item">
+        <span class="stat-num">2–3hrs</span>
+        <span class="stat-label">saved per week<br>per coach</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">₹72K+</span>
+        <span class="stat-label">avg annual revenue<br>recovered from renewals</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">30min</span>
+        <span class="stat-label">setup time.<br>zero tech skills needed.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Product Visual -->
+  <div class="hero-right">
+    <!-- Float cards -->
+    <div class="float-card-1">
+      <div class="float-label">This Week's Response Rate</div>
+      <div class="float-num red">73<span style="font-size:20px">%</span></div>
+      <div class="float-sub">22 of 30 clients checked in</div>
+      <div class="float-bar"><div class="float-bar-fill" style="width:73%"></div></div>
+    </div>
+
+    <!-- Tab row -->
+    <div class="tab-row">
+      <button class="tab-btn wa">● Client View</button>
+      <button class="tab-btn db">○ Dashboard</button>
+    </div>
+
+    <!-- Phone frame -->
+    <div class="phone-frame">
+      <div class="phone-inner">
+        <!-- WA Header -->
+        <div class="wa-header">
+          <div class="wa-avatar">F</div>
+          <div>
+            <div class="wa-name">Fitosys Bot</div>
+            <div class="wa-sub">for Coach Priya · automated</div>
+          </div>
+          <div class="wa-auto">AUTO</div>
+        </div>
+        <!-- WA Chat -->
+        <div class="wa-body">
+          <div class="wa-msg inbound">
+            <strong>Hi Anjali! 👋</strong><br>
+            Weekly check-in from Coach Priya:<br><br>
+            1. Energy this week (1-10)?<br>
+            2. Sessions completed?<br>
+            3. One win? 💪
+            <div class="wa-time">Sun 7:00 PM · Auto-sent</div>
+          </div>
+          <div class="wa-msg outbound">
+            Energy 8/10, 4 sessions done. Win: ran 5km non-stop! 🏃
+            <div class="wa-time">Sun 8:14 PM</div>
+          </div>
+          <div class="wa-msg ai-reply">
+            Amazing Anjali! 🔥 5km is a huge milestone. Coach Priya will review this Wednesday.
+            <div class="wa-time">Sun 8:14 PM · AI-generated</div>
+          </div>
+          <div class="wa-msg" style="background:white; align-self:flex-start; border-radius:0 8px 8px 8px;">
+            Thank you! This system is so convenient 😊
+            <div class="wa-time">Sun 8:16 PM</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Float card 2 -->
+    <div class="float-card-2">
+      <div class="float-label">Renewal Alert</div>
+      <div class="float-num amber">3 clients</div>
+      <div class="float-sub">programs expiring in 7 days</div>
+      <div style="margin-top:8px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--red)">Reminders sent automatically ✓</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ PAIN TICKER ═══════════ -->
+<div class="ticker-wrap">
+  <div class="ticker-track">
+    <!-- Items duplicated for seamless loop -->
+    <div class="ticker-item"><div class="ticker-dot"></div><span class="ticker-severity">9/10</span><span class="ticker-text">Payment collection delays costing ₹500–2,000/coach/year</span></div>
+    <div class="ticker-item"><div class="ticker-dot"></div><span class="ticker-severity">8–12hrs</span><span class="ticker-text">Lost to manual WhatsApp onboarding and follow-ups</span></div>
+    <div class="ticker-item"><div class="ticker-dot"></div><span class="ticker-severity">10–20%</span><span class="ticker-text">Annual churn from retention blindness and missed renewals</span></div>
+    <div class="ticker-item"><div class="ticker-dot"></div><span class="ticker-severity">0</span><span class="ticker-text">Visibility into which clients are at risk of dropping out</span></div>
+    <div class="ticker-item"><div class="ticker-dot"></div><span class="ticker-severity">3–5hrs</span><span class="ticker-text">Spent managing check-ins for 30+ clients every week manually</span></div>
+    <!-- Duplicate -->
+    <div class="ticker-item"><div class="ticker-dot"></div><span class="ticker-severity">9/10</span><span class="ticker-text">Payment collection delays costing ₹500–2,000/coach/year</span></div>
+    <div class="ticker-item"><div class="ticker-dot"></div><span class="ticker-severity">8–12hrs</span><span class="ticker-text">Lost to manual WhatsApp onboarding and follow-ups</span></div>
+    <div class="ticker-item"><div class="ticker-dot"></div><span class="ticker-severity">10–20%</span><span class="ticker-text">Annual churn from retention blindness and missed renewals</span></div>
+    <div class="ticker-item"><div class="ticker-dot"></div><span class="ticker-severity">0</span><span class="ticker-text">Visibility into which clients are at risk of dropping out</span></div>
+    <div class="ticker-item"><div class="ticker-dot"></div><span class="ticker-severity">3–5hrs</span><span class="ticker-text">Spent managing check-ins for 30+ clients every week manually</span></div>
+  </div>
+</div>
+
+<!-- ═══════════ PROBLEM ═══════════ -->
+<section id="problem" class="bg-surface">
+  <div class="section">
+    <div class="problem-grid">
+      <div>
+        <div class="eyebrow"><span class="eyebrow-text">The Problem</span></div>
+        <h2 class="h2">Your coaching<br>is <span class="accent">excellent.</span><br><span class="dim">Your system</span><br>is broken.</h2>
+        <p style="font-size:var(--fs-b2);color:var(--grey);line-height:var(--lh-body);max-width:460px;margin-top:20px">
+          Independent coaches with 20–40 clients face the same operational failures every month. None of them have anything to do with coaching quality.
+        </p>
+      </div>
+      <div>
+        <div class="problem-list">
+          <div class="problem-item">
+            <div class="problem-num">01 — Revenue Leakage</div>
+            <div class="h3">Renewals slip through gaps</div>
+            <p class="problem-desc">Programs expire and coaches find out only when the client stops responding. No system. No reminders. No recovery.</p>
+            <span class="badge">₹72K–₹1.08L lost annually per coach</span>
+          </div>
+          <div class="problem-item">
+            <div class="problem-num">02 — Engagement Blind Spot</div>
+            <div class="h3">No early warning system</div>
+            <p class="problem-desc">Without structured check-ins, coaches have no data on client progress until the client complains or drops out.</p>
+            <span class="badge">10–20% annual churn from retention blindness</span>
+          </div>
+          <div class="problem-item">
+            <div class="problem-num">03 — Admin Burnout</div>
+            <div class="h3">2–4 hours lost per week</div>
+            <p class="problem-desc">WhatsApp follow-ups. Payment reconciliation. Manual onboarding. Time that should go to clients, content, or recovery.</p>
+            <span class="badge">8–12 hours/week average admin overhead</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quote -->
+    <div style="margin-top:80px;max-width:680px;margin-left:auto;margin-right:auto;">
+      <div class="quote-block">
+        <span class="quote-mark">"</span>
+        <p class="quote-text">I was spending every Sunday sending check-in messages manually to 28 clients. By Monday morning I was already exhausted before the week started.</p>
+        <div class="quote-attr">Priya Sharma <span class="quote-role">— Fitness Coach, Mumbai · 2.5 hours recovered per week after Fitosys</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FEATURES ═══════════ -->
+<section id="features">
+  <div class="section">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-bottom:64px;align-items:end">
+      <div>
+        <div class="eyebrow"><span class="eyebrow-text">Core Features</span></div>
+        <h2 class="h2">Three things.<br><span class="dim">Zero</span><br><span class="accent">manual work.</span></h2>
+      </div>
+      <p style="font-size:var(--fs-b1);color:var(--grey);line-height:var(--lh-body);align-self:end">
+        Fitosys automates exactly three workflows — the three that eat the most time and cost the most revenue. Nothing more. Nothing less.
+      </p>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-num">01</div>
+        <h4 class="h4">Automated Client Onboarding</h4>
+        <p class="feature-desc">Share one link. Client fills a form, pays via Razorpay UPI/card, and gets a WhatsApp welcome message — all automatically.</p>
+        <span class="feature-tag tag-wa">WhatsApp Native</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">02</div>
+        <h4 class="h4">Weekly Check-in System</h4>
+        <p class="feature-desc">Every Sunday, every active client gets a structured check-in. Their reply is stored automatically. You review a clean AI summary on Monday.</p>
+        <span class="feature-tag tag-wa">WhatsApp Native</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">03</div>
+        <h4 class="h4">Renewal Reminder Automation</h4>
+        <p class="feature-desc">Programs expiring in 7 days trigger automatic WhatsApp reminders. A follow-up fires after 48 hours if no reply. Never lose a renewal again.</p>
+        <span class="feature-tag tag-wa">WhatsApp Native</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">04</div>
+        <h4 class="h4">AI Monday Summary</h4>
+        <p class="feature-desc">Gemini AI reads all check-ins and sends you a 150-word brief every Monday at 7AM. Response rates, energy trends, at-risk clients — prioritised.</p>
+        <span class="feature-tag tag-ai">AI Powered</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">05</div>
+        <h4 class="h4">GST Invoice Generation</h4>
+        <p class="feature-desc">Every Razorpay payment automatically generates a GST-compliant invoice delivered via email. No manual invoice creation ever again.</p>
+        <span class="feature-tag tag-fin">Compliance Built-in</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">06</div>
+        <h4 class="h4">Coach Dashboard</h4>
+        <p class="feature-desc">Every client's status, check-in history, payment timeline, and renewal date — in one clean view. No spreadsheets. No app switching.</p>
+        <span class="feature-tag tag-ai">Real-time Data</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ HOW IT WORKS ═══════════ -->
+<section id="how" class="bg-surface">
+  <div class="section">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:end">
+      <div>
+        <div class="eyebrow"><span class="eyebrow-text">How It Works</span></div>
+        <h2 class="h2">Four steps to<br><span class="accent">full</span><br><span class="dim">automation.</span></h2>
+      </div>
+      <p style="font-size:var(--fs-b1);color:var(--grey);line-height:var(--lh-body);align-self:end">
+        From sign-up to a fully automated coaching business. Average setup time: 28 minutes. No technical knowledge required.
+      </p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-step">1</div>
+        <div class="step-title">Sign Up & Create Profile</div>
+        <p class="step-desc">Create your Fitosys account. Add your coaching type, WhatsApp business number, and Razorpay details.</p>
+        <div class="step-time">⏱ 5 minutes</div>
+      </div>
+      <div class="step-card">
+        <div class="step-step">2</div>
+        <div class="step-title">Create Your First Program</div>
+        <p class="step-desc">Define your coaching program — name, duration, price, and check-in schedule. Get your unique onboarding link.</p>
+        <div class="step-time">⏱ 8 minutes</div>
+      </div>
+      <div class="step-card">
+        <div class="step-step">3</div>
+        <div class="step-title">Share Your Link</div>
+        <p class="step-desc">Send your link to new clients. They fill details, pay via UPI or card, get a WhatsApp welcome. You get notified.</p>
+        <div class="step-time">⏱ 15 min to first client</div>
+      </div>
+      <div class="step-card">
+        <div class="step-step">4</div>
+        <div class="step-title">Fitosys Runs the Rest</div>
+        <p class="step-desc">Check-ins fire every Sunday. AI summary arrives Monday. Renewal reminders go out 7 days before program ends.</p>
+        <div class="step-time">⏱ Runs forever</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ PRICING ═══════════ -->
+<section id="pricing">
+  <div class="section">
+    <div style="text-align:center;max-width:600px;margin:0 auto 64px">
+      <div class="eyebrow" style="justify-content:center"><span class="eyebrow-text">Pricing</span></div>
+      <h2 class="h2">Built for <span class="accent">India.</span><br><span class="dim">Priced for</span><br>coaches.</h2>
+      <p style="font-size:var(--fs-b2);color:var(--grey);margin-top:16px">Client-count based pricing. You pay more only as your business grows.</p>
+    </div>
+    <div class="pricing-grid">
+      <!-- Starter -->
+      <div class="pricing-card">
+        <div class="pricing-tier">Starter</div>
+        <div class="pricing-price"><sub>₹</sub>999</div>
+        <div class="pricing-period">per month</div>
+        <div class="pricing-clients">Up to 10 clients</div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li class="pricing-feature active"><span class="check">✓</span>WhatsApp check-ins (auto)</li>
+          <li class="pricing-feature active"><span class="check">✓</span>Razorpay payment onboarding</li>
+          <li class="pricing-feature active"><span class="check">✓</span>Renewal reminders</li>
+          <li class="pricing-feature active"><span class="check">✓</span>GST invoice generation</li>
+          <li class="pricing-feature active"><span class="check">✓</span>Coach dashboard</li>
+          <li class="pricing-feature locked"><span class="cross">✗</span>AI Monday summary</li>
+          <li class="pricing-feature locked"><span class="cross">✗</span>Custom check-in questions</li>
+        </ul>
+        <a href="/signup" class="pricing-btn ghost">Start Free</a>
+      </div>
+      <!-- Basic — Featured -->
+      <div class="pricing-card featured">
+        <div class="pricing-popular">Most Popular</div>
+        <div class="pricing-tier">Basic</div>
+        <div class="pricing-price" style="color:var(--red)"><sub style="color:var(--red)">₹</sub>1,499</div>
+        <div class="pricing-period">per month</div>
+        <div class="pricing-clients">Up to 25 clients</div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li class="pricing-feature active"><span class="check">✓</span>Everything in Starter</li>
+          <li class="pricing-feature active"><span class="check">✓</span>AI Monday summary</li>
+          <li class="pricing-feature active"><span class="check">✓</span>At-risk client flagging</li>
+          <li class="pricing-feature active"><span class="check">✓</span>AI coach insight</li>
+          <li class="pricing-feature active"><span class="check">✓</span>Full check-in history</li>
+          <li class="pricing-feature locked"><span class="cross">✗</span>Custom check-in questions</li>
+          <li class="pricing-feature locked"><span class="cross">✗</span>Priority support</li>
+        </ul>
+        <a href="/signup" class="pricing-btn primary">Start Free</a>
+      </div>
+      <!-- Pro -->
+      <div class="pricing-card">
+        <div class="pricing-tier">Pro</div>
+        <div class="pricing-price"><sub>₹</sub>2,999</div>
+        <div class="pricing-period">per month</div>
+        <div class="pricing-clients">Up to 50 clients</div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li class="pricing-feature active"><span class="check">✓</span>Everything in Basic</li>
+          <li class="pricing-feature active"><span class="check">✓</span>Custom check-in questions</li>
+          <li class="pricing-feature active"><span class="check">✓</span>Program-specific templates</li>
+          <li class="pricing-feature active"><span class="check">✓</span>Renewal analytics</li>
+          <li class="pricing-feature active"><span class="check">✓</span>Churn reason tracking</li>
+          <li class="pricing-feature active"><span class="check">✓</span>WhatsApp priority support</li>
+        </ul>
+        <a href="/signup" class="pricing-btn ghost">Start Free</a>
+      </div>
+      <!-- Studio -->
+      <div class="pricing-card">
+        <div class="pricing-tier">Studio</div>
+        <div class="pricing-price"><sub>₹</sub>5,999</div>
+        <div class="pricing-period">per month</div>
+        <div class="pricing-clients">Unlimited clients</div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li class="pricing-feature active"><span class="check">✓</span>Everything in Pro</li>
+          <li class="pricing-feature active"><span class="check">✓</span>Multi-location management</li>
+          <li class="pricing-feature active"><span class="check">✓</span>White-label onboarding</li>
+          <li class="pricing-feature active"><span class="check">✓</span>API access</li>
+          <li class="pricing-feature active"><span class="check">✓</span>Dedicated onboarding call</li>
+          <li class="pricing-feature active"><span class="check">✓</span>1-hour priority support</li>
+        </ul>
+        <a href="/signup" class="pricing-btn ghost">Start Free</a>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:var(--fs-b4);color:var(--grey);margin-top:24px">
+      14-day free trial on all plans · No credit card required · Annual plans — 2 months free
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════ TESTIMONIALS ═══════════ -->
+<section id="testimonials" class="bg-surface">
+  <div class="section">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-bottom:64px;align-items:end">
+      <div>
+        <div class="eyebrow"><span class="eyebrow-text">Coach Stories</span></div>
+        <h2 class="h2">Coaches who<br><span class="accent">got their</span><br><span class="dim">Sundays back.</span></h2>
+      </div>
+      <p style="font-size:var(--fs-b1);color:var(--grey);line-height:var(--lh-body);align-self:end">Real coaches. Real numbers. These are the outcomes that happen when systems replace spreadsheets.</p>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <span class="testi-quote-mark">"</span>
+        <p class="testi-text">I used to spend every Sunday sending check-in messages manually to 28 clients. Now I wake up Monday morning to an AI summary and spend the time on an actual rest day.</p>
+        <div class="testi-roi">
+          <div class="testi-roi-num">2.5h</div>
+          <div class="testi-roi-desc">saved every week. 130 hours per year given back to coaching.</div>
+        </div>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#E8001D,#7C0000)">P</div>
+          <div>
+            <div class="testi-name">Priya Sharma</div>
+            <div class="testi-role">Fitness Coach · Mumbai · 28 active clients</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <span class="testi-quote-mark">"</span>
+        <p class="testi-text">I was losing 2–3 renewals per month simply because I forgot to follow up. Fitosys caught 4 renewals in the first month alone. That's more than ₹15,000 in revenue.</p>
+        <div class="testi-roi">
+          <div class="testi-roi-num">₹1.8L</div>
+          <div class="testi-roi-desc">annual renewal revenue recovered. ROI in the first week.</div>
+        </div>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#0F3460,#0A1628)">R</div>
+          <div>
+            <div class="testi-name">Rahul Verma</div>
+            <div class="testi-role">Yoga Instructor · Delhi · 22 active clients</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <span class="testi-quote-mark">"</span>
+        <p class="testi-text">My clients actually comment that the check-in system feels personal. They don't know it's automated. The AI replies match the tone I set. That's the detail that matters.</p>
+        <div class="testi-roi">
+          <div class="testi-roi-num">94%</div>
+          <div class="testi-roi-desc">check-in response rate. Up from 60% with manual messages.</div>
+        </div>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#166534,#052E16)">A</div>
+          <div>
+            <div class="testi-name">Ananya Krishnan</div>
+            <div class="testi-role">Nutrition Coach · Bangalore · 35 active clients</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ ABOUT ═══════════ -->
+<section id="about">
+  <div class="section">
+    <div class="about-grid">
+      <div>
+        <div class="eyebrow"><span class="eyebrow-text">About Fitosys</span></div>
+        <p style="font-size:var(--fs-b1);font-style:italic;color:var(--white);line-height:1.5;margin-bottom:32px;max-width:500px">
+          Fitosys exists because <strong style="font-style:normal;font-family:var(--fd);font-weight:500;font-size:26px;letter-spacing:0.02em;text-transform:uppercase;color:var(--red)">India's best coaches</strong> shouldn't be drowning in WhatsApp messages. The system should run. <strong style="font-style:normal;font-family:var(--fd);font-weight:500;font-size:26px;letter-spacing:0.02em;text-transform:uppercase;color:var(--red)">You should coach.</strong>
+        </p>
+        <p style="font-size:var(--fs-b2);color:var(--grey);line-height:var(--lh-body);margin-bottom:48px;max-width:460px">
+          Built by Alchemetryx, a technology company that builds systems for independent professionals. We saw coaches with real skill and genuine client impact — operating on spreadsheets, memory, and manual follow-ups. Fitosys is the fix.
+        </p>
+        <div class="pillars">
+          <div class="pillar">
+            <div class="pillar-num">01</div>
+            <div>
+              <div class="pillar-title">India-First, Always</div>
+              <div class="pillar-desc">Razorpay UPI built in. GST invoices generated automatically. WhatsApp as primary communication. We built for how India actually works.</div>
+            </div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-num">02</div>
+            <div>
+              <div class="pillar-title">Systems Over Features</div>
+              <div class="pillar-desc">Fitosys does three things. Perfectly. Not a CRM, not a scheduling tool. Three workflows. Zero manual work.</div>
+            </div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-num">03</div>
+            <div>
+              <div class="pillar-title">Coach Revenue is Sacred</div>
+              <div class="pillar-desc">Every feature is measured against one question: does this protect or grow the coach's revenue? If the answer is no, it does not ship.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <!-- Ghost word — contained, no overlap -->
+        <span class="ghost-word">FITO<span>SYS</span></span>
+        <!-- Stat rows — D5 numbers, B4 labels, always separate -->
+        <div class="stat-rows">
+          <div class="stat-row">
+            <span class="stat-row-num">₹72K</span>
+            <span class="stat-row-label">Average annual revenue<br>recovered per coach</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-row-num">130+</span>
+            <span class="stat-row-label">Hours saved per year<br>from admin automation</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-row-num">30min</span>
+            <span class="stat-row-label">Average setup time<br>for new coaches</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-row-num">₹999</span>
+            <span class="stat-row-label">Starting price — less than<br>one skipped session</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CTA BANNER ═══════════ -->
+<div class="cta-banner">
+  <div class="cta-banner-inner">
+    <h2 class="cta-h">Stop managing.<br><span class="outline">Start coaching.</span></h2>
+    <p class="cta-note-banner">No card needed &middot; First 5 clients free &middot; Setup in 10 minutes</p>
+    <a href="/signup" class="btn-white">Start Free</a>
+  </div>
+</div>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <a class="footer-brand"><span>FITO</span>SYS</a>
+      <p class="footer-tagline">The system behind the result.<br>Built for independent coaches in India.<br>Runs on WhatsApp.</p>
+      <div class="footer-by">A product by <strong style="color:var(--grey)">Alchemetryx</strong></div>
+    </div>
+    <div>
+      <div class="footer-col-head">Product</div>
+      <ul class="footer-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#how">How It Works</a></li>
+        <li><a href="/demo">Live Demo</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-head">Company</div>
+      <ul class="footer-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#testimonials">Stories</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="/privacy">Privacy</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-head">Legal</div>
+      <ul class="footer-links">
+        <li><a href="/terms">Terms of Service</a></li>
+        <li><a href="/privacy">Privacy Policy</a></li>
+        <li><a href="/refund">Refund Policy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 <strong style="color:rgba(255,255,255,0.3)">Alchemetryx</strong>. All rights reserved.</div>
+    <div class="footer-legal">
+      <a href="/terms">Terms</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/cookies">Cookies</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════
+     ARCHITECTURE SPEC — FOR DEV HANDOFF
+════════════════════════════════════════ -->
+<div class="doc-header">
+  <span class="doc-header-label">Dev Reference</span>
+  <span class="doc-header-title">Architecture Spec · Master Prompt · Type Scale</span>
+  <span class="doc-header-note">Fitosys · Meetprerna-style component architecture · March 2026</span>
+</div>
+
+<!-- Type Scale -->
+<div class="spec-section">
+  <div class="spec-title">1. Type Scale — 8 Levels. No Deviations.</div>
+  <div style="margin-bottom:24px;padding:16px 20px;background:rgba(232,0,29,0.06);border-left:3px solid var(--red)">
+    <strong style="font-size:var(--fs-b4);font-family:var(--fb);color:var(--red)">THE ONE RULE:</strong>
+    <span style="font-size:var(--fs-b4);font-family:var(--fb);color:rgba(255,255,255,0.7);margin-left:8px">
+      Stat numbers (D5) and their labels (B4) must ALWAYS be different fonts, different sizes, different colors. Number = Barlow 500. Label = Urbanist 400 13px grey #888888. This is the most broken pattern on the current site.
+    </span>
+  </div>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Level</th><th>Font</th><th>Desktop</th><th>Tablet</th><th>Mobile</th><th>Weight</th><th>Usage</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="level-badge level-d">D1</span></td><td>Barlow Condensed</td><td>80px</td><td>60px</td><td>44px</td><td>500</td><td>Hero H1. Max 2 lines at any viewport. Hard limit.</td></tr>
+      <tr><td><span class="level-badge level-d">D2</span></td><td>Barlow Condensed</td><td>56px</td><td>44px</td><td>36px</td><td>500</td><td>Section headlines</td></tr>
+      <tr><td><span class="level-badge level-d">D3</span></td><td>Barlow Condensed</td><td>44px</td><td>36px</td><td>28px</td><td>500</td><td>Sub-section / step titles</td></tr>
+      <tr><td><span class="level-badge level-d">D4</span></td><td>Barlow Condensed</td><td>32px</td><td>28px</td><td>24px</td><td>500</td><td>Feature card titles. Min 17px jump above body text.</td></tr>
+      <tr><td><span class="level-badge level-d">D5</span></td><td>Barlow Condensed</td><td>48px</td><td>40px</td><td>32px</td><td>500</td><td>Price figures + stat numbers. Always paired with B4 label.</td></tr>
+      <tr><td><span class="level-badge level-b">B1</span></td><td>Urbanist</td><td>20px</td><td>19px</td><td>18px</td><td>400</td><td>Lead paragraph</td></tr>
+      <tr><td><span class="level-badge level-b">B2</span></td><td>Urbanist</td><td>17px</td><td>16px</td><td>16px</td><td>400</td><td>Standard body copy</td></tr>
+      <tr><td><span class="level-badge level-b">B3</span></td><td>Urbanist</td><td>15px</td><td>15px</td><td>15px</td><td>400</td><td>Card descriptions / secondary</td></tr>
+      <tr><td><span class="level-badge level-b">B4</span></td><td>Urbanist</td><td>13px</td><td>13px</td><td>13px</td><td>500</td><td>Labels, nav, tags, UI text. CTA buttons use 700.</td></tr>
+      <tr><td><span class="level-badge level-b">B5</span></td><td>Urbanist</td><td>12px</td><td>12px</td><td>12px</td><td>400</td><td>Fine print only</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Component Architecture -->
+<div class="spec-section">
+  <div class="spec-title">2. Component Architecture — Meetprerna Pattern</div>
+  <div class="spec-grid">
+    <div>
+      <div class="spec-sub">Directory Structure</div>
+      <div class="code-block"><span class="code-comment">// fitosys-next/</span>
+app/
+  layout.tsx          <span class="code-comment">← Nav, Footer, grain ONLY here</span>
+  page.tsx            <span class="code-comment">← Imports sections only. No logic.</span>
+  globals.css         <span class="code-comment">← CSS vars, type scale, keyframes</span>
+  dashboard/page.tsx
+  join/[slug]/page.tsx
+  
+components/
+  layout/
+    Nav.tsx           <span class="code-comment">← Scroll-aware, mobile drawer</span>
+    Footer.tsx
+    Grain.tsx         <span class="code-comment">← opacity 0.025, z-index 0</span>
+  sections/           <span class="code-comment">← One file per section</span>
+    Hero.tsx
+    PainTicker.tsx
+    Problem.tsx
+    Features.tsx
+    HowItWorks.tsx
+    Pricing.tsx
+    Testimonials.tsx
+    About.tsx
+    CtaBanner.tsx
+    Footer.tsx
+  ui/
+    Eyebrow.tsx       <span class="code-comment">← '— LABEL' pattern</span>
+    StatPair.tsx      <span class="code-comment">← D5 num + B4 label. Always use this.</span>
+    Badge.tsx
+    
+lib/
+  constants.ts        <span class="code-comment">← ALL data. No hardcoding in JSX.</span>
+  tokens.ts           <span class="code-comment">← CSS var values as JS constants</span></div>
+    </div>
+    <div>
+      <div class="spec-sub">Critical Rules</div>
+      <div class="code-block"><span class="code-comment">// constants.ts — data lives here only</span>
+<span class="code-key">export const</span> <span class="code-fn">NAV_LINKS</span> = [
+  { label: <span class="code-val">'Features'</span>, href: <span class="code-val">'#features'</span> },
+  { label: <span class="code-val">'Pricing'</span>, href: <span class="code-val">'#pricing'</span> },
+  ...
+];
+
+<span class="code-key">export const</span> <span class="code-fn">FEATURES</span> = [
+  { num: <span class="code-val">'01'</span>, title: <span class="code-val">'Automated Onboarding'</span>, ... },
+  ...
+];
+
+<span class="code-key">export const</span> <span class="code-fn">PRICING_PLANS</span> = [
+  { tier: <span class="code-val">'Starter'</span>, price: <span class="code-val">999</span>, ... },
+  ...
+];
+
+<span class="code-comment">// page.tsx — sections only, zero logic</span>
+<span class="code-key">export default function</span> <span class="code-fn">Page</span>() {
+  <span class="code-key">return</span> (
+    &lt;main&gt;
+      &lt;<span class="code-fn">HeroSection</span> /&gt;
+      &lt;<span class="code-fn">PainTicker</span> /&gt;
+      &lt;<span class="code-fn">ProblemSection</span> /&gt;
+      &lt;<span class="code-fn">FeaturesSection</span> /&gt;
+      &lt;<span class="code-fn">HowItWorksSection</span> /&gt;
+      &lt;<span class="code-fn">PricingSection</span> /&gt;
+      &lt;<span class="code-fn">TestimonialsSection</span> /&gt;
+      &lt;<span class="code-fn">AboutSection</span> /&gt;
+      &lt;<span class="code-fn">CtaBanner</span> /&gt;
+    &lt;/main&gt;
+  );
+}</div>
+      <div class="spec-sub" style="margin-top:24px">No GSAP Rule</div>
+      <div style="padding:16px 20px;background:rgba(232,0,29,0.06);border-left:3px solid var(--red);font-size:var(--fs-b4);color:rgba(255,255,255,0.7);font-family:var(--fb);line-height:1.6">
+        No GSAP on content or sections. CSS transitions only (0.2s ease). Framer Motion only if scroll-triggered reveals are explicitly required on a specific section. No scroll-jacking. No page loaders. Performance over visual novelty.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Master Prompt -->
+<div class="prompt-section">
+  <div class="eyebrow"><span class="eyebrow-text">Master Prompt — Paste into Antigravity / Cursor as one message</span></div>
+  <div class="prompt-box">
+<span class="prompt-section-head">## ROLE</span>
+You are a Senior Frontend Developer specialising in Next.js 15, TypeScript, and Tailwind CSS v4.
+You build production-grade, performance-first web applications with clean component architecture.
+You write modular, well-commented TypeScript. Every animated component has 'use client'.
+You follow the Fitosys Typography Spec and Brand Identity v2 without deviation.
+
+<span class="prompt-section-head">## PROJECT</span>
+Build the complete Next.js 15 marketing website for FITOSYS — a SaaS business OS for
+independent fitness, yoga, and wellness coaches in India. Everything runs on WhatsApp.
+
+Brand: Performance-driven, India-first, systems-focused.
+Visual direction: Dark editorial, precision typography, surgical use of red.
+No GSAP. CSS transitions only. No scroll-jacking. No page loaders.
+
+<span class="prompt-section-head">## TECH STACK</span>
+Framework: Next.js 15 (App Router)
+Language: TypeScript (strict mode)
+Styling: Tailwind CSS v4 (CSS-first config)
+Animations: CSS transitions only (0.2s ease). No GSAP. No Framer Motion unless explicitly requested.
+Fonts: next/font/google — Barlow Condensed (400, 500) + Urbanist (300, 400, 500, 600, 700)
+UI: shadcn/ui for dialogs and overlays only
+Payments: Razorpay (already configured)
+Deployment: Vercel
+
+<span class="prompt-section-head">## COLOUR TOKENS — define in globals.css as CSS variables</span>
+--red: #E8001D          /* Brand primary. CTAs, accents, active states */
+--black: #0A0A0A        /* All page backgrounds */
+--surface: #111111      /* Cards, panels, nav */
+--surface2: #161616     /* Featured cards, hover states */
+--border: rgba(255,255,255,0.06)  /* All structural borders */
+--white: #FFFFFF        /* Primary text on dark */
+--grey: #888888         /* Secondary text, labels, descriptions */
+--grey-mid: #444444     /* Tertiary text */
+--red-dim: rgba(232,0,29,0.08)    /* Red background tints */
+--red-border: rgba(232,0,29,0.2)  /* Red border accents */
+
+<span class="prompt-section-head">## TYPOGRAPHY — AUTHORITATIVE. NO DEVIATIONS.</span>
+Two fonts only. If any other font appears, remove it.
+
+Barlow Condensed (var(--fd)):
+  - Use for: ALL headlines, stat numbers, price figures, CTAs, feature numbers
+  - Weights: 400, 500 ONLY. Hard cap at 500. Never 600, 700, 800, 900.
+  - Style: text-transform: uppercase. letter-spacing: 0.02em. line-height: 1.0.
+
+Urbanist (var(--fb)):
+  - Use for: ALL body copy, labels, nav, forms, descriptions, testimonials
+  - Weights: 300, 400, 500 for body. 700 ONLY for CTA buttons. Never 800, 900.
+  - Line height: 1.7 for body. 1.4 for UI labels.
+
+Type scale — 8 levels. Map every element to one level:
+D1: 80px/60px/44px  — Hero H1
+D2: 56px/44px/36px  — Section headlines
+D3: 44px/36px/28px  — Sub-section titles
+D4: 32px/28px/24px  — Feature card titles (min 17px jump above body)
+D5: 48px/40px/32px  — Price figures + stat numbers
+B1: 20px/19px/18px  — Lead paragraphs
+B2: 17px/16px/16px  — Standard body copy
+B3: 15px/15px/15px  — Card descriptions
+B4: 13px/13px/13px  — Labels, nav, tags, UI text
+B5: 12px/12px/12px  — Fine print only
+
+THE ONE RULE YOU MUST NEVER BREAK:
+Stat numbers (D5) and stat labels (B4) must ALWAYS be:
+  - Different fonts (Barlow vs Urbanist)
+  - Different sizes (D5 vs 13px)
+  - Different colors (red or white vs #888888)
+  - Number stacked above label. Never beside.
+
+<span class="prompt-section-head">## DIRECTORY STRUCTURE</span>
+fitosys-next/
+├── app/
+│   ├── layout.tsx          ← fonts, metadata, Nav, Footer, Grain ONLY
+│   ├── globals.css         ← CSS variables, type scale, @keyframes, grain
+│   ├── page.tsx            ← imports section components only — no logic
+│   ├── dashboard/page.tsx
+│   └── join/[slug]/page.tsx
+├── components/
+│   ├── layout/
+│   │   ├── Nav.tsx         ← scroll-aware, mobile drawer
+│   │   ├── Footer.tsx
+│   │   └── Grain.tsx       ← CSS grain, opacity 0.025, z-index 0
+│   ├── sections/
+│   │   ├── HeroSection.tsx
+│   │   ├── PainTicker.tsx
+│   │   ├── ProblemSection.tsx
+│   │   ├── FeaturesSection.tsx
+│   │   ├── HowItWorksSection.tsx
+│   │   ├── PricingSection.tsx
+│   │   ├── TestimonialsSection.tsx
+│   │   ├── AboutSection.tsx
+│   │   └── CtaBanner.tsx
+│   └── ui/
+│       ├── Eyebrow.tsx     ← '— LABEL' pattern, red line + red text
+│       ├── StatPair.tsx    ← D5 number + B4 label. Always use this component.
+│       └── Badge.tsx       ← Inline badges (WhatsApp Native, AI Powered etc)
+├── lib/
+│   ├── constants.ts        ← ALL static data. No hardcoding in JSX.
+│   └── tokens.ts           ← CSS variable values as JS constants
+└── hooks/
+    └── useScrolled.ts      ← Navbar scroll state only
+
+ARCHITECTURE RULE: app/layout.tsx is the ONLY place for Nav, Footer, Grain.
+Page files import section components only — no layout primitives.
+
+<span class="prompt-section-head">## CRITICAL RULES</span>
+1. Zero GSAP. Zero Framer Motion unless a section explicitly needs scroll reveals.
+2. All data (nav links, features, pricing, testimonials) in lib/constants.ts. Never hardcode in JSX.
+3. Every new section is a separate component in components/sections/. page.tsx is thin.
+4. Stat numbers always Barlow 500. Stat labels always Urbanist 400 13px #888888. Always stacked.
+5. Barlow Condensed max weight 500. If you use 700/800/900 Barlow, you have broken the brand spec.
+6. Background is #0A0A0A. Surface cards are #111111. Never use arbitrary dark values.
+7. All borders use rgba(255,255,255,0.06) — the var(--border) token. Not hardcoded values.
+8. Red is #E8001D — not #F20000, not #FF0000. One red. Always.
+9. The noise grain lives in Grain.tsx at opacity 0.025 and z-index 0. It is subtle. Not dominant.
+10. Mobile hero H1 caps at 44px. No horizontal scroll ever. Test on 375px before declaring done.
+
+<span class="prompt-section-head">## BUILD SEQUENCE — follow this order exactly</span>
+
+TASK 1: Project scaffolding
+Create Next.js 15 project with TypeScript, Tailwind CSS v4, shadcn/ui.
+Set up globals.css with all CSS variables from the COLOUR TOKENS and TYPE SCALE above.
+Set up layout.tsx with Barlow Condensed + Urbanist via next/font/google.
+Create lib/constants.ts with placeholder data structures for all sections.
+
+TASK 2: Layout primitives (layout.tsx only)
+Build Nav.tsx — scroll-aware, blur backdrop, logo left, links + CTA right, mobile hamburger.
+Build Footer.tsx — 4-column grid, brand description, product/company/legal links.
+Build Grain.tsx — CSS-only grain overlay, opacity 0.025, pointer-events none, z-index 0.
+
+TASK 3: Hero section
+Build HeroSection.tsx — 2-column grid, hero copy left, phone mockup right.
+H1 uses D1 scale. Lead uses B1. Stat strip uses D5 numbers + B4 labels via StatPair component.
+Float cards: response rate card top-right, renewal alert card bottom-left. CSS animation only.
+Tab switcher: Client View (WhatsApp) / Dashboard — toggle state in useState. No GSAP.
+
+TASK 4: Pain Ticker
+Build PainTicker.tsx — CSS marquee animation, severity numbers at D5 size (not same as labels).
+
+TASK 5: Problem section
+Build ProblemSection.tsx — 2-col grid, section headline D2, 3 problem items with H3 + B3 desc.
+
+TASK 6: Features section
+Build FeaturesSection.tsx — 3×2 grid, feature cards with D4 titles and B3 descriptions.
+
+TASK 7: How It Works section
+Build HowItWorksSection.tsx — 4-step horizontal grid. Step circles in red. D3 step titles.
+
+TASK 8: Pricing section
+Build PricingSection.tsx — 4-column pricing grid. D5 price figures. B4 client limit labels.
+Mobile: tab switcher pattern, one card at a time. Feature checkmarks left-padded.
+
+TASK 9: Testimonials section
+Build TestimonialsSection.tsx — 3-col grid, italic quotes, D5 ROI numbers, B4 descriptions.
+
+TASK 10: About section
+Build AboutSection.tsx — 2-col grid. Left: italic manifesto + 3 pillars. Right: ghost FITOSYS word
+(not overlapping) + 4 stat rows using D5 numbers + B4 labels via StatPair.
+
+TASK 11: CTA Banner
+Build CtaBanner.tsx — full-width red section, centred layout, D2 headline, one white CTA button.
+No flex justify-between. No floating button. Centred. Text above button.
+
+Review after each task: npx tsc --noEmit must return zero errors before proceeding.</div>
+</div>
+
+</body>
+</html>

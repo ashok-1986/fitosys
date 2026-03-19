@@ -58,6 +58,19 @@
   /* Fitosys Brand Palette — Dark-first (Authoritative: Brand Identity HTML) */
   --brand: #E8001D;
   --brand-hover: #C20000;
+
+  /* Marketing Page Strict Brand Tokens */
+  --red: #E8001D;
+  --black: #0A0A0A;
+  --surface: #111111;
+  --surface2: #161616;
+  --white: #FFFFFF;
+  --grey: #888888;
+  --grey-mid: #444444;
+  --red-border: rgba(232, 0, 29, 0.2);
+  --border-brand: rgba(255, 255, 255, 0.06);
+  /* Named differently to avoid shadcn conflict if needed, though Tailwind uses current --border for components. Will use text-[#888888] bg-[var(--surface)] or directly bg-[#111111] as instructed */
+
   --brand-glow: rgba(232, 0, 29, 0.18);
   --bg: #0D0D0D;
   --success: #10B981;
@@ -138,19 +151,7 @@
     position: relative;
   }
 
-  /* Noise texture overlay (Brand Identity HTML) */
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    opacity: 0.04;
-    pointer-events: none;
-    z-index: 9999;
-  }
+  /* Noise Texture replaced by Grain component */
 
   h1,
   h2,
@@ -2458,4 +2459,20 @@
   .left-col {
     grid-row: auto;
   }
+}
+
+@layer utilities {
+  .clip-path-hex {
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }

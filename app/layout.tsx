@@ -1,25 +1,21 @@
 import type { Metadata } from "next";
-import { Urbanist, Barlow_Condensed, Instrument_Serif } from "next/font/google";
+import { Urbanist, Barlow_Condensed } from "next/font/google";
 import { Providers } from "@/components/providers";
+import { Nav } from "@/components/layout/Nav";
+import { Footer } from "@/components/layout/Footer";
+import { Grain } from "@/components/layout/Grain";
 import "./globals.css";
 
 const urbanist = Urbanist({
   variable: "--font-urbanist",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 const barlowCondensed = Barlow_Condensed({
   variable: "--font-barlow",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
-});
-
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument",
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
+  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
@@ -93,8 +89,8 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={`${urbanist.variable} ${barlowCondensed.variable} ${instrumentSerif.variable} font-sans antialiased`}>
-        <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-background focus:text-foreground">
+      <body className={`${urbanist.variable} ${barlowCondensed.variable} font-sans antialiased text-white bg-[#0A0A0A]`}>
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-[#0A0A0A] focus:text-white">
           Skip to main content
         </a>
         <Providers>
