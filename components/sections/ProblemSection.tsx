@@ -3,36 +3,54 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 
 export function ProblemSection() {
     return (
-        <section className="py-32 bg-[var(--black)]">
-            <div className="max-w-[1400px] mx-auto px-4">
-                <div className="grid lg:grid-cols-2 gap-16">
-                    <div className="max-w-xl">
-                        <Eyebrow label="The Reality" />
-                        <h2 className="font-display font-medium text-[36px] md:text-[44px] lg:text-[56px] leading-[1.0] tracking-[0.02em] uppercase text-white mt-6 mb-8">
-                            Why independent <br />
-                            coaches <span className="text-[var(--red)]">hit a ceiling.</span>
+        <section className="bg-[var(--surface)]" id="problem">
+            <div className="max-w-[1400px] mx-auto px-4 md:px-12 py-28 md:py-32">
+                <div className="grid lg:grid-cols-2 gap-20 items-start">
+                    {/* Left — Headline */}
+                    <div>
+                        <Eyebrow label="The Problem" />
+                        <h2 className="font-display font-medium text-[36px] md:text-[44px] lg:text-[56px] leading-none tracking-[0.02em] uppercase text-white mt-6 mb-6">
+                            Your coaching<br />
+                            is <span className="text-[var(--red)]">excellent.</span><br />
+                            <span className="text-[rgba(255,255,255,0.15)]">Your system</span><br />
+                            is broken.
                         </h2>
-                        <p className="font-sans text-[17px] md:text-[18px] lg:text-[20px] leading-[1.7] text-[var(--grey)]">
-                            You didn't become a coach to be an admin assistant. But at 30 clients, the math breaks. The spreadsheets fail. The follow-ups slip.
+                        <p className="font-sans text-[17px] text-[var(--grey)] leading-[1.7] max-w-[460px] mt-5">
+                            Independent coaches with 20–40 clients face the same operational failures every month. None of them have anything to do with coaching quality.
                         </p>
                     </div>
 
-                    <div className="flex flex-col gap-10">
+                    {/* Right — Problem List */}
+                    <div className="flex flex-col">
                         {PROBLEM_ITEMS.map((item, i) => (
-                            <div key={i} className="flex gap-6 group">
-                                <div className="font-display font-medium text-[24px] text-[var(--red)] tracking-widest mt-1 opacity-50 group-hover:opacity-100 transition-opacity">
-                                    0{i + 1}
+                            <div key={i} className={`py-7 border-b border-[var(--border)] ${i === 0 ? 'border-t' : ''}`}>
+                                <div className="font-sans font-medium text-[13px] uppercase tracking-[0.08em] text-[rgba(255,255,255,0.2)] mb-2">
+                                    {item.num} — {item.tag}
                                 </div>
-                                <div>
-                                    <h3 className="font-display font-medium text-[24px] md:text-[28px] lg:text-[32px] leading-[1.0] tracking-[0.02em] uppercase text-white mb-3">
-                                        {item.title}
-                                    </h3>
-                                    <p className="font-sans text-[15px] leading-[1.7] text-[var(--grey)]">
-                                        {item.description}
-                                    </p>
-                                </div>
+                                <h3 className="font-display font-medium text-[24px] md:text-[28px] leading-[1.1] tracking-[0.02em] uppercase text-white mb-2">
+                                    {item.title}
+                                </h3>
+                                <p className="font-sans text-[15px] text-[var(--grey)] leading-[1.7] mb-3">
+                                    {item.description}
+                                </p>
+                                <span className="inline-flex items-center gap-[6px] bg-[var(--red-dim)] border border-[var(--red-border)] px-3 py-1 rounded-[2px] font-sans font-bold text-[11px] uppercase tracking-[0.06em] text-[var(--red)]">
+                                    {item.badge}
+                                </span>
                             </div>
                         ))}
+                    </div>
+                </div>
+
+                {/* Quote Block */}
+                <div className="mt-20 max-w-[680px] mx-auto">
+                    <div className="bg-[var(--surface)] border-l-[3px] border-[var(--red)] py-8 px-9">
+                        <span className="font-serif text-[80px] leading-none text-[rgba(232,0,29,0.2)] block mb-2">&ldquo;</span>
+                        <p className="font-sans text-[17px] italic text-white leading-[1.6] mb-4">
+                            It was 11pm on a Sunday. I was still manually sending check-in messages to 18 clients. That wasn&apos;t a business — that was madness.
+                        </p>
+                        <div className="font-sans font-semibold text-[13px] text-white">
+                            Priya Sharma <span className="text-[var(--grey)] font-normal">— Fitness Coach, Mumbai · 2.5 hours recovered per week after Fitosys</span>
+                        </div>
                     </div>
                 </div>
             </div>

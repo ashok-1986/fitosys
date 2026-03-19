@@ -120,8 +120,8 @@
   --sidebar-accent-foreground: #FFFFFF;
   --sidebar-border: rgba(232, 0, 29, 0.25);
   /* Fitosys Dashboard Specific Tokens (from fitosys-dashboard.html) */
-  --red-dim: rgba(242, 0, 0, 0.10);
-  --red-faint: rgba(242, 0, 0, 0.06);
+  --red-dim: rgba(232, 0, 29, 0.10);
+  --red-faint: rgba(232, 0, 29, 0.06);
   --s1: #141414;
   /* card surface */
   --s2: #1A1A1A;
@@ -351,7 +351,7 @@
 
 .sb-btn.on {
   color: #FFFFFF;
-  background: rgba(242, 0, 0, 0.10);
+  background: rgba(232, 0, 29, 0.10);
 }
 
 .sb-btn.on::before {
@@ -439,7 +439,7 @@
 }
 
 .topbar-search:focus-within {
-  border-color: rgba(242, 0, 0, 0.35);
+  border-color: rgba(232, 0, 29, 0.35);
 }
 
 .topbar-search input {
@@ -917,7 +917,7 @@
 }
 
 .tag-pill:hover {
-  border-color: rgba(242, 0, 0, 0.3);
+  border-color: rgba(232, 0, 29, 0.3);
 }
 
 .tag-top {
@@ -1375,8 +1375,8 @@
 
 :root {
   --red: #E8001D;
-  --red-dim: rgba(242, 0, 0, 0.10);
-  --red-faint: rgba(242, 0, 0, 0.06);
+  --red-dim: rgba(232, 0, 29, 0.10);
+  --red-faint: rgba(232, 0, 29, 0.06);
   --bg: #0D0D0D;
   --s1: #141414;
   --s2: #1A1A1A;
@@ -1625,7 +1625,7 @@
 }
 
 .topbar-search:focus-within {
-  border-color: rgba(242, 0, 0, 0.35);
+  border-color: rgba(232, 0, 29, 0.35);
 }
 
 .topbar-search input {
@@ -2010,7 +2010,7 @@
 }
 
 .tag-pill:hover {
-  border-color: rgba(242, 0, 0, 0.3);
+  border-color: rgba(232, 0, 29, 0.3);
 }
 
 .tag-top {

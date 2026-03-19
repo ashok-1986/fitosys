@@ -1,42 +1,49 @@
 import { FEATURES } from "@/lib/constants";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { MessageCircle, Brain, CreditCard, BellRing, ClipboardList, Activity } from "lucide-react";
 
-const getIcon = (i: number) => {
-    const icons = [MessageCircle, Brain, CreditCard, BellRing, ClipboardList, Activity];
-    const Icon = icons[i % icons.length];
-    return <Icon className="w-6 h-6 text-[var(--red)]" />;
+const tagColors: Record<string, string> = {
+    wa: "bg-[rgba(37,211,102,0.1)] text-[#25D366]",
+    ai: "bg-[var(--red-dim)] text-[var(--red)]",
+    fin: "bg-[rgba(59,130,246,0.1)] text-[#60a5fa]",
 };
 
 export function FeaturesSection() {
     return (
-        <section className="py-32 bg-[var(--black)] border-t border-[var(--border)]" id="features">
-            <div className="max-w-[1400px] mx-auto px-4">
-                <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-20">
-                    <Eyebrow label="Features" />
-                    <h2 className="font-display font-medium text-[36px] md:text-[44px] lg:text-[56px] leading-[1.0] tracking-[0.02em] uppercase text-white mt-6 mb-8">
-                        Built for <span className="text-[var(--red)]">Scale.</span>
-                    </h2>
-                    <p className="font-sans text-[17px] md:text-[18px] lg:text-[20px] leading-[1.7] text-[var(--grey)]">
-                        Everything you need to run a high-ticket coaching business without the administrative bloat.
+        <section id="features">
+            <div className="max-w-[1400px] mx-auto px-4 md:px-12 py-28 md:py-32">
+                <div className="grid lg:grid-cols-2 gap-12 mb-16 items-end">
+                    <div>
+                        <Eyebrow label="Core Features" />
+                        <h2 className="font-display font-medium text-[36px] md:text-[44px] lg:text-[56px] leading-none tracking-[0.02em] uppercase text-white mt-6">
+                            Three things.<br />
+                            <span className="text-[rgba(255,255,255,0.15)]">Zero Sundays</span><br />
+                            <span className="text-[var(--red)]">lost.</span>
+                        </h2>
+                    </div>
+                    <p className="font-sans text-[20px] text-[var(--grey)] leading-[1.7] self-end">
+                        Fitosys automates exactly three workflows — the three that eat the most time and cost the most revenue. Nothing more. Nothing less.
                     </p>
                 </div>
 
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {FEATURES.map((feature, i) => (
-                        <div
-                            key={i}
-                            className="bg-[var(--surface)] border border-[var(--border)] p-8 hover:bg-[var(--surface2)] transition-colors duration-200 group flex flex-col h-full"
-                        >
-                            <div className="w-12 h-12 rounded-full bg-[var(--red-dim)] border border-[var(--red-border)] flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-200 shrink-0">
-                                {getIcon(i)}
+                {/* Feature Grid — 1px gap with border background */}
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-[1px] bg-[var(--border)]">
+                    {FEATURES.map((f, i) => (
+                        <div key={i} className="bg-[var(--black)] p-10 relative overflow-hidden group transition-colors hover:bg-[var(--surface2)]">
+                            {/* Hover top line */}
+                            <div className="absolute top-0 left-0 right-0 h-[2px] bg-[var(--red)] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
+
+                            <div className="font-display font-medium text-[64px] leading-none text-[rgba(232,0,29,0.06)] mb-4 group-hover:text-[rgba(232,0,29,0.12)] transition-colors">
+                                {f.num}
                             </div>
-                            <h3 className="font-display font-medium text-[24px] md:text-[28px] lg:text-[32px] leading-[1.1] tracking-[0.02em] uppercase text-white mb-4">
-                                {feature.title}
-                            </h3>
-                            <p className="font-sans text-[15px] leading-[1.7] text-[var(--grey)] mt-auto">
-                                {feature.description}
+                            <h4 className="font-display font-medium text-[28px] md:text-[32px] leading-[1.1] tracking-[0.02em] uppercase text-white mb-3">
+                                {f.title}
+                            </h4>
+                            <p className="font-sans text-[15px] text-[var(--grey)] leading-[1.7] mb-5">
+                                {f.description}
                             </p>
+                            <span className={`inline-block font-sans font-bold text-[10px] uppercase tracking-[0.1em] px-[10px] py-1 rounded-[2px] ${tagColors[f.tagColor] || tagColors.wa}`}>
+                                {f.tag}
+                            </span>
                         </div>
                     ))}
                 </div>

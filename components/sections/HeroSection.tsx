@@ -18,16 +18,16 @@ export function HeroSection() {
 
                     {/* Left Column - Copy */}
                     <div className="max-w-[540px]">
-                        <Eyebrow label="Built for Indian Coaches · Runs on WhatsApp" />
+                        <Eyebrow label="India's Coaching Business OS · Runs on WhatsApp" />
 
                         <h1 className="font-display font-medium text-[56px] md:text-[64px] lg:text-[80px] leading-none tracking-[0.02em] uppercase text-white mt-8 mb-8">
-                            Stop<br />
-                            <span className="text-transparent" style={{ WebkitTextStroke: "1.5px rgba(255,255,255,0.2)" }}>Losing</span><br />
-                            <span className="text-[var(--red)]">Clients.</span>
+                            The System<br />
+                            <span className="text-transparent" style={{ WebkitTextStroke: '1.5px rgba(255,255,255,0.2)' }}>Behind</span><br />
+                            <span className="text-[var(--red)]">The Result.</span>
                         </h1>
 
                         <p className="font-sans text-[18px] md:text-[20px] leading-[1.7] text-[var(--grey)] mb-10 max-w-[480px]">
-                            Fitosys automates client onboarding, weekly check-ins, and renewal reminders — <strong className="text-white font-medium">natively on WhatsApp</strong>. 30 minutes to set up. Runs automatically after that.
+                            Automate your client check-ins, renewals, and onboarding — <strong className="text-white font-medium">natively on WhatsApp</strong>. Set up in 30 minutes. Runs every week without you.
                         </p>
 
                         <div className="flex flex-col sm:flex-row items-center gap-4 mb-4">

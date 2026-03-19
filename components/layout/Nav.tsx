@@ -37,7 +37,7 @@ export function Nav() {
                         <Link
                             key={link.label}
                             href={link.href}
-                            className="text-[13px] font-medium text-[var(--grey)] hover:text-[var(--white)] transition-colors"
+                            className="text-[13px] font-medium text-[var(--grey)] hover:text-[var(--white)] uppercase tracking-[0.08em] transition-colors"
                         >
                             {link.label}
                         </Link>
@@ -50,7 +50,7 @@ export function Nav() {
                     </Link>
                     <Link
                         href="/signup"
-                        className="bg-[var(--red)] text-white px-5 py-2.5 text-[13px] font-bold uppercase tracking-wider hover:bg-[#C20000] transition-colors"
+                        className="bg-[var(--red)] text-white px-6 py-2.5 text-[13px] font-bold uppercase tracking-[0.04em] hover:bg-[#C20000] transition-colors rounded-[2px]"
                     >
                         Start Free
                     </Link>

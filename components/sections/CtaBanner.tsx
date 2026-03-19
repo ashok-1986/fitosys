@@ -1,33 +1,29 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 
 export function CtaBanner() {
     return (
-        <section className="py-32 bg-[var(--black)] relative overflow-hidden border-t border-[var(--border)]">
-            {/* Background Logo Outline Pattern */}
-            <div className="absolute inset-0 z-0 pointer-events-none opacity-5 flex items-center justify-center">
-                <svg viewBox="0 0 100 100" className="w-[800px] h-[800px] text-white" fill="none" stroke="currentColor" strokeWidth="2">
-                    {/* A stylized 'F' roughly matching the brand logo described */}
-                    <polygon points="20,80 20,20 80,20 80,40 40,40 40,50 70,50 70,70 40,70 40,80" />
-                </svg>
-            </div>
+        <section className="relative z-[1] bg-[var(--red)] py-24 md:py-28 overflow-hidden">
+            {/* Grid pattern overlay */}
+            <div className="absolute inset-0 pointer-events-none" style={{
+                backgroundImage: 'linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)',
+                backgroundSize: '40px 40px',
+            }} />
 
-            <div className="max-w-[1400px] mx-auto px-4 relative z-10">
-                <div className="max-w-4xl mx-auto border border-[var(--red-border)] bg-[var(--surface)] p-12 md:p-20 text-center flex flex-col items-center">
-                    <h2 className="font-display font-medium text-[36px] md:text-[44px] lg:text-[56px] leading-[1.0] tracking-[0.02em] uppercase text-white mb-6">
-                        Ready to <span className="text-[var(--red)]">Scale?</span>
-                    </h2>
-                    <p className="font-sans text-[17px] md:text-[18px] lg:text-[20px] leading-[1.7] text-[var(--grey)] mb-10 max-w-xl">
-                        Join the top 1% of independent coaches who have automated their admin and maximized client retention.
-                    </p>
-                    <Link
-                        href="/signup"
-                        className="rounded-full bg-[var(--red)] text-white px-10 py-5 text-[15px] font-sans font-bold uppercase tracking-wider hover:bg-[#C20000] transition-colors flex items-center justify-center gap-2 group"
-                    >
-                        Start 14-Day Free Trial
-                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                </div>
+            <div className="relative z-[1] max-w-[900px] mx-auto px-4 text-center">
+                <h2 className="font-display font-medium text-[44px] md:text-[56px] lg:text-[72px] leading-none tracking-[0.02em] uppercase text-white mb-4">
+                    Your Next Client<br />
+                    <span className="text-transparent" style={{ WebkitTextStroke: '1.5px rgba(255,255,255,0.4)' }}>Is Already</span><br />
+                    Waiting.
+                </h2>
+                <p className="font-sans text-[14px] md:text-[15px] text-[rgba(255,255,255,0.65)] mb-9">
+                    Give them a coach who has the system to keep them.
+                </p>
+                <Link
+                    href="/signup"
+                    className="inline-block bg-white text-[var(--red)] font-sans font-bold text-[13px] uppercase tracking-[0.04em] px-12 py-4 rounded-[2px] hover:opacity-90 transition-opacity"
+                >
+                    Start Free — No Card Needed
+                </Link>
             </div>
         </section>
     );

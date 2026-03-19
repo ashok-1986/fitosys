@@ -3,40 +3,41 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 
 export function HowItWorksSection() {
     return (
-        <section className="py-32 bg-[var(--surface)] border-t border-[var(--border)]" id="how-it-works">
-            <div className="max-w-[1400px] mx-auto px-4">
-
-                <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-24">
-                    <Eyebrow label="The Process" />
-                    <h2 className="font-display font-medium text-[36px] md:text-[44px] lg:text-[56px] leading-[1.0] tracking-[0.02em] uppercase text-white mt-6 mb-8">
-                        Set it up once. <br />
-                        <span className="text-[var(--red)]">Let it run forever.</span>
-                    </h2>
+        <section className="bg-[var(--surface)]" id="how-it-works">
+            <div className="max-w-[1400px] mx-auto px-4 md:px-12 py-28 md:py-32">
+                <div className="grid lg:grid-cols-2 gap-12 items-end">
+                    <div>
+                        <Eyebrow label="How It Works" />
+                        <h2 className="font-display font-medium text-[36px] md:text-[44px] lg:text-[56px] leading-none tracking-[0.02em] uppercase text-white mt-6">
+                            Four steps to<br />
+                            <span className="text-[var(--red)]">full</span><br />
+                            <span className="text-[rgba(255,255,255,0.15)]">automation.</span>
+                        </h2>
+                    </div>
+                    <p className="font-sans text-[20px] text-[var(--grey)] leading-[1.7] self-end">
+                        From sign-up to a fully automated coaching business. Average setup time: 28 minutes. No technical knowledge required.
+                    </p>
                 </div>
 
-                <div className="grid md:grid-cols-4 gap-8 md:gap-4 lg:gap-8 relative">
-                    {/* Connecting Line for Desktop */}
-                    <div className="hidden md:block absolute top-[40px] left-[10%] right-[10%] h-[1px] bg-gradient-to-r from-transparent via-[var(--red-border)] to-transparent" />
-
+                {/* Steps Grid */}
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-[1px] bg-[var(--border)] mt-16">
                     {HOW_IT_WORKS_STEPS.map((step, i) => (
-                        <div key={i} className="relative flex flex-col items-center text-center group">
-                            <div className="w-20 h-20 rounded-full bg-[var(--black)] border border-[var(--border)] flex items-center justify-center z-10 mb-8 transition-colors duration-300 group-hover:border-[var(--red)] group-hover:bg-[var(--surface2)]">
-                                <span className="font-display font-medium text-[36px] md:text-[44px] lg:text-[56px] leading-none tracking-[0.02em] uppercase text-[var(--red)]">
-                                    {i + 1}
-                                </span>
+                        <div key={i} className="bg-[var(--surface)] p-10 transition-colors hover:bg-[var(--surface2)]">
+                            <div className="w-8 h-8 rounded-full bg-[var(--red)] flex items-center justify-center font-display font-medium text-[16px] text-white mb-5">
+                                {step.num}
                             </div>
-
-                            <h3 className="font-display font-medium text-[24px] md:text-[28px] lg:text-[32px] leading-[1.1] tracking-[0.02em] uppercase text-white mb-3">
+                            <h3 className="font-display font-medium text-[24px] leading-[1.1] tracking-[0.02em] uppercase text-white mb-3">
                                 {step.title}
                             </h3>
-
-                            <p className="font-sans text-[15px] leading-[1.7] text-[var(--grey)] max-w-xs">
+                            <p className="font-sans text-[15px] text-[var(--grey)] leading-[1.7] mb-4">
                                 {step.description}
                             </p>
+                            <div className="font-sans text-[11px] font-bold uppercase tracking-[0.08em] text-[var(--red)]">
+                                {step.time}
+                            </div>
                         </div>
                     ))}
                 </div>
-
             </div>
         </section>
     );

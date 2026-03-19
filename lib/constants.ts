@@ -3,6 +3,7 @@ export const NAV_LINKS = [
     { label: "How it Works", href: "#how-it-works" },
     { label: "Pricing", href: "#pricing" },
     { label: "Stories", href: "#stories" },
+    { label: "About", href: "#about" },
 ];
 
 export const HERO_STATS = {
@@ -13,51 +14,78 @@ export const HERO_STATS = {
 
 export const PROBLEM_ITEMS = [
     {
-        title: "Client Ghosting",
-        description: "They sign up, pay, and then disappear by week 3 because Excel sheets don't check in on them.",
+        num: "01",
+        tag: "Revenue Leakage",
+        title: "Clients disappear after programs end. You chase. They ghost.",
+        description: "Programs expire and coaches find out only when the client stops responding. No system. No reminders. No recovery.",
+        badge: "₹72K–₹1.08L lost annually per coach",
     },
     {
-        title: "Sunday Spreadsheet Hell",
-        description: "Spending your entire rest day tracking down who did their workouts and who missed them.",
+        num: "02",
+        tag: "Engagement Blind Spot",
+        title: "You only know a client is struggling when they stop paying.",
+        description: "Without structured check-ins, coaches have no data on client progress until the client complains or drops out.",
+        badge: "10–20% annual churn from retention blindness",
     },
     {
-        title: "Lost Renewals",
-        description: "Losing thousands because you forgot to tell a client their 12-week program ended yesterday.",
+        num: "03",
+        tag: "Admin Burnout",
+        title: "Sunday evening sending 30 check-in messages by hand. Sound familiar?",
+        description: "WhatsApp follow-ups. Payment reconciliation. Manual onboarding. Time that should go to clients, content, or recovery.",
+        badge: "8–12 hours/week average admin overhead",
     },
 ];
 
 export const FEATURES = [
     {
-        title: "WhatsApp Check-ins",
-        description: "Automated, branded messages sent exactly when your clients need them. Replies are auto-captured.",
+        num: "01",
+        title: "Automated Client Onboarding",
+        description: "Share one link. Client fills a form, pays via Razorpay UPI/card, and gets a WhatsApp welcome message — all automatically.",
+        tag: "WhatsApp Native",
+        tagColor: "wa",
     },
     {
-        title: "AI Summaries",
-        description: "Every Monday morning, get a prioritised brief of who is thriving and who is at risk of churning.",
+        num: "02",
+        title: "Weekly Check-in System",
+        description: "Every Sunday, every active client gets a structured check-in. Their reply is stored automatically. You review a clean AI summary on Monday.",
+        tag: "WhatsApp Native",
+        tagColor: "wa",
     },
     {
-        title: "Zero-Friction Payments",
-        description: "Integrated Razorpay. Automatic GST invoices. Instant dashboard updates when a client pays.",
+        num: "03",
+        title: "Renewal Reminder Automation",
+        description: "Programs expiring in 7 days trigger automatic WhatsApp reminders. A follow-up fires after 48 hours if no reply. Never lose a renewal again.",
+        tag: "WhatsApp Native",
+        tagColor: "wa",
     },
     {
-        title: "Renewal Intelligence",
-        description: "Automated reminders 7 days and 3 days before a program expires. Never miss a renewal again.",
+        num: "04",
+        title: "AI Monday Summary",
+        description: "Gemini AI reads all check-ins and sends you a 150-word brief every Monday at 7AM. Response rates, energy trends, at-risk clients — prioritised.",
+        tag: "AI Powered",
+        tagColor: "ai",
     },
     {
-        title: "Program Blueprints",
-        description: "Build a program once. Assign it to 50 clients. The system handles the scheduling and progression.",
+        num: "05",
+        title: "GST Invoice Generation",
+        description: "Every Razorpay payment automatically generates a GST-compliant invoice delivered via email. No manual invoice creation ever again.",
+        tag: "Compliance Built-in",
+        tagColor: "fin",
     },
     {
-        title: "Client Health Pulse",
-        description: "A single dashboard showing red, yellow, and green indicators for every client on your roster.",
+        num: "06",
+        title: "Coach Dashboard",
+        description: "Every client's status, check-in history, payment timeline, and renewal date — in one clean view. No spreadsheets. No app switching.",
+        tag: "Real-time Data",
+        tagColor: "ai",
     },
 ];
 
 export const HOW_IT_WORKS_STEPS = [
-    { title: "Onboard instantly", description: "Send a payment link. The system handles the rest." },
-    { title: "Automate Check-ins", description: "Set the schedule. WhatsApp does the heavy lifting." },
-    { title: "Review Summaries", description: "Read Monday's AI brief. Action the 20% that matters." },
-    { title: "Scale Revenue", description: "Watch renewals hit your bank account automatically." },
+    { num: "1", title: "Sign Up & Create Profile", description: "Create your Fitosys account. Add your coaching type, WhatsApp business number, and Razorpay details.", time: "⏱ 5 minutes" },
+    { num: "2", title: "Create Your First Program", description: "Define your coaching program — name, duration, price, and check-in schedule. Get your unique onboarding link.", time: "⏱ 8 minutes" },
+    { num: "3", title: "Share Your Link", description: "Send your link to new clients. They fill details, pay via UPI or card, get a WhatsApp welcome. You get notified.", time: "⏱ 15 min to first client" },
+    { num: "4", title: "Fitosys Runs the Rest", description: "Check-ins fire every Sunday. AI summary arrives Monday. Renewal reminders go out 7 days before program ends.", time: "⏱ Runs forever" },
 ];
 
 export const PRICING_PLANS = [
@@ -102,7 +130,7 @@ export const PRICING_PLANS = [
 
 export const TESTIMONIALS = [
     {
-        quote: "I was losing 2-3 renewals per month simply because I forgot to follow up. Fitosys caught 4 renewals in the first month alone.",
+        quote: "I run a yoga studio in Delhi. Renewals used to happen by chance — whenever I remembered to follow up. Fitosys sent the reminder at T-7 days with the client's own progress data. Three clients renewed the same week I launched. ₹18,000 I would have lost otherwise.",
         roi: "₹1.8L",
         roiLabel: "annual revenue recovered",
         name: "Rahul Verma",
@@ -112,7 +140,7 @@ export const TESTIMONIALS = [
         initial: "R",
     },
     {
-        quote: "I used to spend every Sunday sending check-in messages manually to 28 clients. Now I wake up Monday morning to an AI summary.",
+        quote: "Sunday raat 11 baj gaye the. Main abhi bhi 18 clients ko check-in messages bhej raha tha. Yeh koi business nahi tha — yeh madness tha. Now I wake up Monday morning to an AI summary instead.",
         roi: "2.5h",
         roiLabel: "saved every week",
         name: "Priya Sharma",
@@ -122,7 +150,7 @@ export const TESTIMONIALS = [
         initial: "P",
     },
     {
-        quote: "My clients actually comment that the check-in system feels personal. The AI replies match the tone I set - it genuinely feels like a message from me.",
+        quote: "My clients actually comment that the check-in system feels personal. The AI replies match the tone I set — it genuinely feels like a message from me. Not one client has asked if it's automated.",
         roi: "94%",
         roiLabel: "check-in response rate",
         name: "Ananya Krishnan",
@@ -137,5 +165,28 @@ export const ABOUT_STATS = [
     { value: "₹72K", label: "Average annual revenue recovered per coach" },
     { value: "130+", label: "Hours saved per year from admin automation" },
     { value: "30min", label: "Average setup time for new coaches" },
-    { value: "₹999", label: "Starting price - less than one skipped session" },
+    { value: "₹999", label: "Starting price — less than one skipped session" },
+];
+
+export const FAQS = [
+    {
+        q: "Will my clients think the messages are automated and feel less personal?",
+        a: "No. Every message goes out from your WhatsApp number, in your name, with your client's first name. To them, it looks exactly like a message from you. The only difference is you didn't spend Sunday night sending 30 of them.",
+    },
+    {
+        q: "What happens after the 14-day free trial?",
+        a: "You pick a plan that fits your client count. No data is lost. No setup needed — everything continues seamlessly. Cancel anytime.",
+    },
+    {
+        q: "Do I need any technical skills to set this up?",
+        a: "Zero. If you can send a WhatsApp message, you can set up Fitosys. Average setup time is 30 minutes. We handle the rest.",
+    },
+    {
+        q: "Is this actually built for Indian coaches?",
+        a: "Yes. Razorpay for payments. GST invoicing built in. WhatsApp as the primary channel. Pricing in INR. We are not a US product with an Indian price tag.",
+    },
+    {
+        q: "What if a client doesn't respond to the check-in?",
+        a: "Fitosys flags them as at-risk in your Monday AI summary. You see exactly who hasn't responded and can follow up personally — but only with the ones who need it.",
+    },
 ];
