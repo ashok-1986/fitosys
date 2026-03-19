@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { useScrolled } from "@/hooks/useScrolled";
@@ -20,8 +21,14 @@ export function Nav() {
                 }`}
         >
             <div className="max-w-[1400px] mx-auto px-4 flex items-center justify-between">
-                <Link href="/" className="font-display font-black text-2xl tracking-tight text-white uppercase">
-                    FITO<span className="text-[var(--red)]">SYS</span>
+                <Link href="/" className="flex items-center">
+                    <Image
+                        src="/logo.png"
+                        alt="Fitosys Logo"
+                        width={100}
+                        height={30}
+                        className="w-[100px] h-auto object-contain"
+                    />
                 </Link>
 
                 {/* Desktop Links */}
