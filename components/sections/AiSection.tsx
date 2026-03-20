@@ -119,40 +119,33 @@ export function AiSection() {
                     <div className="order-1 lg:order-2">
                         <Eyebrow label="AI Powered" />
                         <h2 className="font-display font-medium text-[44px] md:text-[56px] lg:text-[64px] leading-none tracking-[0.02em] uppercase text-white mt-6 mb-8">
-                            Every Monday.<br />
-                            <span className="text-transparent" style={{ WebkitTextStroke: '1px rgba(255,255,255,0.3)' }}>A Brief.</span><br />
-                            <span className="text-[var(--red)]">Act On It.</span>
+                            <span className="block text-white">KNOW WHO NEEDS YOU.</span>
+                            <span className="block text-[#E8001D]">EVERY MONDAY.</span>
                         </h2>
                         <p className="font-sans text-[18px] text-[var(--grey)] leading-[1.7] mb-8">
-                            Every Monday at 7AM, Fitosys tells you which clients need a call, 
-                            which ones are at risk of leaving, and what to do about it.
+                            Gemini AI reads every check-in from the week and sends you one clear brief by 7 AM Monday. Response rates, energy trends, at-risk clients — sorted and prioritised. No dashboard needed. Just act on it.
                         </p>
-                        <p className="font-sans text-[16px] text-[var(--grey)] leading-[1.7] mb-10">
-                            No data science degree required. No dashboards to decode. Just a 
-                            clear, actionable brief that tells you exactly where to focus 
-                            your energy this week.
-                        </p>
-                        
+
                         <ul className="space-y-4 mb-10">
                             <li className="flex items-start gap-3">
                                 <span className="font-display font-medium text-[20px] text-[var(--red)] mt-1">●</span>
                                 <div>
                                     <span className="font-sans text-[15px] text-white block mb-1">At-risk client flagging</span>
-                                    <span className="font-sans text-[13px] text-[var(--grey)]">AI identifies clients who haven't checked in or are showing low engagement.</span>
+                                    <span className="font-sans text-[13px] text-[var(--grey)]">Clients who missed check-ins or show dropping energy are flagged automatically.</span>
                                 </div>
                             </li>
                             <li className="flex items-start gap-3">
                                 <span className="font-display font-medium text-[20px] text-[var(--red)] mt-1">●</span>
                                 <div>
                                     <span className="font-sans text-[15px] text-white block mb-1">Renewal predictions</span>
-                                    <span className="font-sans text-[13px] text-[var(--grey)]">Know who's likely to renew — and who needs a conversation before their program ends.</span>
+                                    <span className="font-sans text-[13px] text-[var(--grey)]">Know who is likely to renew and who needs a conversation before their program ends.</span>
                                 </div>
                             </li>
                             <li className="flex items-start gap-3">
                                 <span className="font-display font-medium text-[20px] text-[var(--red)] mt-1">●</span>
                                 <div>
-                                    <span className="font-sans text-[15px] text-white block mb-1">Conversation starters</span>
-                                    <span className="font-sans text-[13px] text-[var(--grey)]">Specific talking points based on each client's check-in history and progress.</span>
+                                    <span className="font-sans text-[15px] text-white block mb-1">One priority per week</span>
+                                    <span className="font-sans text-[13px] text-[var(--grey)]">One specific coaching action every Monday. Not ten insights. One.</span>
                                 </div>
                             </li>
                         </ul>
@@ -161,7 +154,7 @@ export function AiSection() {
                             href="/signup"
                             className="inline-block bg-[var(--red)] text-white font-sans font-bold text-[13px] uppercase tracking-[0.04em] px-10 py-[14px] rounded-[2px] hover:bg-[#C20000] transition-colors border-2 border-[var(--red)]"
                         >
-                            Start Free — No Card Needed
+                            Start Free
                         </a>
                     </div>
                 </div>
