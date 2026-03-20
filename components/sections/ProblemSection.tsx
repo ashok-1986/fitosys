@@ -27,7 +27,7 @@ export function ProblemSection() {
                                 <div className="font-sans font-medium text-[13px] uppercase tracking-[0.08em] text-[rgba(255,255,255,0.2)] mb-2">
                                     {item.num} — {item.tag}
                                 </div>
-                                <h3 className="font-display font-medium text-[24px] md:text-[28px] leading-[1.1] tracking-[0.02em] uppercase text-white mb-2">
+                                <h3 className="font-display font-medium text-[28px] md:text-[32px] leading-[1.1] tracking-[0.02em] uppercase text-white mb-2">
                                     {item.title}
                                 </h3>
                                 <p className="font-sans text-[15px] text-[var(--grey)] leading-[1.7] mb-3">

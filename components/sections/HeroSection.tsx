@@ -26,7 +26,7 @@ export function HeroSection() {
                             THE RESULT.
                         </h1>
 
-                        <p className="font-sans text-[18px] md:text-[20px] leading-[1.7] text-[var(--grey)] mb-10 max-w-[480px]">
+                        <p className="font-sans text-[20px] leading-[1.7] text-[var(--grey)] mb-10 max-w-[480px]">
                             Automate your client check-ins, renewals, and onboarding — <strong className="text-white font-medium">natively on WhatsApp</strong>. Set up in 30 minutes. Runs every week without you.
                         </p>
 

@@ -92,7 +92,7 @@ export function Nav() {
                         <Link
                             href="/signup"
                             onClick={() => setIsOpen(false)}
-                            className="bg-[var(--red)] text-white text-center py-3 text-[13px] font-bold uppercase tracking-wider"
+                            className="bg-[var(--red)] text-white text-center py-3 text-[13px] font-bold uppercase tracking-[0.04em]"
                         >
                             Start Free
                         </Link>
