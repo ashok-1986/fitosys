@@ -1,28 +1,24 @@
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export function CtaBanner() {
     return (
-        <section className="relative z-[1] bg-[var(--red)] py-24 md:py-28 overflow-hidden">
+        <section className="relative z-[1] bg-[#E8001D] py-24 md:py-28 overflow-hidden">
             {/* Grid pattern overlay */}
             <div className="absolute inset-0 pointer-events-none" style={{
                 backgroundImage: 'linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)',
                 backgroundSize: '40px 40px',
             }} />
 
-            <div className="relative z-[1] max-w-[900px] mx-auto px-4 text-center">
-                <h2 className="font-display font-medium text-[44px] md:text-[56px] lg:text-[72px] leading-none tracking-[0.02em] uppercase text-white mb-4">
+            <div className="relative z-[1] max-w-[800px] mx-auto text-center flex flex-col items-center gap-6 px-4">
+                <h2 className="font-display font-medium uppercase tracking-[0.02em] leading-none text-[56px] md:text-[72px] text-white">
                     <span className="block">STOP MANAGING.</span>
                     <span className="block">START COACHING.</span>
                 </h2>
-                <p className="font-sans text-[14px] md:text-[15px] text-[rgba(255,255,255,0.65)] mb-9">
+                <p className="font-sans text-[13px] text-white/70">
                     No card needed · First 5 clients free · Setup in 30 minutes
                 </p>
-                <Link
-                    href="/signup"
-                    className="inline-block bg-white text-[var(--red)] font-sans font-bold text-[13px] uppercase tracking-[0.04em] px-12 py-4 rounded-[2px] hover:opacity-90 transition-opacity"
-                >
-                    Start Free
-                </Link>
+                <Button variant="fitosys-primary" size="fitosys">Start Free</Button>
             </div>
         </section>
     );

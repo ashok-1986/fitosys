@@ -1,17 +1,17 @@
 import { StatPair } from "@/components/ui/StatPair";
 
 const TICKER_ITEMS = [
-    { value: "₹72K+", label: "annual revenue lost per coach to ghosted renewals" },
-    { value: "11hrs", label: "spent per week on manual WhatsApp check-ins" },
-    { value: "30min", label: "to automate onboarding with Razorpay & UPI" },
-    { value: "7AM", label: "Gemini AI Monday briefing delivered to your inbox" },
-    { value: "Zero", label: "manual GST invoices. Fully automated by Fitosys." },
+    { value: "₹72,000+", label: "Lost every year to renewals a system should have caught" },
+    { value: "3–5 hrs", label: "Spent on WhatsApp admin every week instead of coaching" },
+    { value: "10–20%", label: "Annual client churn from missed follow-ups, not poor coaching" },
+    { value: "0", label: "Visibility into which clients are quietly about to leave" },
+    { value: "Every Sunday", label: "Lost to manual check-in messages that take hours to send" },
     // Duplicate for seamless loop
-    { value: "₹72K+", label: "annual revenue lost per coach to ghosted renewals" },
-    { value: "11hrs", label: "spent per week on manual WhatsApp check-ins" },
-    { value: "30min", label: "to automate onboarding with Razorpay & UPI" },
-    { value: "7AM", label: "Gemini AI Monday briefing delivered to your inbox" },
-    { value: "Zero", label: "manual GST invoices. Fully automated by Fitosys." },
+    { value: "₹72,000+", label: "Lost every year to renewals a system should have caught" },
+    { value: "3–5 hrs", label: "Spent on WhatsApp admin every week instead of coaching" },
+    { value: "10–20%", label: "Annual client churn from missed follow-ups, not poor coaching" },
+    { value: "0", label: "Visibility into which clients are quietly about to leave" },
+    { value: "Every Sunday", label: "Lost to manual check-in messages that take hours to send" },
 ];
 
 export function PainTicker() {

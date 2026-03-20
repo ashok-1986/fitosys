@@ -67,7 +67,7 @@ export const FEATURES = [
     },
     {
         num: "05",
-        title: "Every payment. Every invoices. Automatic.",
+        title: "Every payment. Every invoice. Automatic.",
         description: "Every Razorpay payment triggers a GST-compliant invoice, generated and emailed automatically. No manual invoicing. Built for Indian coaches from day one.",
         tag: "Compliance Built-in",
         tagColor: "fin",
