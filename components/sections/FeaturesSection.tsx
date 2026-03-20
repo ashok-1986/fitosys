@@ -16,8 +16,7 @@ export function FeaturesSection() {
                         <Eyebrow label="Core Features" />
                         <h2 className="font-display font-medium text-[36px] md:text-[44px] lg:text-[56px] leading-none tracking-[0.02em] uppercase text-white mt-6">
                             Three things.<br />
-                            <span className="text-[rgba(255,255,255,0.15)]">Zero Sundays</span><br />
-                            <span className="text-[var(--red)]">lost.</span>
+                            <span className="text-[var(--red)]">Zero Manual Work.</span>
                         </h2>
                     </div>
                     <p className="font-sans text-[20px] text-[var(--grey)] leading-[1.7] self-end">

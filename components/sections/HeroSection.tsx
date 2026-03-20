@@ -18,7 +18,7 @@ export function HeroSection() {
 
                     {/* Left Column - Copy */}
                     <div className="max-w-[540px]">
-                        <Eyebrow label="India's Coaching Business OS · Runs on WhatsApp" />
+                        <Eyebrow label="INDIA'S COACHING BUSINESS OS" />
 
                         <h1 className="font-display font-medium text-[56px] md:text-[64px] lg:text-[80px] leading-none tracking-[0.02em] uppercase text-white mt-8 mb-8">
                             The System<br />
