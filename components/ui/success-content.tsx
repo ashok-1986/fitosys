@@ -37,7 +37,7 @@ export function SuccessContent({
                 </div>
 
                 {/* Title */}
-                <h1 className="text-6xl font-black font-display leading-[0.9] text-center uppercase tracking-tighter">
+                <h1 className="text-6xl font-medium font-display leading-[0.9] text-center uppercase tracking-tighter">
                     {title.split('\n').map((line, i) => (
                         <React.Fragment key={i}>
                             {line === 'In.' ? <span className="text-brand">In.</span> : line}

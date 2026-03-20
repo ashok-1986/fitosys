@@ -17,7 +17,7 @@ export function Nav() {
 
     return (
         <nav
-            className={`fixed top-0 inset-x-0 z-[100] transition-all duration-300 ${scrolled ? "bg-[var(--black)]/80 backdrop-blur-md border-b border-[var(--border)] py-3" : "bg-transparent py-5"
+            className={`fixed top-0 inset-x-0 z-[100] transition-all duration-300 ${scrolled ? "bg-[var(--black)]/90 backdrop-blur-md border-b border-[var(--border)] py-3" : "bg-transparent py-5"
                 }`}
         >
             <div className="max-w-[1400px] mx-auto px-4 flex items-center justify-between">
@@ -27,8 +27,11 @@ export function Nav() {
                         alt="Fitosys Logo"
                         width={100}
                         height={30}
-                        className="w-[100px] h-auto object-contain"
+                        className="w-[100px] h-auto object-contain hidden"
                     />
+                    <span style={{fontFamily:'Barlow Condensed', fontWeight:500, fontSize:'20px', textTransform:'uppercase', letterSpacing:'0.02em'}}>
+                        FITO<span style={{color:'#E8001D'}}>SYS</span>
+                    </span>
                 </Link>
 
                 {/* Desktop Links */}
@@ -37,14 +40,14 @@ export function Nav() {
                         <Link
                             key={link.label}
                             href={link.href}
-                            className="text-[13px] font-medium text-[var(--grey)] hover:text-[var(--white)] uppercase tracking-[0.08em] transition-colors"
+                            className="text-[14px] font-medium text-[var(--grey)] hover:text-[var(--white)] uppercase tracking-[0.06em] transition-colors"
                         >
                             {link.label}
                         </Link>
                     ))}
                     <Link
                         href="/login"
-                        className="text-[13px] font-medium text-[var(--grey)] hover:text-[var(--white)] transition-colors"
+                        className="text-[14px] font-medium text-[var(--grey)] hover:text-[var(--white)] transition-colors"
                     >
                         Login
                     </Link>

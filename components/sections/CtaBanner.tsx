@@ -11,9 +11,7 @@ export function CtaBanner() {
 
             <div className="relative z-[1] max-w-[900px] mx-auto px-4 text-center">
                 <h2 className="font-display font-medium text-[44px] md:text-[56px] lg:text-[72px] leading-none tracking-[0.02em] uppercase text-white mb-4">
-                    Your Next Client<br />
-                    <span className="text-transparent" style={{ WebkitTextStroke: '1.5px rgba(255,255,255,0.4)' }}>Is Already</span><br />
-                    Waiting.
+                    Your Next Client Is Already Waiting.
                 </h2>
                 <p className="font-sans text-[14px] md:text-[15px] text-[rgba(255,255,255,0.65)] mb-9">
                     Give them a coach who has the system to keep them.

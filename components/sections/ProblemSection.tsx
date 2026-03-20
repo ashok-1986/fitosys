@@ -46,10 +46,13 @@ export function ProblemSection() {
                     <div className="bg-[var(--surface)] border-l-[3px] border-[var(--red)] py-8 px-9">
                         <span className="font-serif text-[80px] leading-none text-[rgba(232,0,29,0.2)] block mb-2">&ldquo;</span>
                         <p className="font-sans text-[17px] italic text-white leading-[1.6] mb-4">
-                            It was 11pm on a Sunday. I was still manually sending check-in messages to 18 clients. That wasn&apos;t a business — that was madness.
+                            Sunday raat 11 baj gaye the. Main abhi bhi 18 clients ko check-in messages bhej raha tha. Yeh koi business nahi tha — yeh madness tha.
                         </p>
                         <div className="font-sans font-semibold text-[13px] text-white">
-                            Priya Sharma <span className="text-[var(--grey)] font-normal">— Fitness Coach, Mumbai · 2.5 hours recovered per week after Fitosys</span>
+                            Rahul Verma <span className="text-[var(--grey)] font-normal">— Yoga Coach, Delhi</span>
+                        </div>
+                        <div className="font-sans text-[13px] text-[var(--grey)] mt-2 leading-[1.6]">
+                            (English: "It was 11pm on a Sunday. I was still manually sending check-in messages to 18 clients. That wasn't a business — that was madness.")
                         </div>
                     </div>
                 </div>

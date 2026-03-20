@@ -107,7 +107,7 @@ export function StatCard({ label, value, sub, accent = "#FFFFFF", icon, trend, c
         {icon && <span className="text-lg opacity-60">{icon}</span>}
       </div>
       
-      <div className="text-[32px] font-bold font-barlow leading-none" style={{ color: accent }}>
+      <div className="text-[32px] font-medium font-barlow leading-none" style={{ color: accent }}>
         {value}
       </div>
       

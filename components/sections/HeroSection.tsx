@@ -23,7 +23,7 @@ export function HeroSection() {
                         <h1 className="font-display font-medium text-[56px] md:text-[64px] lg:text-[80px] leading-none tracking-[0.02em] uppercase text-white mt-8 mb-8">
                             The System<br />
                             <span className="text-transparent" style={{ WebkitTextStroke: '1.5px rgba(255,255,255,0.2)' }}>Behind</span><br />
-                            <span className="text-[var(--red)]">The Result.</span>
+                            THE RESULT.
                         </h1>
 
                         <p className="font-sans text-[18px] md:text-[20px] leading-[1.7] text-[var(--grey)] mb-10 max-w-[480px]">
@@ -54,10 +54,8 @@ export function HeroSection() {
                                 { num: '30min', label: 'setup time.\nzero tech skills needed.' },
                             ].map((stat, i) => (
                                 <div key={i}>
-                                    <div className="font-display font-medium text-[36px] text-white leading-none tracking-[0.02em]">
-                                        <span className={stat.num.includes('hr') || stat.num.includes('min') ? 'text-[var(--red)]' : 'text-white'}>
-                                            {stat.num.includes('K') ? `₹72K+` : stat.num}
-                                        </span>
+                                    <div className="font-display font-medium text-4xl text-[var(--red)] leading-none tracking-[0.02em]">
+                                        {stat.num}
                                     </div>
                                     <div className="font-sans font-normal text-[13px] text-[#888888] mt-[4px] leading-[1.4] whitespace-pre-line">
                                         {stat.label}
@@ -107,17 +105,17 @@ export function HeroSection() {
                         </div>
 
                         {/* Phone Mockup Frame */}
-                        <div className="w-[300px] bg-[#1A1A1A] border border-[rgba(255,255,255,0.08)] rounded-[40px] p-[14px] shadow-[0_48px_96px_rgba(0,0,0,0.9),0_0_0_1px_rgba(255,255,255,0.03)] relative z-10 transition-all duration-300">
+                        <div className="w-[300px] bg-[#1A1A1A] border border-[#2A2A2A] rounded-[38px] p-[13px] shadow-[0_48px_96px_rgba(0,0,0,0.9),0_0_0_1px_rgba(255,255,255,0.03)] relative z-10 transition-all duration-300">
 
                             {/* Inner Screen */}
-                            <div className="relative bg-[var(--black)] rounded-[30px] overflow-hidden min-h-[500px]">
+                            <div className="relative bg-[var(--black)] rounded-[28px] overflow-hidden min-h-[490px]">
 
                                 {/* ════ Client View (WhatsApp) ════ */}
                                 <div className={`absolute inset-0 transition-opacity duration-300 ease-in-out ${activeTab === "client" ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"}`}>
 
                                     {/* WA Header */}
                                     <div className="bg-[#075E54] p-[14px] flex items-center gap-[10px]">
-                                        <div className="w-[36px] h-[36px] rounded-full bg-[var(--red)] flex items-center justify-center font-display font-bold text-[13px] text-white shrink-0">
+                                        <div className="w-[36px] h-[36px] rounded-full bg-[var(--red)] flex items-center justify-center font-display font-medium text-[13px] text-white shrink-0">
                                             F
                                         </div>
                                         <div>

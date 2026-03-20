@@ -111,7 +111,7 @@ export default function WeeklyProgressCard({ stats }: { stats?: EngagementStat[]
       {/* Header */}
       <div className="flex items-center justify-between mb-5">
         <div>
-          <h2 className="text-lg sm:text-xl font-bold font-barlow tracking-wider uppercase text-white">
+          <h2 className="text-lg sm:text-xl font-medium font-barlow tracking-wider uppercase text-white">
             Client Engagement
           </h2>
           <p className="text-xs text-white/40 mt-1">
@@ -123,7 +123,7 @@ export default function WeeklyProgressCard({ stats }: { stats?: EngagementStat[]
           <button
             onClick={() => setView("week")}
             className={cn(
-              "px-3 py-1.5 rounded-full text-[11px] font-bold font-barlow tracking-widest uppercase transition-all",
+              "px-3 py-1.5 rounded-full text-[11px] font-medium font-barlow tracking-widest uppercase transition-all",
               view === "week"
                 ? "bg-[#E8001D] text-white shadow-sm"
                 : "text-white/40 hover:text-white/60"

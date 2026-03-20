@@ -39,8 +39,8 @@ export const PROBLEM_ITEMS = [
 export const FEATURES = [
     {
         num: "01",
-        title: "Automated Client Onboarding",
-        description: "Share one link. Client fills a form, pays via Razorpay UPI/card, and gets a WhatsApp welcome message — all automatically.",
+        title: "Where Your Clients Already Are.",
+        description: "India runs on WhatsApp. So does Fitosys. Your clients never need to download an app, and you run your whole business from the tool they use daily.",
         tag: "WhatsApp Native",
         tagColor: "wa",
     },
@@ -60,8 +60,8 @@ export const FEATURES = [
     },
     {
         num: "04",
-        title: "AI Monday Summary",
-        description: "Gemini AI reads all check-ins and sends you a 150-word brief every Monday at 7AM. Response rates, energy trends, at-risk clients — prioritised.",
+        title: "Every Monday, a brief.",
+        description: "Every Monday at 7AM, Fitosys tells you which clients need a call, which ones are at risk of leaving, and what to do about it. No data science degree required.",
         tag: "AI Powered",
         tagColor: "ai",
     },

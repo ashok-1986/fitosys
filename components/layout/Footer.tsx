@@ -39,10 +39,10 @@ export function Footer() {
                         </div>
                     </div>
                     <div>
-                        <div className="text-[13px] font-bold text-white mb-5 uppercase tracking-wide">Company</div>
+                        <div className="text-[13px] font-bold text-white mb-5 uppercase tracking-wide">HAVE QUESTIONS? WE'RE ON WHATSAPP.</div>
                         <div className="space-y-3">
-                            <Link href="#about" className="block text-[13px] text-[var(--grey)] hover:text-white transition-colors">
-                                About
+                            <Link href="https://wa.me/919876543210" className="block text-[13px] text-[var(--grey)] hover:text-white transition-colors">
+                                +91 98765 43210
                             </Link>
                             <Link href="mailto:hello@fitosys.com" className="block text-[13px] text-[var(--grey)] hover:text-white transition-colors">
                                 Contact
