@@ -18,7 +18,7 @@ export function HeroSection() {
 
                     {/* Left Column - Copy */}
                     <div className="max-w-[540px]">
-                        <Eyebrow label="INDIA'S COACHING BUSINESS OS" />
+                        <Eyebrow label="BUILT FOR INDIA'S COACHES · RUNS ON WHATSAPP" />
 
                         <h1 className="font-display font-medium uppercase tracking-[0.02em] leading-none text-[44px] md:text-[60px] lg:text-[80px]">
                             <span className="block text-white">GOOD COACHES.</span>
@@ -26,7 +26,7 @@ export function HeroSection() {
                         </h1>
 
                         <p className="font-sans text-[20px] leading-[1.7] text-[var(--grey)] mb-10 max-w-[480px]">
-                            Automate your client check-ins, renewals, and onboarding — <strong className="text-white font-medium">natively on WhatsApp</strong>. Set up in 30 minutes. Runs every week without you.
+                            Fitosys automates your client check-ins, renewals, and onboarding — <strong>natively on WhatsApp</strong>. 30 minutes to set up. Runs every week without you.
                         </p>
 
                         <div className="flex flex-col sm:flex-row items-center gap-4 mb-4">
@@ -43,7 +43,7 @@ export function HeroSection() {
                                 View Demo
                             </Link>
                         </div>
-                        <p className="font-sans text-[12px] text-[var(--grey)] mb-14">No card needed · First 5 clients free · Setup in 10 minutes</p>
+                        <p className="font-sans text-[12px] text-[var(--grey)] mb-14">No card needed · First 5 clients free · Setup in 30 minutes</p>
 
                         {/* Stat Strip */}
                         <div className="flex gap-12 pt-10 border-t border-[rgba(255,255,255,0.06)]">
