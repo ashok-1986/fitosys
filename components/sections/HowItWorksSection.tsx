@@ -7,15 +7,14 @@ export function HowItWorksSection() {
             <div className="max-w-[1400px] mx-auto px-4 md:px-12 py-28 md:py-32">
                 <div className="grid lg:grid-cols-2 gap-12 items-end">
                     <div>
-                        <Eyebrow label="How It Works" />
+                        <Eyebrow label="HOW IT WORKS" />
                         <h2 className="font-display font-medium text-[36px] md:text-[44px] lg:text-[56px] leading-none tracking-[0.02em] uppercase text-white mt-6">
-                            Four steps to<br />
-                            <span className="text-[var(--red)]">full</span><br />
-                            <span className="text-[rgba(255,255,255,0.15)]">automation.</span>
+                            <span className="block">FOUR STEPS TO</span>
+                            <span className="block">FULL AUTOMATION.</span>
                         </h2>
                     </div>
                     <p className="font-sans text-[20px] text-[var(--grey)] leading-[1.7] self-end">
-                        From sign-up to a fully automated coaching business. Average setup time: 28 minutes. No technical knowledge required.
+                        From sign-up to a fully automated coaching business. Average setup time: 28 minutes. No technical knowledge needed.
                     </p>
                 </div>
 

@@ -7,10 +7,14 @@ export function TestimonialsSection() {
             <div className="max-w-[1400px] mx-auto px-4 md:px-12 py-28 md:py-32">
 
                 <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-16">
-                    <Eyebrow label="Stories" />
+                    <Eyebrow label="COACH STORIES" />
                     <h2 className="font-display font-medium text-[36px] md:text-[44px] lg:text-[56px] leading-none tracking-[0.02em] uppercase text-white mt-6">
-                        The results are <span className="text-[var(--red)]">undeniable.</span>
+                        <span className="block">COACHES WHO GOT</span>
+                        <span className="block">THEIR SUNDAYS BACK.</span>
                     </h2>
+                    <p className="font-sans text-[20px] text-[var(--grey)] leading-[1.7] mt-6 max-w-[600px]">
+                        Real coaches. Real numbers. What happens when systems replace spreadsheets.
+                    </p>
                 </div>
 
                 {/* Testimonial Grid */}

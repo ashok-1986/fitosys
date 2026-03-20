@@ -13,14 +13,14 @@ export function FeaturesSection() {
             <div className="max-w-[1400px] mx-auto px-4 md:px-12 py-28 md:py-32">
                 <div className="grid lg:grid-cols-2 gap-12 mb-16 items-end">
                     <div>
-                        <Eyebrow label="Core Features" />
+                        <Eyebrow label="CORE FEATURES" />
                         <h2 className="font-display font-medium text-[36px] md:text-[44px] lg:text-[56px] leading-none tracking-[0.02em] uppercase text-white mt-6">
-                            Three things.<br />
-                            <span className="text-[var(--red)]">Zero Manual Work.</span>
+                            <span className="block">THREE THINGS.</span>
+                            <span className="block">ZERO MANUAL WORK.</span>
                         </h2>
                     </div>
                     <p className="font-sans text-[20px] text-[var(--grey)] leading-[1.7] self-end">
-                        Fitosys automates exactly three workflows — the three that eat the most time and cost the most revenue. Nothing more. Nothing less.
+                        Fitosys does exactly three things — the three that drain the most time and cost the most revenue. Nothing more. Nothing less.
                     </p>
                 </div>
 
