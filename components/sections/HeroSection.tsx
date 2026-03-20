@@ -46,21 +46,31 @@ export function HeroSection() {
                         <p className="font-sans text-[12px] text-[var(--grey)] mb-14">No card needed · First 5 clients free · Setup in 30 minutes</p>
 
                         {/* Stat Strip */}
-                        <div className="flex gap-12 pt-10 border-t border-[rgba(255,255,255,0.06)]">
-                            {[
-                                { num: '2–3hrs', label: 'saved per week\nper coach' },
-                                { num: '₹72K+', label: 'avg annual revenue\nrecovered from renewals' },
-                                { num: '30min', label: 'setup time.\nzero tech skills needed.' },
-                            ].map((stat, i) => (
-                                <div key={i}>
-                                    <div className="font-display font-medium text-4xl text-[var(--red)] leading-none tracking-[0.02em]">
-                                        {stat.num}
-                                    </div>
-                                    <div className="font-sans font-normal text-[13px] text-[#888888] mt-[4px] leading-[1.4] whitespace-pre-line">
-                                        {stat.label}
-                                    </div>
-                                </div>
-                            ))}
+                        <div className="flex gap-8 md:gap-12 pt-8 border-t border-white/10">
+                            <div className="flex flex-col gap-1 min-w-0">
+                                <span className="font-display font-medium text-[32px] md:text-[40px] leading-none tracking-[0.02em] uppercase text-[#E8001D]">
+                                    2–3hrs
+                                </span>
+                                <span className="font-sans text-[13px] text-[#888888] leading-[1.4]">
+                                    saved every week
+                                </span>
+                            </div>
+                            <div className="flex flex-col gap-1 min-w-0">
+                                <span className="font-display font-medium text-[32px] md:text-[40px] leading-none tracking-[0.02em] uppercase text-[#E8001D]">
+                                    ₹72K+
+                                </span>
+                                <span className="font-sans text-[13px] text-[#888888] leading-[1.4]">
+                                    avg. annual revenue<br />recovered
+                                </span>
+                            </div>
+                            <div className="flex flex-col gap-1 min-w-0">
+                                <span className="font-display font-medium text-[32px] md:text-[40px] leading-none tracking-[0.02em] uppercase text-[#E8001D]">
+                                    30min
+                                </span>
+                                <span className="font-sans text-[13px] text-[#888888] leading-[1.4]">
+                                    setup time.<br />zero tech skills needed.
+                                </span>
+                            </div>
                         </div>
                     </div>
 
@@ -86,17 +96,17 @@ export function HeroSection() {
                         </div>
 
                         {/* Tab Switcher */}
-                        <div className="flex gap-[2px] bg-[var(--surface)] border border-[var(--border)] rounded-[40px] p-1 mb-4 relative z-20">
+                        <div className="flex gap-[2px] bg-[#111111] border border-white/10 rounded-[40px] p-1 mb-4 relative z-20">
                             <button
                                 onClick={() => setActiveTab("client")}
-                                className={`font-sans font-bold text-[11px] uppercase tracking-[0.08em] px-5 py-2 rounded-[36px] transition-all duration-250 ${activeTab === "client" ? "bg-[#25D366] text-white" : "bg-transparent text-[var(--grey)] hover:text-white"
+                                className={`font-sans font-bold text-[11px] uppercase tracking-[0.08em] px-5 py-2 rounded-[36px] transition-all duration-250 ${activeTab === "client" ? "bg-[#25D366] text-white" : "bg-transparent text-[#888888] hover:text-white"
                                     }`}
                             >
                                 {activeTab === "client" ? "● " : "○ "}Client View
                             </button>
                             <button
                                 onClick={() => setActiveTab("dashboard")}
-                                className={`font-sans font-bold text-[11px] uppercase tracking-[0.08em] px-5 py-2 rounded-[36px] transition-all duration-250 ${activeTab === "dashboard" ? "bg-[var(--surface2)] text-white" : "bg-transparent text-[var(--grey)] hover:text-white"
+                                className={`font-sans font-bold text-[11px] uppercase tracking-[0.08em] px-5 py-2 rounded-[36px] transition-all duration-250 ${activeTab === "dashboard" ? "bg-[#111111] text-white" : "bg-transparent text-[#888888] hover:text-white"
                                     }`}
                             >
                                 {activeTab === "dashboard" ? "● " : "○ "}Dashboard
@@ -104,10 +114,10 @@ export function HeroSection() {
                         </div>
 
                         {/* Phone Mockup Frame */}
-                        <div className="w-[300px] bg-[#1A1A1A] border border-[#2A2A2A] rounded-[38px] p-[13px] shadow-[0_48px_96px_rgba(0,0,0,0.9),0_0_0_1px_rgba(255,255,255,0.03)] relative z-10 transition-all duration-300">
+                        <div className="w-[300px] bg-[#1A1A1A] border border-white/10 rounded-[40px] p-[14px] shadow-[0_48px_96px_rgba(0,0,0,0.9)] relative z-10">
 
                             {/* Inner Screen */}
-                            <div className="relative bg-[var(--black)] rounded-[28px] overflow-hidden min-h-[490px]">
+                            <div className="relative rounded-[30px] overflow-hidden min-h-[500px] bg-[#0A0A0A]">
 
                                 {/* ════ Client View (WhatsApp) ════ */}
                                 <div className={`absolute inset-0 transition-opacity duration-300 ease-in-out ${activeTab === "client" ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"}`}>
