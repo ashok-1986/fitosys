@@ -9,7 +9,9 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        /* ── shadcn defaults — used by dashboard components, do not remove ── */
+        default:
+          "bg-primary text-primary-foreground hover:bg-primary/90",
         destructive:
           "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:
@@ -18,17 +20,28 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
-        link: "text-primary underline-offset-4 hover:underline",
+        link:
+          "text-primary underline-offset-4 hover:underline",
+
+        /* ── Fitosys brand variants — use these on all marketing pages ── */
+        "fitosys-primary":
+          "bg-[#E8001D] text-white border-2 border-[#E8001D] rounded-[2px] text-[13px] font-bold uppercase tracking-[0.04em] hover:bg-[#C20000] hover:border-[#C20000] transition-colors",
+        "fitosys-secondary":
+          "bg-transparent text-white border-2 border-white/10 rounded-[2px] text-[13px] font-medium uppercase tracking-[0.04em] hover:border-white/40 transition-colors",
+        "fitosys-text":
+          "bg-transparent text-[#E8001D] border-none rounded-none text-[13px] font-bold uppercase tracking-[0.04em] hover:opacity-80 transition-opacity p-0",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
-        xs: "h-6 gap-1 rounded-md px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3",
-        sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
-        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
-        icon: "size-9",
+        xs:      "h-6 gap-1 rounded-md px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3",
+        sm:      "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
+        lg:      "h-10 rounded-md px-6 has-[>svg]:px-4",
+        icon:    "size-9",
         "icon-xs": "size-6 rounded-md [&_svg:not([class*='size-'])]:size-3",
         "icon-sm": "size-8",
         "icon-lg": "size-10",
+        /* Fitosys marketing size */
+        fitosys: "h-auto px-8 py-[14px]",
       },
     },
     defaultVariants: {
