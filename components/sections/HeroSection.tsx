@@ -20,10 +20,9 @@ export function HeroSection() {
                     <div className="max-w-[540px]">
                         <Eyebrow label="INDIA'S COACHING BUSINESS OS" />
 
-                        <h1 className="font-display font-medium text-[56px] md:text-[64px] lg:text-[80px] leading-none tracking-[0.02em] uppercase text-white mt-8 mb-8">
-                            The System<br />
-                            <span className="text-transparent" style={{ WebkitTextStroke: '1.5px rgba(255,255,255,0.2)' }}>Behind</span><br />
-                            THE RESULT.
+                        <h1 className="font-display font-medium uppercase tracking-[0.02em] leading-none text-[44px] md:text-[60px] lg:text-[80px]">
+                            <span className="block text-white">GOOD COACHES.</span>
+                            <span className="block text-[#E8001D]">LOST CLIENTS.</span>
                         </h1>
 
                         <p className="font-sans text-[20px] leading-[1.7] text-[var(--grey)] mb-10 max-w-[480px]">
