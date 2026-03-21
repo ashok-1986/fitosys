@@ -2,27 +2,20 @@ import { NextResponse } from "next/server";
 import { createRazorpayOrder } from "@/lib/razorpay/create-order";
 import { intakeRateLimit } from "@/lib/rate-limit";
 
-const ip = req.headers.get("x-forwarded-for") ?? "anonymous";
-const { success } = await intakeRateLimit.limit(ip);
-if (!success) {
-    return NextResponse.json({ error: "Too many requests. Try again shortly." }, { status: 429 });
-}
-
 // POST /api/payments/create-order — Create a Razorpay order for client payment
 // Called when client clicks Pay on intake form or renewal
 // Note: This is a public endpoint - no auth required (client-facing)
 export async function POST(req: Request) {
-    try {
-        const ip = req.headers.get("x-forwarded-for") ?? "anonymous";
-        const { intakeRateLimit } = await import("@/lib/rate-limit");
-        const { success } = await intakeRateLimit.limit(ip);
-        if (!success) {
-            return NextResponse.json(
-                { error: "Too many requests. Please try again shortly." },
-                { status: 429 }
-            );
-        }
+    const ip = req.headers.get("x-forwarded-for") ?? "anonymous";
+    const { success } = await intakeRateLimit.limit(ip);
+    if (!success) {
+        return NextResponse.json(
+            { error: "Too many requests. Please try again shortly." },
+            { status: 429 }
+        );
+    }
 
+    try {
         const body = await req.json();
         const { programId, clientData, slug } = body;
 
@@ -33,7 +26,6 @@ export async function POST(req: Request) {
             );
         }
 
-        // Validate clientData to prevent injection attacks
         if (!clientData?.full_name || !clientData?.email || !clientData?.whatsapp_number) {
             return NextResponse.json(
                 { error: "Missing required client data" },
@@ -44,12 +36,11 @@ export async function POST(req: Request) {
         const { createServiceClient } = await import("@/lib/supabase/server");
         const supabase = await createServiceClient();
 
-        // Fetch program details with coach info
         const { data: program, error: progError } = await supabase
             .from("programs")
             .select("*, coaches(id, full_name)")
             .eq("id", programId)
-            .eq("is_active", true)  // Only allow active programs
+            .eq("is_active", true)
             .single();
 
         if (progError || !program) {
@@ -62,7 +53,6 @@ export async function POST(req: Request) {
 
         const resolvedCoachId = program.coach_id;
 
-        // Create a pending enrollment record (client_id will be created after payment)
         const { data: enrollment, error: enrollError } = await supabase
             .from("enrollments")
             .insert({
@@ -85,7 +75,6 @@ export async function POST(req: Request) {
             );
         }
 
-        // Create Razorpay order with full client data in notes
         const order = await createRazorpayOrder({
             amount: program.price,
             currency: program.currency ?? "INR",
@@ -95,7 +84,6 @@ export async function POST(req: Request) {
                 program_id: programId,
                 enrollment_id: enrollment.id,
                 payment_type: "new",
-                // Client data for webhook to create client record
                 client_full_name: clientData?.full_name || "",
                 client_whatsapp: clientData?.whatsapp_number || "",
                 client_email: clientData?.email || "",

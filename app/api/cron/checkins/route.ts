@@ -104,6 +104,7 @@ export async function POST(request: NextRequest) {
                     coach.full_name
                 );
                 totalSent++;
+                await new Promise(r => setTimeout(r, 100));
 
                 // Log outbound message
                 await supabase.from("whatsapp_log").insert({

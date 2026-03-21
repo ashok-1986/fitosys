@@ -116,12 +116,16 @@ export async function POST(request: NextRequest) {
             });
 
             // Send via WhatsApp
-            await sendCoachWeeklySummary(
-                coach.whatsapp_number,
-                coach.full_name.split(" ")[0],
-                weekEndStr,
-                summaryText
-            );
+            try {
+    await sendCoachWeeklySummary(
+        coach.whatsapp_number,
+        coach.full_name.split(" ")[0],
+        weekEndStr,
+        summaryText
+    );
+} catch (waErr) {
+    console.error(`[Cron/Summaries] WhatsApp failed for ${coach.full_name}:`, waErr);
+}
 
             // Mark as delivered
             await supabase

@@ -15,7 +15,7 @@ import { logRequest, logError } from "@/lib/loggerHelpers";
 // Called immediately after the Razorpay modal closes successfully on frontend
 export async function POST(req: NextRequest) {
     logRequest(req, "POST /api/payments/verify");
-    
+
     const ip = req.headers.get("x-forwarded-for") ?? "127.0.0.1";
     const { success } = await sensitiveRateLimit.limit(ip);
     if (!success) {
@@ -35,16 +35,7 @@ export async function POST(req: NextRequest) {
                 { status: 400 }
             );
         }
-// Idempotency check — prevent double processing
-const { data: existingPayment } = await supabase
-    .from("payments")
-    .select("id, client_id")
-    .eq("gateway_payment_id", razorpay_payment_id)
-    .single();
 
-if (existingPayment) {
-    return NextResponse.json({ success: true, clientId: existingPayment.client_id });
-}
         // Step 1: Verify signature — CRITICAL security check
         const isValid = verifyRazorpayPayment(
             razorpay_order_id,
@@ -61,7 +52,6 @@ if (existingPayment) {
         }
 
         // Step 2: Fetch order from Razorpay to get server-side notes
-        // This prevents the client from tampering with clientData
         const razorpay = getRazorpay();
         const order = await razorpay.orders.fetch(razorpay_order_id);
         const notes = order.notes as Record<string, string>;
@@ -74,7 +64,6 @@ if (existingPayment) {
             );
         }
 
-        // Extract client data from server-side order notes (not from frontend!)
         const clientData = {
             full_name: notes.client_full_name,
             whatsapp_number: notes.client_whatsapp,
@@ -88,10 +77,24 @@ if (existingPayment) {
         const { createServiceClient } = await import("@/lib/supabase/server");
         const supabase = await createServiceClient();
 
-        // Check if this is a renewal payment
+        // Step 3: Idempotency check — supabase is now initialised, safe to query
+        const { data: existingPayment } = await supabase
+            .from("payments")
+            .select("id, client_id")
+            .eq("gateway_payment_id", razorpay_payment_id)
+            .single();
+
+        if (existingPayment) {
+            return NextResponse.json({
+                success: true,
+                clientId: existingPayment.client_id,
+            });
+        }
+
+        // Step 4: Check if renewal
         const isRenewal = notes.payment_type === "renewal";
 
-        // Step 3: Get enrollment — verify it matches the order
+        // Step 5: Get enrollment — verify it matches the order
         const { data: enrollment } = await supabase
             .from("enrollments")
             .select(
@@ -109,7 +112,6 @@ if (existingPayment) {
             );
         }
 
-        // Extract program and coach from enrollment (type assertion for nested data)
         const program = enrollment.programs as unknown as {
             name: string;
             duration_weeks: number;
@@ -125,7 +127,7 @@ if (existingPayment) {
             billing_address?: string;
         };
 
-        // Step 4: Create or find client record
+        // Step 6: Create or find client record
         let clientId: string;
         const { data: existingClient } = await supabase
             .from("clients")
@@ -137,25 +139,18 @@ if (existingPayment) {
         if (existingClient) {
             clientId = existingClient.id;
         } else {
-            // Backend safeguard: Check plan limit before creating a NEW client
             try {
                 const limitCheck = await checkClientLimit(enrollment.coach_id);
                 if (!limitCheck.allowed) {
-                    // Refund the payment
-                    console.error(`[Razorpay] Coach ${enrollment.coach_id} over limit. Refunding payment ${razorpay_payment_id}.`);
+                    console.error(`[Razorpay] Coach ${enrollment.coach_id} over limit. Refunding ${razorpay_payment_id}.`);
                     await razorpay.payments.refund(razorpay_payment_id, {
                         speed: "optimum",
-                        notes: {
-                            reason: "Coach capacity reached",
-                        }
+                        notes: { reason: "Coach capacity reached" },
                     });
-
-                    // Update enrollment status
                     await supabase
                         .from("enrollments")
                         .update({ status: "cancelled" })
                         .eq("id", enrollmentId);
-
                     return NextResponse.json(
                         { error: "Coach capacity reached. Your payment has been refunded." },
                         { status: 403 }
@@ -163,7 +158,10 @@ if (existingPayment) {
                 }
             } catch (limitErr) {
                 console.error("[Razorpay Verify] Failed to check plan limit:", limitErr);
-                return NextResponse.json({ error: "Capacity verification failed" }, { status: 500 });
+                return NextResponse.json(
+                    { error: "Capacity verification failed" },
+                    { status: 500 }
+                );
             }
 
             const { data: newClient } = await supabase
@@ -190,12 +188,10 @@ if (existingPayment) {
             clientId = newClient.id;
         }
 
-        // Step 5: Update enrollment to active with client_id
+        // Step 7: Update enrollment
         if (isRenewal) {
-            // For renewals, extend the end_date by program duration
             const newEndDate = new Date(enrollment.end_date);
             newEndDate.setDate(newEndDate.getDate() + (program.duration_weeks || 12) * 7);
-            
             await supabase
                 .from("enrollments")
                 .update({
@@ -208,7 +204,6 @@ if (existingPayment) {
                 })
                 .eq("id", enrollmentId);
         } else {
-            // For new enrollments, set to active
             await supabase
                 .from("enrollments")
                 .update({
@@ -220,7 +215,7 @@ if (existingPayment) {
                 .eq("id", enrollmentId);
         }
 
-        // Step 6: Record payment
+        // Step 8: Record payment
         await supabase.from("payments").insert({
             coach_id: enrollment.coach_id,
             client_id: clientId,
@@ -235,42 +230,29 @@ if (existingPayment) {
             paid_at: new Date().toISOString(),
         });
 
-        // Step 7: Send WhatsApp notifications (fire and forget)
+        // Step 9: Send WhatsApp notifications (fire and forget)
         try {
-            const endDate = enrollment.end_date
-                ? new Date(enrollment.end_date).toLocaleDateString("en-IN", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                })
-                : "TBD";
             const startDate = enrollment.start_date
                 ? new Date(enrollment.start_date).toLocaleDateString("en-IN", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
+                    day: "numeric", month: "long", year: "numeric",
                 })
                 : new Date().toLocaleDateString("en-IN", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
+                    day: "numeric", month: "long", year: "numeric",
                 });
 
-            // For renewals, calculate new end date
             const newEndDate = isRenewal
                 ? (() => {
                     const d = new Date(enrollment.end_date);
                     d.setDate(d.getDate() + (program.duration_weeks || 12) * 7);
                     return d.toLocaleDateString("en-IN", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
+                        day: "numeric", month: "long", year: "numeric",
                     });
                 })()
-                : endDate;
+                : new Date(enrollment.end_date).toLocaleDateString("en-IN", {
+                    day: "numeric", month: "long", year: "numeric",
+                });
 
             await Promise.allSettled([
-                // Send welcome for new enrollments, renewal confirmation for renewals
                 isRenewal
                     ? sendRenewalConfirmation(
                         clientData.whatsapp_number,
@@ -285,7 +267,6 @@ if (existingPayment) {
                         program?.name || "Fitness Program",
                         startDate
                     ),
-                // Coach notification (only for new enrollments)
                 !isRenewal && coach?.whatsapp_number
                     ? sendCoachNewClientNotification(
                         coach.whatsapp_number,
@@ -295,8 +276,8 @@ if (existingPayment) {
                     : Promise.resolve(),
                 generateGSTInvoice({
                     coachId: enrollment.coach_id,
-                    clientId: clientId,
-                    enrollmentId: enrollmentId,
+                    clientId,
+                    enrollmentId,
                     paymentId: razorpay_payment_id,
                     invoiceDate: new Date().toISOString().split("T")[0],
                     seller: {
@@ -310,32 +291,29 @@ if (existingPayment) {
                     },
                     item: {
                         description: `${program?.name || "Fitness Program"} (${program?.duration_weeks || 12} Weeks)`,
-                        amountBeforeTax: Math.round(enrollment.amount_paid / 1.18 * 100) / 100,
+                        amountBeforeTax: Math.round((enrollment.amount_paid / 1.18) * 100) / 100,
                     },
                     tax: {
                         rate: 18,
-                        igst: Math.round((enrollment.amount_paid - (enrollment.amount_paid / 1.18)) * 100) / 100,
+                        igst: Math.round((enrollment.amount_paid - enrollment.amount_paid / 1.18) * 100) / 100,
                     },
                     totalAmount: enrollment.amount_paid,
                     paymentDetails: {
                         id: razorpay_payment_id,
                         method: "Online",
                         date: new Date().toLocaleDateString("en-IN"),
-                    }
-                }).catch(err => console.error("[Razorpay Verification] Failed to generate GST Invoice:", err))
+                    },
+                }).catch(err =>
+                    console.error("[Razorpay Verify] GST invoice failed:", err)
+                ),
             ]);
         } catch {
-            // WhatsApp failures should not break the payment flow
-            console.error(
-                "[Razorpay] WhatsApp notification failed (non-blocking)"
-            );
+            console.error("[Razorpay] WhatsApp notification failed (non-blocking)");
         }
 
-        console.log(
-            `[Razorpay] Payment verified: ${clientData.full_name} → ${coach?.full_name}`
-        );
-
+        console.log(`[Razorpay] Payment verified: ${clientData.full_name} → ${coach?.full_name}`);
         return NextResponse.json({ success: true, clientId });
+
     } catch (error) {
         logError(error, "POST /api/payments/verify");
         return NextResponse.json(
