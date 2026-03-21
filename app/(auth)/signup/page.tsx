@@ -65,11 +65,11 @@ export default function SignupPage() {
                 {/* Logo */}
                 <div className="flex justify-center mb-6">
                     <Image
-                        src="/logov2.png"
+                        src="/Fitosys_Logo_v1.png"
                         alt="Fitosys"
-                        width={140}
-                        height={32}
-                        className="object-contain brightness-0 invert"
+                        width={120}
+                        height={48}
+                        style={{ objectFit: 'contain' }}
                         priority
                     />
                 </div>
@@ -134,7 +134,7 @@ export default function SignupPage() {
                         <Label htmlFor="fullName" className="text-[11px] font-bold uppercase tracking-widest text-[#A0A0A0]">Full Name</Label>
                         <Input
                             id="fullName"
-                            name="fullName"
+                            name="full_name"
                             placeholder="Priya Sharma"
                             required
                             className="bg-white/5 border-white/10 focus:border-[#E8001D]/50 transition-all font-sans"
@@ -201,7 +201,7 @@ export default function SignupPage() {
                             </div>
                             <Input
                                 id="whatsapp"
-                                name="whatsapp"
+                                name="whatsapp_number"
                                 type="tel"
                                 placeholder="9876543210"
                                 required
@@ -210,7 +210,7 @@ export default function SignupPage() {
                         </div>
                     </div>
                 </CardContent>
-                <CardFooter className="flex flex-col gap-4">
+                <CardFooter className="flex flex-col gap-4 pt-6">
                     <Button
                         type="submit"
                         className="w-full bg-brand hover:bg-brand/90 text-white"
