@@ -45,36 +45,33 @@ export async function middleware(request: NextRequest) {
 
     // Add rate limiting for API routes
     if (request.nextUrl.pathname.startsWith("/api/")) {
-        // Use different limits for authenticated vs anonymous
         const limiter = user ? authenticatedRateLimit : apiRateLimit;
         const { success, reset, remaining } = await limiter.limit(
-        request.headers.get("x-forwarded-for") ?? "unknown"
+            request.headers.get("x-forwarded-for") ?? "unknown"
         );
 
         if (!success) {
-        return NextResponse.json(
-            { 
-            error: "Too many requests",
-            retryAfter: Math.ceil((reset - Date.now()) / 1000)
-            },
-            { 
-            status: 429,
-            headers: { 
-                "Retry-After": Math.ceil((reset - Date.now()) / 1000).toString(),
-                "X-RateLimit-Limit": user ? "300" : "100",
-                "X-RateLimit-Remaining": String(remaining),
-            }
-            }
-        );
+            return NextResponse.json(
+                {
+                    error: "Too many requests",
+                    retryAfter: Math.ceil((reset - Date.now()) / 1000)
+                },
+                {
+                    status: 429,
+                    headers: {
+                        "Retry-After": Math.ceil((reset - Date.now()) / 1000).toString(),
+                        "X-RateLimit-Limit": user ? "300" : "100",
+                        "X-RateLimit-Remaining": String(remaining),
+                    }
+                }
+            );
         }
 
-        // Add rate limit headers to response
-        const response = NextResponse.next();
-        response.headers.set("X-RateLimit-Limit", user ? "300" : "100");
-        response.headers.set("X-RateLimit-Remaining", String(remaining));
-        return response;
+        // Set rate limit headers on supabaseResponse — not a new response
+        // Creating a new NextResponse.next() here would drop Supabase auth cookies
+        supabaseResponse.headers.set("X-RateLimit-Limit", user ? "300" : "100");
+        supabaseResponse.headers.set("X-RateLimit-Remaining", String(remaining));
     }
-
 
     // Protected routes — redirect to login if unauthenticated
     const protectedPaths = [
@@ -101,6 +98,9 @@ export async function middleware(request: NextRequest) {
         url.pathname = "/dashboard";
         return NextResponse.redirect(url);
     }
+
+    // Inject pathname so layout.tsx can conditionally render Nav/Footer
+    supabaseResponse.headers.set("x-pathname", request.nextUrl.pathname);
 
     return supabaseResponse;
 }
