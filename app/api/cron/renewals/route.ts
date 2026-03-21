@@ -4,8 +4,8 @@ import { createRazorpayOrder } from "@/lib/razorpay/create-order";
 
 // POST /api/cron/renewals — Daily renewal check + reminders
 // Sends first reminder at 7 days before expiry, second at 3 days
+// Expiry is handled separately by /api/cron/expiry
 export async function POST(request: NextRequest) {
-    // Verify CRON secret
     const authHeader = request.headers.get("authorization");
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -25,11 +25,10 @@ export async function POST(request: NextRequest) {
 
     let firstReminders = 0;
     let secondReminders = 0;
-    let expired = 0;
     let errors = 0;
 
     // ──── 1. First Renewal Reminders (7 days before expiry) ────
-    const { data: firstRemiderEnrollments } = await supabase
+    const { data: firstReminderEnrollments } = await supabase
         .from("enrollments")
         .select(
             "id, coach_id, client_id, program_id, end_date, clients(full_name, whatsapp_number), programs(name, duration_weeks, price, currency), coaches(full_name)"
@@ -39,7 +38,7 @@ export async function POST(request: NextRequest) {
         .lte("end_date", in7Days)
         .gte("end_date", today);
 
-    for (const enrollment of firstRemiderEnrollments || []) {
+    for (const enrollment of firstReminderEnrollments || []) {
         try {
             const client = enrollment.clients as unknown as {
                 full_name: string;
@@ -71,34 +70,31 @@ export async function POST(request: NextRequest) {
                 },
             });
 
-            // Build a payment link URL (coach's public page with payment context)
             const paymentLink = `${process.env.NEXT_PUBLIC_APP_URL}/renew?order=${order.id}&enrollment=${enrollment.id}`;
 
-            // Get client's progress stats
+            // Get real average energy score from last 4 check-ins
+            const { data: energyData } = await supabase
+                .from("checkins")
+                .select("energy_score")
+                .eq("client_id", enrollment.client_id)
+                .eq("coach_id", enrollment.coach_id)
+                .not("energy_score", "is", null)
+                .order("check_date", { ascending: false })
+                .limit(4);
+
+            const avgEnergy = energyData && energyData.length > 0
+                ? Math.round(
+                    energyData.reduce((acc, c) => acc + (c.energy_score || 0), 0) / energyData.length
+                  )
+                : 7;
+
+            // Get total sessions completed
             const { count: sessionsCount } = await supabase
                 .from("checkins")
                 .select("id", { count: "exact", head: true })
                 .eq("client_id", enrollment.client_id)
                 .eq("coach_id", enrollment.coach_id)
                 .not("sessions_completed", "is", null);
-
-            // Get weight progress
-            const { data: weightData } = await supabase
-                .from("checkins")
-                .select("weight_kg")
-                .eq("client_id", enrollment.client_id)
-                .eq("coach_id", enrollment.coach_id)
-                .not("weight_kg", "is", null)
-                .order("check_date", { ascending: true })
-                .limit(2);
-
-            let weightProgress: string | null = null;
-            if (weightData && weightData.length >= 2) {
-                const first = Number(weightData[0].weight_kg);
-                const last = Number(weightData[weightData.length - 1].weight_kg);
-                const diff = (last - first).toFixed(1);
-                weightProgress = `${diff > "0" ? "+" : ""}${diff} kg`;
-            }
 
             const daysRemaining = Math.ceil(
                 (new Date(enrollment.end_date).getTime() - now.getTime()) /
@@ -107,22 +103,24 @@ export async function POST(request: NextRequest) {
 
             await sendRenewalReminder(
                 client.whatsapp_number,
-                client.full_name.split(" ")[0], // client Name
-                program.name,                   // program Name
-                coach.full_name,                // coach Name
-                daysRemaining,                  // days remaining
-                7,                              // avg energy (mocked to 7 for now)
-                sessionsCount || 0,             // total sessions
-                paymentLink                     // payment url
+                client.full_name.split(" ")[0],
+                program.name,
+                coach.full_name,
+                daysRemaining,
+                avgEnergy,
+                sessionsCount || 0,
+                paymentLink
             );
 
-            // Mark first reminder as sent
             await supabase
                 .from("enrollments")
                 .update({ renewal_reminder_1_sent: true })
                 .eq("id", enrollment.id);
 
             firstReminders++;
+
+            // Batch delay — prevent Meta rate limit spike
+            await new Promise(r => setTimeout(r, 100));
         } catch (err) {
             console.error("[Cron/Renewals] First reminder error:", err);
             errors++;
@@ -158,7 +156,6 @@ export async function POST(request: NextRequest) {
 
             if (!client || !program || !coach) continue;
 
-            // Generate new Razorpay order for second reminder
             const order = await createRazorpayOrder({
                 amount: program.price,
                 currency: program.currency ?? "INR",
@@ -181,10 +178,10 @@ export async function POST(request: NextRequest) {
 
             await sendSecondRenewalReminder(
                 client.whatsapp_number,
-                client.full_name.split(" ")[0], // client Name
-                program.name,                   // program Name
-                coach.full_name,                // coach Name
-                daysRemaining                   // days remaining
+                client.full_name.split(" ")[0],
+                program.name,
+                coach.full_name,
+                daysRemaining
             );
 
             await supabase
@@ -193,37 +190,22 @@ export async function POST(request: NextRequest) {
                 .eq("id", enrollment.id);
 
             secondReminders++;
+
+            // Batch delay
+            await new Promise(r => setTimeout(r, 100));
         } catch (err) {
             console.error("[Cron/Renewals] Second reminder error:", err);
             errors++;
         }
     }
 
-    // ──── 3. Expire past-due enrollments ────
-    const { data: expiredEnrollments } = await supabase
-        .from("enrollments")
-        .select("id")
-        .eq("status", "active")
-        .lt("end_date", today);
-
-    if (expiredEnrollments && expiredEnrollments.length > 0) {
-        const ids = expiredEnrollments.map((e) => e.id);
-        await supabase
-            .from("enrollments")
-            .update({ status: "expired" })
-            .in("id", ids);
-
-        expired = ids.length;
-    }
-
     console.log(
-        `[Cron/Renewals] Complete: ${firstReminders} first, ${secondReminders} second, ${expired} expired, ${errors} errors`
+        `[Cron/Renewals] Complete: ${firstReminders} first, ${secondReminders} second, ${errors} errors`
     );
 
     return NextResponse.json({
         first_reminders: firstReminders,
         second_reminders: secondReminders,
-        expired,
         errors,
     });
 }
