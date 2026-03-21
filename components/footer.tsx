@@ -10,7 +10,7 @@ export function Footer() {
                     <div className="col-span-1 md:col-span-2">
                         <div className="flex items-center gap-2 mb-4">
                             <Image
-                                src="/fitosys-logo.png"
+                                src="/Fitosys_Logo_v1.png"
                                 alt="Fitosys"
                                 width={140}
                                 height={40}

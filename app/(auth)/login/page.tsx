@@ -43,11 +43,11 @@ export default function LoginPage() {
                 {/* Logo */}
                 <div className="flex justify-center mb-6">
                     <Image
-                        src="/logov2.png"
+                        src="/Fitosys_Logo_v1.png"
                         alt="Fitosys"
-                        width={140}
-                        height={32}
-                        className="object-contain brightness-0 invert"
+                        width={120}
+                        height={48}
+                        style={{ objectFit: 'contain' }}
                         priority
                     />
                 </div>

@@ -35,7 +35,16 @@ export async function POST(req: NextRequest) {
                 { status: 400 }
             );
         }
+// Idempotency check — prevent double processing
+const { data: existingPayment } = await supabase
+    .from("payments")
+    .select("id, client_id")
+    .eq("gateway_payment_id", razorpay_payment_id)
+    .single();
 
+if (existingPayment) {
+    return NextResponse.json({ success: true, clientId: existingPayment.client_id });
+}
         // Step 1: Verify signature — CRITICAL security check
         const isValid = verifyRazorpayPayment(
             razorpay_order_id,

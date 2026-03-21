@@ -25,52 +25,12 @@ export async function POST(req: Request) {
 
         switch (event.event) {
             case "payment.captured": {
-                const payment = event.payload.payment.entity;
-                // Update payment status
-                await supabase
-                    .from("payments")
-                    .update({ gateway_payment_status: "captured" })
-                    .eq("gateway_payment_id", payment.id);
-
-                console.log(
-                    `[Razorpay Webhook] Payment captured: ${payment.id}`
-                );
-
-                // Look up enrollment details to send welcome message
-                const enrollmentId = payment.notes?.enrollment_id;
-                if (enrollmentId && payment.notes?.payment_type === "new") {
-                    const { data: enrollment } = await supabase
-                        .from("enrollments")
-                        .select("start_date, clients(full_name, whatsapp_number), coaches(full_name), programs(name)")
-                        .eq("id", enrollmentId)
-                        .single();
-
-                    if (enrollment) {
-                        const client = enrollment.clients as unknown as { full_name: string; whatsapp_number: string };
-                        const coach = enrollment.coaches as unknown as { full_name: string };
-                        const program = enrollment.programs as unknown as { name: string };
-                        
-                        try {
-                            const { sendClientWelcome } = await import("@/lib/whatsapp");
-                            const startDateFormatted = new Date(enrollment.start_date || Date.now()).toLocaleDateString("en-IN", {
-                                day: "numeric", month: "short", year: "numeric"
-                            });
-
-                            await sendClientWelcome(
-                                client.whatsapp_number,
-                                coach.full_name,
-                                client.full_name.split(" ")[0],
-                                program.name,
-                                startDateFormatted
-                            );
-                            console.log(`[Razorpay Webhook] Sent welcome message to ${client.full_name}`);
-                        } catch (err) {
-                            console.error("[Razorpay Webhook] Failed to send welcome message:", err);
-                        }
-                    }
-                }
-                break;
-            }
+    // Handled in /api/payments/verify — client creation, enrollment
+    // activation, and WhatsApp notifications already sent there.
+    // No action needed here to avoid duplicate welcome messages.
+    console.log(`[Razorpay Webhook] payment.captured acknowledged: ${event.payload.payment.entity.id}`);
+    break;
+}
 
             case "payment.failed": {
                 const payment = event.payload.payment.entity;
@@ -139,7 +99,7 @@ export async function POST(req: Request) {
                     await supabase
                         .from("coaches")
                         .update({
-                            plan: "suspended" as string,
+                            plan: "suspended",
                             updated_at: new Date().toISOString(),
                         })
                         .eq("id", coachId);
@@ -150,12 +110,16 @@ export async function POST(req: Request) {
                 }
                 break;
             }
-
-            default:
-                console.log(
-                    `[Razorpay Webhook] Unhandled event: ${event.event}`
-                );
-        }
+case "refund.created": {
+        const refund = event.payload.refund?.entity;
+        if (!refund) break;
+        console.log(`[Razorpay Webhook] Refund created: ${refund.id} for payment ${refund.payment_id}`);
+        break;
+    }
+    default:
+        console.log(`[Razorpay Webhook] Unhandled event: ${event.event}`);
+}
+    
 
         return NextResponse.json({ received: true });
     } catch (error) {

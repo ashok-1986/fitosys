@@ -1,11 +1,28 @@
 import { NextResponse } from "next/server";
 import { createRazorpayOrder } from "@/lib/razorpay/create-order";
+import { intakeRateLimit } from "@/lib/rate-limit";
+
+const ip = req.headers.get("x-forwarded-for") ?? "anonymous";
+const { success } = await intakeRateLimit.limit(ip);
+if (!success) {
+    return NextResponse.json({ error: "Too many requests. Try again shortly." }, { status: 429 });
+}
 
 // POST /api/payments/create-order — Create a Razorpay order for client payment
 // Called when client clicks Pay on intake form or renewal
 // Note: This is a public endpoint - no auth required (client-facing)
 export async function POST(req: Request) {
     try {
+        const ip = req.headers.get("x-forwarded-for") ?? "anonymous";
+        const { intakeRateLimit } = await import("@/lib/rate-limit");
+        const { success } = await intakeRateLimit.limit(ip);
+        if (!success) {
+            return NextResponse.json(
+                { error: "Too many requests. Please try again shortly." },
+                { status: 429 }
+            );
+        }
+
         const body = await req.json();
         const { programId, clientData, slug } = body;
 
