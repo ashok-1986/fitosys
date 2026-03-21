@@ -2,19 +2,19 @@ import Link from "next/link";
 
 export function CtaBanner() {
     return (
-        <section className="relative z-[1] bg-[#E8001D] py-24 md:py-28 overflow-hidden">
+        <section className="relative z-[1] bg-[#E8001D] py-20 md:py-24 overflow-hidden">
             {/* Grid pattern overlay */}
             <div className="absolute inset-0 pointer-events-none" style={{
                 backgroundImage: 'linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)',
                 backgroundSize: '40px 40px',
             }} />
 
-            <div className="max-w-[1400px] mx-auto px-12 py-24 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
+            <div className="max-w-[1400px] mx-auto px-12 py-24 grid grid-cols-1 lg:grid-cols-2 gap-16 items-start relative z-10">
                 {/* Left column — headline + body */}
                 <div>
                     <p className="font-sans text-[13px] font-medium uppercase tracking-[0.08em] text-white/60 mb-8 flex items-center gap-3">
                         <span className="block w-10 h-px bg-white/40" />
-                        READY TO AUTOMATE YOUR PRACTICE?
+                        THE SYSTEM BEHIND THE RESULT.
                     </p>
                     <h2 className="font-display font-medium uppercase tracking-[0.02em] leading-none text-[64px] md:text-[80px] mb-8">
                         <span className="block text-white">STOP</span>

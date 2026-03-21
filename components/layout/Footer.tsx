@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { NAV_LINKS } from "@/lib/constants";
 
@@ -14,9 +15,14 @@ export function Footer() {
             <div className="max-w-[1400px] mx-auto px-4">
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 pb-12 border-b border-[var(--border)] mb-8">
                     <div>
-                        <div className="font-display font-medium text-[22px] tracking-[0.02em] text-white mb-4 uppercase">
-                            FITO<span className="text-[var(--red)]">SYS</span>
-                        </div>
+                        <Image
+                            src="/Fitosys_Logo_v1.png"
+                            alt="Fitosys"
+                            width={120}
+                            height={48}
+                            style={{ objectFit: 'contain' }}
+                            className="mb-4"
+                        />
                         <p className="text-[13px] text-[var(--grey)] leading-relaxed max-w-[260px]">
                             The system behind the result. Built for independent coaches in India. Runs on WhatsApp.
                         </p>
