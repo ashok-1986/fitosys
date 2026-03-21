@@ -60,7 +60,7 @@ export function CtaBanner() {
                         </div>
                         <div>
                             <p className="font-display font-medium text-[28px] text-white leading-none tracking-[0.02em]">
-                                0
+                                No
                             </p>
                             <p className="font-sans text-[11px] uppercase tracking-[0.06em] text-white/50 mt-1">
                                 Card required
@@ -76,7 +76,7 @@ export function CtaBanner() {
                     </p>
                     <Link href="/signup" className="block w-full lg:max-w-[360px]">
                         <button className="w-full lg:max-w-[360px] px-10 py-5 bg-white text-[#E8001D] font-sans font-bold text-[13px] uppercase tracking-[0.06em] rounded-[2px] hover:bg-white/90 transition-colors flex items-center justify-center gap-3">
-                            START FREE TRIAL
+                            START FREE
                             <span className="text-[16px]">→</span>
                         </button>
                     </Link>
