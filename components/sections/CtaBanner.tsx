@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 
 export function CtaBanner() {
     return (
@@ -18,7 +17,11 @@ export function CtaBanner() {
                 <p className="font-sans text-[13px] text-white/70">
                     No card needed · First 5 clients free · Setup in 30 minutes
                 </p>
-                <Button variant="fitosys-primary" size="fitosys">Start Free</Button>
+                <Link href="/signup">
+                    <button className="px-10 py-4 bg-white text-[#E8001D] font-sans font-bold text-[13px] uppercase tracking-[0.04em] rounded-[2px] hover:bg-white/90 transition-colors">
+                        Start Free
+                    </button>
+                </Link>
             </div>
         </section>
     );

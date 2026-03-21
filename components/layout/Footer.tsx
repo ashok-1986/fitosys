@@ -21,7 +21,7 @@ export function Footer() {
                             The system behind the result. Built for independent coaches in India. Runs on WhatsApp.
                         </p>
                         <div className="mt-5 text-[12px] text-[var(--grey-mid)]">
-                            A product by <strong className="text-[var(--grey)]">Alchemetryx</strong>
+                            A product by <a href="https://alchemetryx.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#E8001D] transition-colors font-semibold">Alchemetryx</a>
                         </div>
                     </div>
                     <div>
@@ -41,12 +41,12 @@ export function Footer() {
                     <div>
                         <div className="text-[13px] font-bold text-white mb-5 uppercase tracking-wide">HAVE QUESTIONS? WE'RE ON WHATSAPP.</div>
                         <div className="space-y-3">
-                            <Link href="https://wa.me/919876543210" className="block text-[13px] text-[var(--grey)] hover:text-white transition-colors">
-                                +91 98765 43210
-                            </Link>
-                            <Link href="mailto:hello@fitosys.com" className="block text-[13px] text-[var(--grey)] hover:text-white transition-colors">
-                                Contact
-                            </Link>
+                            <a href="tel:+917738363495" className="block text-[13px] text-[#888888] hover:text-white transition-colors">
+                                +91 77383 63495
+                            </a>
+                            <a href="mailto:fitosys@alchemetryx.com" className="block text-[13px] text-[#888888] hover:text-white transition-colors">
+                                fitosys@alchemetryx.com
+                            </a>
                         </div>
                     </div>
                     <div>
