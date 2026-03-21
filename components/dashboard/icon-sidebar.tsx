@@ -8,6 +8,7 @@ import {
   FileText,
   Settings,
   LogOut,
+  Link2,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -132,6 +133,31 @@ export function IconSidebar({ notificationsCount = 0 }: IconSidebarProps) {
         flexDirection: "column",
         gap: "2px",
       }}>
+        <button
+          onClick={() => {
+            // Copy onboarding link to clipboard
+            // Slug comes from coach profile — wire this properly later
+            navigator.clipboard.writeText(`${window.location.origin}/join/your-slug`);
+          }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            padding: "9px 12px",
+            borderRadius: "7px",
+            background: "rgba(232,0,29,0.1)",
+            border: "1px solid rgba(232,0,29,0.2)",
+            cursor: "pointer",
+            color: "#E8001D",
+            fontSize: "13px",
+            fontFamily: "var(--font-urbanist, sans-serif)",
+            width: "100%",
+            margin: "8px 0 0 0",
+          }}
+        >
+          <Link2 style={{ width: "15px", height: "15px" }} />
+          <span style={{ fontWeight: 600 }}>Share Link</span>
+        </button>
         <Link
           href="/dashboard/settings"
           style={{

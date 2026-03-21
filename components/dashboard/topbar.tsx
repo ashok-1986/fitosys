@@ -62,8 +62,8 @@ export function Topbar({ coachName = "Coach", coachInitials = "C" }: TopbarProps
   return (
     <div className="topbar">
       <div className="topbar-greet">
-        <h1>Welcome, {coachName}! 👋</h1>
-        <p>Check your daily coaching insights · {today}</p>
+        <h1>{coachName}</h1>
+        <p>{today}</p>
       </div>
 
       <div className="topbar-search relative" ref={searchRef}>

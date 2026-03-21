@@ -4,6 +4,7 @@ import { Providers } from "@/components/providers";
 import { Nav } from "@/components/layout/Nav";
 import { Footer } from "@/components/layout/Footer";
 import { Grain } from "@/components/layout/Grain";
+import { headers } from "next/headers";
 import "./globals.css";
 
 const urbanist = Urbanist({
@@ -45,7 +46,6 @@ export const metadata: Metadata = {
   },
 };
 
-// JSON-LD Structured Data for SoftwareApplication (TR-35)
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
@@ -60,14 +60,8 @@ const jsonLd = {
     "description": "Free trial available"
   },
   "description": "Business OS for fitness coaches in India. Automate client onboarding, weekly check-ins, and renewals via WhatsApp.",
-  "brand": {
-    "@type": "Brand",
-    "name": "Fitosys"
-  },
-  "areaServed": {
-    "@type": "Country",
-    "name": "India"
-  },
+  "brand": { "@type": "Brand", "name": "Fitosys" },
+  "areaServed": { "@type": "Country", "name": "India" },
   "provider": {
     "@type": "Organization",
     "name": "Alchemetryx",
@@ -75,11 +69,26 @@ const jsonLd = {
   }
 };
 
-export default function RootLayout({
+// Routes where the marketing Nav and Footer should NOT render
+const SHELL_ROUTES = [
+  "/dashboard",
+  "/join",
+  "/login",
+  "/signup",
+  "/forgot-password",
+  "/renew",
+];
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headersList = await headers();
+  const pathname = headersList.get("x-pathname") || "";
+
+  const isShellRoute = SHELL_ROUTES.some(route => pathname.startsWith(route));
+
   return (
     <html lang="en" className={`${urbanist.variable} ${barlowCondensed.variable}`}>
       <head>
@@ -95,11 +104,11 @@ export default function RootLayout({
         </a>
         <Providers>
           <Grain />
-          <Nav />
+          {!isShellRoute && <Nav />}
           <main id="main-content">
             {children}
           </main>
-          <Footer />
+          {!isShellRoute && <Footer />}
         </Providers>
       </body>
     </html>
