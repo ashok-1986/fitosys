@@ -2,14 +2,14 @@ import Link from "next/link";
 
 export function CtaBanner() {
     return (
-        <section className="relative z-[1] bg-[#E8001D] py-20 md:py-24 overflow-hidden">
+        <section className="relative z-[1] bg-[#E8001D] py-16 md:py-20 overflow-hidden">
             {/* Grid pattern overlay */}
             <div className="absolute inset-0 pointer-events-none" style={{
                 backgroundImage: 'linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)',
                 backgroundSize: '40px 40px',
             }} />
 
-            <div className="max-w-[1400px] mx-auto px-8 md:px-12 py-20 md:py-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-start relative z-10">
+            <div className="max-w-[1400px] mx-auto px-8 md:px-12 py-20 md:py-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
                 {/* Left column — headline + body + stats */}
                 <div>
                     <p className="font-sans text-[13px] font-medium uppercase tracking-[0.08em] text-white/60 mb-8 flex items-center gap-3">
