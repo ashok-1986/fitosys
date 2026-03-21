@@ -9,8 +9,8 @@ export function CtaBanner() {
                 backgroundSize: '40px 40px',
             }} />
 
-            <div className="max-w-[1400px] mx-auto px-12 py-24 grid grid-cols-1 lg:grid-cols-2 gap-16 items-start relative z-10">
-                {/* Left column — headline + body */}
+            <div className="max-w-[1400px] mx-auto px-8 md:px-12 py-20 md:py-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-start relative z-10">
+                {/* Left column — headline + body + stats */}
                 <div>
                     <p className="font-sans text-[13px] font-medium uppercase tracking-[0.08em] text-white/60 mb-8 flex items-center gap-3">
                         <span className="block w-10 h-px bg-white/40" />
@@ -70,17 +70,17 @@ export function CtaBanner() {
                 </div>
 
                 {/* Right column — CTA */}
-                <div className="flex flex-col items-center lg:items-end gap-4">
+                <div className="flex flex-col items-start lg:items-end gap-4 w-full">
                     <p className="font-sans text-[11px] uppercase tracking-[0.1em] text-white/50">
                         GET STARTED TODAY
                     </p>
-                    <Link href="/signup" className="block w-full max-w-[360px]">
-                        <button className="w-full px-10 py-5 bg-white text-[#E8001D] font-sans font-bold text-[13px] uppercase tracking-[0.06em] rounded-[2px] hover:bg-white/90 transition-colors flex items-center justify-center gap-3">
+                    <Link href="/signup" className="block w-full lg:max-w-[360px]">
+                        <button className="w-full lg:max-w-[360px] px-10 py-5 bg-white text-[#E8001D] font-sans font-bold text-[13px] uppercase tracking-[0.06em] rounded-[2px] hover:bg-white/90 transition-colors flex items-center justify-center gap-3">
                             START FREE TRIAL
                             <span className="text-[16px]">→</span>
                         </button>
                     </Link>
-                    <p className="font-sans text-[12px] text-white/50 text-center">
+                    <p className="font-sans text-[12px] text-white/50 text-center lg:text-right">
                         No credit card. No contract. Cancel any time.
                     </p>
                 </div>
