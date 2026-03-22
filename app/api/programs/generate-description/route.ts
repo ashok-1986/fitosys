@@ -1,5 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthenticatedCoach } from "@/lib/auth";
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+    baseURL: "https://openrouter.ai/api/v1",
+    apiKey: process.env.OPENROUTER_API_KEY || "",
+    defaultHeaders: {
+        "HTTP-Referer": process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+        "X-Title": "Fitosys",
+    },
+});
 
 export async function POST(req: NextRequest) {
     const { error } = await getAuthenticatedCoach();
@@ -15,30 +25,21 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-        const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-            {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    contents: [{
-                        parts: [{
-                            text: `Write a 1-2 sentence description for a coaching program called "${name}" focused on ${checkin_type}. 
-Write from the coach's perspective. Be specific, motivating, and results-focused. 
-Do not use generic phrases like "transform your life". 
-Keep it under 30 words. No quotation marks in your response.`
-                        }]
-                    }],
-                    generationConfig: {
-                        temperature: 0.7,
-                        maxOutputTokens: 100,
-                    }
-                }),
-            }
-        );
+        const completion = await openai.chat.completions.create({
+            model: process.env.OPENROUTER_MODEL || "qwen/qwen-2.5-72b-instruct",
+            temperature: 0.7,
+            max_tokens: 100,
+            top_p: 0.95,
+            messages: [{
+                role: "user",
+                content: `Write a 1-2 sentence description for a coaching program called "${name}" focused on ${checkin_type}.
+Write from the coach's perspective. Be specific, motivating, and results-focused.
+Do not use generic phrases like "transform your life".
+Keep it under 30 words. No quotation marks in your response. Return only the description text, nothing else.`
+            }],
+        });
 
-        const data = await response.json();
-        const description = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+        const description = completion.choices[0].message.content?.trim();
 
         if (!description) {
             return NextResponse.json(
@@ -49,7 +50,7 @@ Keep it under 30 words. No quotation marks in your response.`
 
         return NextResponse.json({ description });
     } catch (err) {
-        console.error("[Generate Description] Error:", err);
+        console.error("[Generate Description] OpenRouter error:", err);
         return NextResponse.json(
             { error: "AI generation failed" },
             { status: 500 }
