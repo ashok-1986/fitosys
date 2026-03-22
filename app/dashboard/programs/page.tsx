@@ -1,35 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { Plus, Copy, Edit2, Trash2, PauseCircle, PlayCircle, Link2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
-import { useToast } from "@/hooks/use-toast";
+import { Plus, Zap, ToggleLeft, ToggleRight, Copy, Check, Loader2, Sparkles } from "lucide-react";
 
 interface Program {
     id: string;
     name: string;
-    description?: string;
+    description: string | null;
     duration_weeks: number;
     price: number;
     currency: string;
@@ -38,600 +15,315 @@ interface Program {
     created_at: string;
 }
 
+const CHECKIN_TYPES = ["fitness", "yoga", "wellness", "nutrition"];
+
+const checkinLabel = (type: string) =>
+    type.charAt(0).toUpperCase() + type.slice(1);
+
 export default function ProgramsPage() {
-    const router = useRouter();
-    const { showSuccess, showError } = useToast();
     const [programs, setPrograms] = useState<Program[]>([]);
     const [loading, setLoading] = useState(true);
-    const [createDialogOpen, setCreateDialogOpen] = useState(false);
-    const [editDialogOpen, setEditDialogOpen] = useState(false);
-    const [copyDialogOpen, setCopyDialogOpen] = useState(false);
-    const [selectedProgram, setSelectedProgram] = useState<Program | null>(null);
+    const [showForm, setShowForm] = useState(false);
+    const [saving, setSaving] = useState(false);
+    const [generatingDesc, setGeneratingDesc] = useState(false);
     const [copied, setCopied] = useState(false);
-
-    const [formData, setFormData] = useState({
+    const [slug, setSlug] = useState("");
+    const [form, setForm] = useState({
         name: "",
-        description: "",
-        duration_weeks: "12",
+        duration_weeks: "8",
         price: "",
-        currency: "INR",
         checkin_type: "fitness",
+        description: "",
     });
-    const [coachSlug, setCoachSlug] = useState<string>("");
-
-    useEffect(() => {
-        // Fetch coach slug for copy link functionality
-        async function fetchCoachSlug() {
-            try {
-                const res = await fetch("/api/coaches/profile");
-                if (res.ok) {
-                    const data = await res.json();
-                    setCoachSlug(data.slug || "");
-                }
-            } catch (error) {
-                console.error("Error fetching coach slug:", error);
-            }
-        }
-        fetchCoachSlug();
-    }, []);
+    const [formError, setFormError] = useState<string | null>(null);
 
     useEffect(() => {
         fetchPrograms();
+        fetchSlug();
     }, []);
 
-    async function fetchPrograms() {
-        try {
-            const res = await fetch("/api/programs");
-            if (!res.ok) throw new Error("Failed to fetch programs");
+    const fetchPrograms = async () => {
+        setLoading(true);
+        const res = await fetch("/api/programs");
+        if (res.ok) {
             const data = await res.json();
             setPrograms(data);
-        } catch (error) {
-            console.error("Error fetching programs:", error);
-        } finally {
-            setLoading(false);
         }
-    }
+        setLoading(false);
+    };
 
-    async function handleCreate() {
+    const fetchSlug = async () => {
+        const res = await fetch("/api/coaches/profile");
+        if (res.ok) {
+            const data = await res.json();
+            setSlug(data.slug || "");
+        }
+    };
+
+    const handleToggle = async (program: Program) => {
+        const res = await fetch(`/api/programs/${program.id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ is_active: !program.is_active }),
+        });
+        if (res.ok) {
+            setPrograms(prev =>
+                prev.map(p => p.id === program.id ? { ...p, is_active: !p.is_active } : p)
+            );
+        }
+    };
+
+    const handleGenerateDescription = async () => {
+        if (!form.name || !form.checkin_type) return;
+        setGeneratingDesc(true);
         try {
-            const res = await fetch("/api/programs", {
+            const res = await fetch("/api/programs/generate-description", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    ...formData,
-                    duration_weeks: parseInt(formData.duration_weeks),
-                    price: parseFloat(formData.price),
-                }),
+                body: JSON.stringify({ name: form.name, checkin_type: form.checkin_type }),
             });
-
-            if (!res.ok) throw new Error("Failed to create program");
-
-            await fetchPrograms();
-            setCreateDialogOpen(false);
-            resetForm();
-            showSuccess("Program created successfully!");
-        } catch (error) {
-            console.error("Error creating program:", error);
-            showError("Failed to create program. Please try again.");
+            const data = await res.json();
+            if (data.description) {
+                setForm(prev => ({ ...prev, description: data.description }));
+            }
+        } catch {
+            // silent fail — coach can write manually
+        } finally {
+            setGeneratingDesc(false);
         }
-    }
+    };
 
-    async function handleUpdate() {
-        if (!selectedProgram) return;
-
-        try {
-            const res = await fetch(`/api/programs/${selectedProgram.id}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    ...formData,
-                    duration_weeks: parseInt(formData.duration_weeks),
-                    price: parseFloat(formData.price),
-                }),
-            });
-
-            if (!res.ok) throw new Error("Failed to update program");
-
-            await fetchPrograms();
-            setEditDialogOpen(false);
-            resetForm();
-        } catch (error) {
-            console.error("Error updating program:", error);
+    const handleCreate = async () => {
+        setFormError(null);
+        if (!form.name || !form.price || !form.duration_weeks) {
+            setFormError("Program name, duration, and price are required.");
+            return;
         }
-    }
-
-    async function handleToggleActive(program: Program) {
-        try {
-            const res = await fetch(`/api/programs/${program.id}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ is_active: !program.is_active }),
-            });
-
-            if (!res.ok) throw new Error("Failed to update program");
-
-            await fetchPrograms();
-        } catch (error) {
-            console.error("Error toggling program status:", error);
-        }
-    }
-
-    async function handleDelete(program: Program) {
-        if (!confirm(`Are you sure you want to delete "${program.name}"?`)) return;
-
-        try {
-            const res = await fetch(`/api/programs/${program.id}`, {
-                method: "DELETE",
-            });
-
-            if (!res.ok) throw new Error("Failed to delete program");
-
-            await fetchPrograms();
-        } catch (error) {
-            console.error("Error deleting program:", error);
-        }
-    }
-
-    function openEditDialog(program: Program) {
-        setSelectedProgram(program);
-        setFormData({
-            name: program.name,
-            description: program.description || "",
-            duration_weeks: String(program.duration_weeks),
-            price: String(program.price),
-            currency: program.currency,
-            checkin_type: program.checkin_type,
+        setSaving(true);
+        const res = await fetch("/api/programs", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                name: form.name,
+                duration_weeks: Number(form.duration_weeks),
+                price: Number(form.price),
+                checkin_type: form.checkin_type,
+                description: form.description || null,
+            }),
         });
-        setEditDialogOpen(true);
-    }
+        setSaving(false);
+        if (res.ok) {
+            setShowForm(false);
+            setForm({ name: "", duration_weeks: "8", price: "", checkin_type: "fitness", description: "" });
+            fetchPrograms();
+        } else {
+            const data = await res.json();
+            setFormError(data.error || "Failed to create program.");
+        }
+    };
 
-    function openCopyDialog(program: Program) {
-        setSelectedProgram(program);
-        setCopyDialogOpen(true);
-    }
-
-    function resetForm() {
-        setFormData({
-            name: "",
-            description: "",
-            duration_weeks: "12",
-            price: "",
-            currency: "INR",
-            checkin_type: "fitness",
-        });
-        setSelectedProgram(null);
-    }
-
-    function copyToIntakeLink(programId: string) {
-        const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
-        const link = coachSlug 
-            ? `${baseUrl}/join/${coachSlug}?program=${programId}`
-            : `${baseUrl}/join/[slug]?program=${programId}`;
-        navigator.clipboard.writeText(link);
+    const copyLink = () => {
+        if (!slug) return;
+        navigator.clipboard.writeText(`${window.location.origin}/join/${slug}`);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
-    }
+    };
 
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center h-full">
-                <div className="text-center">
-                    <div className="animate-spin h-8 w-8 border-4 border-brand border-t-transparent rounded-full mx-auto mb-4" />
-                    <p className="text-muted-foreground">Loading programs...</p>
-                </div>
-            </div>
-        );
-    }
+    const border = "1px solid rgba(255,255,255,0.06)";
+    const surface = "#111111";
 
     return (
-        <div className="p-6 space-y-6">
+        <div style={{ padding: "24px", fontFamily: "var(--font-urbanist, sans-serif)", maxWidth: "900px" }}>
+
             {/* Header */}
-            <div className="flex items-center justify-between">
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "24px" }}>
                 <div>
-                    <h1 className="text-3xl font-bold font-display uppercase">Programs</h1>
-                    <p className="text-muted-foreground mt-1">
-                        Manage your coaching programs and pricing
+                    <h1 style={{ fontFamily: "var(--font-barlow, sans-serif)", fontSize: "28px", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.02em", color: "#FFFFFF", lineHeight: 1, marginBottom: "4px" }}>
+                        Programs
+                    </h1>
+                    <p style={{ fontSize: "13px", color: "#888888" }}>
+                        Create programs to share with clients via your onboarding link
                     </p>
                 </div>
-                <Button
-                    onClick={() => setCreateDialogOpen(true)}
-                    className="bg-brand hover:bg-brand/90 text-white"
+                <button
+                    onClick={() => setShowForm(true)}
+                    style={{ display: "flex", alignItems: "center", gap: "8px", background: "#E8001D", color: "#FFFFFF", border: "none", borderRadius: "8px", padding: "10px 18px", fontSize: "13px", fontWeight: 600, cursor: "pointer", fontFamily: "var(--font-urbanist, sans-serif)" }}
                 >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Create Program
-                </Button>
+                    <Plus style={{ width: "14px", height: "14px" }} />
+                    New Program
+                </button>
             </div>
 
-            {/* Programs Grid */}
-            {programs.length === 0 ? (
-                <Card className="border-dashed">
-                    <CardContent className="flex flex-col items-center justify-center py-16">
-                        <Link2 className="h-12 w-12 text-muted-foreground mb-4" />
-                        <h3 className="text-lg font-semibold mb-2">No programs yet</h3>
-                        <p className="text-muted-foreground mb-4">
-                            Create your first coaching program to start enrolling clients
+            {/* Onboarding link banner */}
+            {slug && (
+                <div style={{ background: surface, border, borderRadius: "10px", padding: "14px 18px", marginBottom: "20px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px" }}>
+                    <div>
+                        <p style={{ fontSize: "11px", fontWeight: 700, color: "#888888", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "4px" }}>Your onboarding link</p>
+                        <p style={{ fontSize: "13px", color: "#C8C8C8", fontFamily: "var(--font-mono, monospace)" }}>
+                            {window.location.origin}/join/{slug}
                         </p>
-                        <Button
-                            onClick={() => setCreateDialogOpen(true)}
-                            className="bg-brand hover:bg-brand/90"
-                        >
-                            <Plus className="h-4 w-4 mr-2" />
-                            Create Your First Program
-                        </Button>
-                    </CardContent>
-                </Card>
-            ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {programs.map((program) => (
-                        <Card key={program.id} className="relative overflow-hidden">
-                            {program.is_active && (
-                                <div className="absolute top-0 left-0 right-0 h-1 bg-brand" />
-                            )}
-                            <CardHeader className="pb-3">
-                                <div className="flex items-start justify-between">
-                                    <div className="flex-1">
-                                        <h3 className="text-xl font-bold font-display uppercase">
-                                            {program.name}
-                                        </h3>
-                                        <Badge
-                                            variant={program.is_active ? "default" : "secondary"}
-                                            className="mt-2"
-                                        >
-                                            {program.is_active ? "Active" : "Inactive"}
-                                        </Badge>
-                                    </div>
-                                </div>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                {program.description && (
-                                    <p className="text-sm text-muted-foreground">
-                                        {program.description}
-                                    </p>
-                                )}
-
-                                <div className="flex items-baseline gap-2">
-                                    <span className="text-3xl font-bold font-display text-brand">
-                                        ₹{program.price.toLocaleString()}
-                                    </span>
-                                    <span className="text-sm text-muted-foreground">
-                                        / {program.duration_weeks} weeks
-                                    </span>
-                                </div>
-
-                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                    <span className="capitalize">{program.checkin_type}</span>
-                                    <span>•</span>
-                                    <span>{program.currency}</span>
-                                </div>
-
-                                {/* Actions */}
-                                <div className="flex gap-2 pt-4 border-t">
-                                    <Button
-                                        size="sm"
-                                        variant="outline"
-                                        onClick={() => openCopyDialog(program)}
-                                        className="flex-1"
-                                    >
-                                        <Copy className="h-3 w-3 mr-1" />
-                                        Copy Link
-                                    </Button>
-                                    <Button
-                                        size="sm"
-                                        variant="outline"
-                                        onClick={() => openEditDialog(program)}
-                                    >
-                                        <Edit2 className="h-3 w-3" />
-                                    </Button>
-                                    <Button
-                                        size="sm"
-                                        variant="outline"
-                                        onClick={() => handleToggleActive(program)}
-                                    >
-                                        {program.is_active ? (
-                                            <PauseCircle className="h-3 w-3" />
-                                        ) : (
-                                            <PlayCircle className="h-3 w-3" />
-                                        )}
-                                    </Button>
-                                    <Button
-                                        size="sm"
-                                        variant="destructive"
-                                        onClick={() => handleDelete(program)}
-                                    >
-                                        <Trash2 className="h-3 w-3" />
-                                    </Button>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    ))}
+                    </div>
+                    <button
+                        onClick={copyLink}
+                        style={{ display: "flex", alignItems: "center", gap: "6px", background: copied ? "rgba(16,185,129,0.1)" : "rgba(255,255,255,0.05)", border: copied ? "1px solid rgba(16,185,129,0.3)" : border, borderRadius: "7px", padding: "8px 14px", fontSize: "12px", fontWeight: 600, color: copied ? "#10B981" : "#C8C8C8", cursor: "pointer", fontFamily: "var(--font-urbanist, sans-serif)", whiteSpace: "nowrap" }}
+                    >
+                        {copied ? <Check style={{ width: "13px", height: "13px" }} /> : <Copy style={{ width: "13px", height: "13px" }} />}
+                        {copied ? "Copied" : "Copy link"}
+                    </button>
                 </div>
             )}
 
-            {/* Create Dialog */}
-            <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Create New Program</DialogTitle>
-                        <DialogDescription>
-                            Set up a new coaching program for your clients
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="space-y-4 py-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="name">Program Name *</Label>
-                            <Input
-                                id="name"
-                                value={formData.name}
-                                onChange={(e) =>
-                                    setFormData({ ...formData, name: e.target.value })
-                                }
-                                placeholder="e.g., 12-Week Weight Loss Program"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="description">Description</Label>
-                            <Textarea
-                                id="description"
-                                value={formData.description}
-                                onChange={(e) =>
-                                    setFormData({ ...formData, description: e.target.value })
-                                }
-                                placeholder="Brief description of what's included..."
-                                rows={3}
-                            />
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="duration">Duration (weeks) *</Label>
-                                <Input
-                                    id="duration"
-                                    type="number"
-                                    min="1"
-                                    max="52"
-                                    value={formData.duration_weeks}
-                                    onChange={(e) =>
-                                        setFormData({ ...formData, duration_weeks: e.target.value })
-                                    }
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="price">Price (₹) *</Label>
-                                <Input
-                                    id="price"
-                                    type="number"
-                                    min="0"
-                                    value={formData.price}
-                                    onChange={(e) =>
-                                        setFormData({ ...formData, price: e.target.value })
-                                    }
-                                    placeholder="2999"
-                                />
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="currency">Currency</Label>
-                                <Select
-                                    value={formData.currency}
-                                    onValueChange={(value) =>
-                                        setFormData({ ...formData, currency: value })
-                                    }
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="INR">₹ INR</SelectItem>
-                                        <SelectItem value="USD">$ USD</SelectItem>
-                                        <SelectItem value="GBP">£ GBP</SelectItem>
-                                        <SelectItem value="CAD">$ CAD</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="checkin_type">Check-in Type</Label>
-                                <Select
-                                    value={formData.checkin_type}
-                                    onValueChange={(value) =>
-                                        setFormData({ ...formData, checkin_type: value })
-                                    }
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="fitness">Fitness</SelectItem>
-                                        <SelectItem value="yoga">Yoga</SelectItem>
-                                        <SelectItem value="wellness">Wellness</SelectItem>
-                                        <SelectItem value="nutrition">Nutrition</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <Button
-                            variant="outline"
-                            onClick={() => {
-                                setCreateDialogOpen(false);
-                                resetForm();
-                            }}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            onClick={handleCreate}
-                            className="bg-brand hover:bg-brand/90"
-                            disabled={!formData.name || !formData.price}
-                        >
-                            Create Program
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+            {/* Create program form */}
+            {showForm && (
+                <div style={{ background: surface, border: "1px solid rgba(232,0,29,0.2)", borderRadius: "10px", padding: "20px", marginBottom: "20px" }}>
+                    <h3 style={{ fontFamily: "var(--font-barlow, sans-serif)", fontSize: "18px", fontWeight: 500, textTransform: "uppercase", color: "#FFFFFF", marginBottom: "20px" }}>
+                        New Program
+                    </h3>
 
-            {/* Edit Dialog */}
-            <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Edit Program</DialogTitle>
-                        <DialogDescription>
-                            Update program details and pricing
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="space-y-4 py-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="edit-name">Program Name *</Label>
-                            <Input
-                                id="edit-name"
-                                value={formData.name}
-                                onChange={(e) =>
-                                    setFormData({ ...formData, name: e.target.value })
-                                }
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "14px" }}>
+                        <div>
+                            <label style={{ fontSize: "11px", fontWeight: 700, color: "#888888", textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: "6px" }}>Program Name</label>
+                            <input
+                                type="text"
+                                placeholder="12-Week Transformation"
+                                value={form.name}
+                                onChange={e => setForm(prev => ({ ...prev, name: e.target.value }))}
+                                style={{ width: "100%", background: "#161616", border, borderRadius: "7px", padding: "10px 12px", fontSize: "13px", color: "#FFFFFF", outline: "none", fontFamily: "var(--font-urbanist, sans-serif)" }}
                             />
                         </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="edit-description">Description</Label>
-                            <Textarea
-                                id="edit-description"
-                                value={formData.description}
-                                onChange={(e) =>
-                                    setFormData({ ...formData, description: e.target.value })
-                                }
-                                rows={3}
-                            />
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="edit-duration">Duration (weeks) *</Label>
-                                <Input
-                                    id="edit-duration"
-                                    type="number"
-                                    min="1"
-                                    max="52"
-                                    value={formData.duration_weeks}
-                                    onChange={(e) =>
-                                        setFormData({ ...formData, duration_weeks: e.target.value })
-                                    }
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="edit-price">Price (₹) *</Label>
-                                <Input
-                                    id="edit-price"
-                                    type="number"
-                                    min="0"
-                                    value={formData.price}
-                                    onChange={(e) =>
-                                        setFormData({ ...formData, price: e.target.value })
-                                    }
-                                />
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="edit-currency">Currency</Label>
-                                <Select
-                                    value={formData.currency}
-                                    onValueChange={(value) =>
-                                        setFormData({ ...formData, currency: value })
-                                    }
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="INR">₹ INR</SelectItem>
-                                        <SelectItem value="USD">$ USD</SelectItem>
-                                        <SelectItem value="GBP">£ GBP</SelectItem>
-                                        <SelectItem value="CAD">$ CAD</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="edit-checkin_type">Check-in Type</Label>
-                                <Select
-                                    value={formData.checkin_type}
-                                    onValueChange={(value) =>
-                                        setFormData({ ...formData, checkin_type: value })
-                                    }
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="fitness">Fitness</SelectItem>
-                                        <SelectItem value="yoga">Yoga</SelectItem>
-                                        <SelectItem value="wellness">Wellness</SelectItem>
-                                        <SelectItem value="nutrition">Nutrition</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <Button
-                            variant="outline"
-                            onClick={() => {
-                                setEditDialogOpen(false);
-                                resetForm();
-                            }}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            onClick={handleUpdate}
-                            className="bg-brand hover:bg-brand/90"
-                            disabled={!formData.name || !formData.price}
-                        >
-                            Save Changes
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
-
-            {/* Copy Link Dialog */}
-            <Dialog open={copyDialogOpen} onOpenChange={setCopyDialogOpen}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Copy Intake Link</DialogTitle>
-                        <DialogDescription>
-                            Share this link with clients to enroll them in this program
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="py-4">
-                        <div className="flex gap-2">
-                            <Input
-                                value={coachSlug 
-                                    ? `${typeof window !== "undefined" ? window.location.origin : ""}/join/${coachSlug}?program=${selectedProgram?.id}`
-                                    : "Loading..."
-                                }
-                                readOnly
-                            />
-                            <Button
-                                onClick={() => {
-                                    if (selectedProgram) {
-                                        copyToIntakeLink(selectedProgram.id);
-                                        showSuccess("Intake link copied to clipboard!");
-                                    }
-                                }}
-                                variant="outline"
-                                disabled={!coachSlug}
+                        <div>
+                            <label style={{ fontSize: "11px", fontWeight: 700, color: "#888888", textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: "6px" }}>Check-in Type</label>
+                            <select
+                                value={form.checkin_type}
+                                onChange={e => setForm(prev => ({ ...prev, checkin_type: e.target.value }))}
+                                style={{ width: "100%", background: "#161616", border, borderRadius: "7px", padding: "10px 12px", fontSize: "13px", color: "#FFFFFF", outline: "none", fontFamily: "var(--font-urbanist, sans-serif)", cursor: "pointer" }}
                             >
-                                {copied ? "Copied!" : "Copy"}
-                            </Button>
+                                {CHECKIN_TYPES.map(t => (
+                                    <option key={t} value={t}>{checkinLabel(t)}</option>
+                                ))}
+                            </select>
                         </div>
-                        {!coachSlug && (
-                            <p className="text-sm text-muted-foreground mt-4">
-                                Loading your coach slug...
-                            </p>
-                        )}
+                        <div>
+                            <label style={{ fontSize: "11px", fontWeight: 700, color: "#888888", textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: "6px" }}>Duration (weeks)</label>
+                            <input
+                                type="number"
+                                placeholder="8"
+                                value={form.duration_weeks}
+                                onChange={e => setForm(prev => ({ ...prev, duration_weeks: e.target.value }))}
+                                style={{ width: "100%", background: "#161616", border, borderRadius: "7px", padding: "10px 12px", fontSize: "13px", color: "#FFFFFF", outline: "none", fontFamily: "var(--font-urbanist, sans-serif)" }}
+                            />
+                        </div>
+                        <div>
+                            <label style={{ fontSize: "11px", fontWeight: 700, color: "#888888", textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: "6px" }}>Price (₹)</label>
+                            <input
+                                type="number"
+                                placeholder="9999"
+                                value={form.price}
+                                onChange={e => setForm(prev => ({ ...prev, price: e.target.value }))}
+                                style={{ width: "100%", background: "#161616", border, borderRadius: "7px", padding: "10px 12px", fontSize: "13px", color: "#FFFFFF", outline: "none", fontFamily: "var(--font-urbanist, sans-serif)" }}
+                            />
+                        </div>
                     </div>
-                    <DialogFooter>
-                        <Button onClick={() => setCopyDialogOpen(false)}>Close</Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+
+                    <div style={{ marginBottom: "16px" }}>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
+                            <label style={{ fontSize: "11px", fontWeight: 700, color: "#888888", textTransform: "uppercase", letterSpacing: "0.06em" }}>Description</label>
+                            <button
+                                onClick={handleGenerateDescription}
+                                disabled={generatingDesc || !form.name}
+                                style={{ display: "flex", alignItems: "center", gap: "5px", background: "rgba(232,0,29,0.1)", border: "1px solid rgba(232,0,29,0.2)", borderRadius: "6px", padding: "4px 10px", fontSize: "11px", fontWeight: 600, color: "#E8001D", cursor: form.name ? "pointer" : "not-allowed", opacity: form.name ? 1 : 0.4, fontFamily: "var(--font-urbanist, sans-serif)" }}
+                            >
+                                {generatingDesc
+                                    ? <Loader2 style={{ width: "11px", height: "11px" }} className="animate-spin" />
+                                    : <Sparkles style={{ width: "11px", height: "11px" }} />
+                                }
+                                {generatingDesc ? "Generating..." : "Generate with AI"}
+                            </button>
+                        </div>
+                        <textarea
+                            placeholder="Enter a description or use AI to generate one..."
+                            value={form.description}
+                            onChange={e => setForm(prev => ({ ...prev, description: e.target.value }))}
+                            rows={3}
+                            style={{ width: "100%", background: "#161616", border, borderRadius: "7px", padding: "10px 12px", fontSize: "13px", color: "#FFFFFF", outline: "none", fontFamily: "var(--font-urbanist, sans-serif)", resize: "vertical", lineHeight: 1.6 }}
+                        />
+                    </div>
+
+                    {formError && (
+                        <p style={{ fontSize: "12px", color: "#EF4444", marginBottom: "12px" }}>{formError}</p>
+                    )}
+
+                    <div style={{ display: "flex", gap: "10px" }}>
+                        <button
+                            onClick={handleCreate}
+                            disabled={saving}
+                            style={{ display: "flex", alignItems: "center", gap: "6px", background: "#E8001D", color: "#FFFFFF", border: "none", borderRadius: "8px", padding: "10px 20px", fontSize: "13px", fontWeight: 600, cursor: saving ? "not-allowed" : "pointer", opacity: saving ? 0.7 : 1, fontFamily: "var(--font-urbanist, sans-serif)" }}
+                        >
+                            {saving && <Loader2 style={{ width: "13px", height: "13px" }} className="animate-spin" />}
+                            {saving ? "Saving..." : "Create Program"}
+                        </button>
+                        <button
+                            onClick={() => { setShowForm(false); setFormError(null); }}
+                            style={{ background: "transparent", border, borderRadius: "8px", padding: "10px 20px", fontSize: "13px", color: "#C8C8C8", cursor: "pointer", fontFamily: "var(--font-urbanist, sans-serif)" }}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Programs list */}
+            {loading ? (
+                <div style={{ display: "flex", justifyContent: "center", padding: "48px" }}>
+                    <Loader2 style={{ width: "24px", height: "24px", color: "#E8001D" }} className="animate-spin" />
+                </div>
+            ) : programs.length === 0 ? (
+                <div style={{ background: surface, border, borderRadius: "10px", padding: "48px", textAlign: "center" }}>
+                    <Zap style={{ width: "28px", height: "28px", color: "#333333", margin: "0 auto 12px" }} />
+                    <p style={{ fontSize: "14px", color: "#C8C8C8", marginBottom: "6px" }}>No programs yet</p>
+                    <p style={{ fontSize: "12px", color: "#888888" }}>Create your first program to start onboarding clients</p>
+                </div>
+            ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    {programs.map(program => (
+                        <div
+                            key={program.id}
+                            style={{ background: surface, border, borderRadius: "10px", padding: "16px 20px", display: "flex", alignItems: "center", gap: "16px", opacity: program.is_active ? 1 : 0.5 }}
+                        >
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+                                    <span style={{ fontSize: "15px", fontWeight: 600, color: "#FFFFFF" }}>{program.name}</span>
+                                    <span style={{ fontSize: "10px", fontWeight: 700, color: "#888888", background: "rgba(255,255,255,0.05)", padding: "2px 8px", borderRadius: "4px", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                                        {checkinLabel(program.checkin_type)}
+                                    </span>
+                                    {!program.is_active && (
+                                        <span style={{ fontSize: "10px", fontWeight: 700, color: "#888888", background: "rgba(255,255,255,0.05)", padding: "2px 8px", borderRadius: "4px", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                                            Inactive
+                                        </span>
+                                    )}
+                                </div>
+                                {program.description && (
+                                    <p style={{ fontSize: "12px", color: "#888888", marginBottom: "6px", lineHeight: 1.5 }}>{program.description}</p>
+                                )}
+                                <div style={{ display: "flex", gap: "16px" }}>
+                                    <span style={{ fontSize: "12px", color: "#C8C8C8" }}>{program.duration_weeks} weeks</span>
+                                    <span style={{ fontSize: "12px", color: "#C8C8C8" }}>₹{program.price.toLocaleString("en-IN")}</span>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => handleToggle(program)}
+                                style={{ background: "none", border: "none", cursor: "pointer", color: program.is_active ? "#10B981" : "#888888", padding: "4px", display: "flex", alignItems: "center" }}
+                                title={program.is_active ? "Deactivate" : "Activate"}
+                            >
+                                {program.is_active
+                                    ? <ToggleRight style={{ width: "24px", height: "24px" }} />
+                                    : <ToggleLeft style={{ width: "24px", height: "24px" }} />
+                                }
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }
