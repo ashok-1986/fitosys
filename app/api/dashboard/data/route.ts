@@ -57,14 +57,12 @@ export async function GET() {
       .limit(5),
   ]);
 
-  // Stats
   const totalRevenue = (allRevenueResult.data || []).reduce((s, p) => s + Number(p.amount), 0);
   const mrr = (monthRevenueResult.data || []).reduce((s, p) => s + Number(p.amount), 0);
   const totalCheckins = (checkinsResult.data || []).length;
   const responded = (checkinsResult.data || []).filter(c => c.responded_at).length;
   const responseRate = totalCheckins > 0 ? Math.round((responded / totalCheckins) * 100) : 0;
 
-  // Renewals
   const renewals = (renewalsResult.data || []).map(e => ({
     id: e.id,
     client_name: (e.clients as unknown as { full_name: string })?.full_name || "Unknown",
@@ -75,7 +73,6 @@ export async function GET() {
     ),
   }));
 
-  // Pending tasks — derived from real data
   const pendingTasks = [
     ...renewals.slice(0, 3).map(r => ({
       id: `renewal-${r.id}`,
@@ -95,7 +92,6 @@ export async function GET() {
       })),
   ];
 
-  // Recent updates from check-in replies
   const gradients = [
     "linear-gradient(135deg,#7f0000,#c00)",
     "linear-gradient(135deg,#003366,#0055a5)",
@@ -118,7 +114,6 @@ export async function GET() {
     };
   });
 
-  // Chart data — last 7 days check-in rate by day
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const chartWeek = days.map((label, i) => {
     const dayCheckins = (checkinsResult.data || []).filter(c => {
@@ -133,7 +128,6 @@ export async function GET() {
     return { label, value };
   });
 
-  // Programs
   const programs = (programsResult.data || []).map(p => ({
     id: p.id,
     name: p.name,

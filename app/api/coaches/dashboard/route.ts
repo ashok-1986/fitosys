@@ -34,7 +34,7 @@ export async function GET() {
             .select("amount, currency")
             .eq("coach_id", coachId!)
             .gte("paid_at", monthStart)
-            .eq("gateway_payment_status", "succeeded"),
+            .eq("gateway_payment_status", "captured"),
 
         // Enrollments expiring within 7 days
         supabase!

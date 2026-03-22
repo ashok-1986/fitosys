@@ -87,7 +87,7 @@ export default function DashboardPage() {
               <div style={{ padding: "24px 16px", textAlign: "center", color: "#444444", fontSize: "13px" }}>No clients need attention right now</div>
             ) : (
               renewals.slice(0, 4).map((r, i) => (
-                <div key={r.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", borderBottom: i < renewals.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none" }}>
+                <div key={r.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", borderBottom: i < Math.min(renewals.length, 4) - 1 ? "1px solid rgba(255,255,255,0.04)" : "none" }}>
                   <div>
                     <div style={{ fontSize: "13px", fontWeight: 600, color: "#FFFFFF" }}>{r.client_name}</div>
                     <div style={{ fontSize: "11px", color: "#888888", marginTop: "2px" }}>{r.program} — ends {r.end_date}</div>
@@ -100,7 +100,7 @@ export default function DashboardPage() {
             )}
           </div>
 
-          {/* Recent activity */}
+          {/* Recent check-in replies */}
           <div style={{ background: "#111111", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "10px", overflow: "hidden" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px 10px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
               <span style={{ fontSize: "13px", fontWeight: 600, color: "#FFFFFF" }}>Recent check-in replies</span>
@@ -164,11 +164,11 @@ export default function DashboardPage() {
               <div style={{ padding: "14px 16px" }}>
                 <p style={{ fontSize: "12px", color: "#888888", lineHeight: 1.7, whiteSpace: "pre-wrap" }}>{aiSummary.summary_text.slice(0, 300)}{aiSummary.summary_text.length > 300 ? "..." : ""}</p>
                 <div style={{ display: "flex", gap: "12px", marginTop: "12px", paddingTop: "12px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-                  <div style={{ textAlign: "center" }}>
+                  <div>
                     <div style={{ fontSize: "16px", fontWeight: 700, color: "#FFFFFF" }}>{aiSummary.responded_count}/{aiSummary.total_clients}</div>
                     <div style={{ fontSize: "10px", color: "#888888" }}>Responded</div>
                   </div>
-                  <div style={{ textAlign: "center" }}>
+                  <div>
                     <div style={{ fontSize: "16px", fontWeight: 700, color: "#FFFFFF" }}>{aiSummary.avg_energy_score}/10</div>
                     <div style={{ fontSize: "10px", color: "#888888" }}>Avg Energy</div>
                   </div>
