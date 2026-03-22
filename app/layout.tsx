@@ -77,6 +77,7 @@ const SHELL_ROUTES = [
   "/signup",
   "/forgot-password",
   "/renew",
+  "/onboarding",
 ];
 
 export default async function RootLayout({

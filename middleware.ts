@@ -99,6 +99,26 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(url);
     }
 
+    // Redirect to onboarding if coach profile is incomplete
+    if (user && request.nextUrl.pathname.startsWith("/dashboard")) {
+        const { createServiceClient } = await import("@/lib/supabase/server");
+        const serviceSupabase = await createServiceClient();
+        const { data: coach } = await serviceSupabase
+            .from("coaches")
+            .select("whatsapp_number")
+            .eq("id", user.id)
+            .single();
+
+        const needsOnboarding = !coach?.whatsapp_number ||
+            coach.whatsapp_number === "PENDING_SETUP";
+
+        if (needsOnboarding) {
+            const url = request.nextUrl.clone();
+            url.pathname = "/onboarding/profile";
+            return NextResponse.redirect(url);
+        }
+    }
+
     // Inject pathname so layout.tsx can conditionally render Nav/Footer
     supabaseResponse.headers.set("x-pathname", request.nextUrl.pathname);
 

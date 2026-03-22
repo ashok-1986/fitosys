@@ -12,10 +12,10 @@ import { getAllowedRedirectUrl } from "@/lib/auth/getAllowedRedirectUrl";
 export type AuthResult =
   | { success: true }
   | {
-      success: false;
-      error: string;
-      code: "RATE_LIMITED" | "VALIDATION" | "AUTH" | "SERVER";
-    };
+    success: false;
+    error: string;
+    code: "RATE_LIMITED" | "VALIDATION" | "AUTH" | "SERVER";
+  };
 
 export async function loginAction(formData: FormData): Promise<AuthResult> {
   const ip = (await headers()).get("x-forwarded-for") ?? "unknown";
@@ -146,12 +146,16 @@ export async function signupAction(formData: FormData): Promise<AuthResult> {
     // 4. Generate unique slug
     const slug = await generateUniqueSlug(full_name);
 
+    const dialCode = formData.get("dialCode") as string || "+91";
+    const localNumber = (formData.get("whatsapp_number") as string || "").replace(/^0+/, "");
+    const fullWhatsapp = `${dialCode}${localNumber}`;
+
     // 5. DB insert — separate failure mode (auth already succeeded)
     const { error: dbError } = await supabase.from("coaches").insert({
       id: authData.user.id,
       email,
       full_name,
-      whatsapp_number,
+      whatsapp_number: fullWhatsapp,
       country_code: country,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       coaching_type: ["fitness"],
