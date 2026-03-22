@@ -22,7 +22,7 @@ export default function DashboardPage() {
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", minHeight: "400px" }}>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "12px" }}>
           <Loader2 style={{ width: "28px", height: "28px", color: "#E8001D" }} className="animate-spin" />
-          <p style={{ fontSize: "13px", color: "#A0A0A0" }}>Loading dashboard...</p>
+          <p style={{ fontSize: "13px", color: "#C8C8C8" }}>Loading dashboard...</p>
         </div>
       </div>
     );
@@ -63,10 +63,10 @@ export default function DashboardPage() {
           <div key={i} style={{ background: "#111111", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "10px", padding: "18px" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "12px" }}>
               <span style={{ fontSize: "12px", fontWeight: 600, color: "#FFFFFF" }}>{kpi.label}</span>
-              <kpi.icon style={{ width: "14px", height: "14px", color: "#444444" }} />
+              <kpi.icon style={{ width: "14px", height: "14px", color: "#888888" }} />
             </div>
             <div style={{ fontSize: "22px", fontWeight: 700, color: "#FFFFFF", lineHeight: 1 }}>{kpi.value}</div>
-            <div style={{ fontSize: "11px", color: "#A0A0A0", marginTop: "4px" }}>{kpi.sub}</div>
+            <div style={{ fontSize: "11px", color: "#C8C8C8", marginTop: "4px" }}>{kpi.sub}</div>
           </div>
         ))}
       </div>
@@ -84,13 +84,13 @@ export default function DashboardPage() {
               <AlertTriangle style={{ width: "13px", height: "13px", color: "#F59E0B" }} />
             </div>
             {renewals.length === 0 ? (
-              <div style={{ padding: "24px 16px", textAlign: "center", color: "#444444", fontSize: "13px" }}>No clients need attention right now</div>
+              <div style={{ padding: "24px 16px", textAlign: "center", color: "#888888", fontSize: "13px" }}>No clients need attention right now</div>
             ) : (
               renewals.slice(0, 4).map((r, i) => (
                 <div key={r.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", borderBottom: i < Math.min(renewals.length, 4) - 1 ? "1px solid rgba(255,255,255,0.04)" : "none" }}>
                   <div>
                     <div style={{ fontSize: "13px", fontWeight: 600, color: "#FFFFFF" }}>{r.client_name}</div>
-                    <div style={{ fontSize: "11px", color: "#A0A0A0", marginTop: "2px" }}>{r.program} — ends {r.end_date}</div>
+                    <div style={{ fontSize: "11px", color: "#C8C8C8", marginTop: "2px" }}>{r.program} — ends {r.end_date}</div>
                   </div>
                   <span style={{ fontSize: "11px", fontWeight: 700, color: r.days_remaining <= 3 ? "#EF4444" : "#F59E0B", background: r.days_remaining <= 3 ? "rgba(239,68,68,0.1)" : "rgba(245,158,11,0.1)", padding: "3px 10px", borderRadius: "20px" }}>
                     {r.days_remaining}d left
@@ -107,7 +107,7 @@ export default function DashboardPage() {
               <span style={{ fontSize: "11px", color: "#E8001D", fontWeight: 600, cursor: "pointer" }}>View all</span>
             </div>
             {recentUpdates.length === 0 ? (
-              <div style={{ padding: "24px 16px", textAlign: "center", color: "#444444", fontSize: "13px" }}>No check-in replies yet this week</div>
+              <div style={{ padding: "24px 16px", textAlign: "center", color: "#888888", fontSize: "13px" }}>No check-in replies yet this week</div>
             ) : (
               recentUpdates.map((u, i) => (
                 <div key={u.id} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "10px 16px", borderBottom: i < recentUpdates.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none", cursor: "pointer" }}>
@@ -115,8 +115,8 @@ export default function DashboardPage() {
                     {u.client_initials}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: "12px", color: "#A0A0A0" }}><strong style={{ color: "#FFFFFF" }}>{u.client_name}</strong> · {u.program_name}</div>
-                    <div style={{ fontSize: "12px", color: "#A0A0A0", marginTop: "2px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{u.message}</div>
+                    <div style={{ fontSize: "12px", color: "#C8C8C8" }}><strong style={{ color: "#FFFFFF" }}>{u.client_name}</strong> · {u.program_name}</div>
+                    <div style={{ fontSize: "12px", color: "#C8C8C8", marginTop: "2px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{u.message}</div>
                   </div>
                 </div>
               ))
@@ -128,25 +128,25 @@ export default function DashboardPage() {
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px 8px" }}>
               <div>
                 <div style={{ fontSize: "13px", fontWeight: 600, color: "#FFFFFF" }}>Check-in Rate</div>
-                <div style={{ fontSize: "11px", color: "#A0A0A0", marginTop: "2px" }}>Weekly client responses</div>
+                <div style={{ fontSize: "11px", color: "#C8C8C8", marginTop: "2px" }}>Weekly client responses</div>
               </div>
-              <span style={{ fontSize: "11px", color: "#A0A0A0" }}>Avg: <strong style={{ color: "#FFFFFF" }}>{data?.chart_data?.average || 0}%</strong></span>
+              <span style={{ fontSize: "11px", color: "#C8C8C8" }}>Avg: <strong style={{ color: "#FFFFFF" }}>{data?.chart_data?.average || 0}%</strong></span>
             </div>
             <div style={{ display: "flex", alignItems: "flex-end", gap: "8px", padding: "8px 16px 16px", height: "120px" }}>
               {chartData.map((d, i) => (
                 <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: "6px", height: "100%", justifyContent: "flex-end" }}>
-                  <span style={{ fontSize: "10px", color: "#A0A0A0" }}>{d.value}%</span>
+                  <span style={{ fontSize: "10px", color: "#C8C8C8" }}>{d.value}%</span>
                   <div style={{ width: "100%", background: "#1A1A1A", borderRadius: "99px", overflow: "hidden", height: "80px", position: "relative" }}>
                     <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "#E8001D", opacity: d.value > 0 ? 0.8 : 0.1, height: `${Math.round((d.value / maxChartValue) * 100)}%`, borderRadius: "99px", transition: "height 0.6s ease" }} />
                   </div>
-                  <span style={{ fontSize: "10px", color: "#444444", textTransform: "uppercase", letterSpacing: "0.04em" }}>{d.label.slice(0, 3)}</span>
+                  <span style={{ fontSize: "10px", color: "#888888", textTransform: "uppercase", letterSpacing: "0.04em" }}>{d.label.slice(0, 3)}</span>
                 </div>
               ))}
             </div>
             <div style={{ height: "1px", background: "rgba(255,255,255,0.06)", margin: "0 16px" }} />
             <div style={{ display: "flex", alignItems: "center", gap: "6px", padding: "10px 16px" }}>
               <div style={{ width: "10px", height: "10px", borderRadius: "50%", border: "2px solid #E8001D" }} />
-              <span style={{ fontSize: "11px", color: "#A0A0A0" }}>Clients checked in</span>
+              <span style={{ fontSize: "11px", color: "#C8C8C8" }}>Clients checked in</span>
             </div>
           </div>
         </div>
@@ -162,20 +162,20 @@ export default function DashboardPage() {
             </div>
             {aiSummary ? (
               <div style={{ padding: "14px 16px" }}>
-                <p style={{ fontSize: "12px", color: "#A0A0A0", lineHeight: 1.7, whiteSpace: "pre-wrap" }}>{aiSummary.summary_text.slice(0, 300)}{aiSummary.summary_text.length > 300 ? "..." : ""}</p>
+                <p style={{ fontSize: "12px", color: "#C8C8C8", lineHeight: 1.7, whiteSpace: "pre-wrap" }}>{aiSummary.summary_text.slice(0, 300)}{aiSummary.summary_text.length > 300 ? "..." : ""}</p>
                 <div style={{ display: "flex", gap: "12px", marginTop: "12px", paddingTop: "12px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
                   <div>
                     <div style={{ fontSize: "16px", fontWeight: 700, color: "#FFFFFF" }}>{aiSummary.responded_count}/{aiSummary.total_clients}</div>
-                    <div style={{ fontSize: "10px", color: "#A0A0A0" }}>Responded</div>
+                    <div style={{ fontSize: "10px", color: "#C8C8C8" }}>Responded</div>
                   </div>
                   <div>
                     <div style={{ fontSize: "16px", fontWeight: 700, color: "#FFFFFF" }}>{aiSummary.avg_energy_score}/10</div>
-                    <div style={{ fontSize: "10px", color: "#A0A0A0" }}>Avg Energy</div>
+                    <div style={{ fontSize: "10px", color: "#C8C8C8" }}>Avg Energy</div>
                   </div>
                 </div>
               </div>
             ) : (
-              <div style={{ padding: "24px 16px", textAlign: "center", color: "#444444", fontSize: "12px", lineHeight: 1.6 }}>
+              <div style={{ padding: "24px 16px", textAlign: "center", color: "#888888", fontSize: "12px", lineHeight: 1.6 }}>
                 No summary yet.<br />Generated every Monday at 7 AM.
               </div>
             )}
@@ -185,16 +185,16 @@ export default function DashboardPage() {
           <div style={{ background: "#111111", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "10px", overflow: "hidden" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px 10px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
               <span style={{ fontSize: "13px", fontWeight: 600, color: "#FFFFFF" }}>Renewals this week</span>
-              <RefreshCw style={{ width: "13px", height: "13px", color: "#A0A0A0" }} />
+              <RefreshCw style={{ width: "13px", height: "13px", color: "#C8C8C8" }} />
             </div>
             {renewals.length === 0 ? (
-              <div style={{ padding: "20px 16px", textAlign: "center", color: "#444444", fontSize: "12px" }}>No renewals due this week</div>
+              <div style={{ padding: "20px 16px", textAlign: "center", color: "#888888", fontSize: "12px" }}>No renewals due this week</div>
             ) : (
               renewals.map((r, i) => (
                 <div key={r.id} style={{ padding: "10px 16px", borderBottom: i < renewals.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none" }}>
                   <div style={{ fontSize: "13px", fontWeight: 600, color: "#FFFFFF" }}>{r.client_name}</div>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "4px" }}>
-                    <span style={{ fontSize: "11px", color: "#A0A0A0" }}>{r.program}</span>
+                    <span style={{ fontSize: "11px", color: "#C8C8C8" }}>{r.program}</span>
                     <span style={{ fontSize: "11px", fontWeight: 700, color: r.days_remaining <= 3 ? "#EF4444" : "#F59E0B" }}>{r.days_remaining}d</span>
                   </div>
                 </div>
@@ -208,12 +208,12 @@ export default function DashboardPage() {
               <span style={{ fontSize: "13px", fontWeight: 600, color: "#FFFFFF" }}>Pending actions</span>
             </div>
             {pendingTasks.length === 0 ? (
-              <div style={{ padding: "20px 16px", textAlign: "center", color: "#444444", fontSize: "12px" }}>All clear for today</div>
+              <div style={{ padding: "20px 16px", textAlign: "center", color: "#888888", fontSize: "12px" }}>All clear for today</div>
             ) : (
               pendingTasks.map((task, i) => (
                 <div key={task.id} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px 16px", borderBottom: i < pendingTasks.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none" }}>
                   <div style={{ width: "16px", height: "16px", borderRadius: "4px", border: "1.5px solid rgba(255,255,255,0.1)", flexShrink: 0 }} />
-                  <span style={{ flex: 1, fontSize: "12px", color: "#A0A0A0", lineHeight: 1.4 }}>{task.text}</span>
+                  <span style={{ flex: 1, fontSize: "12px", color: "#C8C8C8", lineHeight: 1.4 }}>{task.text}</span>
                   <span style={{ fontSize: "10px", fontWeight: 700, color: task.due === "today" ? "#E8001D" : "#F59E0B", flexShrink: 0 }}>
                     {task.due === "today" ? "Today" : `${task.daysUntil}d`}
                   </span>

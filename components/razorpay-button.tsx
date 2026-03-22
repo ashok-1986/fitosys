@@ -44,6 +44,9 @@ interface RazorpayButtonProps {
     };
     slug?: string;
     label?: string;
+    orderId?: string;
+    enrollmentId?: string;
+    isRenewal?: boolean;
     onSuccess: (clientId: string) => void;
     onError: (error: string) => void;
 }
@@ -53,6 +56,9 @@ export function RazorpayButton({
     clientData,
     slug,
     label,
+    orderId,
+    enrollmentId,
+    isRenewal,
     onSuccess,
     onError,
 }: RazorpayButtonProps) {
@@ -60,29 +66,47 @@ export function RazorpayButton({
 
     const handlePayment = async () => {
         setLoading(true);
-
         try {
-            // Step 1: Create order on your server
-            const orderRes = await fetch("/api/payments/create-order", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ programId, clientData, slug }),
-            });
+            let orderData: {
+                orderId: string;
+                amount: number;
+                currency: string;
+                key: string;
+                enrollmentId?: string;
+            };
 
-            const orderData = await orderRes.json();
-            if (!orderRes.ok) throw new Error(orderData.error);
+            if (isRenewal && orderId) {
+                // Renewal: order already exists, fetch amount from Razorpay
+                const res = await fetch(`/api/payments/order-details?order=${orderId}`);
+                const details = await res.json();
+                if (!res.ok) throw new Error(details.error || "Failed to load order");
+                orderData = {
+                    orderId,
+                    amount: details.amount,
+                    currency: details.currency,
+                    key: details.key,
+                    enrollmentId: enrollmentId,
+                };
+            } else {
+                const orderRes = await fetch("/api/payments/create-order", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ programId, clientData, slug }),
+                });
+                const data = await orderRes.json();
+                if (!orderRes.ok) throw new Error(data.error);
+                orderData = data;
+            }
 
-            // Step 2: Load Razorpay script if not already loaded
             await loadRazorpayScript();
 
-            // Step 3: Open Razorpay modal
             const options: RazorpayOptions = {
                 key: orderData.key,
                 amount: orderData.amount,
                 currency: orderData.currency,
                 order_id: orderData.orderId,
                 name: "Fitosys",
-                description: "Coaching Program Payment",
+                description: isRenewal ? "Program Renewal" : "Coaching Program Payment",
                 prefill: {
                     name: clientData.full_name,
                     email: clientData.email,
@@ -90,7 +114,6 @@ export function RazorpayButton({
                 },
                 theme: { color: "#E8001D" },
                 handler: async (response: RazorpayResponse) => {
-                    // Step 4: Verify payment on server
                     try {
                         const verifyRes = await fetch("/api/payments/verify", {
                             method: "POST",
@@ -101,14 +124,13 @@ export function RazorpayButton({
                                 clientData,
                             }),
                         });
-
                         const verifyData = await verifyRes.json();
                         if (verifyRes.ok) {
-                            // Redirect to success page with payment details
-                            const successUrl = slug
-                                ? `/join/${slug}/success?status=success&payment_id=${response.razorpay_payment_id}`
-                                : `/success?status=success&payment_id=${response.razorpay_payment_id}`;
-                            window.location.href = successUrl;
+                            if (!isRenewal && slug) {
+                                window.location.href = `/join/${slug}/success?status=success&payment_id=${response.razorpay_payment_id}`;
+                            } else {
+                                onSuccess(verifyData.clientId || "");
+                            }
                         } else {
                             onError(verifyData.error || "Verification failed");
                         }
