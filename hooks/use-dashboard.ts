@@ -59,12 +59,16 @@ export interface DashboardData {
 }
 
 const fetchDashboardData = async (): Promise<DashboardData> => {
-  const res = await fetch("/api/dashboard/data");
+  const res = await fetch("/api/dashboard/data", {
+    cache: "no-store",
+    credentials: "include",
+  });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     throw new Error(err.error || `HTTP ${res.status}`);
   }
-  return res.json();
+  const data = await res.json();
+  return data;
 };
 
 export function useDashboard() {
@@ -76,11 +80,9 @@ export function useDashboard() {
   } = useQuery<DashboardData, Error>({
     queryKey: ["dashboardData"],
     queryFn: fetchDashboardData,
-    staleTime: 30000, // 30 seconds
+    staleTime: 0,
     retry: 1,
   });
-
-  console.log("[useDashboard] Query state:", { hasData: !!data, loading, hasError: !!error });
 
   return {
     data,
