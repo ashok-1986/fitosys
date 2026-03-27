@@ -13,14 +13,20 @@ export default function OnboardingConfirmPage() {
     const [copied, setCopied] = useState(false);
 
     useEffect(() => {
-        fetch("/api/coaches/profile")
-            .then(res => res.json())
-            .then(data => {
-                setSlug(data.slug || "");
-                setCoachName(data.full_name?.split(" ")[0] || "Coach");
-            })
-            .catch(() => { });
-    }, []);
+        // Redirect to dashboard if onboarding is already complete (has programs)
+        Promise.all([
+            fetch("/api/coaches/profile").then(res => res.json()),
+            fetch("/api/programs").then(res => res.json()),
+        ]).then(([profile, programs]) => {
+            const hasPrograms = Array.isArray(programs) && programs.some(p => p.is_active);
+            if (hasPrograms) {
+                router.push("/dashboard");
+                return;
+            }
+            setSlug(profile.slug || "");
+            setCoachName(profile.full_name?.split(" ")[0] || "Coach");
+        }).catch(() => { });
+    }, [router]);
 
     const copyLink = () => {
         if (!slug) return;

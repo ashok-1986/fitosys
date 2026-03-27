@@ -71,7 +71,8 @@ export default function OnboardingProfilePage() {
                 setError(data.error || "Failed to save profile.");
                 return;
             }
-            router.push("/onboarding/confirm");
+            // Use window.location to force a full navigation after cookie update
+            window.location.href = "/onboarding/confirm";
         } catch {
             setError("Something went wrong. Please try again.");
         } finally {

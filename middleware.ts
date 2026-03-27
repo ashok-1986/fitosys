@@ -92,8 +92,8 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(url);
     }
 
-    // Redirect authenticated users away from auth pages
-    if (user && ["/login", "/signup"].includes(request.nextUrl.pathname)) {
+    // Redirect authenticated users away from auth pages and marketing home
+    if (user && ["/", "/login", "/signup"].includes(request.nextUrl.pathname)) {
         const url = request.nextUrl.clone();
         url.pathname = "/dashboard";
         return NextResponse.redirect(url);
