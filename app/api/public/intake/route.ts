@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { createRazorpayOrder } from "@/lib/razorpay/create-order";
+import { sendWhatsAppMessage } from "@/lib/whatsapp/send";
 import { checkClientLimit } from "@/lib/plans/check-limit";
 import { intakeRateLimit } from "@/lib/rate-limit";
 import { logRequest, logError } from "@/lib/loggerHelpers";
@@ -40,7 +40,7 @@ const intakeSchema = z.object({
 // No auth required — this is the public client-facing endpoint
 export async function POST(request: NextRequest) {
     logRequest(request, "POST /api/public/intake");
-    
+
     const ip = request.headers.get("x-forwarded-for") ?? "127.0.0.1";
     const { success } = await intakeRateLimit.limit(ip);
     if (!success) {
@@ -151,7 +151,7 @@ export async function POST(request: NextRequest) {
             end_date: endDate.toISOString().split("T")[0],
             amount_paid: program.price,
             currency: program.currency ?? "INR",
-            status: "pending",
+            status: "payment_pending",
         })
         .select()
         .single();
@@ -164,42 +164,46 @@ export async function POST(request: NextRequest) {
         );
     }
 
-    // Create Razorpay order
-    try {
-        const order = await createRazorpayOrder({
-            amount: program.price,
-            currency: program.currency ?? "INR",
-            receipt: enrollment.id,
-            notes: {
-                coach_id: coach.id,
-                program_id: program.id,
-                enrollment_id: enrollment.id,
-                payment_type: "new",
-                client_full_name: full_name,
-                client_whatsapp: whatsapp_number,
-                client_email: email,
-                client_age: String(age || ""),
-                client_primary_goal: primary_goal || "",
-                client_health_notes: health_notes || "",
-            },
-        });
+    // Step A: Create the client record
+    const { data: client, error: clientError } = await supabase
+        .from("clients")
+        .upsert({
+            coach_id: coach.id,
+            full_name,
+            whatsapp_number,
+            email,
+            age,
+            primary_goal,
+            health_notes,
+            status: "active"
+        }, { onConflict: "whatsapp_number, coach_id" })
+        .select()
+        .single();
 
-        return NextResponse.json({
-            orderId: order.id,
-            amount: order.amount,
-            currency: order.currency,
-            key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-            enrollmentId: enrollment.id,
-            coachName: coach.full_name,
-            programName: program.name,
+    if (clientError || !client) {
+        console.error("[Intake] Failed to create client:", clientError);
+    } else {
+        await supabase
+            .from("enrollments")
+            .update({ client_id: client.id })
+            .eq("id", enrollment.id);
+    }
+
+    // Step B: Send WhatsApp notification to coach
+    try {
+        await sendWhatsAppMessage({
+            phone: coach.whatsapp_number,
+            message: `New client payment pending.\n\nClient: ${full_name}\nProgram: ${program.name}\nAmount: ₹${program.price}\n\nThey've confirmed sending payment via UPI. Review and confirm in your Fitosys dashboard.`
         });
     } catch (err) {
-        console.error("[Intake] Razorpay order creation failed:", err);
-        // Clean up the pending enrollment
-        await supabase.from("enrollments").delete().eq("id", enrollment.id);
-        return NextResponse.json(
-            { error: "Failed to create payment order" },
-            { status: 500 }
-        );
+        console.error("[Intake] WhatsApp notification failed:", err);
     }
+
+    // Step C: Return success response
+    return NextResponse.json({
+        success: true,
+        enrollmentId: enrollment.id,
+        programName: program.name,
+        coachName: coach.full_name
+    });
 }

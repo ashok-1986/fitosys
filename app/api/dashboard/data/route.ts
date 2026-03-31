@@ -23,6 +23,7 @@ export async function GET() {
     programsResult,
     summaryResult,
     recentCheckinsResult,
+    pendingConfirmationsResult,
   ] = await Promise.all([
     supabase!.from("coaches").select("id, full_name, email").eq("id", coachId!).single(),
     supabase!.from("clients").select("id", { count: "exact", head: true }).eq("coach_id", coachId!).eq("status", "active"),
@@ -55,7 +56,23 @@ export async function GET() {
       .not("responded_at", "is", null)
       .order("responded_at", { ascending: false })
       .limit(5),
+    supabase!.from("enrollments")
+      .select("id, created_at, amount_paid, currency, program_id, clients(id, full_name, whatsapp_number), programs(name)")
+      .eq("coach_id", coachId!)
+      .eq("status", "payment_pending")
+      .order("created_at", { ascending: true })
+      .limit(10),
   ]);
+
+  const pending_confirmations = (pendingConfirmationsResult.data || []).map(e => ({
+    id: e.id,
+    client_id: (e.clients as unknown as { id: string })?.id || "",
+    client_name: (e.clients as unknown as { full_name: string })?.full_name || "Unknown",
+    client_whatsapp: (e.clients as unknown as { whatsapp_number: string })?.whatsapp_number || "",
+    program_name: (e.programs as unknown as { name: string })?.name || "Unknown",
+    amount: e.amount_paid || 0,
+    submitted_at: e.created_at,
+  }));
 
   const totalRevenue = (allRevenueResult.data || []).reduce((s, p) => s + Number(p.amount), 0);
   const mrr = (monthRevenueResult.data || []).reduce((s, p) => s + Number(p.amount), 0);
@@ -147,9 +164,11 @@ export async function GET() {
       mrr,
       renewals_due: renewals.length,
       response_rate: responseRate,
+      pending_confirmations_count: pending_confirmations.length,
     },
     programs,
     renewals,
+    pending_confirmations,
     recent_updates: recentUpdates,
     chart_data: {
       week: chartWeek,

@@ -14,10 +14,18 @@ export default function OnboardingConfirmPage() {
 
     useEffect(() => {
         // Redirect to dashboard if onboarding is already complete (has programs)
+        let cancelled = false;
         Promise.all([
-            fetch("/api/coaches/profile").then(res => res.json()),
-            fetch("/api/programs").then(res => res.json()),
+            fetch("/api/coaches/profile").then(res => {
+                if (!res.ok) throw new Error("Failed to fetch profile");
+                return res.json();
+            }),
+            fetch("/api/programs").then(res => {
+                if (!res.ok) throw new Error("Failed to fetch programs");
+                return res.json();
+            }),
         ]).then(([profile, programs]) => {
+            if (cancelled) return;
             const hasPrograms = Array.isArray(programs) && programs.some(p => p.is_active);
             if (hasPrograms) {
                 router.push("/dashboard");
@@ -25,7 +33,12 @@ export default function OnboardingConfirmPage() {
             }
             setSlug(profile.slug || "");
             setCoachName(profile.full_name?.split(" ")[0] || "Coach");
-        }).catch(() => { });
+        }).catch((err) => {
+            if (cancelled) return;
+            console.error("Failed to load onboarding data:", err);
+            // Consider showing an error state or redirecting to an error page
+        });
+        return () => { cancelled = true; };
     }, [router]);
 
     const copyLink = () => {

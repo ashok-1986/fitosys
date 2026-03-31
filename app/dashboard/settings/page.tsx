@@ -1,526 +1,400 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardDescription, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
-import { NavBar } from "@/components/ui/navigation";
-import { User, Bell, CreditCard, Save, Trash2, AlertTriangle } from "lucide-react";
-import { deleteAccountAction } from "@/app/actions/delete-account";
-import { useToast } from "@/hooks/use-toast";
 
 interface CoachProfile {
   id: string;
   full_name: string;
-  email: string;
   whatsapp_number: string;
-  timezone: string;
+  city: string | null;
   coaching_type: string[];
-  business_name?: string;
-  gst_number?: string;
-  billing_address?: string;
+  upi_id: string | null;
+  payment_instructions: string | null;
+  accepted_payment_methods: string[];
   checkin_day: number;
   checkin_time: string;
+  timezone: string;
 }
 
-type SettingsTab = "profile" | "notifications" | "billing";
-
-const COACHING_TYPES = [
-  { value: "fitness", label: "Fitness" },
-  { value: "yoga", label: "Yoga" },
-  { value: "wellness", label: "Wellness" },
-  { value: "nutrition", label: "Nutrition" },
-];
-
-const DAYS = [
-  { value: "0", label: "Sunday" },
-  { value: "1", label: "Monday" },
-  { value: "2", label: "Tuesday" },
-  { value: "3", label: "Wednesday" },
-  { value: "4", label: "Thursday" },
-  { value: "5", label: "Friday" },
-  { value: "6", label: "Saturday" },
-];
+const COACHING_TYPES = ["Fitness", "Yoga", "Wellness", "Nutrition", "Strength", "Mobility"];
+const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const generateTimes = () => {
+  const times = [];
+  for (let h = 6; h <= 22; h++) {
+    for (let m = 0; m < 60; m += 30) {
+      if (h === 22 && m === 30) continue;
+      const hh = h.toString().padStart(2, '0');
+      const mm = m.toString().padStart(2, '0');
+      const suffix = h >= 12 ? 'PM' : 'AM';
+      let displayH = h > 12 ? h - 12 : h;
+      if (h === 12) displayH = 12; // 12 PM
+      if (h === 0) displayH = 12; // 12 AM
+      times.push({ value: `${hh}:${mm}`, label: `${displayH}:${mm} ${suffix}` });
+    }
+  }
+  return times;
+};
+const TIMES = generateTimes();
 
 export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState<SettingsTab>("profile");
-  const [loading, setLoading] = useState(false);
-  const [saved, setSaved] = useState(false);
-  const [deleteConfirmEmail, setDeleteConfirmEmail] = useState("");
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [profile, setProfile] = useState<CoachProfile | null>(null);
-  const { showSuccess, showError } = useToast();
+  const [loading, setLoading] = useState(true);
 
-  const [formData, setFormData] = useState({
-    full_name: "",
-    email: "",
-    whatsapp_number: "",
-    coaching_type: [] as string[],
-    business_name: "",
-    gst_number: "",
-    billing_address: "",
-    checkin_day: "0",
-    checkin_time: "19:00",
-    whatsapp_notifications: true,
-    email_notifications: false,
-  });
+  // Section 1 State
+  const [fullName, setFullName] = useState("");
+  const [city, setCity] = useState("");
+  const [coachingType, setCoachingType] = useState<string[]>([]);
+  const [savingSec1, setSavingSec1] = useState(false);
+  const [successSec1, setSuccessSec1] = useState(false);
+  const [errorSec1, setErrorSec1] = useState("");
+
+  // Section 2 State
+  const [upiId, setUpiId] = useState("");
+  const [paymentInstructions, setPaymentInstructions] = useState("");
+  const [acceptedMethods, setAcceptedMethods] = useState<string[]>([]);
+  const [savingSec2, setSavingSec2] = useState(false);
+  const [successSec2, setSuccessSec2] = useState(false);
+  const [errorSec2, setErrorSec2] = useState("");
+
+  // Section 3 State
+  const [checkinDay, setCheckinDay] = useState(0);
+  const [checkinTime, setCheckinTime] = useState("06:00");
+  const [savingSec3, setSavingSec3] = useState(false);
+  const [successSec3, setSuccessSec3] = useState(false);
+  const [errorSec3, setErrorSec3] = useState("");
+
+  const fetchProfile = async () => {
+    try {
+      const res = await fetch("/api/coaches/settings");
+      if (res.ok) {
+        const data: CoachProfile = await res.json();
+        setProfile(data);
+
+        setFullName(data.full_name || "");
+        setCity(data.city || "");
+        setCoachingType(data.coaching_type || []);
+
+        setUpiId(data.upi_id || "");
+        setPaymentInstructions(data.payment_instructions || "");
+        setAcceptedMethods(data.accepted_payment_methods || []);
+
+        setCheckinDay(data.checkin_day ?? 0);
+        setCheckinTime(data.checkin_time || "06:00");
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchProfile();
   }, []);
 
-  async function fetchProfile() {
+  const handleSaveSec1 = async () => {
+    setSavingSec1(true);
+    setErrorSec1("");
     try {
-      const res = await fetch("/api/coaches/profile");
-      if (!res.ok) throw new Error("Failed to fetch profile");
-      const data = await res.json();
-      setProfile(data);
-      setFormData({
-        full_name: data.full_name || "",
-        email: data.email || "",
-        whatsapp_number: data.whatsapp_number || "",
-        coaching_type: data.coaching_type || [],
-        business_name: data.business_name || "",
-        gst_number: data.gst_number || "",
-        billing_address: data.billing_address || "",
-        checkin_day: String(data.checkin_day || 0),
-        checkin_time: data.checkin_time || "19:00",
-        whatsapp_notifications: true,
-        email_notifications: false,
-      });
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-    }
-  }
-
-  async function handleSave() {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/coaches/profile", {
+      const res = await fetch("/api/coaches/settings", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          full_name: formData.full_name,
-          email: formData.email,
-          whatsapp_number: formData.whatsapp_number,
-          coaching_type: formData.coaching_type,
-          business_name: formData.business_name,
-          gst_number: formData.gst_number,
-          billing_address: formData.billing_address,
-          checkin_day: parseInt(formData.checkin_day),
-          checkin_time: formData.checkin_time,
-        }),
+        body: JSON.stringify({ full_name: fullName, city, coaching_type: coachingType })
       });
-
-      if (!res.ok) throw new Error("Failed to save");
-
-      setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
-    } catch (error) {
-      console.error("Error saving profile:", error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function handleSaveNotifications() {
-    setLoading(true);
-    try {
-      // In production: create API endpoint for notification preferences
-      // For now, just show success message
-      setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
-    } catch (error) {
-      console.error("Error saving notifications:", error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function handleDelete(formData: FormData) {
-    setLoading(true);
-    try {
-      const result = await deleteAccountAction(formData);
-      if (result.success) {
-        showSuccess(result.message);
-        setShowDeleteDialog(false);
-        // Redirect to home after 3 seconds
-        setTimeout(() => window.location.href = "/", 3000);
-      } else {
-        showError(result.error);
+      if (!res.ok) {
+        const errObj = await res.json();
+        throw new Error(errObj.error || "Failed to save");
       }
-    } catch (error) {
-      console.error("Error deleting account:", error);
-      showError("Account deletion failed. Please contact support.");
+      setSuccessSec1(true);
+      setTimeout(() => setSuccessSec1(false), 2000);
+      await fetchProfile();
+    } catch (err: any) {
+      setErrorSec1(err.message || "Failed to save");
     } finally {
-      setLoading(false);
+      setSavingSec1(false);
     }
-  }
+  };
+
+  const handleSaveSec2 = async () => {
+    setSavingSec2(true);
+    setErrorSec2("");
+    try {
+      const res = await fetch("/api/coaches/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ upi_id: upiId, payment_instructions: paymentInstructions, accepted_payment_methods: acceptedMethods })
+      });
+      if (!res.ok) {
+        const errObj = await res.json();
+        throw new Error(errObj.error || "Failed to save");
+      }
+      setSuccessSec2(true);
+      setTimeout(() => setSuccessSec2(false), 2000);
+      await fetchProfile();
+    } catch (err: any) {
+      setErrorSec2(err.message || "Failed to save");
+    } finally {
+      setSavingSec2(false);
+    }
+  };
+
+  const handleSaveSec3 = async () => {
+    setSavingSec3(true);
+    setErrorSec3("");
+    try {
+      const res = await fetch("/api/coaches/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ checkin_day: checkinDay, checkin_time: checkinTime })
+      });
+      if (!res.ok) {
+        const errObj = await res.json();
+        throw new Error(errObj.error || "Failed to save");
+      }
+      setSuccessSec3(true);
+      setTimeout(() => setSuccessSec3(false), 2000);
+      await fetchProfile();
+    } catch (err: any) {
+      setErrorSec3(err.message || "Failed to save");
+    } finally {
+      setSavingSec3(false);
+    }
+  };
+
+  const toggleCoachingType = (type: string) => {
+    setCoachingType(prev => prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]);
+  };
+
+  const togglePaymentMethod = (method: string) => {
+    setAcceptedMethods(prev => prev.includes(method) ? prev.filter(m => m !== method) : [...prev, method]);
+  };
+
+  if (loading) return <div className="text-white p-8">Loading...</div>;
+  if (!profile) return <div className="text-white p-8">Profile not found.</div>;
 
   return (
-    <div className="flex-1 w-full bg-background text-white font-sans overflow-y-auto pb-24">
-      <NavBar
-        title="Settings"
-        back="Home"
-        backHref="/dashboard"
-      />
+    <div className="min-h-screen bg-[#0A0A0A] p-6 lg:p-8">
+      <div className="max-w-[720px] mx-0 space-y-5">
+        <h1 className="font-['Barlow_Condensed'] text-[32px] uppercase text-white font-medium mb-6">Settings</h1>
 
-      {/* Tab Navigation */}
-      <div className="px-4 mt-4 mb-6">
-        <div className="flex gap-2 border-b border-white/10">
-          <TabButton
-            icon={<User className="h-4 w-4" />}
-            label="Profile"
-            active={activeTab === "profile"}
-            onClick={() => setActiveTab("profile")}
-          />
-          <TabButton
-            icon={<Bell className="h-4 w-4" />}
-            label="Notifications"
-            active={activeTab === "notifications"}
-            onClick={() => setActiveTab("notifications")}
-          />
-          <TabButton
-            icon={<CreditCard className="h-4 w-4" />}
-            label="Billing"
-            active={activeTab === "billing"}
-            onClick={() => setActiveTab("billing")}
-          />
-        </div>
-      </div>
+        {/* Section 1 - Profile */}
+        <section className="bg-[#111111] border border-[rgba(255,255,255,0.06)] rounded-[10px] p-6">
+          <div className="mb-6">
+            <h2 className="font-['Barlow_Condensed'] font-medium text-[20px] uppercase tracking-[0.02em] text-white">Profile</h2>
+            <p className="font-['Urbanist'] text-[14px] text-[#888888]">Update your personal information and coaching specialization.</p>
+          </div>
 
-      {/* Profile Tab */}
-      {activeTab === "profile" && (
-        <div className="px-4 space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Coach Profile</CardTitle>
-              <CardDescription>Update your personal and business information</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="full_name">Full Name</Label>
-                <Input
-                  id="full_name"
-                  value={formData.full_name}
-                  onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="whatsapp">WhatsApp Number</Label>
-                <Input
-                  id="whatsapp"
-                  value={formData.whatsapp_number}
-                  onChange={(e) => setFormData({ ...formData, whatsapp_number: e.target.value })}
-                  placeholder="+91 98765 43210"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Coaching Types</Label>
-                <div className="flex flex-wrap gap-2">
-                  {COACHING_TYPES.map((type) => (
-                    <Badge
-                      key={type.value}
-                      variant={formData.coaching_type.includes(type.value) ? "default" : "outline"}
-                      className="cursor-pointer"
-                      onClick={() => {
-                        setFormData({
-                          ...formData,
-                          coaching_type: formData.coaching_type.includes(type.value)
-                            ? formData.coaching_type.filter((t) => t !== type.value)
-                            : [...formData.coaching_type, type.value],
-                        });
-                      }}
-                    >
-                      {type.label}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-              <div className="pt-4 border-t">
-                <p className="text-sm font-semibold mb-3">Business Information (for invoices)</p>
-                <div className="space-y-2">
-                  <Label htmlFor="business_name">Business Name</Label>
-                  <Input
-                    id="business_name"
-                    value={formData.business_name}
-                    onChange={(e) => setFormData({ ...formData, business_name: e.target.value })}
-                    placeholder="Your coaching business name"
-                  />
-                </div>
-                <div className="space-y-2 mt-3">
-                  <Label htmlFor="gst">GST Number (optional)</Label>
-                  <Input
-                    id="gst"
-                    value={formData.gst_number}
-                    onChange={(e) => setFormData({ ...formData, gst_number: e.target.value })}
-                    placeholder="29ABCDE1234F1Z5"
-                  />
-                </div>
-                <div className="space-y-2 mt-3">
-                  <Label htmlFor="address">Billing Address</Label>
-                  <Textarea
-                    id="address"
-                    value={formData.billing_address}
-                    onChange={(e) => setFormData({ ...formData, billing_address: e.target.value })}
-                    placeholder="Your business address"
-                    rows={3}
-                  />
-                </div>
-              </div>
-              <div className="pt-4 border-t">
-                <p className="text-sm font-semibold mb-3">Check-in Schedule</p>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="checkin_day">Check-in Day</Label>
-                    <Select
-                      value={formData.checkin_day}
-                      onValueChange={(value) => setFormData({ ...formData, checkin_day: value })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {DAYS.map((day) => (
-                          <SelectItem key={day.value} value={day.value}>
-                            {day.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="checkin_time">Check-in Time</Label>
-                    <Input
-                      id="checkin_time"
-                      type="time"
-                      value={formData.checkin_time}
-                      onChange={(e) => setFormData({ ...formData, checkin_time: e.target.value })}
-                    />
-                  </div>
-                </div>
-              </div>
-              <Button
-                onClick={handleSave}
-                disabled={loading}
-                className="w-full bg-brand hover:bg-brand/90"
-              >
-                <Save className="h-4 w-4 mr-2" />
-                {loading ? "Saving..." : saved ? "Saved!" : "Save Changes"}
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+          <div className="space-y-4">
+            <div>
+              <label className="block font-['Urbanist'] text-[13px] font-medium text-[#C8C8C8] mb-2">Full Name</label>
+              <input
+                type="text"
+                value={fullName}
+                onChange={e => setFullName(e.target.value)}
+                disabled={savingSec1}
+                className="w-full bg-[#1a1a1a] border border-[rgba(255,255,255,0.08)] rounded-[6px] px-3 py-2.5 text-[14px] text-white focus:outline-none focus:border-[rgba(232,0,29,0.5)] transition-colors disabled:opacity-50"
+              />
+            </div>
 
-      {/* Notifications Tab */}
-      {activeTab === "notifications" && (
-        <div className="px-4 space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Notification Preferences</CardTitle>
-              <CardDescription>Choose how you want to be notified</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between p-4 border rounded-lg">
-                <div>
-                  <p className="font-medium">WhatsApp Notifications</p>
-                  <p className="text-sm text-muted-foreground">
-                    Receive client check-in replies and alerts on WhatsApp
-                  </p>
-                </div>
-                <Switch
-                  checked={formData.whatsapp_notifications}
-                  onCheckedChange={(checked) =>
-                    setFormData({ ...formData, whatsapp_notifications: checked })
-                  }
-                />
-              </div>
-              <div className="flex items-center justify-between p-4 border rounded-lg">
-                <div>
-                  <p className="font-medium">Email Notifications</p>
-                  <p className="text-sm text-muted-foreground">
-                    Receive weekly summaries and invoices via email
-                  </p>
-                </div>
-                <Switch
-                  checked={formData.email_notifications}
-                  onCheckedChange={(checked) =>
-                    setFormData({ ...formData, email_notifications: checked })
-                  }
-                />
-              </div>
-              <Button
-                onClick={handleSaveNotifications}
-                disabled={loading}
-                className="w-full bg-brand hover:bg-brand/90"
-              >
-                <Save className="h-4 w-4 mr-2" />
-                Save Preferences
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+            <div>
+              <label className="block font-['Urbanist'] text-[13px] font-medium text-[#C8C8C8] mb-2">WhatsApp Number</label>
+              <input
+                type="text"
+                value={profile.whatsapp_number}
+                disabled
+                className="w-full bg-[#1a1a1a] border border-[rgba(255,255,255,0.08)] rounded-[6px] px-3 py-2.5 text-[14px] text-white opacity-60 cursor-not-allowed"
+              />
+              <p className="text-[#888888] text-xs mt-1.5 font-['Urbanist']">Contact support to change your WhatsApp number.</p>
+            </div>
 
-      {/* Billing Tab */}
-      {activeTab === "billing" && (
-        <div className="px-4 space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Current Plan</CardTitle>
-              <CardDescription>Manage your subscription and billing</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="p-4 border rounded-lg bg-brand/5">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="font-bold text-lg">Pro Plan</p>
-                  <Badge>Active</Badge>
-                </div>
-                <p className="text-sm text-muted-foreground mb-4">
-                  ₹2,999/month • Next billing on April 1, 2026
-                </p>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Clients enrolled</span>
-                    <span>12 / 50</span>
-                  </div>
-                  <div className="w-full bg-muted rounded-full h-2">
-                    <div className="bg-brand h-2 rounded-full" style={{ width: "24%" }} />
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    38 clients remaining on your plan
-                  </p>
-                </div>
-              </div>
-              <Button className="w-full" variant="outline">
-                Upgrade Plan
-              </Button>
+            <div>
+              <label className="block font-['Urbanist'] text-[13px] font-medium text-[#C8C8C8] mb-2">City</label>
+              <input
+                type="text"
+                value={city}
+                onChange={e => setCity(e.target.value)}
+                disabled={savingSec1}
+                className="w-full bg-[#1a1a1a] border border-[rgba(255,255,255,0.08)] rounded-[6px] px-3 py-2.5 text-[14px] text-white focus:outline-none focus:border-[rgba(232,0,29,0.5)] transition-colors disabled:opacity-50"
+              />
+            </div>
 
-              {/* Danger Zone */}
-              <div className="pt-6 border-t border-destructive/20">
-                <div className="bg-destructive/10 border border-destructive/30 rounded-lg p-4">
-                  <div className="flex items-start gap-3">
-                    <AlertTriangle className="h-5 w-5 text-destructive mt-0.5" />
-                    <div className="flex-1">
-                      <h4 className="text-sm font-semibold text-destructive">Danger Zone</h4>
-                      <p className="text-xs text-destructive/80 mt-1">
-                        Once deleted, your account cannot be recovered after 30 days
-                      </p>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        className="mt-3"
-                        onClick={() => setShowDeleteDialog(true)}
-                      >
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        Delete Account
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {/* Delete Account Dialog */}
-      {showDeleteDialog && (
-        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
-          <Card className="max-w-md w-full border-destructive/50">
-            <CardHeader>
-              <CardTitle className="text-destructive">Delete Account?</CardTitle>
-              <CardDescription>
-                This action cannot be undone after 30 days
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="bg-destructive/10 border border-destructive/30 rounded-lg p-3">
-                <p className="text-sm text-destructive">
-                  ⚠️ Warning: This will:
-                </p>
-                <ul className="text-xs text-destructive/80 mt-2 space-y-1 ml-4 list-disc">
-                  <li>Deactivate all your programs</li>
-                  <li>Cancel all active client enrollments</li>
-                  <li>Schedule your data for permanent deletion in 30 days</li>
-                  <li>Remove access to your dashboard</li>
-                </ul>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="confirmEmail">Type your email to confirm</Label>
-                <form action={handleDelete}>
-                  <Input
-                    id="confirmEmail"
-                    type="email"
-                    placeholder={profile?.email || "your@email.com"}
-                    value={deleteConfirmEmail}
-                    onChange={(e) => setDeleteConfirmEmail(e.target.value)}
-                    name="confirmEmail"
-                    required
-                  />
-                  <div className="flex gap-2 mt-4">
-                    <Button
+            <div>
+              <label className="block font-['Urbanist'] text-[13px] font-medium text-[#C8C8C8] mb-2">Coaching Type</label>
+              <div className="flex flex-wrap gap-2">
+                {COACHING_TYPES.map(type => {
+                  const isSelected = coachingType.includes(type);
+                  return (
+                    <button
+                      key={type}
                       type="button"
-                      variant="outline"
-                      className="flex-1"
-                      onClick={() => {
-                        setShowDeleteDialog(false);
-                        setDeleteConfirmEmail("");
-                      }}
+                      disabled={savingSec1}
+                      onClick={() => toggleCoachingType(type)}
+                      className={`px-3 py-1.5 rounded-full text-[13px] font-['Urbanist'] font-medium transition-colors border disabled:opacity-50 ${isSelected ? 'bg-[rgba(232,0,29,0.15)] border-[rgba(232,0,29,0.4)] text-[#E8001D]' : 'bg-[#1a1a1a] border-[rgba(255,255,255,0.08)] text-[#888888]'}`}
                     >
-                      Cancel
-                    </Button>
-                    <Button
-                      type="submit"
-                      variant="destructive"
-                      className="flex-1"
-                      disabled={deleteConfirmEmail !== profile?.email || loading}
-                    >
-                      {loading ? "Deleting..." : "Delete Account"}
-                    </Button>
-                  </div>
-                </form>
+                      {type}
+                    </button>
+                  );
+                })}
               </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-    </div>
-  );
-}
+            </div>
 
-function TabButton({ icon, label, active, onClick }: { icon: React.ReactNode; label: string; active: boolean; onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors border-b-2 ${active
-          ? "border-brand text-white"
-          : "border-transparent text-white/40 hover:text-white"
-        }`}
-    >
-      {icon}
-      {label}
-    </button>
+            <div className="pt-2 flex items-center gap-3">
+              <button
+                onClick={handleSaveSec1}
+                disabled={savingSec1}
+                className="bg-[#E8001D] hover:bg-[#C20000] text-white font-['Urbanist'] font-bold text-[13px] uppercase tracking-[0.04em] px-5 py-2.5 rounded-[6px] transition-colors disabled:opacity-50 min-w-[80px] flex justify-center"
+              >
+                {savingSec1 ? (
+                  <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                  </svg>
+                ) : 'Save'}
+              </button>
+              {successSec1 && <span className="text-[#10B981] font-['Urbanist'] text-[13px] font-medium">Saved</span>}
+              {errorSec1 && <span className="text-red-500 font-['Urbanist'] text-[13px]">{errorSec1}</span>}
+            </div>
+          </div>
+        </section>
+
+        {/* Section 2 - Payment Details */}
+        <section className="bg-[#111111] border border-[rgba(255,255,255,0.06)] rounded-[10px] p-6">
+          <div className="mb-6">
+            <h2 className="font-['Barlow_Condensed'] font-medium text-[20px] uppercase tracking-[0.02em] text-white">How your clients pay you</h2>
+            <p className="font-['Urbanist'] text-[14px] text-[#888888]">Fitosys never touches your client payments. Add your UPI ID so clients see it on your onboarding page.</p>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <label className="block font-['Urbanist'] text-[13px] font-medium text-[#C8C8C8] mb-2">UPI ID</label>
+              <input
+                type="text"
+                placeholder="yourname@upi"
+                value={upiId}
+                onChange={e => setUpiId(e.target.value)}
+                disabled={savingSec2}
+                className="w-full bg-[#1a1a1a] border border-[rgba(255,255,255,0.08)] rounded-[6px] px-3 py-2.5 text-[14px] text-white focus:outline-none focus:border-[rgba(232,0,29,0.5)] transition-colors disabled:opacity-50 placeholder:text-[#555]"
+              />
+            </div>
+
+            <div>
+              <label className="block font-['Urbanist'] text-[13px] font-medium text-[#C8C8C8] mb-2">Payment Instructions <span className="text-[#555] ml-1 font-normal">(Max 200 chars)</span></label>
+              <textarea
+                placeholder="Pay via GPay to 9876543210@okaxis. Send screenshot to confirm."
+                maxLength={200}
+                value={paymentInstructions}
+                onChange={e => setPaymentInstructions(e.target.value)}
+                disabled={savingSec2}
+                className="w-full bg-[#1a1a1a] border border-[rgba(255,255,255,0.08)] rounded-[6px] px-3 py-2.5 text-[14px] text-white focus:outline-none focus:border-[rgba(232,0,29,0.5)] transition-colors min-h-[80px] disabled:opacity-50 placeholder:text-[#555]"
+              />
+            </div>
+
+            <div>
+              <label className="block font-['Urbanist'] text-[13px] font-medium text-[#C8C8C8] mb-3">Accepted Methods</label>
+              <div className="space-y-2.5">
+                {["UPI", "Bank Transfer", "Cash"].map(method => (
+                  <label key={method} className="flex items-center gap-3 cursor-pointer group w-fit">
+                    <input
+                      type="checkbox"
+                      checked={acceptedMethods.includes(method)}
+                      onChange={() => togglePaymentMethod(method)}
+                      disabled={savingSec2}
+                      className="w-4 h-4 rounded border-[rgba(255,255,255,0.08)] bg-[#1a1a1a] text-[#E8001D] focus:ring-[#E8001D] focus:ring-offset-0 disabled:opacity-50"
+                    />
+                    <span className="font-['Urbanist'] text-[14px] text-white group-hover:text-[#E8001D] transition-colors">{method}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="pt-2 flex items-center gap-3">
+              <button
+                onClick={handleSaveSec2}
+                disabled={savingSec2}
+                className="bg-[#E8001D] hover:bg-[#C20000] text-white font-['Urbanist'] font-bold text-[13px] uppercase tracking-[0.04em] px-5 py-2.5 rounded-[6px] transition-colors disabled:opacity-50 min-w-[80px] flex justify-center"
+              >
+                {savingSec2 ? (
+                  <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                  </svg>
+                ) : 'Save'}
+              </button>
+              {successSec2 && <span className="text-[#10B981] font-['Urbanist'] text-[13px] font-medium">Saved</span>}
+              {errorSec2 && <span className="text-red-500 font-['Urbanist'] text-[13px]">{errorSec2}</span>}
+            </div>
+          </div>
+        </section>
+
+        {/* Section 3 - Check-in Schedule */}
+        <section className="bg-[#111111] border border-[rgba(255,255,255,0.06)] rounded-[10px] p-6">
+          <div className="mb-6">
+            <h2 className="font-['Barlow_Condensed'] font-medium text-[20px] uppercase tracking-[0.02em] text-white">Check-in Schedule</h2>
+            <p className="font-['Urbanist'] text-[14px] text-[#888888]">Set when your clients will submit their check-ins.</p>
+          </div>
+
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block font-['Urbanist'] text-[13px] font-medium text-[#C8C8C8] mb-2">Check-in Day</label>
+                <select
+                  value={checkinDay}
+                  onChange={e => setCheckinDay(Number(e.target.value))}
+                  disabled={savingSec3}
+                  className="w-full bg-[#1a1a1a] border border-[rgba(255,255,255,0.08)] rounded-[6px] px-3 py-2.5 text-[14px] text-white focus:outline-none focus:border-[rgba(232,0,29,0.5)] transition-colors disabled:opacity-50"
+                  style={{ WebkitAppearance: 'none', appearance: 'none' }}
+                >
+                  {DAYS.map((day, idx) => (
+                    <option key={idx} value={idx}>{day}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block font-['Urbanist'] text-[13px] font-medium text-[#C8C8C8] mb-2">Check-in Time</label>
+                <select
+                  value={checkinTime}
+                  onChange={e => setCheckinTime(e.target.value)}
+                  disabled={savingSec3}
+                  className="w-full bg-[#1a1a1a] border border-[rgba(255,255,255,0.08)] rounded-[6px] px-3 py-2.5 text-[14px] text-white focus:outline-none focus:border-[rgba(232,0,29,0.5)] transition-colors disabled:opacity-50"
+                  style={{ WebkitAppearance: 'none', appearance: 'none' }}
+                >
+                  {TIMES.map(t => (
+                    <option key={t.value} value={t.value}>{t.label}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block font-['Urbanist'] text-[13px] font-medium text-[#C8C8C8] mb-2">Timezone</label>
+              <input
+                type="text"
+                value={profile.timezone}
+                disabled
+                className="w-full bg-[#1a1a1a] border border-[rgba(255,255,255,0.08)] rounded-[6px] px-3 py-2.5 text-[14px] text-white opacity-60 cursor-not-allowed"
+              />
+            </div>
+
+            <div className="pt-2 flex items-center gap-3">
+              <button
+                onClick={handleSaveSec3}
+                disabled={savingSec3}
+                className="bg-[#E8001D] hover:bg-[#C20000] text-white font-['Urbanist'] font-bold text-[13px] uppercase tracking-[0.04em] px-5 py-2.5 rounded-[6px] transition-colors disabled:opacity-50 min-w-[80px] flex justify-center"
+              >
+                {savingSec3 ? (
+                  <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                  </svg>
+                ) : 'Save'}
+              </button>
+              {successSec3 && <span className="text-[#10B981] font-['Urbanist'] text-[13px] font-medium">Saved</span>}
+              {errorSec3 && <span className="text-red-500 font-['Urbanist'] text-[13px]">{errorSec3}</span>}
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
   );
 }

@@ -49,6 +49,15 @@ export interface DashboardData {
     daysUntil?: number;
     completed: boolean;
   }>;
+  pending_confirmations?: Array<{
+    id: string;
+    client_id: string;
+    client_name: string;
+    client_whatsapp: string;
+    program_name: string;
+    amount: number;
+    submitted_at: string;
+  }>;
   ai_summary: {
     id: string;
     summary_text: string;

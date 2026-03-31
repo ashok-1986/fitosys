@@ -18,6 +18,10 @@ export interface Coach {
     status: "active" | "inactive";
     created_at: string;
     updated_at: string;
+    upi_id: string | null;
+    payment_instructions: string | null;
+    accepted_payment_methods: string[];
+    city: string | null;
 }
 
 export interface Program {

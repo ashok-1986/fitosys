@@ -1,6 +1,7 @@
 "use client";
 
 import { useDashboard } from "@/hooks/use-dashboard";
+import { useState } from "react";
 import { Loader2, TrendingUp, Users, RefreshCw, IndianRupee, AlertTriangle, Brain } from "lucide-react";
 
 const formatCurrency = (amount: number) =>
@@ -16,6 +17,23 @@ const GRADIENTS = [
 
 export default function DashboardPage() {
   const { data, loading, error, refetch } = useDashboard();
+  const [confirmingId, setConfirmingId] = useState<string | null>(null);
+
+  async function confirmEnrollment(enrollmentId: string, action: 'confirm' | 'reject') {
+    setConfirmingId(enrollmentId);
+    try {
+      const res = await fetch(`/api/enrollments/${enrollmentId}/confirm`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action })
+      });
+      if (res.ok) {
+        refetch();
+      }
+    } finally {
+      setConfirmingId(null);
+    }
+  }
 
   if (loading) {
     return (
@@ -46,6 +64,7 @@ export default function DashboardPage() {
   const recentUpdates = data?.recent_updates || [];
   const pendingTasks = data?.pending_tasks || [];
   const chartData = data?.chart_data?.week || [];
+  const pendingConfirmations = data?.pending_confirmations || [];
   const aiSummary = data?.ai_summary;
   const maxChartValue = Math.max(...chartData.map(d => d.value), 1);
 
@@ -70,6 +89,55 @@ export default function DashboardPage() {
           </div>
         ))}
       </div>
+
+      {pendingConfirmations.length > 0 && (
+        <div style={{ background: "#111111", border: "1px solid rgba(232,0,29,0.25)", borderRadius: "10px", overflow: "hidden" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px 10px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+            <span style={{ fontSize: "13px", fontWeight: 600, color: "#FFFFFF" }}>Awaiting Payment Confirmation</span>
+            <span style={{ fontSize: "11px", fontWeight: 700, color: "#E8001D" }}>{pendingConfirmations.length} pending</span>
+          </div>
+          {pendingConfirmations.map((item: any, i: number) => {
+            const timeSince = (() => {
+              const diffMs = new Date().getTime() - new Date(item.submitted_at).getTime();
+              const diffHrs = diffMs / (1000 * 60 * 60);
+              const diffMins = diffMs / (1000 * 60);
+              if (diffMins < 60) return `${Math.floor(diffMins)} mins ago`;
+              if (diffHrs < 24) return `${Math.floor(diffHrs)} hrs ago`;
+              return `${Math.floor(diffHrs / 24)} days ago`;
+            })();
+
+            return (
+              <div key={item.id} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "12px 16px", borderBottom: i < pendingConfirmations.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none" }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: "13px", fontWeight: 600, color: "#FFFFFF" }}>{item.client_name}</div>
+                  <div style={{ fontSize: "11px", color: "#C8C8C8", marginTop: "2px" }}>{item.program_name} · ₹{item.amount.toLocaleString('en-IN')}</div>
+                  <div style={{ fontSize: "10px", color: "#888888", marginTop: "2px" }}>{timeSince}</div>
+                </div>
+                <div style={{ display: "flex", gap: "8px" }}>
+                  <button
+                    onClick={() => confirmEnrollment(item.id, 'reject')}
+                    disabled={confirmingId === item.id}
+                    style={{ padding: "6px 14px", background: "transparent", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "6px", fontSize: "12px", fontWeight: 600, color: "#888888", cursor: confirmingId === item.id ? "not-allowed" : "pointer", opacity: confirmingId === item.id ? 0.5 : 1 }}
+                    onMouseOver={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)"; e.currentTarget.style.color = "#FFFFFF"; }}
+                    onMouseOut={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; e.currentTarget.style.color = "#888888"; }}
+                  >
+                    Reject
+                  </button>
+                  <button
+                    onClick={() => confirmEnrollment(item.id, 'confirm')}
+                    disabled={confirmingId === item.id}
+                    style={{ padding: "6px 14px", background: "#E8001D", border: "none", borderRadius: "6px", fontSize: "12px", fontWeight: 600, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", cursor: confirmingId === item.id ? "not-allowed" : "pointer", opacity: confirmingId === item.id ? 0.5 : 1 }}
+                    onMouseOver={(e) => { e.currentTarget.style.background = "#C20000"; }}
+                    onMouseOut={(e) => { e.currentTarget.style.background = "#E8001D"; }}
+                  >
+                    {confirmingId === item.id ? <Loader2 style={{ width: "12px", height: "12px" }} className="animate-spin" /> : "Confirm Payment"}
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* Main grid */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: "16px", alignItems: "start" }}>
