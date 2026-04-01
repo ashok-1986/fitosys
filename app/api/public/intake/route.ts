@@ -115,7 +115,7 @@ export async function POST(request: NextRequest) {
             );
         }
     } catch (err) {
-        console.error("[Intake] Plan limit check failed:", err);
+        logError("[Intake] Plan limit check failed:", { error: err });
         return NextResponse.json(
             { error: "Failed to verify coach capacity" },
             { status: 500 }
@@ -157,36 +157,63 @@ export async function POST(request: NextRequest) {
         .single();
 
     if (enrollError || !enrollment) {
-        console.error("[Intake] Failed to create enrollment:", enrollError);
+        logError(
+            "[Intake] Failed to create enrollment:",
+            { error: enrollError }
+        );
         return NextResponse.json(
             { error: "Failed to create enrollment" },
             { status: 500 }
         );
     }
 
-    // Step A: Create the client record
+    // Step A: Create/update the client and link to the enrollment
     const { data: client, error: clientError } = await supabase
         .from("clients")
-        .upsert({
-            coach_id: coach.id,
-            full_name,
-            whatsapp_number,
-            email,
-            age,
-            primary_goal,
-            health_notes,
-            status: "active"
-        }, { onConflict: "whatsapp_number, coach_id" })
-        .select()
+        .upsert(
+            {
+                coach_id: coach.id,
+                full_name,
+                whatsapp_number,
+                email,
+                age,
+                primary_goal,
+                health_notes,
+                status: "active",
+            },
+            { onConflict: "whatsapp_number, coach_id" }
+        )
+        .select("id")
         .single();
 
     if (clientError || !client) {
-        console.error("[Intake] Failed to create client:", clientError);
-    } else {
-        await supabase
-            .from("enrollments")
-            .update({ client_id: client.id })
-            .eq("id", enrollment.id);
+        logError(
+            "Failed to create or upsert client during intake",
+            { error: clientError }
+        );
+
+        // Attempt to clean up the orphaned pending enrollment
+        await supabase.from("enrollments").delete().eq("id", enrollment.id);
+
+        return NextResponse.json(
+            { error: "Failed to process client information" },
+            { status: 500 }
+        );
+    }
+
+    // Link the client to the enrollment
+    const { error: updateError } = await supabase
+        .from("enrollments")
+        .update({ client_id: client.id })
+        .eq("id", enrollment.id);
+
+    if (updateError) {
+        logError(
+            "Failed to link client to enrollment",
+            { error: updateError, enrollmentId: enrollment.id, clientId: client.id }
+        );
+        // Even if linking fails, the client and enrollment exist.
+        // A background job could clean this up. For now, we proceed but log it.
     }
 
     // Step B: Send WhatsApp notification to coach
@@ -196,7 +223,10 @@ export async function POST(request: NextRequest) {
             message: `New client payment pending.\n\nClient: ${full_name}\nProgram: ${program.name}\nAmount: ₹${program.price}\n\nThey've confirmed sending payment via UPI. Review and confirm in your Fitosys dashboard.`
         });
     } catch (err) {
-        console.error("[Intake] WhatsApp notification failed:", err);
+        logError(
+            "[Intake] WhatsApp notification failed:",
+            { error: err }
+        );
     }
 
     // Step C: Return success response
