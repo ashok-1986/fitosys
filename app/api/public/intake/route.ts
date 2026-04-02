@@ -12,7 +12,7 @@ const intakeSchema = z.object({
         .string()
         .min(2, "Name must be at least 2 characters")
         .max(100, "Name too long")
-        .transform((s) => s.replace(/<[^>]*>/g, "")), // strip HTML
+        .transform((s) => s.replace(/<[^>]*>/g, "")),
     whatsapp_number: z
         .string()
         .regex(/^\+?[0-9]{10,15}$/, "Invalid phone number"),
@@ -36,7 +36,7 @@ const intakeSchema = z.object({
     }),
 });
 
-// POST /api/public/intake — Submit intake form + create Razorpay order
+// POST /api/public/intake — Submit intake form (UPI flow, no Razorpay)
 // No auth required — this is the public client-facing endpoint
 export async function POST(request: NextRequest) {
     logRequest(request, "POST /api/public/intake");
@@ -47,7 +47,6 @@ export async function POST(request: NextRequest) {
         return new NextResponse("Too many requests", { status: 429 });
     }
 
-    // Parse and validate input
     let body;
     try {
         body = await request.json();
@@ -83,7 +82,6 @@ export async function POST(request: NextRequest) {
         program_id,
     } = parsed.data;
 
-    // Use service client since this is a public endpoint (no auth session)
     const { createServiceClient } = await import("@/lib/supabase/server");
     const supabase = await createServiceClient();
 
@@ -102,7 +100,7 @@ export async function POST(request: NextRequest) {
         );
     }
 
-    // Check plan limits before allowing intake
+    // Check plan limits
     try {
         const limitCheck = await checkClientLimit(coach.id);
         if (!limitCheck.allowed) {
@@ -115,7 +113,7 @@ export async function POST(request: NextRequest) {
             );
         }
     } catch (err) {
-        logError("[Intake] Plan limit check failed:", { error: err });
+        logError("[Intake] Plan limit check failed:", String(err));
         return NextResponse.json(
             { error: "Failed to verify coach capacity" },
             { status: 500 }
@@ -138,7 +136,7 @@ export async function POST(request: NextRequest) {
         );
     }
 
-    // Create a pending enrollment (client_id null until payment is verified)
+    // Create enrollment with payment_pending status
     const endDate = new Date();
     endDate.setDate(endDate.getDate() + program.duration_weeks * 7);
 
@@ -157,17 +155,14 @@ export async function POST(request: NextRequest) {
         .single();
 
     if (enrollError || !enrollment) {
-        logError(
-            "[Intake] Failed to create enrollment:",
-            { error: enrollError }
-        );
+        logError("[Intake] Failed to create enrollment:", String(enrollError));
         return NextResponse.json(
             { error: "Failed to create enrollment" },
             { status: 500 }
         );
     }
 
-    // Step A: Create/update the client and link to the enrollment
+    // Create or update client record
     const { data: client, error: clientError } = await supabase
         .from("clients")
         .upsert(
@@ -189,19 +184,17 @@ export async function POST(request: NextRequest) {
     if (clientError || !client) {
         logError(
             "Failed to create or upsert client during intake",
-            { error: clientError }
+            String(clientError)
         );
-
-        // Attempt to clean up the orphaned pending enrollment
+        // Clean up orphaned enrollment
         await supabase.from("enrollments").delete().eq("id", enrollment.id);
-
         return NextResponse.json(
             { error: "Failed to process client information" },
             { status: 500 }
         );
     }
 
-    // Link the client to the enrollment
+    // Link client to enrollment
     const { error: updateError } = await supabase
         .from("enrollments")
         .update({ client_id: client.id })
@@ -210,30 +203,25 @@ export async function POST(request: NextRequest) {
     if (updateError) {
         logError(
             "Failed to link client to enrollment",
-            { error: updateError, enrollmentId: enrollment.id, clientId: client.id }
+            `enrollmentId: ${enrollment.id} clientId: ${client.id} error: ${String(updateError)}`
         );
-        // Even if linking fails, the client and enrollment exist.
-        // A background job could clean this up. For now, we proceed but log it.
+        // Non-fatal — enrollment and client exist, proceed
     }
 
-    // Step B: Send WhatsApp notification to coach
+    // Send WhatsApp notification to coach
     try {
         await sendWhatsAppMessage({
             phone: coach.whatsapp_number,
-            message: `New client payment pending.\n\nClient: ${full_name}\nProgram: ${program.name}\nAmount: ₹${program.price}\n\nThey've confirmed sending payment via UPI. Review and confirm in your Fitosys dashboard.`
+            message: `New client payment pending.\n\nClient: ${full_name}\nProgram: ${program.name}\nAmount: ₹${program.price}\n\nThey've confirmed sending payment via UPI. Review and confirm in your Fitosys dashboard.`,
         });
     } catch (err) {
-        logError(
-            "[Intake] WhatsApp notification failed:",
-            { error: err }
-        );
+        logError("[Intake] WhatsApp notification failed:", String(err));
     }
 
-    // Step C: Return success response
     return NextResponse.json({
         success: true,
         enrollmentId: enrollment.id,
         programName: program.name,
-        coachName: coach.full_name
+        coachName: coach.full_name,
     });
 }
