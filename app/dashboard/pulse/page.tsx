@@ -1,294 +1,338 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { TrendingUp, TrendingDown, Users, Mail, Activity, AlertTriangle } from "lucide-react";
-import { NavBar } from "@/components/ui/navigation";
+import { useEffect, useState } from "react";
+import { Loader2, Brain, ChevronDown } from "lucide-react";
+
+interface AIWeeklySummary {
+  id: string;
+  summary_text: string;
+  week_start_date: string;
+  week_end_date: string;
+  total_clients: number;
+  responded_count: number;
+  avg_energy_score: number | null;
+  generated_at: string;
+}
+
+interface NonResponder {
+  id: string;
+  full_name: string;
+  whatsapp_number: string;
+}
 
 interface PulseData {
-  latest_summary: {
-    summary_text: string;
-    week_start_date: string;
-    week_end_date: string;
-    total_checkins: number;
+  latest_summary: AIWeeklySummary | null;
+  summary_history: AIWeeklySummary[];
+  this_week: {
+    total_sent: number;
+    responded: number;
+    response_rate: number;
     avg_energy: number;
-    at_risk_clients: string[];
-  } | null;
-  response_rate: number;
-  avg_energy: number;
-  checkins_sent: number;
-  renewals_due: number;
-  weekly_data: { week: string; rate: number }[];
-  clients_at_risk: { id: string; name: string; reason: string }[];
-  clients_strong: { id: string; name: string; reason: string }[];
-  clients_watch: { id: string; name: string; reason: string }[];
+  };
+  active_clients: number;
+  non_responders: NonResponder[];
+  weekly_chart: { week: string; rate: number; avg_energy: number }[];
 }
 
-function getInitials(name: string): string {
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
-}
+const GRADIENTS = [
+  "linear-gradient(135deg,#7f0000,#c00)",
+  "linear-gradient(135deg,#003366,#0055a5)",
+  "linear-gradient(135deg,#1a472a,#2d6a4f)",
+  "linear-gradient(135deg,#4a1942,#7b2d8b)",
+  "linear-gradient(135deg,#7d4e00,#b87300)",
+];
 
-export default function WeeklyPulsePage() {
+export default function PulsePage() {
   const [data, setData] = useState<PulseData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"all" | "at-risk" | "strong" | "watch">("all");
+  const [expandedSummaryId, setExpandedSummaryId] = useState<string | null>(null);
+
+  const fetchPulseData = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/pulse/data");
+      if (!res.ok) throw new Error("Failed to fetch pulse data");
+      const json = await res.json();
+      setData(json);
+    } catch (err: any) {
+      setError(err.message || "An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchPulseData();
   }, []);
 
-  async function fetchPulseData() {
-    try {
-      const res = await fetch("/api/pulse/data");
-      if (!res.ok) {
-        throw new Error("Failed to load Weekly Pulse data");
-      }
-      const result = await res.json();
-      setData(result);
-      setError(null);
-    } catch (err) {
-      console.error("Error fetching pulse data:", err);
-      setError("Failed to load Weekly Pulse data. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
   if (loading) {
     return (
-      <div className="flex-1 w-full bg-background text-white font-sans overflow-y-auto pb-24">
-        <NavBar title="Weekly Pulse" back="Home" backHref="/dashboard" />
-        <div className="flex items-center justify-center h-full">
-          <div className="text-center">
-            <div className="animate-spin h-8 w-8 border-4 border-brand border-t-transparent rounded-full mx-auto mb-4" />
-            <p className="text-muted-foreground">Loading Weekly Pulse...</p>
-          </div>
-        </div>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", padding: "60px" }}>
+        <Loader2 style={{ color: "#E8001D", width: "32px", height: "32px" }} className="animate-spin" />
+        <div style={{ fontSize: "13px", color: "#C8C8C8", marginTop: "12px" }}>Loading pulse data...</div>
       </div>
     );
   }
 
-  if (error) {
+  if (error || !data) {
     return (
-      <div className="flex-1 w-full bg-background text-white font-sans overflow-y-auto pb-24">
-        <NavBar title="Weekly Pulse" back="Home" backHref="/dashboard" />
-        <div className="p-4">
-          <Card className="border-destructive/50">
-            <CardContent className="flex flex-col items-center justify-center py-8">
-              <AlertTriangle className="h-8 w-8 text-destructive mb-4" />
-              <p className="text-sm text-destructive font-medium">{error}</p>
-              <Button onClick={fetchPulseData} variant="outline" className="mt-4">
-                Retry
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", padding: "60px" }}>
+        <div style={{ color: "#EF4444", marginBottom: "16px", fontSize: "14px" }}>{error || "Failed to load data"}</div>
+        <button
+          onClick={fetchPulseData}
+          style={{ background: "#E8001D", color: "white", padding: "8px 20px", borderRadius: "6px", border: "none", cursor: "pointer", fontSize: "14px", fontWeight: 600 }}
+        >
+          Retry
+        </button>
       </div>
     );
   }
 
-  const filteredClients =
-    activeTab === "all"
-      ? [...(data?.clients_at_risk || []), ...(data?.clients_strong || []), ...(data?.clients_watch || [])]
-      : activeTab === "at-risk"
-      ? data?.clients_at_risk || []
-      : activeTab === "strong"
-      ? data?.clients_strong || []
-      : data?.clients_watch || [];
+  const { this_week, latest_summary, active_clients, non_responders, weekly_chart, summary_history } = data;
 
-  function handleMessage(clientName: string) {
-    // In production, fetch client's WhatsApp number from API
-    // For now, show a toast/placeholder
-    alert(`Opening WhatsApp chat with ${clientName}...`);
-    // window.open(`https://wa.me/${clientWhatsapp}`, '_blank');
-  }
+  const formatDateShort = (dateStr: string) => {
+    return new Date(dateStr).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+  };
+
+  const formatDateLong = (dateStr: string) => {
+    return new Date(dateStr).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  };
+
+  const getRateColor = (rate: number) => {
+    if (rate >= 70) return "#10B981";
+    if (rate >= 40) return "#F59E0B";
+    return "#EF4444";
+  };
+
+  const getEnergyColor = (energy: number) => {
+    if (energy >= 7) return "#10B981";
+    if (energy >= 5) return "#F59E0B";
+    return "#EF4444";
+  };
 
   return (
-    <div className="flex-1 w-full bg-background text-white font-sans overflow-y-auto pb-24">
-      <NavBar
-        title="Weekly Pulse"
-        back="Home"
-        backHref="/dashboard"
-      />
+    <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "16px", minHeight: "100%", overflowY: "auto" }}>
 
-      {/* AI Summary Card */}
-      {data?.latest_summary ? (
-        <div className="mx-4 mt-4 mb-6">
-          <Card className="bg-gradient-to-br from-brand/10 to-transparent border-brand/20">
-            <CardHeader className="pb-2">
-              <div className="flex items-center gap-2">
-                <Activity className="h-4 w-4 text-brand" />
-                <p className="text-xs font-bold uppercase tracking-widest text-brand">
-                  Week of {new Date(data.latest_summary.week_start_date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                </p>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm leading-relaxed text-white/80">
-                {data.latest_summary.summary_text}
-              </p>
-              <div className="flex gap-4 mt-4 pt-4 border-t border-brand/10">
-                <div>
-                  <p className="text-lg font-bold font-barlow">{data.latest_summary.total_checkins}</p>
-                  <p className="text-[10px] text-white/40 uppercase tracking-wider">Check-ins</p>
-                </div>
-                <div>
-                  <p className="text-lg font-bold font-barlow">{data.latest_summary.avg_energy.toFixed(1)}</p>
-                  <p className="text-[10px] text-white/40 uppercase tracking-wider">Avg Energy</p>
-                </div>
-                <div>
-                  <p className="text-lg font-bold font-barlow">{data.latest_summary.at_risk_clients.length}</p>
-                  <p className="text-[10px] text-white/40 uppercase tracking-wider">At Risk</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+      {/* SECTION 1: Page title */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <h1 style={{ fontSize: "24px", fontFamily: '"Barlow Condensed", sans-serif', fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.02em", color: "white", margin: 0 }}>Weekly Pulse</h1>
+        <div style={{ fontSize: "11px", color: "#888888" }}>
+          {latest_summary ? `Generated ${formatDateLong(latest_summary.generated_at)}` : "No summary yet"}
         </div>
-      ) : (
-        <div className="mx-4 mt-4 mb-6">
-          <Card className="border-dashed">
-            <CardContent className="flex flex-col items-center justify-center py-8">
-              <Mail className="h-8 w-8 text-muted-foreground mb-2" />
-              <p className="text-sm text-muted-foreground">No AI summary yet</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                Your first summary will arrive Monday at 7 AM
-              </p>
-            </CardContent>
-          </Card>
+      </div>
+
+      {/* SECTION 2: This Week Stats */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "12px" }}>
+        {/* Card 1: Response Rate */}
+        <div style={{ background: "#111111", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "10px", padding: "16px", textAlign: "center" }}>
+          <div style={{ fontSize: "28px", fontFamily: '"Barlow Condensed", sans-serif', fontWeight: 500, lineHeight: 1, color: getRateColor(this_week.response_rate) }}>
+            {this_week.response_rate}%
+          </div>
+          <div style={{ fontSize: "10px", color: "#888888", marginTop: "6px", textTransform: "uppercase", letterSpacing: "0.06em" }}>This Week</div>
+        </div>
+
+        {/* Card 2: Avg Energy */}
+        <div style={{ background: "#111111", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "10px", padding: "16px", textAlign: "center" }}>
+          <div style={{ fontSize: "28px", fontFamily: '"Barlow Condensed", sans-serif', fontWeight: 500, lineHeight: 1, color: this_week.avg_energy > 0 ? getEnergyColor(this_week.avg_energy) : "white" }}>
+            {this_week.avg_energy > 0 ? this_week.avg_energy : "—"}
+          </div>
+          <div style={{ fontSize: "10px", color: "#888888", marginTop: "6px", textTransform: "uppercase", letterSpacing: "0.06em" }}>Avg Energy</div>
+        </div>
+
+        {/* Card 3: Clients Sent */}
+        <div style={{ background: "#111111", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "10px", padding: "16px", textAlign: "center" }}>
+          <div style={{ fontSize: "28px", fontFamily: '"Barlow Condensed", sans-serif', fontWeight: 500, lineHeight: 1, color: "white" }}>
+            {this_week.total_sent}
+          </div>
+          <div style={{ fontSize: "10px", color: "#888888", marginTop: "6px", textTransform: "uppercase", letterSpacing: "0.06em" }}>Check-ins Sent</div>
+        </div>
+
+        {/* Card 4: Active Clients */}
+        <div style={{ background: "#111111", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "10px", padding: "16px", textAlign: "center" }}>
+          <div style={{ fontSize: "28px", fontFamily: '"Barlow Condensed", sans-serif', fontWeight: 500, lineHeight: 1, color: "white" }}>
+            {active_clients}
+          </div>
+          <div style={{ fontSize: "10px", color: "#888888", marginTop: "6px", textTransform: "uppercase", letterSpacing: "0.06em" }}>Active Clients</div>
+        </div>
+      </div>
+
+      {/* SECTION 3: 8-Week Response Rate Chart */}
+      <div style={{ background: "#111111", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "10px", padding: "16px" }}>
+        <div style={{ fontSize: "11px", fontWeight: 700, color: "#888888", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "16px" }}>8-WEEK RESPONSE RATE</div>
+        <div style={{ display: "flex", alignItems: "flex-end", gap: "8px", height: "80px" }}>
+          {weekly_chart.map((d, i) => {
+            let bg = "rgba(255,255,255,0.05)";
+            if (d.rate >= 70) bg = "rgba(16,185,129,0.7)";
+            else if (d.rate >= 40) bg = "rgba(245,158,11,0.7)";
+            else if (d.rate > 0) bg = "rgba(239,68,68,0.7)";
+
+            const h = Math.max((d.rate / 100) * 80, d.rate > 0 ? 4 : 2);
+
+            return (
+              <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%" }}>
+                <div style={{ fontSize: "9px", color: "#888888", textAlign: "center", marginBottom: "4px" }}>
+                  {d.rate > 0 ? `${d.rate}%` : "—"}
+                </div>
+                <div style={{ width: "100%", background: bg, height: `${h}px`, borderRadius: "4px 4px 0 0", transition: "height 0.3s" }} />
+                <div style={{ fontSize: "9px", color: "#888888", textAlign: "center", marginTop: "6px" }}>{d.week}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* SECTION 4: Non-Responders This Week */}
+      {non_responders.length > 0 && (
+        <div style={{ background: "#111111", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "10px", overflow: "hidden" }}>
+          <div style={{ padding: "12px 16px", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ fontSize: "13px", fontWeight: 600, color: "white" }}>No Response This Week</div>
+            <div style={{ fontSize: "11px", fontWeight: 700, color: "#E8001D" }}>{non_responders.length} clients</div>
+          </div>
+          <div>
+            {non_responders.map((client, i) => (
+              <div key={client.id} style={{ padding: "10px 16px", borderBottom: i < non_responders.length - 1 ? "1px solid rgba(255,255,255,0.06)" : "none", display: "flex", alignItems: "center", gap: "12px" }}>
+                <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: GRADIENTS[i % GRADIENTS.length], display: "flex", alignItems: "center", justifyContent: "center", fontSize: "11px", fontWeight: 700, color: "white", flexShrink: 0 }}>
+                  {client.full_name.trim().split(/\s+/).filter(Boolean).map(n => n[0]).join("").toUpperCase().slice(0, 2) || "?"}
+                </div>
+                <div style={{ fontSize: "13px", fontWeight: 600, color: "white", flex: 1 }}>{client.full_name}</div>
+                <button
+                  onClick={(e) => {
+                    const num = client.whatsapp_number.replace(/\D/g, '');
+                    if (num.length > 0) {
+                      window.open('https://wa.me/' + num, '_blank');
+                    } else {
+                      e.preventDefault();
+                    }
+                  }}
+                  disabled={client.whatsapp_number.replace(/\D/g, '').length === 0}
+                  style={{
+                    padding: "5px 12px",
+                    background: "transparent",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: "6px",
+                    fontSize: "11px",
+                    fontWeight: 600,
+                    color: client.whatsapp_number.replace(/\D/g, '').length === 0 ? "#444444" : "#888888",
+                    cursor: client.whatsapp_number.replace(/\D/g, '').length === 0 ? "not-allowed" : "pointer",
+                    transition: "all 0.2s"
+                  }}
+                  onMouseOver={(e) => {
+                    if (client.whatsapp_number.replace(/\D/g, '').length > 0) {
+                      e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)";
+                      e.currentTarget.style.color = "white";
+                    }
+                  }}
+                  onMouseOut={(e) => {
+                    if (client.whatsapp_number.replace(/\D/g, '').length > 0) {
+                      e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
+                      e.currentTarget.style.color = "#888888";
+                    }
+                  }}
+                >
+                  Message
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
-      {/* 4-Stat Row */}
-      <div className="grid grid-cols-4 gap-2 px-4 mb-6">
-        <StatCard
-          label="Response"
-          value={`${data?.response_rate || 0}%`}
-          icon={Mail}
-          color={data?.response_rate && data.response_rate >= 70 ? "text-[#34C759]" : "text-[#FF9F0A]"}
-        />
-        <StatCard
-          label="Energy"
-          value={data?.avg_energy.toFixed(1) || "0.0"}
-          icon={Activity}
-          color={data?.avg_energy && data.avg_energy >= 7 ? "text-[#34C759]" : "text-[#FF9F0A]"}
-        />
-        <StatCard
-          label="Sent"
-          value={data?.checkins_sent || 0}
-          icon={TrendingUp}
-          color="text-white"
-        />
-        <StatCard
-          label="Renewals"
-          value={data?.renewals_due || 0}
-          icon={AlertTriangle}
-          color={data?.renewals_due && data.renewals_due > 0 ? "text-[#E8001D]" : "text-white/40"}
-        />
-      </div>
-
-      {/* 8-Week Response Rate Chart */}
-      <div className="mx-4 mb-6">
-        <Card>
-          <CardHeader className="pb-2">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-white/40">
-              Response Rate — 8 Weeks
-            </p>
-          </CardHeader>
-          <CardContent>
-            <div className="flex gap-1 items-end h-[80px]">
-              {data?.weekly_data.map((d, i) => (
-                <div key={i} className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
-                  <div
-                    className="w-full rounded-sm transition-all duration-300"
-                    style={{
-                      height: `${d.rate}%`,
-                      background: d.rate >= 70
-                        ? "linear-gradient(180deg, #34C759, #34C75988)"
-                        : d.rate >= 40
-                        ? "linear-gradient(180deg, #FF9F0A, #FF9F0A88)"
-                        : "linear-gradient(180deg, #E8001D, #E8001D88)",
-                    }}
-                  />
-                  <span className="text-[8px] text-white/40 font-medium uppercase">{d.week}</span>
-                </div>
-              ))}
+      {/* SECTION 5: Latest AI Summary */}
+      <div style={{ background: "#111111", border: "1px solid rgba(232,0,29,0.2)", borderRadius: "10px", overflow: "hidden" }}>
+        <div style={{ padding: "12px 16px", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <Brain style={{ width: "13px", height: "13px", color: "#E8001D" }} />
+            <div style={{ fontSize: "13px", fontWeight: 600, color: "white" }}>AI Weekly Summary</div>
+          </div>
+          {latest_summary && (
+            <div style={{ fontSize: "11px", color: "#888888" }}>
+              {formatDateShort(latest_summary.week_start_date)}–{formatDateShort(latest_summary.week_end_date)}
             </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Client Flags */}
-      <div className="mx-4 mb-6">
-        <div className="flex gap-2 mb-4 overflow-x-auto">
-          <FilterChip label="All" count={filteredClients.length} active={activeTab === "all"} onClick={() => setActiveTab("all")} />
-          <FilterChip label="⚠ At Risk" count={data?.clients_at_risk.length || 0} active={activeTab === "at-risk"} onClick={() => setActiveTab("at-risk")} />
-          <FilterChip label="✅ Strong" count={data?.clients_strong.length || 0} active={activeTab === "strong"} onClick={() => setActiveTab("strong")} />
-          <FilterChip label="👀 Watch" count={data?.clients_watch.length || 0} active={activeTab === "watch"} onClick={() => setActiveTab("watch")} />
+          )}
         </div>
 
-        <Card>
-          <CardContent className="py-4">
-            {filteredClients.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-8">
-                No clients in this category
-              </p>
-            ) : (
-              <div className="space-y-3">
-                {filteredClients.map((client) => (
-                  <div key={client.id} className="flex items-center gap-3">
-                    <Avatar size="sm">
-                      <AvatarFallback className="text-xs font-semibold">
-                        {getInitials(client.name)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">{client.name}</p>
-                      <p className="text-xs text-muted-foreground">{client.reason}</p>
-                    </div>
-                    <Button size="sm" variant="outline" className="text-xs" onClick={() => handleMessage(client.name)}>
-                      Message
-                    </Button>
-                  </div>
-                ))}
+        {latest_summary ? (
+          <div>
+            <div style={{ padding: "16px", fontSize: "13px", color: "#C8C8C8", lineHeight: 1.7, whiteSpace: "pre-wrap" }}>
+              {latest_summary.summary_text}
+            </div>
+            <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", padding: "12px 16px", display: "flex", justifyContent: "space-between" }}>
+              <div style={{ flex: 1, textAlign: "center" }}>
+                <div style={{ fontSize: "16px", fontWeight: 700, color: "white" }}>{latest_summary.responded_count} / {latest_summary.total_clients}</div>
+                <div style={{ fontSize: "10px", color: "#888888", marginTop: "3px" }}>Responded</div>
               </div>
-            )}
-          </CardContent>
-        </Card>
+              <div style={{ flex: 1, textAlign: "center" }}>
+                <div style={{ fontSize: "16px", fontWeight: 700, color: latest_summary.avg_energy_score && latest_summary.avg_energy_score > 0 ? getEnergyColor(latest_summary.avg_energy_score) : "white" }}>
+                  {latest_summary.avg_energy_score ? `${latest_summary.avg_energy_score}/10` : "—"}
+                </div>
+                <div style={{ fontSize: "10px", color: "#888888", marginTop: "3px" }}>Avg Energy</div>
+              </div>
+              <div style={{ flex: 1, textAlign: "center" }}>
+                <div style={{ fontSize: "13px", color: "#888888" }}>{formatDateShort(latest_summary.generated_at)}</div>
+                <div style={{ fontSize: "10px", color: "#888888", marginTop: "3px" }}>Generated</div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div style={{ padding: "32px", textAlign: "center" }}>
+            <div style={{ fontSize: "13px", color: "#888888", marginBottom: "4px" }}>No summary generated yet</div>
+            <div style={{ fontSize: "13px", color: "#888888" }}>Your first AI summary arrives every Monday at 7 AM</div>
+          </div>
+        )}
       </div>
-    </div>
-  );
-}
 
-function StatCard({ label, value, icon: Icon, color }: { label: string; value: string | number; icon: any; color: string }) {
-  return (
-    <div className="bg-[#1C1C1E] border border-white/5 rounded-xl p-3 text-center">
-      <Icon className={`h-4 w-4 mx-auto mb-1 ${color}`} />
-      <p className={`text-lg font-bold font-barlow ${color}`}>{value}</p>
-      <p className="text-[9px] text-white/40 uppercase tracking-wider">{label}</p>
-    </div>
-  );
-}
+      {/* SECTION 6: Summary History */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+        <div style={{ fontSize: "13px", fontWeight: 600, color: "white", marginBottom: "4px" }}>Previous Summaries</div>
 
-function FilterChip({ label, count, active, onClick }: { label: string; count: number; active: boolean; onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${
-        active
-          ? "bg-brand text-white"
-          : "bg-[#1C1C1E] text-white/60 hover:text-white"
-      }`}
-    >
-      {label} ({count})
-    </button>
+        {summary_history.length > 1 ? summary_history.slice(1).map((summary) => {
+          const isExpanded = expandedSummaryId === summary.id;
+          const rate = summary.total_clients > 0 ? Math.round((summary.responded_count / summary.total_clients) * 100) : 0;
+          let badgeBg = "rgba(239,68,68,0.1)";
+          let badgeColor = "#EF4444";
+          if (rate >= 70) { badgeBg = "rgba(16,185,129,0.1)"; badgeColor = "#10B981"; }
+          else if (rate >= 40) { badgeBg = "rgba(245,158,11,0.1)"; badgeColor = "#F59E0B"; }
+
+          return (
+            <div key={summary.id} style={{ background: "#111111", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "10px", overflow: "hidden" }}>
+              <div
+                onClick={() => setExpandedSummaryId(isExpanded ? null : summary.id)}
+                style={{ padding: "12px 16px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "space-between" }}
+              >
+                <div>
+                  <div style={{ fontSize: "13px", fontWeight: 600, color: "white" }}>
+                    {formatDateShort(summary.week_start_date)}–{formatDateShort(summary.week_end_date)}
+                  </div>
+                  <div style={{ fontSize: "11px", color: "#888888", marginTop: "3px" }}>
+                    {summary.responded_count} of {summary.total_clients} responded · {summary.avg_energy_score ? `${summary.avg_energy_score}/10` : "—"} energy
+                  </div>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <div style={{ background: badgeBg, color: badgeColor, fontSize: "11px", fontWeight: 700, padding: "3px 10px", borderRadius: "20px" }}>
+                    {rate}%
+                  </div>
+                  <ChevronDown
+                    style={{ width: "14px", height: "14px", color: "#888888", transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}
+                  />
+                </div>
+              </div>
+
+              {isExpanded && (
+                <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", padding: "14px 16px", fontSize: "13px", color: "#C8C8C8", lineHeight: 1.7, whiteSpace: "pre-wrap" }}>
+                  {summary.summary_text}
+                </div>
+              )}
+            </div>
+          );
+        }) : (
+          <div style={{ fontSize: "13px", color: "#888888", textAlign: "center", padding: "20px" }}>
+            More summaries will appear here each week
+          </div>
+        )}
+      </div>
+
+    </div>
   );
 }

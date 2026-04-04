@@ -36,9 +36,41 @@ const generateTimes = () => {
 };
 const TIMES = generateTimes();
 
+import { Loader2 } from "lucide-react";
+
+const PLAN_AMOUNTS: Record<string, number> = {
+  starter: 999,
+  basic: 1499,
+  pro: 2999,
+  studio: 5999,
+}
+
+const PLAN_CLIENT_LIMITS: Record<string, string> = {
+  starter: "10 clients",
+  basic: "25 clients",
+  pro: "50 clients",
+  studio: "Unlimited",
+}
+
+interface SubData {
+  plan: string;
+  client_limit: number | null;
+  active_clients: number;
+  utilisation_pct: number;
+  show_upgrade_prompt: boolean;
+  amount_inr: number;
+  billing_cycle: string;
+  current_period_end: string | null;
+  days_remaining: number | null;
+}
+
 export default function SettingsPage() {
   const [profile, setProfile] = useState<CoachProfile | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const [subData, setSubData] = useState<SubData | null>(null);
+  const [subLoading, setSubLoading] = useState(true);
+  const [subscribing, setSubscribing] = useState(false);
 
   // Section 1 State
   const [fullName, setFullName] = useState("");
@@ -81,6 +113,12 @@ export default function SettingsPage() {
         setCheckinDay(data.checkin_day ?? 0);
         setCheckinTime(data.checkin_time || "06:00");
       }
+
+      fetch('/api/subscriptions/current')
+        .then(r => r.json())
+        .then(d => setSubData(d))
+        .catch(() => setSubData(null))
+        .finally(() => setSubLoading(false))
     } catch (err) {
       console.error(err);
     } finally {
@@ -168,6 +206,37 @@ export default function SettingsPage() {
   const togglePaymentMethod = (method: string) => {
     setAcceptedMethods(prev => prev.includes(method) ? prev.filter(m => m !== method) : [...prev, method]);
   };
+
+  async function handleSubscribe(plan: string) {
+    setSubscribing(true);
+    try {
+      const res = await fetch('/api/subscriptions/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan })
+      });
+      const data = await res.json();
+      if (res.ok && data.short_url) {
+        window.open(data.short_url, '_blank');
+      } else {
+        alert(data.error || 'Failed to create subscription');
+      }
+    } finally {
+      setSubscribing(false);
+    }
+  }
+
+  async function handleCancel() {
+    if (!confirm('Cancel your subscription? You keep access until the end of your billing period.')) return;
+    const res = await fetch('/api/subscriptions/cancel', { method: 'POST' });
+    const data = await res.json();
+    if (res.ok) {
+      alert('Subscription cancelled. Access until ' + data.access_until);
+      fetch('/api/subscriptions/current').then(r => r.json()).then(d => setSubData(d));
+    } else {
+      alert(data.error || 'Failed to cancel');
+    }
+  }
 
   if (loading) return <div className="text-white p-8">Loading...</div>;
   if (!profile) return <div className="text-white p-8">Profile not found.</div>;
@@ -393,6 +462,110 @@ export default function SettingsPage() {
               {errorSec3 && <span className="text-red-500 font-['Urbanist'] text-[13px]">{errorSec3}</span>}
             </div>
           </div>
+        </section>
+
+        {/* Section 4 - Billing & Plan */}
+        <section className="bg-[#111111] border border-[rgba(255,255,255,0.06)] rounded-[10px] p-6">
+          <div className="mb-6">
+            <h2 className="font-['Barlow_Condensed'] font-medium text-[20px] uppercase tracking-[0.02em] text-white">Billing & Plan</h2>
+            <p className="font-['Urbanist'] text-[14px] text-[#888888]">Manage your Fitosys subscription</p>
+          </div>
+
+          {subLoading ? (
+            <div style={{ display: "flex", justifyContent: "center", padding: "40px" }}>
+              <Loader2 className="animate-spin" style={{ color: "#E8001D", width: "20px", height: "20px" }} />
+            </div>
+          ) : subData && (
+            <div>
+              {/* Block 1 - Current plan row */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", paddingBottom: "20px", marginBottom: "20px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+                <div>
+                  <div style={{ display: "inline-block", marginBottom: "8px", background: "rgba(232,0,29,0.1)", color: "#E8001D", fontSize: "11px", fontWeight: 700, padding: "3px 12px", borderRadius: "20px" }}>
+                    {subData.plan.toUpperCase()}
+                  </div>
+
+                  {subData.amount_inr > 0 && (
+                    <div style={{ fontSize: "18px", fontWeight: 700, color: "white" }}>
+                      ₹{subData.amount_inr}/month
+                    </div>
+                  )}
+
+                  {subData.current_period_end && (
+                    <div style={{ fontSize: "12px", color: "#888888", marginTop: "4px" }}>
+                      Renews {new Date(subData.current_period_end).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    </div>
+                  )}
+
+                  {subData.days_remaining !== null && subData.days_remaining <= 7 && (
+                    <div style={{ fontSize: "12px", color: "#F59E0B", marginTop: "4px" }}>
+                      ⚠ {subData.days_remaining} days remaining
+                    </div>
+                  )}
+                </div>
+
+                {subData.plan !== 'trial' && (
+                  <button
+                    onClick={handleCancel}
+                    style={{ padding: "8px 16px", background: "transparent", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "6px", fontSize: "12px", fontWeight: 600, color: "#888888", cursor: "pointer" }}
+                    onMouseOver={(e) => { e.currentTarget.style.borderColor = "rgba(239,68,68,0.4)"; e.currentTarget.style.color = "#EF4444"; }}
+                    onMouseOut={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; e.currentTarget.style.color = "#888888"; }}
+                  >
+                    Cancel Plan
+                  </button>
+                )}
+              </div>
+
+              {/* Block 2 - Client usage */}
+              <div>
+                <div style={{ fontSize: "13px", fontWeight: 600, color: "white", marginBottom: "10px" }}>Client Usage</div>
+                <div style={{ background: "#1a1a1a", borderRadius: "99px", height: "6px", overflow: "hidden", marginBottom: "8px" }}>
+                  <div style={{ width: `${subData.utilisation_pct}%`, height: "100%", borderRadius: "99px", transition: "width 0.4s ease", background: subData.utilisation_pct >= 90 ? "#EF4444" : subData.utilisation_pct >= 70 ? "#F59E0B" : "#10B981" }} />
+                </div>
+                <div style={{ fontSize: "12px", color: "#888888" }}>
+                  {subData.active_clients} of {subData.client_limit ?? '∞'} clients used
+                </div>
+              </div>
+
+              {/* Block 3 - Upgrade section */}
+              {(subData.show_upgrade_prompt || subData.plan === 'trial') && (
+                <div>
+                  <div style={{ fontSize: "13px", fontWeight: 600, color: "white", marginTop: "24px", marginBottom: "16px" }}>Choose a Plan</div>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "12px" }}>
+                    {['starter', 'basic', 'pro', 'studio'].filter(p => p !== subData.plan).map(plan => {
+                      const isBasic = plan === 'basic';
+                      return (
+                        <div key={plan} style={{ background: "#1a1a1a", border: isBasic ? "1px solid rgba(232,0,29,0.35)" : "1px solid rgba(255,255,255,0.08)", borderRadius: "10px", padding: "16px" }}>
+                          {isBasic && (
+                            <div style={{ fontSize: "9px", fontWeight: 700, color: "#E8001D", letterSpacing: "0.1em", marginBottom: "6px" }}>
+                              RECOMMENDED
+                            </div>
+                          )}
+                          <div style={{ fontSize: "11px", fontWeight: 700, color: "#E8001D", letterSpacing: "0.06em", marginBottom: "4px" }}>
+                            {plan.toUpperCase()}
+                          </div>
+                          <div style={{ fontSize: "20px", fontFamily: '"Barlow Condensed", sans-serif', fontWeight: 500, color: "white", marginBottom: "6px" }}>
+                            ₹{PLAN_AMOUNTS[plan]}/mo
+                          </div>
+                          <div style={{ fontSize: "12px", color: "#888888", marginBottom: "14px" }}>
+                            {PLAN_CLIENT_LIMITS[plan]}
+                          </div>
+                          <button
+                            onClick={() => handleSubscribe(plan)}
+                            disabled={subscribing}
+                            onMouseOver={(e) => { if (!isBasic && !subscribing) e.currentTarget.style.background = "rgba(232,0,29,0.1)"; }}
+                            onMouseOut={(e) => { if (!isBasic && !subscribing) e.currentTarget.style.background = "transparent"; }}
+                            style={{ width: "100%", padding: "9px", background: isBasic ? "#E8001D" : "transparent", border: isBasic ? "none" : "1px solid rgba(232,0,29,0.4)", borderRadius: "6px", fontSize: "12px", fontWeight: 700, color: "white", cursor: subscribing ? "not-allowed" : "pointer" }}
+                          >
+                            {subscribing ? <Loader2 className="animate-spin mx-auto" size={12} /> : "Subscribe"}
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </section>
       </div>
     </div>

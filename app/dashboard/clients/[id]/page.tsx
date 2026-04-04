@@ -1,176 +1,344 @@
-import React from "react";
-import Link from "next/link";
-import { Avatar, Badge } from "@/components/ui/design-system";
-import { NavBar } from "@/components/ui/navigation";
-import { getClientProfile } from "@/lib/api-services";
-import { notFound } from "next/navigation";
+"use client";
 
-export default async function ClientDetailScreen({ params }: { params: { id: string } }) {
-  const resolvedParams = await params;
-  const profile = await getClientProfile(resolvedParams.id);
+import { useEffect, useState } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { Loader2 } from "lucide-react";
+import type { Client, CheckIn, Payment } from "@/types/database";
 
-  if (!profile) {
-    notFound();
+// Assuming Payment interface doesn't strictly exist in database.ts since it wasn't listed, 
+// creating a local type to ensure type safety.
+interface LocalPayment {
+  id: string;
+  amount: number;
+  currency: string;
+  payment_type: string;
+  gateway_payment_status: string;
+  paid_at: string | null;
+  created_at: string;
+}
+
+interface ProfileData {
+  client: Client;
+  enrollment: {
+    id: string;
+    program_name: string;
+    start_date: string;
+    end_date: string;
+    amount_paid: number;
+    status: string;
+  } | null;
+  checkins: CheckIn[];
+  payments: LocalPayment[];
+}
+
+export default function ClientProfilePage() {
+  const router = useRouter();
+  const params = useParams();
+  const [data, setData] = useState<ProfileData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'overview' | 'checkins' | 'payments'>('overview');
+
+  useEffect(() => {
+    async function loadData() {
+      if (!params?.id) return;
+      try {
+        const res = await fetch(`/api/clients/${params.id}`);
+        if (!res.ok) throw new Error("Failed to fetch client");
+        const json = await res.json();
+        setData(json);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, [params?.id]);
+
+  if (loading) {
+    return (
+      <div style={{ padding: "60px", display: "flex", justifyContent: "center", height: "100%", alignItems: "center" }}>
+        <Loader2 style={{ color: "#E8001D", width: "32px", height: "32px" }} className="animate-spin" />
+      </div>
+    );
   }
 
-  // Get the latest check-in for the top stats
-  const latestCheckin = profile.recentCheckins[0] || null;
-  const energy = latestCheckin?.energy_score || 0;
-
-  // Calculate risk safely
-  let risk = 1;
-  if (energy > 0) {
-    if (energy <= 3) risk = 5;
-    else if (energy <= 5) risk = 4;
-    else if (energy <= 7) risk = 2;
-  } else {
-    risk = profile.daysLeft < 7 ? 4 : 2;
+  if (!data || !data.client) {
+    return (
+      <div style={{ padding: "60px", textAlign: "center", color: "#888888", fontSize: "14px" }}>
+        Client not found
+      </div>
+    );
   }
 
-  // Pad the chart data to 7 weeks if there aren't enough checkins yet
-  const chartData = profile.recentCheckins.map((c: { energy_score: number | null }) => c.energy_score || 0).reverse();
-  while (chartData.length < 7) {
-    chartData.unshift(0); // Insert 0 at the beginning for missing weeks
-  }
+  const { client, enrollment, checkins, payments } = data;
 
-  const barMax = 10;
+  const getStatusBadge = (status: string) => {
+    const style = { fontSize: "10px", fontWeight: 700, padding: "3px 10px", borderRadius: "20px", textTransform: "uppercase" as const };
+    switch (status) {
+      case 'active':
+        return <span style={{ ...style, background: "rgba(16,185,129,0.1)", color: "#10B981" }}>Active</span>;
+      case 'inactive':
+        return <span style={{ ...style, background: "rgba(136,136,136,0.1)", color: "#888888" }}>Inactive</span>;
+      case 'payment_pending':
+        return <span style={{ ...style, background: "rgba(245,158,11,0.1)", color: "#F59E0B" }}>Pending</span>;
+      case 'renewal_due':
+        return <span style={{ ...style, background: "rgba(59,130,246,0.1)", color: "#3B82F6" }}>Renewal Due</span>;
+      default:
+        return <span style={{ ...style, background: "rgba(136,136,136,0.1)", color: "#888888" }}>{status}</span>;
+    }
+  };
 
-  // Format the enrollment date safely
-  const enrolledDate = new Date(profile.created_at).toLocaleDateString('en-US', {
-    month: 'short', day: 'numeric', year: 'numeric'
-  });
+  const getEndDateColor = (dateStr: string | null) => {
+    if (!dateStr) return "white";
+    const diff = new Date(dateStr).getTime() - new Date().getTime();
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    if (days <= 7 && days >= 0) return "#EF4444";
+    if (days <= 14 && days >= 0) return "#F59E0B";
+    return "white";
+  };
 
-  return (
-    <div className="flex-1 w-full bg-background text-white font-sans overflow-y-auto pb-24">
-      <NavBar
-        title="Client Profile"
-        back="Clients"
-        backHref="/dashboard/clients"
-        action="Message"
-      />
+  const renderOverview = () => {
+    const totalCheckins = checkins.filter(c => c.responded_at).length;
+    let avgEnergyVal = "—";
+    if (totalCheckins > 0) {
+      const validEnergy = checkins.filter(c => typeof c.energy_score === 'number');
+      if (validEnergy.length > 0) {
+        avgEnergyVal = (validEnergy.reduce((a, b) => a + (b.energy_score as number), 0) / validEnergy.length).toFixed(1);
+      }
+    }
 
-      {/* ── Hero Profile ── */}
-      <div
-        className="mx-4 mt-2 mb-6 rounded-[20px] p-5 border transition-colors"
-        style={{
-          background: risk >= 4 ? `linear-gradient(135deg, #E8001D18, #1C1C1E)` : `linear-gradient(135deg, #34C75918, #1C1C1E)`,
-          borderColor: risk >= 4 ? '#E8001D33' : '#34C75933'
-        }}
-      >
-        <div className="flex gap-4 items-center">
-          <Avatar name={profile.full_name} size={60} risk={risk} />
-          <div>
-            <h2 className="text-xl font-bold font-sans">{profile.full_name}</h2>
-            <p className="text-[13px] text-white/60 font-sans mt-0.5">{profile.program}</p>
-            <div className="flex flex-wrap gap-2 mt-2">
-              {risk >= 4 && <Badge label="⚠ High Risk" color="#E8001D" />}
-              {profile.daysLeft <= 14 && <Badge label={`${profile.daysLeft} days left`} color="#FF9F0A" />}
-              {profile.status === 'trial' && <Badge label="Trial" color="#0A84FF" />}
+    // Sessions this month
+    const thisMonth = new Date().getMonth();
+    const thisYear = new Date().getFullYear();
+    const sessionsThisMonth = checkins
+      .filter(c => {
+        if (!c.check_date) return false;
+        const d = new Date(c.check_date);
+        return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
+      })
+      .reduce((a, b) => a + (b.sessions_completed || 0), 0);
+
+    const recentReplies = checkins.filter(c => c.raw_reply).slice(0, 3);
+    const last8 = [...checkins].reverse().slice(-8); // Assuming checkins is DESC, reverse to ASC for chart
+
+    return (
+      <div style={{ padding: "16px 20px" }}>
+        {/* Stats Row */}
+        <div style={{ display: "flex", gap: "12px", marginBottom: "20px" }}>
+          {[
+            { label: "TOTAL CHECK-INS", value: totalCheckins },
+            { label: "AVG ENERGY", value: avgEnergyVal },
+            { label: "SESSIONS THIS MONTH", value: sessionsThisMonth }
+          ].map((stat, i) => (
+            <div key={i} style={{ flex: 1, background: "#111111", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "10px", padding: "16px", textAlign: "center" }}>
+              <div style={{ fontSize: "24px", fontFamily: '"Barlow Condensed", sans-serif', fontWeight: 500, color: "white" }}>{stat.value}</div>
+              <div style={{ fontSize: "10px", color: "#888888", marginTop: "4px", textTransform: "uppercase", letterSpacing: "0.06em" }}>{stat.label}</div>
             </div>
+          ))}
+        </div>
+
+        {/* Energy Trend */}
+        <div style={{ marginBottom: "20px" }}>
+          <div style={{ fontSize: "11px", fontWeight: 700, color: "#888888", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "12px", marginTop: "20px" }}>Energy Trend</div>
+          <div style={{ display: "flex", alignItems: "flex-end", gap: "6px", height: "60px" }}>
+            {last8.map((c, i) => {
+              const val = c.energy_score || 0;
+              let bg = "rgba(255,255,255,0.05)";
+              if (val > 0 && val <= 4) bg = "rgba(239,68,68,0.7)";
+              else if (val >= 5 && val <= 7) bg = "rgba(245,158,11,0.7)";
+              else if (val >= 8) bg = "rgba(16,185,129,0.7)";
+
+              const h = Math.max((val / 10) * 60, 4);
+              return (
+                <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end" }}>
+                  <div style={{ width: "100%", background: bg, height: `${h}px`, transition: "height 0.3s" }} />
+                  <div style={{ fontSize: "9px", color: "#888888", marginTop: "4px" }}>Wk {c.week_number}</div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
-        {/* ── AI Insight ── */}
-        {(risk >= 4 || profile.daysLeft <= 7) && (
-          <div className="mt-5 p-3.5 rounded-xl border border-[#E8001D]/20 bg-[#E8001D]/5">
-            <p className="text-xs text-[#E8001D] font-bold mb-1.5 font-sans tracking-wide">🤖 AI INSIGHT</p>
-            <p className="text-[13px] text-white/70 leading-relaxed font-sans">
-              {profile.daysLeft <= 7
-                ? `${profile.full_name}'s program ends in ${profile.daysLeft} days. Send a renewal link today.`
-                : `${profile.full_name}'s recent check-ins show critically low energy levels. Personal outreach is highly recommended.`}
-            </p>
+        {/* Recent Replies */}
+        <div>
+          <div style={{ fontSize: "11px", fontWeight: 700, color: "#888888", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "12px" }}>Recent Replies</div>
+          {recentReplies.length > 0 ? (
+            recentReplies.map((r, i) => (
+              <div key={i} style={{ background: "#111111", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "8px", padding: "12px", marginBottom: "8px" }}>
+                <div style={{ fontSize: "11px", color: "#888888", marginBottom: "4px" }}>
+                  {r.check_date ? new Date(r.check_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : "—"}
+                </div>
+                <div style={{ fontSize: "13px", color: "#C8C8C8", lineHeight: 1.6 }}>{r.raw_reply}</div>
+              </div>
+            ))
+          ) : (
+            <div style={{ fontSize: "13px", color: "#888888" }}>No replies yet.</div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderCheckins = () => {
+    return (
+      <div style={{ padding: "16px 20px" }}>
+        {checkins.length === 0 ? (
+          <div style={{ fontSize: "13px", color: "#888888", textAlign: "center", padding: "20px" }}>No check-ins recorded yet</div>
+        ) : (
+          <div style={{ border: "1px solid rgba(255,255,255,0.06)", borderRadius: "8px", overflow: "hidden" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "0.8fr 1fr 1fr 1fr 2fr 1fr", backgroundColor: "#111111", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "10px 16px" }}>
+              {['WEEK', 'DATE', 'ENERGY', 'SESSIONS', 'REPLY', 'STATUS'].map(col => (
+                <div key={col} style={{ fontSize: "10px", fontWeight: 700, color: "#888888", textTransform: "uppercase", letterSpacing: "0.08em", textAlign: "left" }}>{col}</div>
+              ))}
+            </div>
+            <div>
+              {checkins.map((c, i) => {
+                let energyColor = "#888888";
+                if (c.energy_score !== null) {
+                  if (c.energy_score <= 4) energyColor = "#EF4444";
+                  else if (c.energy_score <= 7) energyColor = "#F59E0B";
+                  else energyColor = "#10B981";
+                }
+
+                const replyStr = c.raw_reply ? (c.raw_reply.length > 40 ? c.raw_reply.substring(0, 40) + "..." : c.raw_reply) : "No reply";
+
+                return (
+                  <div key={c.id} style={{ display: "grid", gridTemplateColumns: "0.8fr 1fr 1fr 1fr 2fr 1fr", alignItems: "center", padding: "12px 16px", borderBottom: i < checkins.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none", backgroundColor: "transparent" }}>
+                    <div style={{ fontSize: "12px", color: "#888888" }}>Wk {c.week_number}</div>
+                    <div style={{ fontSize: "12px", color: "#C8C8C8" }}>{new Date(c.check_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</div>
+                    <div style={{ fontSize: "13px", fontWeight: 700, color: energyColor }}>{c.energy_score !== null && c.energy_score !== undefined ? `${c.energy_score}/10` : "—"}</div>
+                    <div style={{ fontSize: "12px", color: "#C8C8C8" }}>{c.sessions_completed ?? "—"}</div>
+                    <div style={{ fontSize: "12px", color: "#888888" }}>{replyStr}</div>
+                    <div style={{ fontSize: "12px", color: c.responded_at ? "#10B981" : "#888888" }}>{c.responded_at ? "Replied" : "No response"}</div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const renderPayments = () => {
+    const totalPaid = payments.filter(p => p.gateway_payment_status === 'captured').reduce((a, b) => a + Number(b.amount), 0);
+
+    return (
+      <div style={{ padding: "16px 20px" }}>
+        {payments.length === 0 ? (
+          <div style={{ fontSize: "13px", color: "#888888", textAlign: "center", padding: "20px" }}>No payments recorded yet</div>
+        ) : (
+          <>
+            {payments.map(p => {
+              const statusColor = p.gateway_payment_status === 'captured' ? '#10B981' : p.gateway_payment_status === 'failed' ? '#EF4444' : '#888888';
+              const isRenewal = p.payment_type === 'renewal';
+              return (
+                <div key={p.id} style={{ background: "#111111", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "8px", padding: "14px 16px", marginBottom: "8px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div>
+                    <span style={{ fontSize: "10px", fontWeight: 700, padding: "3px 10px", borderRadius: "20px", textTransform: "uppercase", background: isRenewal ? "rgba(245,158,11,0.1)" : "rgba(16,185,129,0.1)", color: isRenewal ? "#F59E0B" : "#10B981" }}>
+                      {isRenewal ? "Renewal" : "New"}
+                    </span>
+                    <div style={{ fontSize: "11px", color: "#888888", marginTop: "4px" }}>
+                      {p.paid_at ? new Date(p.paid_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : new Date(p.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    </div>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontSize: "16px", fontWeight: 700, color: "white" }}>₹{Number(p.amount).toLocaleString('en-IN')}</div>
+                    <div style={{ fontSize: "10px", color: statusColor, marginTop: "2px", textTransform: "uppercase" }}>{p.gateway_payment_status || "unknown"}</div>
+                  </div>
+                </div>
+              );
+            })}
+            <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "12px", marginTop: "4px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ fontSize: "13px", color: "#888888" }}>Total Paid</div>
+              <div style={{ fontSize: "16px", fontWeight: 700, color: "white" }}>₹{totalPaid.toLocaleString('en-IN')}</div>
+            </div>
+          </>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", height: "100%", overflowY: "auto" }}>
+      {/* Back Button */}
+      <a onClick={() => router.push('/dashboard/clients')} style={{ padding: "16px 20px", fontSize: "13px", color: "#888888", cursor: "pointer", display: "block" }}>
+        ← Clients
+      </a>
+
+      {/* Header Card */}
+      <div style={{ background: "#111111", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "10px", padding: "20px", margin: "0 20px 16px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+          <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
+            <div style={{ width: "44px", height: "44px", borderRadius: "50%", background: "#E8001D", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px", fontWeight: 700, color: "white" }}>
+              {client.full_name.trim().split(/\s+/).filter(Boolean).map(n => n[0]).join("").toUpperCase().slice(0, 2) || "?"}
+            </div>
+            <div>
+              <div style={{ fontSize: "18px", fontWeight: 600, color: "white", fontFamily: '"Barlow Condensed", sans-serif', textTransform: "uppercase" }}>{client.full_name}</div>
+              <div style={{ fontSize: "13px", color: "#888888", marginTop: "2px" }}>{enrollment?.program_name || "No active program"}</div>
+            </div>
+          </div>
+          <div>{getStatusBadge(client.status)}</div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", borderTop: "1px solid rgba(255,255,255,0.06)", marginTop: "16px", paddingTop: "16px" }}>
+          <div>
+            <div style={{ fontSize: "10px", color: "#888888", textTransform: "uppercase", marginBottom: "4px" }}>WhatsApp</div>
+            <div style={{ fontSize: "13px", color: "white" }}>{client.whatsapp_number}</div>
+          </div>
+          <div>
+            <div style={{ fontSize: "10px", color: "#888888", textTransform: "uppercase", marginBottom: "4px" }}>Email</div>
+            <div style={{ fontSize: "13px", color: "white" }}>{client.email || "—"}</div>
+          </div>
+          <div>
+            <div style={{ fontSize: "10px", color: "#888888", textTransform: "uppercase", marginBottom: "4px" }}>Primary Goal</div>
+            <div style={{ fontSize: "13px", color: "white" }}>{client.primary_goal || "Not set"}</div>
+          </div>
+        </div>
+
+        {enrollment && (
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", borderTop: "1px solid rgba(255,255,255,0.06)", marginTop: "12px", paddingTop: "12px" }}>
+            <div>
+              <div style={{ fontSize: "10px", color: "#888888", textTransform: "uppercase", marginBottom: "4px" }}>Started</div>
+              <div style={{ fontSize: "13px", color: "white" }}>{new Date(enrollment.start_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
+            </div>
+            <div>
+              <div style={{ fontSize: "10px", color: "#888888", textTransform: "uppercase", marginBottom: "4px" }}>Ends</div>
+              <div style={{ fontSize: "13px", color: getEndDateColor(enrollment.end_date) }}>{new Date(enrollment.end_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
+            </div>
           </div>
         )}
       </div>
 
-      {/* ── Stats Grid ── */}
-      <div className="grid grid-cols-3 gap-2 px-4 mb-8 mt-2">
-        <div className="bg-[#1C1C1E] border border-white/10 rounded-xl p-3 text-center flex flex-col items-center justify-center h-24">
-          <p className="text-xl font-bold text-white font-barlow tracking-wide">
-            {energy > 0 ? <span className={energy <= 5 ? "text-[#E8001D]" : "text-[#34C759]"}>{energy}</span> : "-"}
-            <span className="text-sm text-white/40">/10</span>
-          </p>
-          <p className="text-[11px] text-white/40 font-sans mt-1 uppercase tracking-wider font-semibold">Energy</p>
-        </div>
-        <div className="bg-[#1C1C1E] border border-white/10 rounded-xl p-3 text-center flex flex-col items-center justify-center h-24">
-          <p className="text-xl font-bold text-white font-barlow tracking-wide">
-            {latestCheckin?.sessions_completed !== null ? <span className="text-[#FF9F0A]">{latestCheckin?.sessions_completed}</span> : "-"}
-          </p>
-          <p className="text-[11px] text-white/40 font-sans mt-1 uppercase tracking-wider font-semibold">Sessions</p>
-        </div>
-        <div className="bg-[#1C1C1E] border border-white/10 rounded-xl p-3 text-center flex flex-col items-center justify-center h-24">
-          <p className="text-xl font-bold text-white font-barlow tracking-wide">
-            {profile.weightProgress !== 0 ? (
-              <span className={profile.weightProgress < 0 ? "text-[#34C759]" : "text-[#FF9F0A]"}>
-                {profile.weightProgress > 0 ? "+" : ""}{profile.weightProgress.toFixed(1)}kg
-              </span>
-            ) : "-"}
-          </p>
-          <p className="text-[11px] text-white/40 font-sans mt-1 uppercase tracking-wider font-semibold">Progress</p>
-        </div>
+      {/* Tab Bar */}
+      <div style={{ display: "flex", gap: "16px", paddingLeft: "20px", borderBottom: "1px solid rgba(255,255,255,0.06)", marginBottom: "0" }}>
+        {(['overview', 'checkins', 'payments'] as const).map(tab => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            style={{
+              padding: "6px 14px 10px",
+              background: "transparent",
+              border: "none",
+              borderBottom: activeTab === tab ? "2px solid #E8001D" : "2px solid transparent",
+              color: activeTab === tab ? "#E8001D" : "#888888",
+              fontSize: "12px",
+              fontWeight: 600,
+              cursor: "pointer",
+              transition: "all 0.2s"
+            }}
+          >
+            {tab === 'overview' ? 'Overview' : tab === 'checkins' ? 'Check-in History' : 'Payment History'}
+          </button>
+        ))}
       </div>
 
-      {/* ── Energy Trend Chart ── */}
-      <div className="mx-4 mb-6 bg-[#1C1C1E] border border-white/10 rounded-2xl p-4">
-        <p className="text-[13px] font-semibold mb-6 font-sans text-white/60 uppercase tracking-widest">
-          Energy Trend — 7 Weeks
-        </p>
-        <div className="flex gap-2 items-end h-[72px]">
-          {chartData.map((v: number, i: number) => {
-            const isRed = v > 0 && v <= 4;
-            const isOrange = v > 4 && v <= 6;
-            const isGreen = v > 6;
-            const isEmpty = v === 0;
-            const color = isRed ? "#E8001D" : isOrange ? "#FF9F0A" : isGreen ? "#34C759" : "#333333";
-
-            return (
-              <div key={i} className="flex-1 flex flex-col items-center gap-2 h-full justify-end">
-                <div
-                  className="w-full rounded-sm transition-all duration-500 max-w-[24px]"
-                  style={{
-                    height: isEmpty ? '4px' : `${(v / barMax) * 54}px`,
-                    background: isEmpty ? color : `linear-gradient(180deg, ${color}, ${color}88)`,
-                  }}
-                />
-                <span className="text-[9px] text-white/40 font-sans font-medium uppercase tracking-wider">
-                  W{i + 1}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* ── Client Details Readonly ── */}
-      <div className="px-5 mb-8">
-        <h3 className="text-sm font-bold font-barlow tracking-wider mb-3 text-white/60">CLIENT INFO</h3>
-        <div className="bg-[#1C1C1E] rounded-xl border border-white/10 divide-y divide-white/5 overflow-hidden">
-          <div className="p-3.5 flex justify-between items-center">
-            <span className="text-sm text-white/50">Enrolled</span>
-            <span className="text-sm font-medium">{enrolledDate}</span>
-          </div>
-          <div className="p-3.5 flex justify-between items-center">
-            <span className="text-sm text-white/50">Primary Goal</span>
-            <span className="text-sm font-medium">{profile.primary_goal || "Not specified"}</span>
-          </div>
-          <div className="p-3.5 flex justify-between items-center">
-            <span className="text-sm text-white/50">WhatsApp</span>
-            <span className="text-sm font-medium">{profile.whatsapp_number}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Action Buttons ── */}
-      <div className="px-4 flex gap-2.5">
-        <button className="flex-1 bg-[#E8001D] hover:bg-[#C20000] border-none rounded-xl p-[14px] text-white text-sm font-bold font-barlow tracking-widest uppercase transition-colors active:scale-[0.98]">
-          Send Renewal
-        </button>
-        <Link
-          href={`/dashboard/checkin?clientId=${profile.id}`}
-          className="flex-1 bg-[#1C1C1E] hover:bg-white/10 border border-white/10 rounded-xl p-[14px] text-white text-center text-sm font-semibold font-sans transition-colors active:scale-[0.98]"
-        >
-          Log Check-in
-        </Link>
+      {/* Tab Content */}
+      <div style={{ flex: 1 }}>
+        {activeTab === 'overview' && renderOverview()}
+        {activeTab === 'checkins' && renderCheckins()}
+        {activeTab === 'payments' && renderPayments()}
       </div>
     </div>
   );
