@@ -15,7 +15,10 @@ export async function POST(request: NextRequest) {
     const supabase = await createServiceClient();
 
     const now = new Date();
-    const todayDayOfWeek = now.getUTCDay(); // 0=Sunday ... 6=Saturday
+    // Use IST (UTC+5:30) for day-of-week — coaches are India-based
+    const istOffset = 5.5 * 60 * 60 * 1000; // 5h30m in ms
+    const nowIST = new Date(now.getTime() + istOffset);
+    const todayDayOfWeek = nowIST.getUTCDay(); // 0=Sunday ... 6=Saturday
 
     // Get coaches whose check-in day matches today
     const { data: coaches, error: coachError } = await supabase
