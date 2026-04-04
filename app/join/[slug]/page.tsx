@@ -240,17 +240,29 @@ export default function IntakePage({ params }: { params: Promise<{ slug: string 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <Label htmlFor="whatsapp" className="text-[10px] uppercase tracking-widest text-white/30 font-bold">WhatsApp Number</Label>
-                                        <Input
-                                            id="whatsapp"
-                                            type="tel"
-                                            placeholder="+917738363495"
-                                            className="h-14 bg-white/[0.03] border-white/5 focus:border-[#E8001D]/30 transition-all text-white placeholder:text-white/10 font-sans"
-                                            value={form.whatsapp_number}
-                                            onChange={(e) => setForm({ ...form, whatsapp_number: e.target.value })}
-                                        />
-                                        <p style={{ fontSize: "11px", color: "#888888", marginTop: "4px" }}>
-                                            Include country code — e.g. +91 for India
-                                        </p>
+                                        <div style={{ display: "flex", gap: "8px" }}>
+                                            <div style={{
+                                                height: "56px", width: "72px", flexShrink: 0,
+                                                background: "rgba(255,255,255,0.03)",
+                                                border: "1px solid rgba(255,255,255,0.05)",
+                                                borderRadius: "6px",
+                                                display: "flex", alignItems: "center", justifyContent: "center",
+                                                fontSize: "14px", color: "white", fontWeight: 500
+                                            }}>
+                                                +91
+                                            </div>
+                                            <Input
+                                                id="whatsapp"
+                                                type="tel"
+                                                placeholder="9876543210"
+                                                className="h-14 bg-white/[0.03] border-white/5 focus:border-[#E8001D]/30 transition-all text-white placeholder:text-white/10 font-sans flex-1"
+                                                value={form.whatsapp_number.replace(/^\+91/, "")}
+                                                onChange={(e) => {
+                                                    const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
+                                                    setForm({ ...form, whatsapp_number: "+91" + digits });
+                                                }}
+                                            />
+                                        </div>
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="age" className="text-[10px] uppercase tracking-widest text-white/30 font-bold">Age</Label>
