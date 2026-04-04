@@ -243,11 +243,14 @@ export default function IntakePage({ params }: { params: Promise<{ slug: string 
                                         <Input
                                             id="whatsapp"
                                             type="tel"
-                                            placeholder="+91"
+                                            placeholder="+917738363495"
                                             className="h-14 bg-white/[0.03] border-white/5 focus:border-[#E8001D]/30 transition-all text-white placeholder:text-white/10 font-sans"
                                             value={form.whatsapp_number}
                                             onChange={(e) => setForm({ ...form, whatsapp_number: e.target.value })}
                                         />
+                                        <p style={{ fontSize: "11px", color: "#888888", marginTop: "4px" }}>
+                                            Include country code — e.g. +91 for India
+                                        </p>
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="age" className="text-[10px] uppercase tracking-widest text-white/30 font-bold">Age</Label>

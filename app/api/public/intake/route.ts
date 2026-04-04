@@ -15,7 +15,7 @@ const intakeSchema = z.object({
         .transform((s) => s.replace(/<[^>]*>/g, "")),
     whatsapp_number: z
         .string()
-        .regex(/^\+?[0-9]{10,15}$/, "Invalid phone number"),
+        .regex(/^\+[1-9][0-9]{6,14}$/, "Please include country code e.g. +917738363495"),
     email: z.string().email("Invalid email").max(255),
     age: z.coerce.number().int().min(10).max(120).optional().nullable(),
     primary_goal: z
