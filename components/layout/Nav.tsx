@@ -6,18 +6,22 @@ import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { NAV_LINKS } from "@/lib/constants";
 
+import { usePathname } from "next/navigation";
+
 export function Nav() {
+    const pathname = usePathname();
+    const isLanding = pathname === "/";
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-[100] h-[64px] bg-[rgba(10,10,10,0.9)] backdrop-blur-md border-b border-[rgba(255,255,255,0.06)] px-12 flex items-center justify-between">
+        <nav className={`fixed top-0 left-0 right-0 z-[100] h-[64px] px-12 flex items-center justify-between transition-colors duration-300 ${isLanding ? "bg-transparent border-transparent" : "bg-[rgba(10,10,10,0.9)] backdrop-blur-md border-b border-[rgba(255,255,255,0.06)]"}`}>
             <div className="max-w-[1400px] mx-auto px-4 flex items-center justify-between w-full">
                 <Link href="/">
-                    <Image 
-                        src="/Fitosys_Logo_v1.png" 
-                        alt="Fitosys" 
-                        width={100} 
-                        height={40} 
+                    <Image
+                        src="/Fitosys_Logo_v1.png"
+                        alt="Fitosys"
+                        width={100}
+                        height={40}
                         style={{ objectFit: 'contain' }}
                     />
                 </Link>
@@ -28,20 +32,20 @@ export function Nav() {
                         <Link
                             key={link.label}
                             href={link.href}
-                            className="font-sans text-[13px] font-medium uppercase tracking-[0.08em] text-[#888888] hover:text-white transition-colors"
+                            className={`font-sans text-[13px] font-medium uppercase tracking-[0.08em] hover:text-white hover:bg-white/10 px-3 py-1.5 rounded-md transition-colors ${isLanding ? "text-white" : "text-[#888888]"}`}
                         >
                             {link.label}
                         </Link>
                     ))}
                     <Link
                         href="/login"
-                        className="font-sans text-[13px] font-medium uppercase tracking-[0.08em] text-[#888888] hover:text-white transition-colors"
+                        className={`font-sans text-[13px] font-medium uppercase tracking-[0.08em] hover:text-white hover:bg-white/10 px-3 py-1.5 rounded-md transition-colors ${isLanding ? "text-white" : "text-[#888888]"}`}
                     >
                         LOGIN
                     </Link>
                     <Link
                         href="/signup"
-                        className="bg-[var(--red)] text-white px-6 py-2.5 text-[13px] font-bold uppercase tracking-[0.04em] hover:bg-[#C20000] transition-colors rounded-[2px]"
+                        className="bg-[var(--red)] text-white px-6 py-2.5 text-[13px] font-bold uppercase tracking-[0.04em] hover:bg-white hover:text-black transition-colors duration-300 rounded-[2px]"
                     >
                         Start Free
                     </Link>
