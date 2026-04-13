@@ -7,8 +7,9 @@ import { NAV_LINKS } from "@/lib/constants";
 
 export function Footer() {
     const pathname = usePathname();
-    // Only show on root marketing page
-    if (pathname !== "/") return null;
+    // Show on marketing + legal pages only
+    const FOOTER_ROUTES = ["/", "/privacy", "/terms", "/refund", "/whatsapp-opt-in"];
+    if (!FOOTER_ROUTES.includes(pathname)) return null;
 
     return (
         <footer className="bg-[var(--surface)] py-20 border-t border-[var(--border)]">
@@ -66,6 +67,9 @@ export function Footer() {
                             </Link>
                             <Link href="/refund" className="block text-[13px] text-[var(--grey)] hover:text-white transition-colors">
                                 Refund Policy
+                            </Link>
+                            <Link href="/whatsapp-opt-in" className="block text-[13px] text-[var(--grey)] hover:text-white transition-colors">
+                                WhatsApp Policy
                             </Link>
                         </div>
                     </div>

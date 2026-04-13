@@ -41,8 +41,14 @@ const intakeSchema = z.object({
         .optional()
         .nullable(),
     program_id: z.string().uuid("Invalid program ID"),
-    agree_terms: z.literal(true, {
-        message: "You must agree to the terms",
+    consent_data: z.literal(true, {
+        message: "You must consent to data processing",
+    }),
+    consent_health: z.literal(true, {
+        message: "You must consent to health data collection",
+    }),
+    consent_whatsapp: z.literal(true, {
+        message: "You must consent to WhatsApp communications",
     }),
 });
 
@@ -91,6 +97,8 @@ export async function POST(request: NextRequest) {
         health_notes,
         program_id,
     } = parsed.data;
+
+    const consentTimestamp = new Date().toISOString();
 
     const { createServiceClient } = await import("@/lib/supabase/server");
     const supabase = await createServiceClient();
@@ -172,7 +180,7 @@ export async function POST(request: NextRequest) {
         );
     }
 
-    // Create or update client record
+    // Create or update client record with consent timestamps
     const { data: client, error: clientError } = await supabase
         .from("clients")
         .upsert(
@@ -185,6 +193,9 @@ export async function POST(request: NextRequest) {
                 primary_goal,
                 health_notes,
                 status: "active",
+                consent_data_at: consentTimestamp,
+                consent_health_at: consentTimestamp,
+                consent_whatsapp_at: consentTimestamp,
             },
             { onConflict: "whatsapp_number, coach_id" }
         )

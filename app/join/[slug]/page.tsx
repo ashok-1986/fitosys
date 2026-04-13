@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import Link from "next/link";
 
 const GOALS = [
     "Weight Loss",
@@ -72,7 +73,9 @@ export default function IntakePage({ params }: { params: Promise<{ slug: string 
         primary_goal: "",
         health_notes: "",
         program_id: "",
-        agree_terms: false,
+        consent_data: false,
+        consent_health: false,
+        consent_whatsapp: false,
     });
     const [submitted, setSubmitted] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -87,7 +90,7 @@ export default function IntakePage({ params }: { params: Promise<{ slug: string 
     const canGoToStep2 = form.full_name && form.whatsapp_number && form.email && form.age;
     const canGoToStep3 = form.primary_goal;
 
-    const isFormValid = canGoToStep2 && canGoToStep3 && form.program_id && form.agree_terms;
+    const isFormValid = canGoToStep2 && canGoToStep3 && form.program_id && form.consent_data && form.consent_health && form.consent_whatsapp;
 
     const submitIntake = async () => {
         setLoadingIntake(true);
@@ -105,7 +108,9 @@ export default function IntakePage({ params }: { params: Promise<{ slug: string 
                     primary_goal: form.primary_goal,
                     health_notes: form.health_notes,
                     program_id: form.program_id,
-                    agree_terms: true
+                    consent_data: true,
+                    consent_health: true,
+                    consent_whatsapp: true,
                 })
             });
             const resData = await res.json();
@@ -380,23 +385,68 @@ export default function IntakePage({ params }: { params: Promise<{ slug: string 
                             </div>
 
                             <div className="pt-6 border-t border-white/5">
-                                <label className="flex items-center gap-4 cursor-pointer mb-8 group">
-                                    <div className={cn(
-                                        "h-5 w-5 rounded-sm border flex items-center justify-center transition-all",
-                                        form.agree_terms ? "bg-[#E8001D] border-[#E8001D]" : "border-white/10 group-hover:border-white/30"
-                                    )}>
-                                        {form.agree_terms && <CheckCircle className="h-3 w-3 text-white" />}
-                                    </div>
-                                    <input
-                                        type="checkbox"
-                                        className="hidden"
-                                        checked={form.agree_terms}
-                                        onChange={(e) => setForm({ ...form, agree_terms: e.target.checked })}
-                                    />
-                                    <span className="text-[10px] text-white/30 font-bold uppercase tracking-wider group-hover:text-white/60 transition-colors">
-                                        I accept the terms & conditions
-                                    </span>
-                                </label>
+                                {/* Consent Checkboxes */}
+                                <div className="space-y-5 mb-8">
+                                    {/* Consent 1: Data Processing */}
+                                    <label className="flex items-start gap-4 cursor-pointer group">
+                                        <div className={cn(
+                                            "h-5 w-5 rounded-sm border flex items-center justify-center transition-all mt-0.5 shrink-0",
+                                            form.consent_data ? "bg-[#E8001D] border-[#E8001D]" : "border-white/10 group-hover:border-white/30"
+                                        )}>
+                                            {form.consent_data && <CheckCircle className="h-3 w-3 text-white" />}
+                                        </div>
+                                        <input
+                                            type="checkbox"
+                                            className="hidden"
+                                            checked={form.consent_data}
+                                            onChange={(e) => setForm({ ...form, consent_data: e.target.checked })}
+                                        />
+                                        <span className="text-[11px] text-white/40 leading-relaxed group-hover:text-white/60 transition-colors">
+                                            I agree to my personal information being processed by <strong className="text-white/70">{coach.full_name}</strong> via Fitosys to manage my coaching program. See{" "}
+                                            <Link href="/privacy" target="_blank" className="text-[var(--red)] hover:underline">Privacy Policy</Link>{" "}and{" "}
+                                            <Link href="/terms" target="_blank" className="text-[var(--red)] hover:underline">Terms</Link>.
+                                        </span>
+                                    </label>
+
+                                    {/* Consent 2: Health Data */}
+                                    <label className="flex items-start gap-4 cursor-pointer group">
+                                        <div className={cn(
+                                            "h-5 w-5 rounded-sm border flex items-center justify-center transition-all mt-0.5 shrink-0",
+                                            form.consent_health ? "bg-[#E8001D] border-[#E8001D]" : "border-white/10 group-hover:border-white/30"
+                                        )}>
+                                            {form.consent_health && <CheckCircle className="h-3 w-3 text-white" />}
+                                        </div>
+                                        <input
+                                            type="checkbox"
+                                            className="hidden"
+                                            checked={form.consent_health}
+                                            onChange={(e) => setForm({ ...form, consent_health: e.target.checked })}
+                                        />
+                                        <span className="text-[11px] text-white/40 leading-relaxed group-hover:text-white/60 transition-colors">
+                                            I consent to <strong className="text-white/70">{coach.full_name}</strong> collecting my health-related data (energy scores, session data, wellness notes) for coaching purposes.
+                                        </span>
+                                    </label>
+
+                                    {/* Consent 3: WhatsApp */}
+                                    <label className="flex items-start gap-4 cursor-pointer group">
+                                        <div className={cn(
+                                            "h-5 w-5 rounded-sm border flex items-center justify-center transition-all mt-0.5 shrink-0",
+                                            form.consent_whatsapp ? "bg-[#E8001D] border-[#E8001D]" : "border-white/10 group-hover:border-white/30"
+                                        )}>
+                                            {form.consent_whatsapp && <CheckCircle className="h-3 w-3 text-white" />}
+                                        </div>
+                                        <input
+                                            type="checkbox"
+                                            className="hidden"
+                                            checked={form.consent_whatsapp}
+                                            onChange={(e) => setForm({ ...form, consent_whatsapp: e.target.checked })}
+                                        />
+                                        <span className="text-[11px] text-white/40 leading-relaxed group-hover:text-white/60 transition-colors">
+                                            I agree to receive WhatsApp messages from <strong className="text-white/70">{coach.full_name}</strong> including weekly check-ins and program reminders. I can{" "}
+                                            <Link href="/whatsapp-opt-in" target="_blank" className="text-[var(--red)] hover:underline">opt out at any time</Link>{" "}by replying STOP.
+                                        </span>
+                                    </label>
+                                </div>
 
                                 {error && (
                                     <div className="mb-6 p-4 rounded-xl bg-[#E8001D]/10 border border-[#E8001D]/20 text-[#E8001D] text-[11px] font-bold uppercase tracking-widest flex gap-3 items-center">
