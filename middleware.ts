@@ -1,13 +1,12 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import { apiRateLimit, authenticatedRateLimit } from "@/lib/rate-limit";
 
 export async function middleware(request: NextRequest) {
-    // Guard: block access if Supabase env vars are not configured
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
     if (!supabaseUrl || !supabaseAnonKey) {
-        console.error("[middleware] CRITICAL: Supabase env vars missing — blocking access");
+        console.error("[middleware] CRITICAL: Supabase env vars missing");
         if (request.nextUrl.pathname.startsWith("/dashboard")) {
             const url = request.nextUrl.clone();
             url.pathname = "/login";
@@ -18,62 +17,28 @@ export async function middleware(request: NextRequest) {
 
     let supabaseResponse = NextResponse.next({ request });
 
-    const supabase = createServerClient(
-        supabaseUrl,
-        supabaseAnonKey,
-        {
-            cookies: {
-                getAll() {
-                    return request.cookies.getAll();
-                },
-                setAll(cookiesToSet) {
-                    cookiesToSet.forEach(({ name, value }) =>
-                        request.cookies.set(name, value)
-                    );
-                    supabaseResponse = NextResponse.next({ request });
-                    cookiesToSet.forEach(({ name, value, options }) =>
-                        supabaseResponse.cookies.set(name, value, options)
-                    );
-                },
+    const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+        cookies: {
+            getAll() {
+                return request.cookies.getAll();
             },
-        }
-    );
+            setAll(cookiesToSet) {
+                cookiesToSet.forEach(({ name, value }) =>
+                    request.cookies.set(name, value)
+                );
+                supabaseResponse = NextResponse.next({ request });
+                cookiesToSet.forEach(({ name, value, options }) =>
+                    supabaseResponse.cookies.set(name, value, options)
+                );
+            },
+        },
+    });
 
     const {
         data: { user },
     } = await supabase.auth.getUser();
 
-    // Add rate limiting for API routes
-    if (request.nextUrl.pathname.startsWith("/api/")) {
-        const limiter = user ? authenticatedRateLimit : apiRateLimit;
-        const { success, reset, remaining } = await limiter.limit(
-            request.headers.get("x-forwarded-for") ?? "unknown"
-        );
-
-        if (!success) {
-            return NextResponse.json(
-                {
-                    error: "Too many requests",
-                    retryAfter: Math.ceil((reset - Date.now()) / 1000)
-                },
-                {
-                    status: 429,
-                    headers: {
-                        "Retry-After": Math.ceil((reset - Date.now()) / 1000).toString(),
-                        "X-RateLimit-Limit": user ? "300" : "100",
-                        "X-RateLimit-Remaining": String(remaining),
-                    }
-                }
-            );
-        }
-
-        // Set rate limit headers on supabaseResponse — not a new response
-        // Creating a new NextResponse.next() here would drop Supabase auth cookies
-        supabaseResponse.headers.set("X-RateLimit-Limit", user ? "300" : "100");
-        supabaseResponse.headers.set("X-RateLimit-Remaining", String(remaining));
-    }
-
-    // Protected routes — redirect to login if unauthenticated
+    // Protected routes
     const protectedPaths = [
         "/dashboard",
         "/clients",
@@ -82,6 +47,7 @@ export async function middleware(request: NextRequest) {
         "/payments",
         "/settings",
     ];
+
     const isProtected = protectedPaths.some((p) =>
         request.nextUrl.pathname.startsWith(p)
     );
@@ -92,34 +58,13 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(url);
     }
 
-    // Redirect authenticated users away from auth pages and marketing home
     if (user && ["/", "/login", "/signup"].includes(request.nextUrl.pathname)) {
         const url = request.nextUrl.clone();
         url.pathname = "/dashboard";
         return NextResponse.redirect(url);
     }
 
-    // Redirect to onboarding if coach profile is incomplete
-    if (user && request.nextUrl.pathname.startsWith("/dashboard")) {
-        const { createServiceClient } = await import("@/lib/supabase/server");
-        const serviceSupabase = await createServiceClient();
-        const { data: coach } = await serviceSupabase
-            .from("coaches")
-            .select("whatsapp_number")
-            .eq("id", user.id)
-            .single();
-
-        const needsOnboarding = !coach?.whatsapp_number ||
-            coach.whatsapp_number === "PENDING_SETUP";
-
-        if (needsOnboarding) {
-            const url = request.nextUrl.clone();
-            url.pathname = "/onboarding/profile";
-            return NextResponse.redirect(url);
-        }
-    }
-
-    // Inject pathname so layout.tsx can conditionally render Nav/Footer
+    // Inject pathname for layout
     supabaseResponse.headers.set("x-pathname", request.nextUrl.pathname);
 
     return supabaseResponse;

@@ -1,10 +1,12 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { logError, logRequest } from "@/lib/loggerHelpers";
 import { verifyRazorpaySignature } from "@/lib/webhook/verifyRazorpay";
+import { withRateLimit } from "@/lib/with-rate-limit";
 
 // POST /api/webhooks/razorpay — Razorpay webhook handler
 // Handles: payment.captured, payment.failed, subscription.charged, subscription.halted
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
+    return withRateLimit(req, false, async () => {
     try {
         logRequest(req as any, "POST /api/webhooks/razorpay");
         const body = await req.text();
@@ -186,4 +188,5 @@ export async function POST(req: Request) {
             { status: 500 }
         );
     }
+    });
 }

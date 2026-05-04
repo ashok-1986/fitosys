@@ -4,7 +4,8 @@ import { TabBar } from "@/components/ui/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Bell } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
+import { createClient, createServiceClient } from "@/lib/supabase/server";
 
 export default async function DashboardLayout({
   children,
@@ -18,11 +19,17 @@ export default async function DashboardLayout({
   let coachInitials = "C";
 
   if (user) {
-    const { data: coach } = await supabase
+    const serviceSupabase = await createServiceClient();
+    const { data: coach } = await serviceSupabase
       .from("coaches")
-      .select("full_name")
+      .select("full_name, whatsapp_number")
       .eq("id", user.id)
       .single();
+
+    const needsOnboarding = coach?.whatsapp_number === "PENDING_SETUP";
+    if (needsOnboarding) {
+      redirect("/onboarding/profile");
+    }
 
     if (coach?.full_name) {
       coachName = coach.full_name.split(" ")[0];

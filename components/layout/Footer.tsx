@@ -8,7 +8,7 @@ import { NAV_LINKS } from "@/lib/constants";
 export function Footer() {
     const pathname = usePathname();
     // Show on marketing + legal pages only
-    const FOOTER_ROUTES = ["/", "/privacy", "/terms", "/refund", "/whatsapp-opt-in"];
+    const FOOTER_ROUTES = ["/", "/privacy", "/terms", "/refund", "/whatsapp-opt-in", "/cookies"];
     if (!FOOTER_ROUTES.includes(pathname)) return null;
 
     return (

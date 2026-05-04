@@ -1,7 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { withRateLimit } from "@/lib/with-rate-limit";
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
+    return withRateLimit(request, false, async () => {
     const { searchParams, origin } = new URL(request.url);
     const code = searchParams.get("code");
     const next = searchParams.get("next") ?? "/dashboard";
@@ -71,4 +73,5 @@ export async function GET(request: Request) {
 
     // return the user to an error page with some instructions
     return NextResponse.redirect(`${origin}/login?error=oauth_failed`);
+    });
 }

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { sendWhatsAppMessage } from "@/lib/whatsapp/send";
 import { checkClientLimit } from "@/lib/plans/check-limit";
-import { intakeRateLimit } from "@/lib/rate-limit";
+import { withRateLimit } from "@/lib/with-rate-limit";
 import { logRequest, logError } from "@/lib/loggerHelpers";
 
 // Zod schema for intake validation
@@ -56,12 +56,7 @@ const intakeSchema = z.object({
 // No auth required — this is the public client-facing endpoint
 export async function POST(request: NextRequest) {
     logRequest(request, "POST /api/public/intake");
-
-    const ip = request.headers.get("x-forwarded-for") ?? "127.0.0.1";
-    const { success } = await intakeRateLimit.limit(ip);
-    if (!success) {
-        return new NextResponse("Too many requests", { status: 429 });
-    }
+    return withRateLimit(request, false, async () => {
 
     let body;
     try {
@@ -244,5 +239,6 @@ export async function POST(request: NextRequest) {
         enrollmentId: enrollment.id,
         programName: program.name,
         coachName: coach.full_name,
+    });
     });
 }
