@@ -1,12 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import { logError, logRequest } from "@/lib/loggerHelpers";
 import { verifyRazorpaySignature } from "@/lib/webhook/verifyRazorpay";
-import { withRateLimit } from "@/lib/with-rate-limit";
+
+const RAZORPAY_WEBHOOK_IPS = [
+    "52.74.43.81",
+    "52.77.239.96",
+    "13.234.61.24",
+    "13.234.179.64",
+    "15.206.93.100",
+    "3.109.223.134",
+];
 
 // POST /api/webhooks/razorpay — Razorpay webhook handler
 // Handles: payment.captured, payment.failed, subscription.charged, subscription.halted
 export async function POST(req: NextRequest) {
-    return withRateLimit(req, false, async () => {
+    // IP allowlist check must come before any body read
+    const forwardedFor = req.headers.get("x-forwarded-for");
+    const ip = forwardedFor?.split(",")[0].trim() ?? req.headers.get("x-real-ip") ?? "";
+
+    if (process.env.NODE_ENV === "production" && !RAZORPAY_WEBHOOK_IPS.includes(ip)) {
+        console.warn(`[Razorpay Webhook] Blocked request from unlisted IP: ${ip}`);
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     try {
         logRequest(req as any, "POST /api/webhooks/razorpay");
         const body = await req.text();
@@ -179,7 +195,6 @@ export async function POST(req: NextRequest) {
                 console.log(`[Razorpay Webhook] Unhandled event: ${event.event}`);
         }
 
-
         return NextResponse.json({ received: true });
     } catch (error) {
         console.error("[Razorpay Webhook] Processing error:", error);
@@ -188,5 +203,4 @@ export async function POST(req: NextRequest) {
             { status: 500 }
         );
     }
-    });
 }

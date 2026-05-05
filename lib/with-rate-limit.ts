@@ -6,7 +6,8 @@ export async function withRateLimit(
     isAuthenticated: boolean,
     handler: () => Promise<NextResponse>
 ): Promise<NextResponse> {
-    const ip = request.headers.get("x-forwarded-for") ?? "127.0.0.1";
+    const forwardedFor = request.headers.get("x-forwarded-for");
+    const ip = forwardedFor?.split(",")[0].trim() ?? "127.0.0.1";
     const limiter = isAuthenticated ? authenticatedRateLimit : apiRateLimit;
     const { success, limit, remaining, reset } = await limiter.limit(ip);
 
