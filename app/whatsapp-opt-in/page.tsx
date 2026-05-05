@@ -13,7 +13,7 @@ export default function WhatsAppOptInPage() {
                 {/* Header */}
                 <div className="mb-16">
                     <div className="inline-block px-3 py-1.5 rounded-sm bg-[rgba(232,0,29,0.08)] border border-[rgba(232,0,29,0.15)] text-[10px] font-bold uppercase tracking-[0.15em] text-[var(--red)] mb-6">
-                        Last updated: April 2026
+                        Last updated: May 2026
                     </div>
                     <h1 className="text-5xl md:text-6xl font-display font-medium uppercase leading-[0.9] tracking-[0.02em] mb-4">
                         WhatsApp <span className="text-[var(--red)]">Communication</span> Policy
@@ -77,7 +77,7 @@ export default function WhatsAppOptInPage() {
                             </li>
                             <li className="flex gap-3">
                                 <span className="text-[var(--red)] font-bold shrink-0">3.</span>
-                                <span className="text-[var(--grey)]">Email <a href="mailto:support@fitosys.in" className="text-[var(--red)] hover:underline">support@fitosys.in</a> with your phone number and we will remove you within 24 hours.</span>
+                                <span className="text-[var(--grey)]">Email <a href="mailto:fitosys@alchemetryx.com" className="text-[var(--red)] hover:underline">fitosys@alchemetryx.com</a> with your phone number and we will remove you within 24 hours.</span>
                             </li>
                         </ul>
                     </section>
@@ -96,12 +96,39 @@ export default function WhatsAppOptInPage() {
                         <div className="bg-[var(--surface)] border border-[rgba(255,255,255,0.06)] rounded-lg p-6 space-y-2 text-[14px]">
                             <p className="text-[var(--grey)]"><strong className="text-white">Company:</strong> Alchemetryx Consulting Pvt Ltd</p>
                             <p className="text-[var(--grey)]"><strong className="text-white">Email:</strong>{" "}
-                                <a href="mailto:support@fitosys.in" className="text-[var(--red)] hover:underline">support@fitosys.in</a>
+                                <a href="mailto:fitosys@alchemetryx.com" className="text-[var(--red)] hover:underline">fitosys@alchemetryx.com</a>
                             </p>
+                            <p className="text-[var(--grey)]"><strong className="text-white">Phone:</strong> +917738363495</p>
                             <p className="text-[var(--grey)]"><strong className="text-white">Website:</strong>{" "}
                                 <a href="https://fitosys.alchemetryx.com" className="text-[var(--red)] hover:underline">fitosys.alchemetryx.com</a>
                             </p>
                         </div>
+                    </section>
+
+                    {/* Section 6 */}
+                    <section className="py-10 border-b border-[rgba(255,255,255,0.06)]">
+                        <h2 className="text-2xl font-display font-medium uppercase tracking-[0.02em] mb-4">6. Meta Platform Compliance</h2>
+                        
+                        <p className="text-[var(--grey)] text-[14px] leading-relaxed mb-4">
+                            This WhatsApp communication service is built on Meta&apos;s WhatsApp Business Platform and complies with Meta&apos;s WhatsApp Business Policy.
+                        </p>
+                        
+                        <h3 className="text-lg font-display font-medium uppercase tracking-[0.02em] mb-3">Our WhatsApp messaging infrastructure:</h3>
+                        <ul className="list-disc list-inside text-[var(--grey)] text-[14px] leading-relaxed space-y-1.5 ml-2 mb-6">
+                            <li>Uses only Meta-approved message templates</li>
+                            <li>Sends messages only to users who have explicitly opted in</li>
+                            <li>Processes opt-out requests immediately upon receipt of STOP reply</li>
+                            <li>Does not send promotional messages to users who have opted out</li>
+                            <li>Does not use WhatsApp for spam or unsolicited bulk messaging</li>
+                        </ul>
+                        
+                        <p className="text-[var(--grey)] text-[14px] leading-relaxed mb-4">
+                            Meta Platform Data received through WhatsApp is used solely for delivering the coaching communication service described above. It is not used for advertising, profiling, or any purpose beyond the coaching relationship.
+                        </p>
+                        
+                        <p className="text-[var(--grey)] text-[14px] leading-relaxed">
+                            For full details on how your data is handled, see our Privacy Policy at <Link href="/privacy" className="text-[var(--red)] hover:underline">fitosys.alchemetryx.com/privacy</Link>
+                        </p>
                     </section>
                 </div>
 

@@ -174,8 +174,9 @@ export default function TermsPage() {
                         <div className="bg-[var(--surface)] border border-[rgba(255,255,255,0.06)] rounded-lg p-6 space-y-2 text-[14px]">
                             <p className="text-[var(--grey)]"><strong className="text-white">Company:</strong> Alchemetryx Consulting Pvt Ltd</p>
                             <p className="text-[var(--grey)]"><strong className="text-white">Email:</strong>{" "}
-                                <a href="mailto:support@fitosys.in" className="text-[var(--red)] hover:underline">support@fitosys.in</a>
+                                <a href="mailto:fitosys@alchemetryx.com" className="text-[var(--red)] hover:underline">fitosys@alchemetryx.com</a>
                             </p>
+                            <p className="text-[var(--grey)]"><strong className="text-white">Phone:</strong> +917738363495</p>
                         </div>
                     </section>
                 </div>

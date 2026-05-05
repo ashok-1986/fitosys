@@ -49,7 +49,7 @@ export default function RefundPage() {
                         <h2 className="text-2xl font-display font-medium uppercase tracking-[0.02em] mb-4">2. Accidental Duplicate Charges</h2>
                         <p className="text-[var(--grey)] text-[14px] leading-relaxed">
                             If you are charged twice in the same billing cycle, contact{" "}
-                            <a href="mailto:support@fitosys.in" className="text-[var(--red)] hover:underline">support@fitosys.in</a>{" "}
+                            <a href="mailto:fitosys@alchemetryx.com" className="text-[var(--red)] hover:underline">fitosys@alchemetryx.com</a>{" "}
                             within 7 days. We will verify and refund the duplicate charge within 5–7 business days.
                         </p>
                     </section>
@@ -70,8 +70,9 @@ export default function RefundPage() {
                         <h2 className="text-2xl font-display font-medium uppercase tracking-[0.02em] mb-4">4. How to Request a Refund</h2>
                         <div className="bg-[var(--surface)] border border-[rgba(255,255,255,0.06)] rounded-lg p-6 space-y-3 text-[14px]">
                             <p className="text-[var(--grey)]"><strong className="text-white">Email:</strong>{" "}
-                                <a href="mailto:support@fitosys.in" className="text-[var(--red)] hover:underline">support@fitosys.in</a>
+                                <a href="mailto:fitosys@alchemetryx.com" className="text-[var(--red)] hover:underline">fitosys@alchemetryx.com</a>
                             </p>
+                            <p className="text-[var(--grey)]"><strong className="text-white">Phone:</strong> +917738363495</p>
                             <p className="text-[var(--grey)]"><strong className="text-white">Subject line:</strong> Refund Request — [your registered email]</p>
                             <p className="text-[var(--grey)]"><strong className="text-white">Include:</strong> Razorpay payment ID, date of charge, reason</p>
                             <p className="text-[var(--grey)]"><strong className="text-white">Response time:</strong> Within 2 business days</p>
