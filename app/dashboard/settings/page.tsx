@@ -567,6 +567,43 @@ export default function SettingsPage() {
             </div>
           )}
         </section>
+        {/* Section 5 - WhatsApp Configuration */}
+        <section className="bg-[#111111] border border-[rgba(255,255,255,0.06)] rounded-[10px] p-6">
+          <div className="mb-6">
+            <h2 className="font-['Barlow_Condensed'] font-medium text-[20px] uppercase tracking-[0.02em] text-white">WhatsApp Integration</h2>
+            <p className="font-['Urbanist'] text-[14px] text-[#888888]">View your WhatsApp connection status for automated client messaging.</p>
+          </div>
+
+          <div className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.08)] rounded-[8px] p-5">
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <h3 className="font-['Urbanist'] text-[15px] font-bold text-white mb-1">System Status</h3>
+                <p className="font-['Urbanist'] text-[13px] text-[#888888] max-w-[300px]">
+                  Fitosys automated messaging is active. We handle all onboarding, check-ins, and reminders for your clients.
+                </p>
+              </div>
+              <div className="flex items-center gap-2 bg-[#10B981]/10 px-3 py-1.5 rounded-full border border-[#10B981]/20">
+                <div className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse"></div>
+                <span className="font-['Urbanist'] text-[11px] font-bold text-[#10B981] uppercase tracking-widest">Connected</span>
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-[rgba(255,255,255,0.06)] flex items-center justify-between">
+              <div>
+                <span className="block font-['Urbanist'] text-[11px] text-[#888888] font-medium uppercase tracking-widest mb-1">Your Registered Number</span>
+                <span className="font-['Urbanist'] text-[14px] font-medium text-white">{profile?.whatsapp_number}</span>
+              </div>
+              <a
+                href={`https://wa.me/917738363495`} 
+                target="_blank"
+                rel="noreferrer"
+                className="bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] transition-colors border border-[rgba(255,255,255,0.1)] text-white font-['Urbanist'] text-[12px] font-bold uppercase tracking-widest px-4 py-2 rounded-[6px]"
+              >
+                Test Notification
+              </a>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   );

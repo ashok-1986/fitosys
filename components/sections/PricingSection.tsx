@@ -1,5 +1,6 @@
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const PRICING_DATA = [
     {
@@ -180,13 +181,17 @@ export function PricingSection() {
                             </ul>
 
                             {plan.featured ? (
-                                <button className="w-full py-4 bg-white text-[#E8001D] font-sans font-bold text-[13px] uppercase tracking-[0.04em] rounded-[2px] hover:bg-white/90 transition-colors">
-                                    Start Free
-                                </button>
+                                <Link href="/login" className="w-full">
+                                    <button className="w-full py-4 bg-white text-[#E8001D] font-sans font-bold text-[13px] uppercase tracking-[0.04em] rounded-[2px] hover:bg-white/90 transition-colors">
+                                        Start Free
+                                    </button>
+                                </Link>
                             ) : (
-                                <Button variant="fitosys-primary" size="fitosys" className="w-full">
-                                    Start Free
-                                </Button>
+                                <Link href="/login" className="w-full">
+                                    <Button variant="fitosys-primary" size="fitosys" className="w-full">
+                                        Start Free
+                                    </Button>
+                                </Link>
                             )}
                         </div>
                     ))}

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { verifyWhatsappSignature } from "@/lib/webhook/verifyWhatsapp";
 
 // GET — Meta webhook verification
 export async function GET(req: NextRequest) {
@@ -18,7 +19,15 @@ export async function POST(req: NextRequest) {
   const supabase = await createServiceClient();
 
   try {
-    const body = await req.json();
+    const rawBody = await req.text();
+    const signature = req.headers.get("x-hub-signature-256");
+
+    if (!verifyWhatsappSignature(rawBody, signature)) {
+      console.error("[WhatsApp] Invalid webhook signature");
+      return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+    }
+
+    const body = JSON.parse(rawBody);
 
     const message = body?.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
 

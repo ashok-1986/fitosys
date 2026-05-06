@@ -87,14 +87,56 @@ export async function POST(req: NextRequest) {
                 break;
             }
 
+            case "subscription.activated": {
+                const subscription = event.payload.subscription.entity;
+                const coachId = subscription.notes?.coach_id;
+                const plan = subscription.notes?.plan || "basic";
+
+                if (!coachId) {
+                    console.error("[Razorpay Webhook] subscription.activated missing coachId");
+                    break;
+                }
+
+                await supabase
+                    .from("subscriptions")
+                    .update({ status: "active" })
+                    .eq("gateway_payment_id", subscription.id);
+
+                await supabase
+                    .from("coaches")
+                    .update({
+                        plan: plan,
+                        status: "active",
+                        plan_started_at: new Date().toISOString(),
+                        updated_at: new Date().toISOString(),
+                    })
+                    .eq("id", coachId);
+
+                const { data: coach } = await supabase.from("coaches").select("full_name, whatsapp_number").eq("id", coachId).single();
+                if (coach?.whatsapp_number) {
+                    try {
+                        const { sendWhatsAppMessage } = await import("@/lib/whatsapp/send");
+                        await sendWhatsAppMessage({
+                            phone: coach.whatsapp_number,
+                            message: `Hi ${coach.full_name}, your Fitosys ${plan.toUpperCase()} plan is now active! You can continue managing your clients without interruption. Log in at fitosys.alchemetryx.com`
+                        });
+                    } catch (waErr) {
+                        console.error("[Razorpay Webhook] WhatsApp notification failed:", waErr);
+                    }
+                }
+
+                console.log(`[Razorpay Webhook] Subscription activated for coach: ${coachId}, plan: ${plan}`);
+                break;
+            }
+
             case "subscription.charged": {
                 const subscription = event.payload.subscription.entity;
                 const payment = event.payload.payment?.entity;
                 const coachId = subscription.notes?.coach_id;
                 const plan = subscription.notes?.plan;
 
-                if (!coachId || !plan) {
-                    console.error("[Razorpay Webhook] subscription.charged missing coachId or plan");
+                if (!coachId) {
+                    console.error("[Razorpay Webhook] subscription.charged missing coachId");
                     break;
                 }
 
@@ -112,16 +154,6 @@ export async function POST(req: NextRequest) {
                         current_period_end: periodEnd.toISOString().split("T")[0],
                     })
                     .eq("gateway_payment_id", subscription.id);
-
-                // Update coach plan and status
-                await supabase
-                    .from("coaches")
-                    .update({
-                        plan: plan,
-                        status: "active",
-                        updated_at: new Date().toISOString(),
-                    })
-                    .eq("id", coachId);
 
                 // Log the payment if payment entity exists
                 if (payment && coachId) {
@@ -143,7 +175,7 @@ export async function POST(req: NextRequest) {
                     );
                 }
 
-                console.log(`[Razorpay Webhook] Subscription charged for coach: ${coachId}, plan: ${plan}`);
+                console.log(`[Razorpay Webhook] Subscription charged for coach: ${coachId}`);
                 break;
             }
 
@@ -156,11 +188,16 @@ export async function POST(req: NextRequest) {
                     break;
                 }
 
-                // Update subscription record to past_due
+                // Update subscription record to past_due and coach to grace_period
                 await supabase
                     .from("subscriptions")
                     .update({ status: "past_due" })
                     .eq("gateway_payment_id", subscription.id);
+                
+                await supabase
+                    .from("coaches")
+                    .update({ status: "grace_period" })
+                    .eq("id", coachId);
 
                 // Get coach details for WhatsApp notification
                 const { data: coach } = await supabase

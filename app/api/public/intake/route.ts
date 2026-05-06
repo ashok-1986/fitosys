@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { sendWhatsAppMessage } from "@/lib/whatsapp/send";
 import { checkClientLimit } from "@/lib/plans/check-limit";
+import { isTrialExpired } from "@/lib/plans/trial";
 import { withRateLimit } from "@/lib/with-rate-limit";
 import { logRequest, logError } from "@/lib/loggerHelpers";
 
@@ -101,7 +102,7 @@ export async function POST(request: NextRequest) {
     // Get coach by slug
     const { data: coach, error: coachError } = await supabase
         .from("coaches")
-        .select("id, full_name, whatsapp_number, checkin_day")
+        .select("id, full_name, whatsapp_number, checkin_day, plan, trial_expires_at")
         .eq("slug", slug)
         .eq("status", "active")
         .single();
@@ -110,6 +111,13 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(
             { error: "Coach not found" },
             { status: 404 }
+        );
+    }
+
+    if (coach.plan === "trial" && isTrialExpired(coach)) {
+        return NextResponse.json(
+            { error: "TRIAL_EXPIRED", message: "This coach's trial has ended." },
+            { status: 403 }
         );
     }
 

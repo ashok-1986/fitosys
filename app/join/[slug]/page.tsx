@@ -114,7 +114,12 @@ export default function IntakePage({ params }: { params: Promise<{ slug: string 
                 })
             });
             const resData = await res.json();
-            if (!res.ok) throw new Error(resData.error || "Failed to submit");
+            if (!res.ok) {
+                if (resData.error === "TRIAL_EXPIRED") {
+                    throw new Error("This coach is currently upgrading their account. Please contact them directly.");
+                }
+                throw new Error(resData.message || resData.error || "Failed to submit");
+            }
 
             setIntakeResponse({
                 enrollmentId: resData.enrollmentId,
