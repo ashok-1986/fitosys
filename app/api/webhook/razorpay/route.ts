@@ -104,6 +104,7 @@ export async function POST(req: NextRequest) {
 
                 if (subError) {
                     console.error("[Razorpay Webhook] Failed to update subscription:", subError);
+                    throw new Error("Database update failed for subscription");
                 }
 
                 const { error: coachError } = await supabase
@@ -118,6 +119,7 @@ export async function POST(req: NextRequest) {
 
                 if (coachError) {
                     console.error("[Razorpay Webhook] Failed to update coach:", coachError);
+                    throw new Error("Database update failed for coach");
                 }
 
                 const { data: coach } = await supabase.from("coaches").select("full_name, whatsapp_number").eq("id", coachId).single();
@@ -165,6 +167,7 @@ export async function POST(req: NextRequest) {
 
                 if (subError) {
                     console.error("[Razorpay Webhook] Failed to update subscription:", subError);
+                    throw new Error("Database update failed for subscription");
                 }
 
                 // Log the payment if payment entity exists
@@ -208,6 +211,7 @@ export async function POST(req: NextRequest) {
                 
                 if (subError) {
                     console.error("[Razorpay Webhook] Failed to update subscription:", subError);
+                    throw new Error("Database update failed for subscription");
                 }
                 
                 const { error: coachError } = await supabase
@@ -217,6 +221,7 @@ export async function POST(req: NextRequest) {
 
                 if (coachError) {
                     console.error("[Razorpay Webhook] Failed to update coach:", coachError);
+                    throw new Error("Database update failed for coach");
                 }
 
                 // Get coach details for WhatsApp notification
