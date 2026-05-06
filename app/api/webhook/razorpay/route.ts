@@ -97,12 +97,16 @@ export async function POST(req: NextRequest) {
                     break;
                 }
 
-                await supabase
+                const { error: subError } = await supabase
                     .from("subscriptions")
                     .update({ status: "active" })
                     .eq("gateway_payment_id", subscription.id);
 
-                await supabase
+                if (subError) {
+                    console.error("[Razorpay Webhook] Failed to update subscription:", subError);
+                }
+
+                const { error: coachError } = await supabase
                     .from("coaches")
                     .update({
                         plan: plan,
@@ -111,6 +115,10 @@ export async function POST(req: NextRequest) {
                         updated_at: new Date().toISOString(),
                     })
                     .eq("id", coachId);
+
+                if (coachError) {
+                    console.error("[Razorpay Webhook] Failed to update coach:", coachError);
+                }
 
                 const { data: coach } = await supabase.from("coaches").select("full_name, whatsapp_number").eq("id", coachId).single();
                 if (coach?.whatsapp_number) {
@@ -146,7 +154,7 @@ export async function POST(req: NextRequest) {
                 periodEnd.setDate(periodEnd.getDate() + 30);
 
                 // Update subscription record
-                await supabase
+                const { error: subError } = await supabase
                     .from("subscriptions")
                     .update({
                         status: "active",
@@ -154,6 +162,10 @@ export async function POST(req: NextRequest) {
                         current_period_end: periodEnd.toISOString().split("T")[0],
                     })
                     .eq("gateway_payment_id", subscription.id);
+
+                if (subError) {
+                    console.error("[Razorpay Webhook] Failed to update subscription:", subError);
+                }
 
                 // Log the payment if payment entity exists
                 if (payment && coachId) {
@@ -189,15 +201,23 @@ export async function POST(req: NextRequest) {
                 }
 
                 // Update subscription record to past_due and coach to grace_period
-                await supabase
+                const { error: subError } = await supabase
                     .from("subscriptions")
                     .update({ status: "past_due" })
                     .eq("gateway_payment_id", subscription.id);
                 
-                await supabase
+                if (subError) {
+                    console.error("[Razorpay Webhook] Failed to update subscription:", subError);
+                }
+                
+                const { error: coachError } = await supabase
                     .from("coaches")
                     .update({ status: "grace_period" })
                     .eq("id", coachId);
+
+                if (coachError) {
+                    console.error("[Razorpay Webhook] Failed to update coach:", coachError);
+                }
 
                 // Get coach details for WhatsApp notification
                 const { data: coach } = await supabase
