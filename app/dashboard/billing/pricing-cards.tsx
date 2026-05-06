@@ -55,6 +55,8 @@ export function DashboardPricingCards({ currentPlan }: { currentPlan: string }) 
 
             if (data.short_url) {
                 window.location.href = data.short_url;
+            } else {
+                throw new Error("No redirect URL received from server");
             }
         } catch (err: any) {
             alert(err.message);
