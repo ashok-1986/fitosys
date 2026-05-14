@@ -372,12 +372,12 @@
       <div class="value">1713641143328096</div>
     </div>
     <div class="status-item">
-      <div class="label">Phone Number ID</div>
-      <div class="value">1065013560035125</div>
-    </div>
-    <div class="status-item">
       <div class="label">App ID</div>
       <div class="value">1244682231102388</div>
+    </div>
+    <div class="status-item">
+      <div class="label">Config ID</div>
+      <div class="value">960254843587868</div>
     </div>
   </div>
 
@@ -463,10 +463,6 @@
 
   <!-- Success banner -->
   <div class="success-banner" id="success-banner">
-    <div class="icon">✅</div>
-    <h3>Cloud API Registration Complete</h3>
-    <p>Phone number +91 77383 63495 is now registered on Cloud API under WABA 1713641143328096.<br><br>
-    Next steps: Recreate your 6 WhatsApp templates in WhatsApp Manager, update WHATSAPP_PHONE_NUMBER_ID in Vercel to 1065013560035125, and run Gate 3 Test 5.</p>
   </div>
 
   <!-- Log -->
@@ -499,7 +495,6 @@
   let SYSTEM_USER_TOKEN = '';
   let currentStep = 1;
 
-  const PHONE_NUMBER_ID = '1065013560035125';
   const WABA_ID = '1713641143328096';
   const CONFIG_ID = '960254843587868';
   const APP_ID = '1244682231102388';
@@ -649,36 +644,48 @@
   // ── Step 3: Verify ────────────────────────────────────
   function verifyRegistration() {
     if (!SYSTEM_USER_TOKEN) { log('No token set.', 'error'); return; }
-
-    log(`Checking phone number ${PHONE_NUMBER_ID} registration status...`, 'action');
+    log(`Checking WABA ${WABA_ID} for Cloud API numbers...`, 'action');
     setBtn('btn-verify', true, 'Checking...');
 
-    fetch(`https://graph.facebook.com/v20.0/${PHONE_NUMBER_ID}?fields=id,platform_type,code_verification_status,throughput,quality_rating,display_phone_number,verified_name&access_token=${SYSTEM_USER_TOKEN}`)
+    fetch(`https://graph.facebook.com/v20.0/${WABA_ID}/phone_numbers?fields=id,display_phone_number,platform_type,code_verification_status,throughput&access_token=${SYSTEM_USER_TOKEN}`)
       .then(r => r.json())
       .then(data => {
         setBtn('btn-verify', false, 'Verify Registration');
-
         if (data.error) {
           log(`Verify error: ${data.error.message}`, 'error');
           showResult('verify-result', data, 'error');
-          setStepState(3, 'error');
           return;
         }
+        // Find the +91 number
+        // First try to find the one that is already on CLOUD_API (the new one created by Coexistence)
+        let phone = data.data.find(p => p.display_phone_number.includes('77383') && p.platform_type === 'CLOUD_API');
+        
+        // Fallback to the first one found if none are CLOUD_API yet
+        if (!phone) {
+          phone = data.data.find(p => p.display_phone_number.includes('77383'));
+        }
 
-        showResult('verify-result', data, data.platform_type === 'CLOUD_API' ? 'success' : 'error');
-
-        if (data.platform_type === 'CLOUD_API') {
-          log('SUCCESS: platform_type = CLOUD_API', 'success');
-          log(`code_verification_status: ${data.code_verification_status}`, 'success');
-          log(`throughput.level: ${data.throughput?.level}`, 'success');
-          log('Migration complete. WhatsApp Cloud API is active.', 'success');
+        if (!phone) {
+          log('Number not found in this WABA yet. Wait 30s and retry.', 'warn');
+          showResult('verify-result', data, 'error');
+          return;
+        }
+        showResult('verify-result', phone, phone.platform_type === 'CLOUD_API' ? 'success' : 'error');
+        
+        if (phone.platform_type === 'CLOUD_API') {
+          log(`SUCCESS: New Phone ID = ${phone.id}`, 'success');
+          log(`platform_type: CLOUD_API, status: ${phone.code_verification_status}`, 'success');
           setStepState(3, 'complete');
           document.getElementById('action-panel').style.display = 'none';
+          document.getElementById('success-banner').innerHTML = `
+            <div class="icon">✅</div>
+            <h3>Cloud API Registration Complete</h3>
+            <p>Phone +91 77383 63495 is now on Cloud API.<br><br>
+            <strong>NEW PHONE_NUMBER_ID: ${phone.id}</strong><br>
+            Update this in Vercel, then recreate templates.</p>`;
           document.getElementById('success-banner').classList.add('visible');
         } else {
-          log(`platform_type still: ${data.platform_type}`, 'warn');
-          log('Registration not complete yet. Wait 60 seconds and verify again.', 'warn');
-          log(`code_verification_status: ${data.code_verification_status}`, 'info');
+          log(`Still ${phone.platform_type}. Keep WhatsApp Business App open and retry.`, 'warn');
         }
       })
       .catch(err => {
