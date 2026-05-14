@@ -686,33 +686,13 @@
       log('Embedded Signup completed. Auth response received.', 'success');
       log(`Code: ${response.authResponse.code}`, 'info');
 
-      // Exchange code for WABA token
       const code = response.authResponse.code;
-      log('Exchanging code for access token...', 'action');
+      log('Code received. The token exchange runs server-side. Proceeding to verification.', 'info');
 
-      fetch(`https://graph.facebook.com/v20.0/oauth/access_token?client_id=${APP_ID}&client_secret=REPLACE_WITH_APP_SECRET&code=${code}`)
-        .then(r => r.json())
-        .then(tokenData => {
-          if (tokenData.error) {
-            log('Code exchange: ' + tokenData.error.message, 'warn');
-            log('This is expected if app secret is not embedded. Proceeding to verification.', 'warn');
-          } else {
-            log('Token exchange successful.', 'success');
-          }
-          // Regardless, proceed to verify
-          setStepState(3, 'complete');
-          setStepState(4, 'active');
-          showResult('signup-result', { status: 'completed', code }, 'success');
-          setTimeout(() => showPanel(4), 1000);
-        })
-        .catch(() => {
-          log('Code exchange skipped (app secret not embedded — this is safe).', 'warn');
-          log('Proceeding to verification step.', 'info');
-          setStepState(3, 'complete');
-          setStepState(4, 'active');
-          showResult('signup-result', { status: 'completed', code }, 'success');
-          setTimeout(() => showPanel(4), 1000);
-        });
+      setStepState(3, 'complete');
+      setStepState(4, 'active');
+      showResult('signup-result', { status: 'completed', code }, 'success');
+      setTimeout(() => showPanel(4), 1000);
 
     }, {
       config_id: CONFIG_ID,
@@ -774,6 +754,7 @@
       .catch(err => {
         setBtn('btn-verify', false, 'Verify Registration');
         log(`Network error on verify: ${err.message}`, 'error');
+        setStepState(4, 'error');
       });
   }
 
