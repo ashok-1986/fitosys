@@ -529,7 +529,11 @@
     const ts = now.toTimeString().slice(0,8);
     const line = document.createElement('div');
     line.className = `log-line ${type}`;
-    line.innerHTML = `<span class="ts">${ts}</span>${message}`;
+    const tsSpan = document.createElement('span');
+    tsSpan.className = 'ts';
+    tsSpan.textContent = ts;
+    line.appendChild(tsSpan);
+    line.appendChild(document.createTextNode(message));
     box.appendChild(line);
     box.scrollTop = box.scrollHeight;
   }
