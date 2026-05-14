@@ -393,32 +393,24 @@
       <div class="step-num">1</div>
       <div class="step-content">
         <div class="step-title">Enter System User Token</div>
-        <div class="step-desc">Paste your permanent System User token from Business Manager. This is used for the DELETE call and the Embedded Signup flow.</div>
+        <div class="step-desc">Paste your permanent System User token from Business Manager. This is used for the Embedded Signup flow and verification.</div>
         <span class="step-status pending" id="step-1-status">Pending</span>
       </div>
     </div>
     <div class="step" id="step-2">
       <div class="step-num">2</div>
       <div class="step-content">
-        <div class="step-title">Delete ON_PREMISE record</div>
-        <div class="step-desc">Removes the stale ON_PREMISE entry for phone number 1065013560035125. Does NOT delete the number from the WhatsApp Business App on your phone.</div>
+        <div class="step-title">Run Co-existence Embedded Signup</div>
+        <div class="step-desc">Opens the Facebook Embedded Signup flow with the co-existence feature flag. You will scan a QR code from WhatsApp Business App. Meta registers the number directly as Cloud API.</div>
         <span class="step-status pending" id="step-2-status">Pending</span>
       </div>
     </div>
     <div class="step" id="step-3">
       <div class="step-num">3</div>
       <div class="step-content">
-        <div class="step-title">Run Co-existence Embedded Signup</div>
-        <div class="step-desc">Opens the Facebook Embedded Signup flow with the co-existence feature flag. You will scan a QR code from WhatsApp Business App. Meta registers the number directly as Cloud API.</div>
-        <span class="step-status pending" id="step-3-status">Pending</span>
-      </div>
-    </div>
-    <div class="step" id="step-4">
-      <div class="step-num">4</div>
-      <div class="step-content">
         <div class="step-title">Verify Cloud API registration</div>
         <div class="step-desc">Confirm platform_type changed to CLOUD_API and throughput level is STANDARD.</div>
-        <span class="step-status pending" id="step-4-status">Pending</span>
+        <span class="step-status pending" id="step-3-status">Pending</span>
       </div>
     </div>
   </div>
@@ -443,18 +435,8 @@
       </button>
     </div>
 
-    <!-- Step 2: Delete -->
+    <!-- Step 2: Embedded Signup -->
     <div id="panel-2" style="display:none">
-      <h3>Delete ON_PREMISE Record</h3>
-      <p>This sends a DELETE request to Graph API for phone number 1065013560035125. Expected response: {"success": true}. Your WhatsApp Business App will remain unaffected — this only removes the stale API record from Meta's database.</p>
-      <button class="btn btn-danger" id="btn-delete" onclick="deletePhoneRecord()">
-        Delete ON_PREMISE Record
-      </button>
-      <div class="result-box" id="delete-result"></div>
-    </div>
-
-    <!-- Step 3: Embedded Signup -->
-    <div id="panel-3" style="display:none">
       <h3>Run Co-existence Embedded Signup</h3>
       <p>Click the button below to launch the Facebook Embedded Signup popup. When prompted, select "Use existing number" and enter +91 77383 63495. Scan the QR code shown with your WhatsApp Business App. Keep the Business App open throughout.</p>
       <div class="warning-box" style="margin-bottom:16px">
@@ -467,8 +449,8 @@
       <div class="result-box" id="signup-result"></div>
     </div>
 
-    <!-- Step 4: Verify -->
-    <div id="panel-4" style="display:none">
+    <!-- Step 3: Verify -->
+    <div id="panel-3" style="display:none">
       <h3>Verify Cloud API Registration</h3>
       <p>Check that the phone number is now registered on Cloud API. Expected: platform_type = CLOUD_API, code_verification_status = VERIFIED, throughput.level = STANDARD.</p>
       <button class="btn btn-primary" id="btn-verify" onclick="verifyRegistration()">
@@ -558,7 +540,7 @@
   }
 
   function showPanel(num) {
-    for (let i = 1; i <= 4; i++) {
+    for (let i = 1; i <= 3; i++) {
       const p = document.getElementById(`panel-${i}`);
       if (p) p.style.display = i === num ? 'block' : 'none';
     }
@@ -604,8 +586,8 @@
         }
         log(`Token verified. System User: ${data.name} (ID: ${data.id})`, 'success');
         setStepState(1, 'complete');
-        setStepState(3, 'active');
-        showPanel(3);
+        setStepState(2, 'active');
+        showPanel(2);
       })
       .catch(err => {
         log(`Network error: ${err.message}`, 'error');
@@ -613,12 +595,12 @@
       });
   }
 
-  // ── Step 3: Embedded Signup ────────────────────────────
+  // ── Step 2: Embedded Signup ────────────────────────────
   function runEmbeddedSignup() {
     if (!SYSTEM_USER_TOKEN) { log('No token set.', 'error'); return; }
 
     log('Launching Facebook Embedded Signup popup...', 'action');
-    log('Config ID: 950134841072265, Feature: whatsapp_business_app_coexistence', 'info');
+    log(`Config ID: ${CONFIG_ID}, Feature: whatsapp_business_app_coexistence`, 'info');
     setBtn('btn-signup', true, 'Launching...');
 
     // Check FB SDK is ready
@@ -635,7 +617,7 @@
         log('Embedded Signup was cancelled or failed.', 'error');
         log('Check: Did you complete the QR scan in WhatsApp Business App?', 'warn');
         showResult('signup-result', { status: 'cancelled', response }, 'error');
-        setStepState(3, 'error');
+        setStepState(2, 'error');
         return;
       }
 
@@ -645,10 +627,10 @@
       const code = response.authResponse.code;
       log('Code received. The token exchange runs server-side. Proceeding to verification.', 'info');
 
-      setStepState(3, 'complete');
-      setStepState(4, 'active');
+      setStepState(2, 'complete');
+      setStepState(3, 'active');
       showResult('signup-result', { status: 'completed', code }, 'success');
-      setTimeout(() => showPanel(4), 1000);
+      setTimeout(() => showPanel(3), 1000);
 
     }, {
       config_id: CONFIG_ID,
@@ -664,7 +646,7 @@
     });
   }
 
-  // ── Step 4: Verify ────────────────────────────────────
+  // ── Step 3: Verify ────────────────────────────────────
   function verifyRegistration() {
     if (!SYSTEM_USER_TOKEN) { log('No token set.', 'error'); return; }
 
@@ -679,7 +661,7 @@
         if (data.error) {
           log(`Verify error: ${data.error.message}`, 'error');
           showResult('verify-result', data, 'error');
-          setStepState(4, 'error');
+          setStepState(3, 'error');
           return;
         }
 
@@ -690,7 +672,7 @@
           log(`code_verification_status: ${data.code_verification_status}`, 'success');
           log(`throughput.level: ${data.throughput?.level}`, 'success');
           log('Migration complete. WhatsApp Cloud API is active.', 'success');
-          setStepState(4, 'complete');
+          setStepState(3, 'complete');
           document.getElementById('action-panel').style.display = 'none';
           document.getElementById('success-banner').classList.add('visible');
         } else {
@@ -702,7 +684,7 @@
       .catch(err => {
         setBtn('btn-verify', false, 'Verify Registration');
         log(`Network error on verify: ${err.message}`, 'error');
-        setStepState(4, 'error');
+        setStepState(3, 'error');
       });
   }
 
