@@ -11,6 +11,24 @@ import { sensitiveRateLimit } from "@/lib/rate-limit";
 import { generateGSTInvoice } from "@/lib/gst/generate-invoice";
 import { logRequest, logError } from "@/lib/loggerHelpers";
 
+function isDuplicateKeyError(error: unknown): boolean {
+    if (!error || typeof error !== "object") {
+        return false;
+    }
+
+    const { code, message, details } = error as {
+        code?: string;
+        message?: string;
+        details?: string;
+    };
+
+    return Boolean(
+        code === "23505" ||
+        message?.toLowerCase().includes("duplicate key") ||
+        details?.toLowerCase().includes("already exists")
+    );
+}
+
 // POST /api/payments/verify — Verify Razorpay payment signature + activate enrollment
 // Called immediately after the Razorpay modal closes successfully on frontend
 export async function POST(req: NextRequest) {
@@ -216,7 +234,7 @@ export async function POST(req: NextRequest) {
         }
 
         // Step 8: Record payment
-        await supabase.from("payments").insert({
+        const { error: paymentInsertError } = await supabase.from("payments").insert({
             coach_id: enrollment.coach_id,
             client_id: clientId,
             enrollment_id: enrollmentId,
@@ -229,6 +247,27 @@ export async function POST(req: NextRequest) {
             gateway_payment_status: "captured",
             paid_at: new Date().toISOString(),
         });
+
+        if (paymentInsertError) {
+            if (isDuplicateKeyError(paymentInsertError)) {
+                const { data: duplicatePayment } = await supabase
+                    .from("payments")
+                    .select("id, client_id")
+                    .eq("gateway_payment_id", razorpay_payment_id)
+                    .single();
+
+                return NextResponse.json({
+                    success: true,
+                    clientId: duplicatePayment?.client_id ?? clientId,
+                });
+            }
+
+            console.error("[Razorpay Verify] Failed to record payment:", paymentInsertError);
+            return NextResponse.json(
+                { error: "Failed to record payment" },
+                { status: 500 }
+            );
+        }
 
         // Step 9: Send WhatsApp notifications (fire and forget)
         try {
