@@ -30,7 +30,7 @@ const nextConfig: NextConfig = {
           {
             key: 'Content-Security-Policy',
             // TODO: Re-evaluate 'unsafe-inline' and 'unsafe-eval' (Razorpay SDK dependencies) for future nonce implementation
-            value: "default-src 'self'; base-uri 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' blob: data: https://*.supabase.co https://*.razorpay.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.razorpay.com https://checkout.razorpay.com https://graph.facebook.com; frame-src 'self' https://api.razorpay.com https://checkout.razorpay.com;",
+            value: "default-src 'self'; base-uri 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' blob: data: https://*.supabase.co https://*.razorpay.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.razorpay.com https://checkout.razorpay.com https://graph.facebook.com https://connect.facebook.net; frame-src 'self' https://api.razorpay.com https://checkout.razorpay.com;",
           },
         ],
       },
