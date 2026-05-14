@@ -493,7 +493,7 @@
   </div>
 
   <div class="config-meta">
-    Config ID: 950134841072265 · App: 1244682231102388 · WABA: 1713641143328096
+    Config ID: 960254843587868 · App: 1244682231102388 · WABA: 1713641143328096
   </div>
 
 </div>
@@ -519,7 +519,7 @@
 
   const PHONE_NUMBER_ID = '1065013560035125';
   const WABA_ID = '1713641143328096';
-  const CONFIG_ID = '950134841072265';
+  const CONFIG_ID = '960254843587868';
   const APP_ID = '1244682231102388';
 
   // ── Logging ────────────────────────────────────────────
@@ -604,57 +604,13 @@
         }
         log(`Token verified. System User: ${data.name} (ID: ${data.id})`, 'success');
         setStepState(1, 'complete');
-        setStepState(2, 'active');
-        showPanel(2);
+        setStepState(3, 'active');
+        showPanel(3);
       })
       .catch(err => {
         log(`Network error: ${err.message}`, 'error');
         setStepState(1, 'error');
       });
-  }
-
-  // ── Step 2: Delete ON_PREMISE record ──────────────────
-  function deletePhoneRecord() {
-    if (!SYSTEM_USER_TOKEN) { log('No token set.', 'error'); return; }
-
-    log(`Sending DELETE to /v20.0/${PHONE_NUMBER_ID}...`, 'action');
-    setBtn('btn-delete', true, 'Deleting...');
-
-    fetch(`https://graph.facebook.com/v20.0/${PHONE_NUMBER_ID}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${SYSTEM_USER_TOKEN}`,
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(r => r.json())
-    .then(data => {
-      setBtn('btn-delete', false, 'Delete ON_PREMISE Record');
-      if (data.error) {
-        log(`DELETE error: ${data.error.message} (code: ${data.error.code})`, 'error');
-        log(`fbtrace_id: ${data.error.fbtrace_id}`, 'warn');
-        showResult('delete-result', data, 'error');
-        setStepState(2, 'error');
-
-        // Even if delete fails, offer to try Embedded Signup anyway
-        log('DELETE failed. You can still attempt Embedded Signup — click below.', 'warn');
-        setStepState(3, 'active');
-        showPanel(3);
-        return;
-      }
-      log('DELETE successful: {"success": true}', 'success');
-      log('ON_PREMISE record removed. Proceeding to Embedded Signup.', 'success');
-      showResult('delete-result', data, 'success');
-      setStepState(2, 'complete');
-      setStepState(3, 'active');
-
-      setTimeout(() => showPanel(3), 1000);
-    })
-    .catch(err => {
-      setBtn('btn-delete', false, 'Delete ON_PREMISE Record');
-      log(`Network error on DELETE: ${err.message}`, 'error');
-      setStepState(2, 'error');
-    });
   }
 
   // ── Step 3: Embedded Signup ────────────────────────────
@@ -699,19 +655,11 @@
       response_type: 'code',
       override_default_response_type: true,
       extras: {
+        setup: {},
+        featureType: '',
+        sessionInfoVersion: '2',
         feature: 'whatsapp_business_app_coexistence',
-        session_logging_enabled: true,
-        setup: {
-          business: {
-            id: '331053445255624'
-          },
-          phone: {
-            display_phone_number: '+917738363495'
-          },
-          waba: {
-            id: '1713641143328096'
-          }
-        }
+        session_logging_enabled: true
       }
     });
   }
