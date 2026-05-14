@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fitosys — WhatsApp Cloud API Migration</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red: #E8001D;
+      --red-dark: #a0001a;
+      --black: #0A0A0A;
+      --surface: #111111;
+      --card: #1a1a1a;
+      --border: #2a2a2a;
+      --grey: #888;
+      --white: #f5f5f5;
+      --green: #00c853;
+      --yellow: #FFD600;
+      --mono: 'JetBrains Mono', monospace;
+      --sans: 'Barlow', sans-serif;
+    }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 620px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .logo {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 16px;
+    }
+    .title {
+      font-size: 28px;
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+    .title span { color: var(--red); }
+    .subtitle {
+      font-size: 14px;
+      color: var(--grey);
+      font-weight: 400;
+    }
+
+    /* Status row */
+    .status-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .status-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 12px;
+      text-align: center;
+    }
+    .status-item .label {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 6px;
+      font-family: var(--mono);
+    }
+    .status-item .value {
+      font-size: 11px;
+      font-weight: 600;
+      font-family: var(--mono);
+      color: var(--white);
+      word-break: break-all;
+    }
+    .status-item .dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+    .dot-green { background: var(--green); }
+    .dot-yellow { background: var(--yellow); }
+    .dot-red { background: var(--red); }
+
+    /* Steps */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .step {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      transition: border-color 0.3s;
+    }
+    .step.active { border-color: var(--red); }
+    .step.complete { border-color: var(--green); }
+    .step.complete .step-num { background: var(--green); }
+    .step.active .step-num { background: var(--red); }
+    .step-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+      transition: background 0.3s;
+      font-family: var(--mono);
+    }
+    .step-content { flex: 1; }
+    .step-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .step-desc {
+      font-size: 13px;
+      color: var(--grey);
+      line-height: 1.5;
+    }
+    .step-status {
+      font-size: 11px;
+      font-family: var(--mono);
+      margin-top: 8px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+    .step-status.pending { background: rgba(255,255,255,0.06); color: var(--grey); }
+    .step-status.running { background: rgba(232,0,29,0.15); color: var(--red); }
+    .step-status.done { background: rgba(0,200,83,0.12); color: var(--green); }
+    .step-status.error { background: rgba(232,0,29,0.15); color: var(--red); }
+
+    /* Action panel */
+    .action-panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      margin-bottom: 20px;
+    }
+    .action-panel h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .action-panel p {
+      font-size: 13px;
+      color: var(--grey);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      font-family: var(--sans);
+    }
+    .btn-primary {
+      background: var(--red);
+      color: white;
+      width: 100%;
+    }
+    .btn-primary:hover:not(:disabled) { background: var(--red-dark); }
+    .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-secondary {
+      background: transparent;
+      color: var(--white);
+      border: 1px solid var(--border);
+      width: 100%;
+      margin-top: 10px;
+    }
+    .btn-secondary:hover:not(:disabled) { border-color: var(--grey); }
+    .btn-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-danger {
+      background: rgba(232,0,29,0.1);
+      color: var(--red);
+      border: 1px solid rgba(232,0,29,0.3);
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    .btn-danger:hover:not(:disabled) { background: rgba(232,0,29,0.2); }
+    .btn-danger:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* Log */
+    .log-box {
+      background: #0d0d0d;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      margin-top: 20px;
+      font-family: var(--mono);
+      font-size: 12px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .log-box .log-line {
+      padding: 2px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      line-height: 1.6;
+    }
+    .log-line.info { color: var(--grey); }
+    .log-line.success { color: var(--green); }
+    .log-line.error { color: var(--red); }
+    .log-line.warn { color: var(--yellow); }
+    .log-line.action { color: #66b3ff; }
+    .log-line .ts {
+      color: #444;
+      margin-right: 8px;
+    }
+
+    /* Result box */
+    .result-box {
+      background: #0d0d0d;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      margin-top: 16px;
+      font-family: var(--mono);
+      font-size: 12px;
+      display: none;
+      word-break: break-all;
+      line-height: 1.7;
+    }
+    .result-box.visible { display: block; }
+    .result-box.success { border-color: rgba(0,200,83,0.3); }
+    .result-box.error { border-color: rgba(232,0,29,0.3); }
+
+    /* Warning box */
+    .warning-box {
+      background: rgba(255,214,0,0.06);
+      border: 1px solid rgba(255,214,0,0.2);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: var(--yellow);
+      line-height: 1.6;
+    }
+    .warning-box strong { display: block; margin-bottom: 4px; }
+
+    /* Success state */
+    .success-banner {
+      background: rgba(0,200,83,0.08);
+      border: 1px solid rgba(0,200,83,0.25);
+      border-radius: 14px;
+      padding: 28px;
+      text-align: center;
+      display: none;
+    }
+    .success-banner.visible { display: block; }
+    .success-banner .icon { font-size: 40px; margin-bottom: 12px; }
+    .success-banner h3 { font-size: 20px; font-weight: 900; color: var(--green); margin-bottom: 8px; }
+    .success-banner p { font-size: 13px; color: var(--grey); line-height: 1.6; }
+
+    /* Token input */
+    .token-field {
+      width: 100%;
+      background: #0d0d0d;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: var(--white);
+      font-family: var(--mono);
+      font-size: 12px;
+      margin-bottom: 12px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .token-field:focus { border-color: var(--red); }
+    .token-field::placeholder { color: #444; }
+    .field-label {
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--grey);
+      font-family: var(--mono);
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    /* Spinner */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: inline-block;
+    }
+
+    /* Divider */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 20px 0;
+    }
+
+    .config-meta {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: #444;
+      text-align: center;
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrapper">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">Fitosys</div>
+    <h1 class="title">WhatsApp <span>Cloud API</span><br>Co-existence Migration</h1>
+    <p class="subtitle">Migrate +91 77383 63495 from ON_PREMISE to Cloud API</p>
+  </div>
+
+  <!-- Identity panel -->
+  <div class="status-grid">
+    <div class="status-item">
+      <div class="label">WABA ID</div>
+      <div class="value">1713641143328096</div>
+    </div>
+    <div class="status-item">
+      <div class="label">Phone Number ID</div>
+      <div class="value">1065013560035125</div>
+    </div>
+    <div class="status-item">
+      <div class="label">App ID</div>
+      <div class="value">1244682231102388</div>
+    </div>
+  </div>
+
+  <!-- Warning -->
+  <div class="warning-box">
+    <strong>⚠ Before you begin</strong>
+    WhatsApp Business App must be open and active on +91 77383 63495 during the QR scan step. Do not close the app until migration completes.
+  </div>
+
+  <!-- Steps tracker -->
+  <div class="steps" id="steps">
+    <div class="step" id="step-1">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">Enter System User Token</div>
+        <div class="step-desc">Paste your permanent System User token from Business Manager. This is used for the DELETE call and the Embedded Signup flow.</div>
+        <span class="step-status pending" id="step-1-status">Pending</span>
+      </div>
+    </div>
+    <div class="step" id="step-2">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">Delete ON_PREMISE record</div>
+        <div class="step-desc">Removes the stale ON_PREMISE entry for phone number 1065013560035125. Does NOT delete the number from the WhatsApp Business App on your phone.</div>
+        <span class="step-status pending" id="step-2-status">Pending</span>
+      </div>
+    </div>
+    <div class="step" id="step-3">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">Run Co-existence Embedded Signup</div>
+        <div class="step-desc">Opens the Facebook Embedded Signup flow with the co-existence feature flag. You will scan a QR code from WhatsApp Business App. Meta registers the number directly as Cloud API.</div>
+        <span class="step-status pending" id="step-3-status">Pending</span>
+      </div>
+    </div>
+    <div class="step" id="step-4">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">Verify Cloud API registration</div>
+        <div class="step-desc">Confirm platform_type changed to CLOUD_API and throughput level is STANDARD.</div>
+        <span class="step-status pending" id="step-4-status">Pending</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Panel -->
+  <div class="action-panel" id="action-panel">
+
+    <!-- Step 1: Token input -->
+    <div id="panel-1">
+      <h3>System User Token</h3>
+      <p>Paste the permanent (never-expiring) System User token for System User "Ashok" (ID: 61566922480407). Generate it from Business Manager > System Users > Generate Token with whatsapp_business_messaging and whatsapp_business_management permissions.</p>
+      <label class="field-label">System User Token</label>
+      <input
+        type="password"
+        class="token-field"
+        id="token-input"
+        placeholder="EAARsCCoZBO7Q..."
+        autocomplete="off"
+      />
+      <button class="btn btn-primary" id="btn-confirm-token" onclick="confirmToken()">
+        Confirm Token
+      </button>
+    </div>
+
+    <!-- Step 2: Delete -->
+    <div id="panel-2" style="display:none">
+      <h3>Delete ON_PREMISE Record</h3>
+      <p>This sends a DELETE request to Graph API for phone number 1065013560035125. Expected response: {"success": true}. Your WhatsApp Business App will remain unaffected — this only removes the stale API record from Meta's database.</p>
+      <button class="btn btn-danger" id="btn-delete" onclick="deletePhoneRecord()">
+        Delete ON_PREMISE Record
+      </button>
+      <div class="result-box" id="delete-result"></div>
+    </div>
+
+    <!-- Step 3: Embedded Signup -->
+    <div id="panel-3" style="display:none">
+      <h3>Run Co-existence Embedded Signup</h3>
+      <p>Click the button below to launch the Facebook Embedded Signup popup. When prompted, select "Use existing number" and enter +91 77383 63495. Scan the QR code shown with your WhatsApp Business App. Keep the Business App open throughout.</p>
+      <div class="warning-box" style="margin-bottom:16px">
+        <strong>⚠ WhatsApp Business App must be active now</strong>
+        Open the app on +91 77383 63495 before clicking the button below.
+      </div>
+      <button class="btn btn-primary" id="btn-signup" onclick="runEmbeddedSignup()">
+        Launch Embedded Signup
+      </button>
+      <div class="result-box" id="signup-result"></div>
+    </div>
+
+    <!-- Step 4: Verify -->
+    <div id="panel-4" style="display:none">
+      <h3>Verify Cloud API Registration</h3>
+      <p>Check that the phone number is now registered on Cloud API. Expected: platform_type = CLOUD_API, code_verification_status = VERIFIED, throughput.level = STANDARD.</p>
+      <button class="btn btn-primary" id="btn-verify" onclick="verifyRegistration()">
+        Verify Registration
+      </button>
+      <div class="result-box" id="verify-result"></div>
+    </div>
+
+  </div>
+
+  <!-- Success banner -->
+  <div class="success-banner" id="success-banner">
+    <div class="icon">✅</div>
+    <h3>Cloud API Registration Complete</h3>
+    <p>Phone number +91 77383 63495 is now registered on Cloud API under WABA 1713641143328096.<br><br>
+    Next steps: Recreate your 6 WhatsApp templates in WhatsApp Manager, update WHATSAPP_PHONE_NUMBER_ID in Vercel to 1065013560035125, and run Gate 3 Test 5.</p>
+  </div>
+
+  <!-- Log -->
+  <div class="log-box" id="log-box">
+    <div class="log-line info"><span class="ts">--:--:--</span>Migration tool ready. Complete steps in order.</div>
+  </div>
+
+  <div class="config-meta">
+    Config ID: 950134841072265 · App: 1244682231102388 · WABA: 1713641143328096
+  </div>
+
+</div>
+
+<!-- Facebook SDK -->
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId: '1244682231102388',
+      cookie: true,
+      xfbml: true,
+      version: 'v20.0'
+    });
+    log('Facebook SDK initialised. App ID: 1244682231102388', 'success');
+  };
+</script>
+<script async defer src="https://connect.facebook.net/en_US/sdk.js"></script>
+
+<script>
+  // ── State ──────────────────────────────────────────────
+  let SYSTEM_USER_TOKEN = '';
+  let currentStep = 1;
+
+  const PHONE_NUMBER_ID = '1065013560035125';
+  const WABA_ID = '1713641143328096';
+  const CONFIG_ID = '950134841072265';
+  const APP_ID = '1244682231102388';
+
+  // ── Logging ────────────────────────────────────────────
+  function log(message, type = 'info') {
+    const box = document.getElementById('log-box');
+    const now = new Date();
+    const ts = now.toTimeString().slice(0,8);
+    const line = document.createElement('div');
+    line.className = `log-line ${type}`;
+    line.innerHTML = `<span class="ts">${ts}</span>${message}`;
+    box.appendChild(line);
+    box.scrollTop = box.scrollHeight;
+  }
+
+  // ── Step helpers ───────────────────────────────────────
+  function setStepState(stepNum, state) {
+    const step = document.getElementById(`step-${stepNum}`);
+    const status = document.getElementById(`step-${stepNum}-status`);
+    step.className = 'step';
+    if (state === 'active') {
+      step.classList.add('active');
+      status.className = 'step-status running';
+      status.textContent = 'In progress';
+    } else if (state === 'complete') {
+      step.classList.add('complete');
+      status.className = 'step-status done';
+      status.textContent = 'Complete ✓';
+    } else if (state === 'error') {
+      status.className = 'step-status error';
+      status.textContent = 'Error — see log';
+    }
+  }
+
+  function showPanel(num) {
+    for (let i = 1; i <= 4; i++) {
+      const p = document.getElementById(`panel-${i}`);
+      if (p) p.style.display = i === num ? 'block' : 'none';
+    }
+  }
+
+  function showResult(id, content, type) {
+    const el = document.getElementById(id);
+    el.textContent = typeof content === 'object'
+      ? JSON.stringify(content, null, 2)
+      : content;
+    el.className = `result-box visible ${type}`;
+  }
+
+  function setBtn(id, loading, text) {
+    const btn = document.getElementById(id);
+    if (loading) {
+      btn.disabled = true;
+      btn.innerHTML = `<span class="spinner"></span> ${text}`;
+    } else {
+      btn.disabled = false;
+      btn.textContent = text;
+    }
+  }
+
+  // ── Step 1: Confirm token ──────────────────────────────
+  function confirmToken() {
+    const token = document.getElementById('token-input').value.trim();
+    if (!token || token.length < 20) {
+      log('Token appears too short. Paste the full System User token.', 'error');
+      return;
+    }
+    SYSTEM_USER_TOKEN = token;
+    log('Token set. Verifying via /me call...', 'action');
+    setStepState(1, 'active');
+
+    fetch(`https://graph.facebook.com/v20.0/me?fields=id,name&access_token=${token}`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.error) {
+          log(`Token error: ${data.error.message}`, 'error');
+          setStepState(1, 'error');
+          return;
+        }
+        log(`Token verified. System User: ${data.name} (ID: ${data.id})`, 'success');
+        setStepState(1, 'complete');
+        setStepState(2, 'active');
+        showPanel(2);
+      })
+      .catch(err => {
+        log(`Network error: ${err.message}`, 'error');
+        setStepState(1, 'error');
+      });
+  }
+
+  // ── Step 2: Delete ON_PREMISE record ──────────────────
+  function deletePhoneRecord() {
+    if (!SYSTEM_USER_TOKEN) { log('No token set.', 'error'); return; }
+
+    log(`Sending DELETE to /v20.0/${PHONE_NUMBER_ID}...`, 'action');
+    setBtn('btn-delete', true, 'Deleting...');
+
+    fetch(`https://graph.facebook.com/v20.0/${PHONE_NUMBER_ID}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${SYSTEM_USER_TOKEN}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(r => r.json())
+    .then(data => {
+      setBtn('btn-delete', false, 'Delete ON_PREMISE Record');
+      if (data.error) {
+        log(`DELETE error: ${data.error.message} (code: ${data.error.code})`, 'error');
+        log(`fbtrace_id: ${data.error.fbtrace_id}`, 'warn');
+        showResult('delete-result', data, 'error');
+        setStepState(2, 'error');
+
+        // Even if delete fails, offer to try Embedded Signup anyway
+        log('DELETE failed. You can still attempt Embedded Signup — click below.', 'warn');
+        setStepState(3, 'active');
+        showPanel(3);
+        return;
+      }
+      log('DELETE successful: {"success": true}', 'success');
+      log('ON_PREMISE record removed. Proceeding to Embedded Signup.', 'success');
+      showResult('delete-result', data, 'success');
+      setStepState(2, 'complete');
+      setStepState(3, 'active');
+
+      setTimeout(() => showPanel(3), 1000);
+    })
+    .catch(err => {
+      setBtn('btn-delete', false, 'Delete ON_PREMISE Record');
+      log(`Network error on DELETE: ${err.message}`, 'error');
+      setStepState(2, 'error');
+    });
+  }
+
+  // ── Step 3: Embedded Signup ────────────────────────────
+  function runEmbeddedSignup() {
+    if (!SYSTEM_USER_TOKEN) { log('No token set.', 'error'); return; }
+
+    log('Launching Facebook Embedded Signup popup...', 'action');
+    log('Config ID: 950134841072265, Feature: whatsapp_business_app_coexistence', 'info');
+    setBtn('btn-signup', true, 'Launching...');
+
+    // Check FB SDK is ready
+    if (typeof FB === 'undefined') {
+      log('Facebook SDK not loaded yet. Wait 3 seconds and try again.', 'error');
+      setBtn('btn-signup', false, 'Launch Embedded Signup');
+      return;
+    }
+
+    FB.login(function(response) {
+      setBtn('btn-signup', false, 'Launch Embedded Signup');
+
+      if (!response || !response.authResponse) {
+        log('Embedded Signup was cancelled or failed.', 'error');
+        log('Check: Did you complete the QR scan in WhatsApp Business App?', 'warn');
+        showResult('signup-result', { status: 'cancelled', response }, 'error');
+        setStepState(3, 'error');
+        return;
+      }
+
+      log('Embedded Signup completed. Auth response received.', 'success');
+      log(`Code: ${response.authResponse.code}`, 'info');
+
+      // Exchange code for WABA token
+      const code = response.authResponse.code;
+      log('Exchanging code for access token...', 'action');
+
+      fetch(`https://graph.facebook.com/v20.0/oauth/access_token?client_id=${APP_ID}&client_secret=REPLACE_WITH_APP_SECRET&code=${code}`)
+        .then(r => r.json())
+        .then(tokenData => {
+          if (tokenData.error) {
+            log('Code exchange: ' + tokenData.error.message, 'warn');
+            log('This is expected if app secret is not embedded. Proceeding to verification.', 'warn');
+          } else {
+            log('Token exchange successful.', 'success');
+          }
+          // Regardless, proceed to verify
+          setStepState(3, 'complete');
+          setStepState(4, 'active');
+          showResult('signup-result', { status: 'completed', code }, 'success');
+          setTimeout(() => showPanel(4), 1000);
+        })
+        .catch(() => {
+          log('Code exchange skipped (app secret not embedded — this is safe).', 'warn');
+          log('Proceeding to verification step.', 'info');
+          setStepState(3, 'complete');
+          setStepState(4, 'active');
+          showResult('signup-result', { status: 'completed', code }, 'success');
+          setTimeout(() => showPanel(4), 1000);
+        });
+
+    }, {
+      config_id: CONFIG_ID,
+      response_type: 'code',
+      override_default_response_type: true,
+      extras: {
+        feature: 'whatsapp_business_app_coexistence',
+        session_logging_enabled: true,
+        setup: {
+          business: {
+            id: '331053445255624'
+          }
+        }
+      }
+    });
+  }
+
+  // ── Step 4: Verify ────────────────────────────────────
+  function verifyRegistration() {
+    if (!SYSTEM_USER_TOKEN) { log('No token set.', 'error'); return; }
+
+    log(`Checking phone number ${PHONE_NUMBER_ID} registration status...`, 'action');
+    setBtn('btn-verify', true, 'Checking...');
+
+    fetch(`https://graph.facebook.com/v20.0/${PHONE_NUMBER_ID}?fields=id,platform_type,code_verification_status,throughput,quality_rating,display_phone_number,verified_name&access_token=${SYSTEM_USER_TOKEN}`)
+      .then(r => r.json())
+      .then(data => {
+        setBtn('btn-verify', false, 'Verify Registration');
+
+        if (data.error) {
+          log(`Verify error: ${data.error.message}`, 'error');
+          showResult('verify-result', data, 'error');
+          setStepState(4, 'error');
+          return;
+        }
+
+        showResult('verify-result', data, data.platform_type === 'CLOUD_API' ? 'success' : 'error');
+
+        if (data.platform_type === 'CLOUD_API') {
+          log('SUCCESS: platform_type = CLOUD_API', 'success');
+          log(`code_verification_status: ${data.code_verification_status}`, 'success');
+          log(`throughput.level: ${data.throughput?.level}`, 'success');
+          log('Migration complete. WhatsApp Cloud API is active.', 'success');
+          setStepState(4, 'complete');
+          document.getElementById('action-panel').style.display = 'none';
+          document.getElementById('success-banner').classList.add('visible');
+        } else {
+          log(`platform_type still: ${data.platform_type}`, 'warn');
+          log('Registration not complete yet. Wait 60 seconds and verify again.', 'warn');
+          log(`code_verification_status: ${data.code_verification_status}`, 'info');
+        }
+      })
+      .catch(err => {
+        setBtn('btn-verify', false, 'Verify Registration');
+        log(`Network error on verify: ${err.message}`, 'error');
+      });
+  }
+
+  // Init
+  setStepState(1, 'active');
+  log('Tool ready. Paste your System User token to begin.', 'info');
+</script>
+
+</body>
+</html>
