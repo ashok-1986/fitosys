@@ -181,17 +181,15 @@ export function PricingSection() {
                             </ul>
 
                             {plan.featured ? (
-                                <Link href="/login" className="w-full">
-                                    <button className="w-full py-4 bg-white text-[#E8001D] font-sans font-bold text-[13px] uppercase tracking-[0.04em] rounded-[2px] hover:bg-white/90 transition-colors">
-                                        Start Free
-                                    </button>
+                                <Link href="/login" className="w-full block text-center py-4 bg-white text-[#E8001D] font-sans font-bold text-[13px] uppercase tracking-[0.04em] rounded-[2px] hover:bg-white/90 transition-colors">
+                                    Start Free
                                 </Link>
                             ) : (
-                                <Link href="/login" className="w-full">
-                                    <Button variant="fitosys-primary" size="fitosys" className="w-full">
+                                <Button asChild variant="fitosys-primary" size="fitosys" className="w-full">
+                                    <Link href="/login">
                                         Start Free
-                                    </Button>
-                                </Link>
+                                    </Link>
+                                </Button>
                             )}
                         </div>
                     ))}

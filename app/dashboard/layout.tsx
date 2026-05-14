@@ -50,7 +50,14 @@ export default async function DashboardLayout({
   const trialDaysRemaining = getTrialDaysRemaining(coach);
 
   let banner = null;
-  if (trialStatus === "active" || trialStatus === "expired") {
+  if (trialStatus === "expired") {
+    banner = (
+      <div className="bg-red-900/30 border-b border-red-500/20 px-4 py-2.5 text-center text-[13px] text-red-400 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
+        <span>Your trial expired {Math.abs(trialDaysRemaining)} days ago. Client onboarding is paused.</span>
+        <Link href="/dashboard/billing" className="bg-red-500/20 hover:bg-red-500/30 text-red-300 px-3 py-1 rounded-full text-xs font-medium transition-colors">Upgrade Now</Link>
+      </div>
+    );
+  } else if (trialStatus === "active") {
     if (trialDaysRemaining > 7) {
       banner = (
         <div className="bg-emerald-900/30 border-b border-emerald-500/20 px-4 py-2.5 text-center text-[13px] text-emerald-400">

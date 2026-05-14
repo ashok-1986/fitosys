@@ -13,6 +13,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
+import { ClientLimitBar } from "@/components/plans/ClientLimitBar";
 
 interface IconSidebarProps {
   notificationsCount?: number;
@@ -126,9 +127,11 @@ export function IconSidebar({ notificationsCount = 0 }: IconSidebarProps) {
         padding: "10px",
         display: "flex",
         flexDirection: "column",
-        gap: "2px",
+        gap: "10px",
       }}>
-        <Link
+        <ClientLimitBar />
+        <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+          <Link
           href="/dashboard/settings"
           style={{
             display: "flex",
@@ -168,6 +171,7 @@ export function IconSidebar({ notificationsCount = 0 }: IconSidebarProps) {
           <LogOut style={{ width: "15px", height: "15px" }} />
           <span>Sign out</span>
         </button>
+        </div>
       </div>
     </aside>
   );

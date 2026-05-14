@@ -25,7 +25,7 @@ export async function GET() {
     recentCheckinsResult,
     pendingConfirmationsResult,
   ] = await Promise.all([
-    supabase!.from("coaches").select("id, full_name, email").eq("id", coachId!).single(),
+    supabase!.from("coaches").select("id, full_name, email, plan").eq("id", coachId!).single(),
     supabase!.from("clients").select("id", { count: "exact", head: true }).eq("coach_id", coachId!).eq("status", "active"),
     supabase!.from("payments").select("amount").eq("coach_id", coachId!).eq("gateway_payment_status", "captured"),
     supabase!.from("payments").select("amount").eq("coach_id", coachId!).eq("gateway_payment_status", "captured").gte("paid_at", monthStart),

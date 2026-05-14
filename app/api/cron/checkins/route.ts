@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     // Get coaches whose check-in day matches today
     const { data: coaches, error: coachError } = await supabase
         .from("coaches")
-        .select("id, full_name, checkin_day")
+        .select("id, full_name, checkin_day, plan")
         .eq("status", "active")
         .eq("checkin_day", todayDayOfWeek);
 
@@ -32,14 +32,20 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: coachError.message }, { status: 500 });
     }
 
-    if (!coaches || coaches.length === 0) {
+    const { planHasFeature } = await import("@/lib/plans/config");
+    const eligibleCoaches = (coaches || []).filter(coach => 
+        planHasFeature(coach.plan as any, 'whatsapp_checkins')
+    );
+
+    if (eligibleCoaches.length === 0) {
         return NextResponse.json({ message: "No coaches scheduled today", sent: 0 });
     }
 
     let totalSent = 0;
     let totalErrors = 0;
 
-    for (const coach of coaches) {
+    for (const coach of eligibleCoaches) {
+
         // Get active clients with active enrollments for this coach
         const { data: enrollments } = await supabase
             .from("enrollments")

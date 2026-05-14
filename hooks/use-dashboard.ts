@@ -5,6 +5,7 @@ export interface DashboardData {
     id: string;
     full_name: string;
     email: string;
+    plan: string;
   } | null;
   stats: {
     active_clients: number;

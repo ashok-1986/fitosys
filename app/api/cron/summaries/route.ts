@@ -28,17 +28,21 @@ export async function POST(request: NextRequest) {
     // Get all active coaches
     const { data: coaches, error: coachError } = await supabase
         .from("coaches")
-        .select("id, full_name, whatsapp_number")
+        .select("id, full_name, whatsapp_number, plan")
         .eq("status", "active");
 
     if (coachError || !coaches) {
         return NextResponse.json({ error: "Failed to query coaches" }, { status: 500 });
     }
 
+    const { planHasFeature } = await import("@/lib/plans/config");
+    const eligibleCoaches = coaches.filter(coach => planHasFeature(coach.plan as any, 'ai_monday_summary'));
+
     let generated = 0;
     let errors = 0;
 
-    for (const coach of coaches) {
+    for (const coach of eligibleCoaches) {
+
         try {
             // Check if summary already exists for this week
             const { data: existing } = await supabase

@@ -584,7 +584,7 @@ export default function SettingsPage() {
               </div>
               <div className="flex items-center gap-2 bg-[#10B981]/10 px-3 py-1.5 rounded-full border border-[#10B981]/20">
                 <div className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse"></div>
-                <span className="font-['Urbanist'] text-[11px] font-bold text-[#10B981] uppercase tracking-widest">Connected</span>
+                <span className="font-['Urbanist'] text-[11px] font-bold text-[#10B981] uppercase tracking-widest">Enabled</span>
               </div>
             </div>
 
