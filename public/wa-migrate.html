@@ -369,7 +369,7 @@
   <div class="status-grid">
     <div class="status-item">
       <div class="label">WABA ID</div>
-      <div class="value">1713641143328096</div>
+      <div class="value">YOUR_NEW_WABA_ID</div>
     </div>
     <div class="status-item">
       <div class="label">App ID</div>
@@ -377,7 +377,7 @@
     </div>
     <div class="status-item">
       <div class="label">Config ID</div>
-      <div class="value">960254843587868</div>
+      <div class="value">YOUR_NEW_CONFIG_ID</div>
     </div>
   </div>
 
@@ -471,7 +471,7 @@
   </div>
 
   <div class="config-meta">
-    Config ID: 960254843587868 · App: 1244682231102388 · WABA: 1713641143328096
+    Config ID: YOUR_NEW_CONFIG_ID · App: 1244682231102388 · WABA: YOUR_NEW_WABA_ID
   </div>
 
 </div>
@@ -495,8 +495,8 @@
   let SYSTEM_USER_TOKEN = '';
   let currentStep = 1;
 
-  const WABA_ID = '1713641143328096';
-  const CONFIG_ID = '960254843587868';
+  const WABA_ID = 'YOUR_NEW_WABA_ID';
+  const CONFIG_ID = 'YOUR_NEW_CONFIG_ID';
   const APP_ID = '1244682231102388';
 
   // ── Logging ────────────────────────────────────────────
@@ -571,7 +571,7 @@
     log('Token set. Verifying via /me call...', 'action');
     setStepState(1, 'active');
 
-    fetch(`https://graph.facebook.com/v20.0/me?fields=id,name&access_token=${token}`)
+    fetch(`https://graph.facebook.com/v23.0/me?fields=id,name&access_token=${token}`)
       .then(r => r.json())
       .then(data => {
         if (data.error) {
@@ -634,8 +634,8 @@
       extras: {
         setup: {},
         featureType: '',
-        sessionInfoVersion: '2',
-        feature: 'whatsapp_business_app_coexistence',
+        sessionInfoVersion: '3',
+        feature: 'whatsapp_business_app_onboarding',
         session_logging_enabled: true
       }
     });
@@ -647,7 +647,7 @@
     log(`Checking WABA ${WABA_ID} for Cloud API numbers...`, 'action');
     setBtn('btn-verify', true, 'Checking...');
 
-    fetch(`https://graph.facebook.com/v20.0/${WABA_ID}/phone_numbers?fields=id,display_phone_number,platform_type,code_verification_status,throughput&access_token=${SYSTEM_USER_TOKEN}`)
+    fetch(`https://graph.facebook.com/v23.0/${WABA_ID}/phone_numbers?fields=id,display_phone_number,platform_type,code_verification_status,throughput&access_token=${SYSTEM_USER_TOKEN}`)
       .then(r => r.json())
       .then(data => {
         setBtn('btn-verify', false, 'Verify Registration');
