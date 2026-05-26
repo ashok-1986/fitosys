@@ -54,7 +54,7 @@ export async function POST(
 
                 // Fetch client, program, coach for WhatsApp
                 const [coachRes, clientRes, progRes] = await Promise.all([
-                    supabase!.from("coaches").select("full_name").eq("id", coachId).single(),
+                    supabase!.from("coaches").select("full_name, checkin_day").eq("id", coachId).single(),
                     supabase!.from("clients").select("full_name, whatsapp_number").eq("id", enrollment.client_id).single(),
                     supabase!.from("enrollments").select("programs(name)").eq("id", enrollmentId).single(),
                 ]);
@@ -64,9 +64,10 @@ export async function POST(
                         await sendClientWelcome(
                             clientRes.data.whatsapp_number,
                             coachRes.data.full_name,
-                            clientRes.data.full_name,
+                            clientRes.data.full_name.split(" ")[0],
                             (progRes.data.programs as unknown as { name: string })?.name || "your program",
-                            enrollment.start_date
+                            enrollment.start_date,
+                            coachRes.data.checkin_day
                         );
                     } catch (waError) {
                         console.error("WhatsApp welcome failed:", waError);

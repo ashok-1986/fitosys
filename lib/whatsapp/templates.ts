@@ -162,26 +162,55 @@ export async function sendWeeklyCheckin(
 // Template 2: fitosys_onboarding_welcome
 // ---------------------------------------------------------------------------
 // Approved body:
-// Welcome to Coach {{1}}'s program, {{2}}! 🎉
-// You're enrolled in: *{{3}}*
-// Program starts: {{4}}
-// Every Sunday at 7 PM you'll receive a weekly check-in from this number.
-// Just reply naturally — your coach reads every response.
-// Questions? Reply anytime.
+// Hi {{1}},
+// 
+// Your enrollment with Coach {{2}} is confirmed.
+// 
+// Program: {{3}}
+// Start date: {{4}}
+// 
+// Every {{5}} at 7 PM, you will receive a weekly check-in from this number.
+// Reply to each check-in — your coach reviews every response.
+// 
+// For questions, reply to this message.
 // ---------------------------------------------------------------------------
+
+const DAYS_OF_WEEK = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
 
 export async function sendClientWelcome(
   clientPhone: string,
   coachName: string,
   clientName: string,
   programName: string,
-  programStartDate: string
+  programStartDate: string,
+  checkinDay?: number | string
 ): Promise<WhatsAppSendResult> {
+  let dayName = "Sunday";
+  if (typeof checkinDay === "number" && checkinDay >= 0 && checkinDay <= 6) {
+    dayName = DAYS_OF_WEEK[checkinDay];
+  } else if (typeof checkinDay === "string") {
+    const num = parseInt(checkinDay, 10);
+    if (!isNaN(num) && num >= 0 && num <= 6) {
+      dayName = DAYS_OF_WEEK[num];
+    } else if (checkinDay) {
+      dayName = checkinDay;
+    }
+  }
+
   return sendTemplate(clientPhone, "fitosys_onboarding_welcome", [
-    coachName,
     clientName,
+    coachName,
     programName,
     programStartDate,
+    dayName,
   ]);
 }
 

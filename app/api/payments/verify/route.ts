@@ -304,7 +304,8 @@ export async function POST(req: NextRequest) {
                         coach?.full_name || "Your Coach",
                         clientData.full_name.split(" ")[0],
                         program?.name || "Fitness Program",
-                        startDate
+                        startDate,
+                        coach?.checkin_day
                     ),
                 !isRenewal && coach?.whatsapp_number
                     ? sendCoachNewClientNotification(
