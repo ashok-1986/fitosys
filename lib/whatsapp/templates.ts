@@ -13,12 +13,6 @@
  * Mismatch will cause API error code 132000 at send time.
  */
 
-const WHATSAPP_PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID!;
-const WHATSAPP_ACCESS_TOKEN = process.env.WHATSAPP_ACCESS_TOKEN!;
-const META_API_VERSION = "v19.0";
-
-const META_API_URL = `https://graph.facebook.com/${META_API_VERSION}/${WHATSAPP_PHONE_NUMBER_ID}/messages`;
-
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -87,11 +81,16 @@ async function sendTemplate(
   };
 
   try {
-    const response = await fetch(META_API_URL, {
+    const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
+    const accessToken = process.env.WHATSAPP_ACCESS_TOKEN;
+    const apiVersion = "v19.0";
+    const apiUrl = `https://graph.facebook.com/${apiVersion}/${phoneNumberId}/messages`;
+
+    const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${WHATSAPP_ACCESS_TOKEN}`,
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(payload),
     });
