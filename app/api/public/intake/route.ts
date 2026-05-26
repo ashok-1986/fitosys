@@ -184,38 +184,41 @@ export async function POST(request: NextRequest) {
     }
 
     // Create or update client record with consent timestamps
-    const { data: client, error: clientError } = await supabase
-        .from("clients")
-        .upsert(
-            {
-                coach_id: coach.id,
-                full_name,
-                whatsapp_number,
-                email,
-                age,
-                primary_goal,
-                health_notes,
-                status: "active",
-                consent_data_at: consentTimestamp,
-                consent_health_at: consentTimestamp,
-                consent_whatsapp_at: consentTimestamp,
-            },
-            { onConflict: "whatsapp_number, coach_id" }
-        )
-        .select("id")
-        .single();
+    let client;
+    try {
+        const { data, error: clientError } = await supabase
+            .from("clients")
+            .upsert(
+                {
+                    coach_id: coach.id,
+                    full_name,
+                    whatsapp_number,
+                    email,
+                    age,
+                    primary_goal,
+                    health_notes,
+                    status: "active",
+                    consent_data_at: consentTimestamp,
+                    consent_health_at: consentTimestamp,
+                    consent_whatsapp_at: consentTimestamp,
+                },
+                { onConflict: "whatsapp_number, coach_id" }
+            )
+            .select("id")
+            .single();
 
-    if (clientError || !client) {
-        logError(
-            "Failed to create or upsert client during intake",
-            String(clientError)
-        );
-        // Clean up orphaned enrollment
-        await supabase.from("enrollments").delete().eq("id", enrollment.id);
+        if (clientError || !data) {
+            // Clean up orphaned enrollment
+            await supabase.from("enrollments").delete().eq("id", enrollment.id);
+            throw clientError || new Error("Failed to create or upsert client");
+        }
+        client = data;
+    } catch (error) {
+        console.error('INTAKE_ERROR_FULL:', JSON.stringify(error, Object.getOwnPropertyNames(error)))
         return NextResponse.json(
-            { error: "Failed to process client information" },
+            { error: 'Failed to process client information' },
             { status: 500 }
-        );
+        )
     }
 
     // Link client to enrollment

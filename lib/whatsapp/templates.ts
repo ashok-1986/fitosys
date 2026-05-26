@@ -135,7 +135,7 @@ async function sendTemplate(
 }
 
 // ---------------------------------------------------------------------------
-// Template 1: fitosys_weekly_checkin
+// Template 1: fitosys_checkin_weekly
 // ---------------------------------------------------------------------------
 // Approved body:
 // Hi {{1}}, it's your weekly check-in with Coach {{2}} 💪
@@ -152,14 +152,14 @@ export async function sendWeeklyCheckin(
   clientName: string,
   coachName: string
 ): Promise<WhatsAppSendResult> {
-  return sendTemplate(clientPhone, "fitosys_weekly_checkin", [
+  return sendTemplate(clientPhone, "fitosys_checkin_weekly", [
     clientName,
     coachName,
   ]);
 }
 
 // ---------------------------------------------------------------------------
-// Template 2: fitosys_client_welcome
+// Template 2: fitosys_onboarding_welcome
 // ---------------------------------------------------------------------------
 // Approved body:
 // Welcome to Coach {{1}}'s program, {{2}}! 🎉
@@ -177,7 +177,7 @@ export async function sendClientWelcome(
   programName: string,
   programStartDate: string
 ): Promise<WhatsAppSendResult> {
-  return sendTemplate(clientPhone, "fitosys_client_welcome", [
+  return sendTemplate(clientPhone, "fitosys_onboarding_welcome", [
     coachName,
     clientName,
     programName,
