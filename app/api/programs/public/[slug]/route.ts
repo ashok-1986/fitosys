@@ -16,7 +16,7 @@ export async function GET(
     // Get coach by slug
     const { data: coach, error: coachError } = await supabase
         .from("coaches")
-        .select("id, full_name, coaching_type, slug, upi_id, payment_instructions, accepted_payment_methods")
+        .select("id, full_name, coaching_type, slug, whatsapp_number, upi_id, payment_instructions, accepted_payment_methods")
         .eq("slug", slug)
         .eq("status", "active")
         .single();

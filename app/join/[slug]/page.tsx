@@ -545,7 +545,7 @@ export default function IntakePage({ params }: { params: Promise<{ slug: string 
                                     <div className="text-center py-6">
                                         <p className="text-[15px] text-white/80 mb-6">Contact your coach directly for payment details.</p>
                                         <a
-                                            href={`https://wa.me/${coach.whatsapp_number?.replace(/\D/g, '') || ''}`}
+                                            href={`https://wa.me/${coach.whatsapp_number?.replace(/\D/g, "") || ""}`}
                                             target="_blank"
                                             rel="noreferrer"
                                             className="inline-flex h-12 items-center justify-center rounded-xl bg-[#25D366]/10 px-6 text-[13px] font-bold text-[#25D366] hover:bg-[#25D366]/20 transition-colors uppercase tracking-widest gap-2"
