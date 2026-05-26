@@ -42,6 +42,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ status: "invalid_data" });
     }
 
+    const normalizedFrom = from.startsWith('+') ? from : `+${from}`;
+
     // Handle opt-out keywords — required by Meta for marketing templates
     const stopKeywords = ["STOP", "STOPALL", "UNSUBSCRIBE", "CANCEL", "END", "QUIT", "OPTOUT"];
     const normalizedText = text.trim().toUpperCase();
@@ -50,7 +52,7 @@ export async function POST(req: NextRequest) {
       const { data: client } = await supabase
         .from("clients")
         .select("id, coach_id, full_name")
-        .eq("whatsapp_number", from)
+        .eq("whatsapp_number", normalizedFrom)
         .single();
 
       if (client) {
@@ -82,7 +84,7 @@ export async function POST(req: NextRequest) {
     const { data: client } = await supabase
       .from("clients")
       .select("id, coach_id, full_name")
-      .eq("whatsapp_number", from)
+      .eq("whatsapp_number", normalizedFrom)
       .single();
 
     if (!client) {
