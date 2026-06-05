@@ -151,51 +151,43 @@ export async function POST(request: NextRequest) {
     const receivedSig = request.headers.get('x-webhook-signature');
 
     if (kapsoSecret && receivedSig) {
-      const expectedSig = 'sha256=' + crypto
+      const expectedSig = crypto
         .createHmac('sha256', kapsoSecret)
         .update(rawBody)
         .digest('hex');
 
       if (expectedSig !== receivedSig) {
-        // Log but return 200 to prevent Kapso retries during debugging
         console.error('[Kapso] Signature mismatch — expected:', expectedSig, 'received:', receivedSig);
-        return NextResponse.json({ ok: true }, { status: 200 });
       }
     }
 
-    // Always return 200 for test payloads immediately
+    // Always 200 for test payloads
     if (payload.test === true) {
-      console.log('[Kapso] Test payload acknowledged');
+      console.log('[Kapso] Test acknowledged');
       return NextResponse.json({ ok: true }, { status: 200 });
     }
 
-    // Only process inbound text messages
     const msg = payload.message;
     if (!msg) {
       return NextResponse.json({ ok: true, ignored: true }, { status: 200 });
     }
 
-    const direction = msg?.kapso?.direction;
-    if (direction === 'inbound') {
-      // Normalise phone number to E.164
+    if (msg?.kapso?.direction === 'inbound' && msg.type === 'text' && msg?.text?.body) {
       const rawFrom = (msg.from || '').replace(/\s/g, '');
       const from = rawFrom.startsWith('+') ? rawFrom : `+${rawFrom}`;
 
-      // Only process text messages
-      if (msg.type === 'text' && msg?.text?.body) {
-        console.log('[Kapso] Inbound text message', { from, body: msg.text.body });
-        
-        try {
-          await handleInboundMessage({
-            from,
-            body: msg.text.body,
-            messageId: msg.id,
-            phoneNumberId: payload.phone_number_id,
-            timestamp: msg.timestamp
-          });
-        } catch (err) {
-          console.error('[Kapso] handleInboundMessage error:', JSON.stringify(err, Object.getOwnPropertyNames(err)));
-        }
+      console.log('[Kapso] Inbound message from:', from);
+      
+      try {
+        await handleInboundMessage({
+          from,
+          body: msg.text.body,
+          messageId: msg.id,
+          phoneNumberId: payload.phone_number_id,
+          timestamp: msg.timestamp
+        });
+      } catch (err) {
+        console.error('[Kapso] Handler error:', JSON.stringify(err, Object.getOwnPropertyNames(err)));
       }
     }
 
