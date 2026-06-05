@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthenticatedCoach } from "@/lib/auth";
+import { encryptPhone, decryptPhone } from "@/lib/crypto";
 
 // GET /api/clients — List all clients with enriched enrollment + check-in data
 export async function GET(request: NextRequest) {
@@ -96,6 +97,7 @@ export async function GET(request: NextRequest) {
 
         return {
             ...clientBase,
+            whatsapp_number: decryptPhone(clientBase.whatsapp_number),
             program_name: programName,
             start_date: startDate,
             end_date: endDate,
@@ -144,7 +146,7 @@ export async function POST(request: NextRequest) {
         .insert({
             coach_id: coachId!,
             full_name,
-            whatsapp_number,
+            whatsapp_number: encryptPhone(whatsapp_number),
             email,
             age: age || null,
             primary_goal: primary_goal || null,
@@ -156,6 +158,10 @@ export async function POST(request: NextRequest) {
 
     if (dbError) {
         return NextResponse.json({ error: dbError.message }, { status: 500 });
+    }
+
+    if (data && data.whatsapp_number) {
+        data.whatsapp_number = decryptPhone(data.whatsapp_number);
     }
 
     return NextResponse.json(data, { status: 201 });

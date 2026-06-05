@@ -5,6 +5,7 @@ import { checkClientLimit } from "@/lib/plans/check-limit";
 import { isTrialExpired } from "@/lib/plans/trial";
 import { withRateLimit } from "@/lib/with-rate-limit";
 import { logRequest, logError } from "@/lib/loggerHelpers";
+import { encryptPhone } from "@/lib/crypto";
 
 // Zod schema for intake validation
 const intakeSchema = z.object({
@@ -192,7 +193,7 @@ export async function POST(request: NextRequest) {
                 {
                     coach_id: coach.id,
                     full_name,
-                    whatsapp_number,
+                    whatsapp_number: encryptPhone(whatsapp_number),
                     email,
                     age,
                     primary_goal,

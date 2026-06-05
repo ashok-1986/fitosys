@@ -6,8 +6,11 @@ interface WhatsAppMessagePayload {
     message: string;
 }
 
+import { decryptPhone } from "../crypto";
+
 export async function sendWhatsAppMessage(payload: WhatsAppMessagePayload): Promise<void> {
-    const normalizedPhone = payload.phone
+    const rawPhone = decryptPhone(payload.phone);
+    const normalizedPhone = rawPhone
         .replace(/\s+/g, "")
         .replace(/^\+/, "");
 

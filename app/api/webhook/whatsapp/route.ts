@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyWhatsappSignature } from "@/lib/webhook/verifyWhatsapp";
+import { encryptPhone } from "@/lib/crypto";
+import { alertWebhookFailure } from "@/lib/monitoring/security-alerts";
 import crypto from "crypto";
 
 // GET — Meta webhook verification
@@ -40,7 +42,7 @@ async function handleInboundMessage({
     const { data: client } = await supabase
       .from("clients")
       .select("id, coach_id, full_name")
-      .eq("whatsapp_number", normalizedFrom)
+      .eq("whatsapp_number", encryptPhone(normalizedFrom))
       .single();
 
     if (client) {
@@ -72,7 +74,7 @@ async function handleInboundMessage({
   const { data: client } = await supabase
     .from("clients")
     .select("id, coach_id, full_name")
-    .eq("whatsapp_number", normalizedFrom)
+    .eq("whatsapp_number", encryptPhone(normalizedFrom))
     .single();
 
   if (!client) {
@@ -161,11 +163,13 @@ export async function POST(request: NextRequest) {
 
       if (expectedBuf.length !== receivedBuf.length || !crypto.timingSafeEqual(expectedBuf, receivedBuf)) {
         console.error('[Kapso] Signature verification failed');
+        alertWebhookFailure("Kapso", "Invalid signature", { receivedSig });
         return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
       }
     } else if (kapsoSecret && !receivedSig) {
       // Secret is configured but no signature was sent — reject
       console.error('[Kapso] Missing X-Webhook-Signature header');
+      alertWebhookFailure("Kapso", "Missing signature header", {});
       return NextResponse.json({ error: 'Missing signature' }, { status: 401 });
     }
 
@@ -208,6 +212,7 @@ export async function POST(request: NextRequest) {
 
     if (!verifyWhatsappSignature(rawBody, signature)) {
       console.error("[WhatsApp] Invalid webhook signature");
+      alertWebhookFailure("Meta", "Invalid signature", { signature });
       return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
     }
 

@@ -33,6 +33,24 @@ A comprehensive 13-phase implementation plan has been created covering:
 
 See `CHANGELOG.md` for the latest updates and implementation status.
 
+### Environment Variables
+
+Fitosys requires several environment variables for production.
+For security compliance, PII such as WhatsApp numbers are encrypted at rest using DPDP-compliant encryption.
+
+- `ENCRYPTION_KEY`: A 32-byte hex string used for deterministic AES-256-CBC encryption of WhatsApp numbers and other PII. Ensure this is rotated according to policy.
+- `AXIOM_TOKEN`: API token for Axiom log aggregation.
+- `AXIOM_DATASET`: Dataset name for Axiom log aggregation (e.g. `fitosys_production`).
+
+### Security & CI Checks
+
+This project enforces strict security checks in the CI/CD pipeline and locally:
+
+- **WAF & Edge Protection**: Vercel Web Application Firewall (WAF) is active at the edge, providing the primary defense against DDoS attacks, SQL injection (SQLi), and cross-site scripting (XSS) before requests hit the application logic.
+- **Secret Scanning**: We use `detect-secrets` via Husky pre-commit hooks to prevent credentials from being committed locally. GitHub Actions (`.github/workflows/security.yml`) also scans for secrets on every PR and push.
+- **Dependency Auditing**: `npm audit` is enforced in the GitHub Actions pipeline, blocking deployments if high/critical vulnerabilities are detected.
+- **Database Connections**: The application connects to Supabase exclusively via the PostgREST HTTP API using `@supabase/supabase-js`, which natively manages connection pooling on the Supabase infrastructure side. No direct PostgreSQL connections are exposed or used by the Next.js app, eliminating pool exhaustion risks at the edge.
+
 ## Getting Started
 
 First, run the development server:

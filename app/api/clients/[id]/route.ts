@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthenticatedCoach } from "@/lib/auth";
+import { encryptPhone, decryptPhone } from "@/lib/crypto";
 
 // GET /api/clients/:id — Get full client profile
 export async function GET(
@@ -63,6 +64,10 @@ export async function GET(
         status: enrollmentRes.data.status,
     } : null;
 
+    if (clientRes.data && clientRes.data.whatsapp_number) {
+        clientRes.data.whatsapp_number = decryptPhone(clientRes.data.whatsapp_number);
+    }
+
     return NextResponse.json({
         client: clientRes.data,
         enrollment: enrollmentData,
@@ -95,6 +100,10 @@ export async function PUT(
         if (key in body) updates[key] = body[key];
     }
 
+    if (updates.whatsapp_number) {
+        updates.whatsapp_number = encryptPhone(updates.whatsapp_number as string);
+    }
+
     const { data, error: dbError } = await supabase!
         .from("clients")
         .update(updates)
@@ -107,5 +116,45 @@ export async function PUT(
         return NextResponse.json({ error: dbError.message }, { status: 500 });
     }
 
+    if (data && data.whatsapp_number) {
+        data.whatsapp_number = decryptPhone(data.whatsapp_number);
+    }
+
     return NextResponse.json(data);
+}
+
+// DELETE /api/clients/:id — Delete a client and log the action
+export async function DELETE(
+    request: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
+) {
+    const { coachId, supabase, error } = await getAuthenticatedCoach();
+    if (error) return error;
+
+    const { id } = await params;
+
+    // We use the service client for audit log insertion to bypass any RLS restrictions if needed, 
+    // but the policy allows authenticated users to insert their own logs.
+    const { error: dbError } = await supabase!
+        .from("clients")
+        .delete()
+        .eq("id", id)
+        .eq("coach_id", coachId!);
+
+    if (dbError) {
+        return NextResponse.json({ error: dbError.message }, { status: 500 });
+    }
+
+    // Insert audit log
+    await supabase!
+        .from("audit_logs")
+        .insert({
+            coach_id: coachId!,
+            client_id: id,
+            action: "delete",
+            target_table: "clients",
+            record_id: id,
+        });
+
+    return NextResponse.json({ success: true });
 }

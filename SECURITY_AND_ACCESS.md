@@ -592,7 +592,19 @@ All environment files except `.env.example` are excluded from version control.
 - **Resolution:** Key rotated, `.env.local` updated, Vercel env vars refreshed, documentation cleaned
 - **Outcome:** Security guides created, breach response procedure documented
 
-### 10.5 Secret Detection
+### 10.5 API Key Lifecycle & Rotation
+
+| Key / Secret | Rotation Cadence | Rotation Procedure | Update Locations |
+|--------------|------------------|--------------------|------------------|
+| `SUPABASE_SERVICE_ROLE_KEY` | 90 days (Recommended) | Generate new key via Supabase Dashboard (Project Settings > API) | Vercel Environment Variables |
+| `SUPABASE_JWT_SECRET` | 90 days (Recommended) | Generate new secret via Supabase Dashboard | Vercel Environment Variables |
+| `RAZORPAY_KEY_SECRET` | Manual / Breach | Generate new key via Razorpay Dashboard (Settings > API Keys) | Vercel Environment Variables |
+| `RAZORPAY_WEBHOOK_SECRET` | Manual / Breach | Update secret in Razorpay Dashboard (Settings > Webhooks) | Vercel Environment Variables, Razorpay Dashboard |
+| `WHATSAPP_ACCESS_TOKEN` | 60 days (System User) | Generate new token via Meta App Dashboard (System Users) | Vercel Environment Variables |
+| `ENCRYPTION_KEY` | Manual / Breach | Generate new 32-byte hex string. **Requires full data decryption with old key and re-encryption with new key before deploying!** | Vercel Environment Variables |
+| `CRON_SECRET` | Manual | Generate new secure random string | Vercel Environment Variables |
+
+### 10.6 Secret Detection
 
 To mitigate incidents like the past exposed Supabase key, automated secret scanning and CI checks must be implemented:
 1. Install and configure `detect-secrets` as a pre-commit hook (configure baseline and `detect-secrets scan` in the repo, and add the hook to `.pre-commit-config.yaml`).
@@ -783,6 +795,16 @@ Every P0/P1 incident generates:
 2. Updated security controls to prevent recurrence
 3. Test to verify the fix
 4. Timeline record for compliance
+
+### 13.5 Automated Alerting Rules (Axiom)
+
+To automate breach notifications, configure the following monitor in Axiom:
+
+**Rule Name:** Critical Security Alert
+**Query:** `['fitosys_production'] | where event == "security_alert" and priority == "critical"`
+**Threshold:** `> 0` hits in `5m` window
+**Action:** Webhook to Slack/Discord `#security-alerts` channel
+**Description:** Triggers immediate pager duty or high-priority notifications when critical encryption/decryption or authorization bypass errors occur.
 
 ---
 

@@ -50,14 +50,17 @@ export interface WhatsAppSendResult {
 // Core send function
 // ---------------------------------------------------------------------------
 
+import { decryptPhone } from "../crypto";
+
 async function sendTemplate(
   phone: string,
   templateName: string,
   bodyValues: string[]
 ): Promise<WhatsAppSendResult> {
+  const rawPhone = decryptPhone(phone);
   // Normalize to E.164 without + sign
   // Meta Cloud API expects: 919876543210 (no + prefix)
-  const normalizedPhone = phone.replace(/\s+/g, "").replace(/^\+/, "");
+  const normalizedPhone = rawPhone.replace(/\s+/g, "").replace(/^\+/, "");
 
   const payload: MetaTemplatePayload = {
     messaging_product: "whatsapp",
@@ -66,7 +69,7 @@ async function sendTemplate(
     template: {
       name: templateName,
       language: {
-        code: "en",
+        code: "en_US",
       },
       components: [
         {

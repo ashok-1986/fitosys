@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { logError, logRequest } from "@/lib/loggerHelpers";
 import { verifyRazorpaySignature } from "@/lib/webhook/verifyRazorpay";
+import { alertWebhookFailure } from "@/lib/monitoring/security-alerts";
 
 const RAZORPAY_WEBHOOK_IPS = [
     "52.74.43.81",
@@ -30,6 +31,7 @@ export async function POST(req: NextRequest) {
         const isValid = verifyRazorpaySignature(body, signature);
         if (!isValid) {
             logError("Invalid signature", "razorpay-webhook");
+            alertWebhookFailure("Razorpay", "Invalid signature", { signature });
             return NextResponse.json(
                 { error: "Invalid signature" },
                 { status: 400 }

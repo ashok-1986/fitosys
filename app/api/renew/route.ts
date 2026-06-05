@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { decryptPhone } from "@/lib/crypto";
 
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
@@ -77,7 +78,7 @@ export async function GET(req: NextRequest) {
         enrollment_id: enrollmentId,
         client_name: client?.full_name || "Client",
         coach_name: coach?.full_name || "Coach",
-        coach_whatsapp: coach?.whatsapp_number || null,
+        coach_whatsapp: coach?.whatsapp_number ? decryptPhone(coach.whatsapp_number) : null,
         program_name: program?.name || "Program",
         program_duration_weeks: program?.duration_weeks || 0,
         end_date: enrollment.end_date,

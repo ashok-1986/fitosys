@@ -8,6 +8,7 @@ import { loginRateLimit, signupRateLimit } from "@/lib/rate-limit";
 import { logError, logEvent } from "@/lib/loggerHelpers";
 import { generateUniqueSlug } from "@/lib/slug";
 import { getAllowedRedirectUrl } from "@/lib/auth/getAllowedRedirectUrl";
+import { alertAuthFailure } from "@/lib/monitoring/security-alerts";
 
 export type AuthResult =
   | { success: true }
@@ -58,6 +59,7 @@ export async function loginAction(formData: FormData): Promise<AuthResult> {
 
     if (error) {
       logEvent("auth.login.failed", { ip, reason: error.message });
+      alertAuthFailure(email, error.message, ip);
       return {
         success: false,
         error: "Invalid email or password.",

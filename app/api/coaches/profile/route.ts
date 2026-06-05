@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAuthenticatedCoach } from "@/lib/auth";
+import { encryptPhone, decryptPhone } from "@/lib/crypto";
 
 // GET /api/coaches/profile — Get current coach profile
 export async function GET() {
@@ -14,6 +15,10 @@ export async function GET() {
 
     if (dbError) {
         return NextResponse.json({ error: dbError.message }, { status: 500 });
+    }
+
+    if (data && data.whatsapp_number) {
+        data.whatsapp_number = decryptPhone(data.whatsapp_number);
     }
 
     return NextResponse.json(data);
@@ -43,6 +48,10 @@ export async function PUT(request: Request) {
         if (key in body) updates[key] = body[key];
     }
 
+    if (updates.whatsapp_number) {
+        updates.whatsapp_number = encryptPhone(updates.whatsapp_number as string);
+    }
+
     const { data, error: dbError } = await supabase!
         .from("coaches")
         .update(updates)
@@ -52,6 +61,10 @@ export async function PUT(request: Request) {
 
     if (dbError) {
         return NextResponse.json({ error: dbError.message }, { status: 500 });
+    }
+
+    if (data && data.whatsapp_number) {
+        data.whatsapp_number = decryptPhone(data.whatsapp_number);
     }
 
     return NextResponse.json(data);

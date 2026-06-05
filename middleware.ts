@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { globalRateLimit } from "@/lib/middleware-rate-limit";
 
 export async function middleware(request: NextRequest) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -13,6 +14,19 @@ export async function middleware(request: NextRequest) {
             return NextResponse.redirect(url);
         }
         return NextResponse.next();
+    }
+
+    // Apply global rate limiting to all /api routes (except those excluded in matcher)
+    if (request.nextUrl.pathname.startsWith("/api") && globalRateLimit) {
+        const ip = request.headers.get("x-forwarded-for") ?? "unknown";
+        const { success } = await globalRateLimit.limit(ip);
+        if (!success) {
+            console.warn(`[middleware] Global API rate limit exceeded for IP: ${ip}`);
+            return NextResponse.json(
+                { error: "Too many requests" },
+                { status: 429 }
+            );
+        }
     }
 
     let supabaseResponse = NextResponse.next({ request });
