@@ -156,9 +156,17 @@ export async function POST(request: NextRequest) {
         .update(rawBody)
         .digest('hex');
 
-      if (expectedSig !== receivedSig) {
-        console.error('[Kapso] Signature mismatch — expected:', expectedSig, 'received:', receivedSig);
+      const expectedBuf = Buffer.from(expectedSig, 'hex');
+      const receivedBuf = Buffer.from(receivedSig, 'hex');
+
+      if (expectedBuf.length !== receivedBuf.length || !crypto.timingSafeEqual(expectedBuf, receivedBuf)) {
+        console.error('[Kapso] Signature verification failed');
+        return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
       }
+    } else if (kapsoSecret && !receivedSig) {
+      // Secret is configured but no signature was sent — reject
+      console.error('[Kapso] Missing X-Webhook-Signature header');
+      return NextResponse.json({ error: 'Missing signature' }, { status: 401 });
     }
 
     // Always 200 for test payloads
