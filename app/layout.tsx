@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Urbanist, Barlow_Condensed } from "next/font/google";
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Providers } from "@/components/providers";
 import { Nav } from "@/components/layout/Nav";
 import { Footer } from "@/components/layout/Footer";
@@ -111,6 +112,7 @@ export default async function RootLayout({
           </main>
           {!isShellRoute && <Footer />}
         </Providers>
+        <SpeedInsights />
       </body>
     </html>
   );
