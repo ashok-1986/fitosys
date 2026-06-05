@@ -272,7 +272,10 @@ Configured in `next.config.ts:31-34`:
 | `connect-src` | `'self' *.supabase.co wss://*.supabase.co api.razorpay.com checkout.razorpay.com graph.facebook.com connect.facebook.net` | API calls, WebSocket, payments, WA |
 | `frame-src` | `'self' api.razorpay.com checkout.razorpay.com` | Payment iframe |
 
-**Known tradeoff:** `'unsafe-inline'` and `'unsafe-eval'` are required for Razorpay checkout SDK. Nonce-based CSP is deferred.
+**Known tradeoff & Remediation:** `'unsafe-inline'` and `'unsafe-eval'` are currently used for Razorpay checkout SDK, which weakens XSS protections.
+1. Research Razorpay checkout SDK support for nonce-based CSP. If supported, change the `script-src` entry to a nonce-based approach.
+2. If nonce support is not immediately available, a concrete migration deadline must be set (see section 15.1) and tracked as a remediation task.
+3. **Interim Mitigation:** Strengthen XSS defenses by mandating strict input sanitization and output encoding across code paths that interact with the payment widget, and add server-side CSP-report-only monitoring to capture violations.
 
 ### 5.2 Other Security Headers
 
@@ -591,10 +594,11 @@ All environment files except `.env.example` are excluded from version control.
 
 ### 10.5 Secret Detection
 
-Recommended tools (documented but not yet integrated into CI):
-- GitHub Secret Scanning (enabled by default for public repos)
-- GitGuardian (recommended for proactive monitoring)
-- `detect-secrets` (pre-commit hook recommended)
+To mitigate incidents like the past exposed Supabase key, automated secret scanning and CI checks must be implemented:
+1. Install and configure `detect-secrets` as a pre-commit hook (configure baseline and `detect-secrets scan` in the repo, and add the hook to `.pre-commit-config.yaml`).
+2. Enable GitHub Secret Scanning push protection in repository settings.
+3. Integrate GitGuardian (or similar) as a proactive monitor for pushes/PRs.
+4. Add `npm audit` to the CI workflow (e.g., include `npm ci && npm audit --audit-level=moderate` as a job step) so secret scanning and dependency vulnerability checks run automatically on pushes/PRs.
 
 ---
 
@@ -607,10 +611,20 @@ Recommended tools (documented but not yet integrated into CI):
 | Coach email | Authentication, communication | `coaches.email` | At-rest (Supabase) + In-transit (TLS) |
 | Coach WhatsApp number | Outbound notifications | `coaches.whatsapp_number` | At-rest (Supabase) |
 | Client full name | Program delivery | `clients.full_name` | At-rest (Supabase) |
-| Client WhatsApp number | Check-in messaging | `clients.whatsapp_number` | **Plaintext** (known gap) |
+| Client WhatsApp number | Check-in messaging | `clients.whatsapp_number` | **Active Remediation Planned** (see below) |
 | Client email | Communication | `clients.email` | At-rest (Supabase) |
 | Client age/health data | Program customization | `clients.age`, `clients.health_notes` | At-rest (Supabase) |
 | Payment data | Billing | `payments.*` | At-rest (Supabase) |
+
+**Active Remediation Plan for `clients.whatsapp_number`**:
+- **Goal**: Implement PostgreSQL `pgcrypto` column-level encryption (add migration to enable pgcrypto and encrypt existing values).
+- **Deadline**: 30 days (tracked in section 15.1).
+- **Interim Mitigations**: Restrict service role key access and audit all queries that read this column to meet DPDP concerns (see section 14.1).
+- **Rollout Checklist**:
+  - [ ] Enable `pgcrypto` extension
+  - [ ] Run migration to encrypt existing plaintext values
+  - [ ] Update application queries
+- **Owner**: Backend Team
 
 ### 11.2 Data Classification
 
@@ -702,6 +716,13 @@ This provides a full audit trail of all WhatsApp communications.
 - No alerting rules on error rate thresholds
 - No dashboard for real-time security event monitoring
 - No automated anomaly detection on auth/signup patterns
+
+#### Minimum Viable Solution (High Priority - See 15.2)
+To address these gaps, the following actions are required:
+1. Integrate a centralized log aggregation service (e.g., Axiom, Logtail, or Betterstack).
+2. Implement basic alerting rules for auth failure rate spikes, payment verification failures, RLS policy violations, and webhook signature failures.
+3. Add real-time security event dashboards.
+4. Add simple anomaly detection on auth/signup patterns.
 
 ---
 
@@ -824,21 +845,23 @@ Every P0/P1 incident generates:
 
 ### 15.1 Critical / High Priority
 
-| # | Gap | Impact | Target |
-|---|-----|--------|--------|
-| 1 | CSP `'unsafe-inline'` and `'unsafe-eval'` | CSP bypass possible for XSS | Migrate to nonce-based CSP |
-| 2 | No automated dependency scanning | Unknown vulnerable deps | Add `npm audit` / Snyk to CI |
-| 3 | No automated secret scanning | Secrets could be committed undetected | Add pre-commit hook (`detect-secrets`) |
-| 4 | WhatsApp numbers stored in plaintext | PII exposure risk | Implement column-level encryption (pgcrypto) |
+| # | Gap | Impact | Target | Owner |
+|---|-----|--------|--------|-------|
+| 1 | CSP `'unsafe-inline'` and `'unsafe-eval'` | CSP bypass possible for XSS | 90 days | Security Team |
+| 2 | No automated dependency scanning | Unknown vulnerable deps | 90 days | DevOps |
+| 3 | No automated secret scanning | Secrets could be committed undetected | 90 days | DevOps |
+| 4 | WhatsApp numbers stored in plaintext | PII exposure risk | 30 days | Backend Team |
+| 5 | No log aggregation/alerting (Promoted to High priority) | Blind to attacks in progress | 90 days | DevOps |
 
 ### 15.2 Medium Priority
 
-| # | Gap | Impact | Target |
-|---|-----|--------|--------|
-| 5 | No log aggregation/alerting | Blind to attacks in progress | Add Axiom/Logtail + alert rules |
-| 6 | No centralized rate limiting at middleware level | Some routes may lack coverage | Move rate limiting to middleware pattern |
-| 7 | Service role key rotation not automated | Stale keys increase blast radius | 90-day rotation reminder |
-| 8 | No PgBouncer/connection pooling | Connection exhaustion risk | Enable Supabase connection pooling |
+| # | Gap | Impact | Target | Owner |
+|---|-----|--------|--------|-------|
+| 6 | No centralized rate limiting at middleware level | Some routes may lack coverage | TBD | Backend Team |
+| 7 | Service role key rotation not automated | Stale keys increase blast radius | 90-day reminder | Security Team |
+| 8 | No PgBouncer/connection pooling | Connection exhaustion risk | TBD | DevOps |
+
+*Note: For project tracking, create GitHub issues with milestones for each row above (e.g., reference each issue by row number like "#5") so owners can be assigned and progress tracked.*
 
 ### 15.3 Low Priority / Nice-to-Have
 

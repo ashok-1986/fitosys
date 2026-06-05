@@ -121,11 +121,16 @@ export async function POST(request: NextRequest) {
 
             // Send via WhatsApp
             try {
+    const cleanSummaryText = summaryText
+        .replace(/\n+/g, ' ')
+        .replace(/\s{2,}/g, ' ')
+        .trim();
+
     await sendCoachWeeklySummary(
         coach.whatsapp_number,
         coach.full_name.split(" ")[0],
         weekEndStr,
-        summaryText
+        cleanSummaryText
     );
 } catch (waErr) {
     console.error(`[Cron/Summaries] WhatsApp failed for ${coach.full_name}:`, waErr);

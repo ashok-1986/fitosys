@@ -59,14 +59,16 @@ export async function POST(req: Request) {
                     started_at: new Date().toISOString(),
                 };
 
-                const { data: updatedRows } = await supabase
+                const { error: upsertError } = await supabase
                     .from("subscriptions")
-                    .update(subscriptionRecord)
-                    .eq("gateway_payment_id", subscription.id)
-                    .select("id");
+                    .upsert(subscriptionRecord, { onConflict: "gateway_payment_id" });
 
-                if (!updatedRows || updatedRows.length === 0) {
-                    await supabase.from("subscriptions").insert(subscriptionRecord);
+                if (upsertError) {
+                    console.error("[Subscription Webhook] Upsert error:", upsertError);
+                    return NextResponse.json(
+                        { error: "Failed to update subscription" },
+                        { status: 500 }
+                    );
                 }
 
                 // Update coach plan
