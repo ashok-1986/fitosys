@@ -132,97 +132,106 @@ async function handleInboundMessage({
 
 // POST — Incoming client replies from Meta Cloud API
 export async function POST(request: NextRequest) {
+  // Read raw body first — required for signature verification
+  const rawBody = await request.text();
+
+  let payload: any;
   try {
-    const rawBody = await request.text();
-    
-    let payload: any;
-    try {
-      payload = JSON.parse(rawBody);
-    } catch {
-      return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+    payload = JSON.parse(rawBody);
+  } catch {
+    return NextResponse.json({ ok: true, ignored: true }, { status: 200 });
+  }
+
+  // Detect Kapso payload by presence of message.kapso field
+  const isKapso = payload?.message?.kapso !== undefined;
+
+  if (isKapso) {
+    // Verify X-Webhook-Signature from Kapso
+    const kapsoSecret = process.env.KAPSO_WEBHOOK_SECRET;
+    const receivedSig = request.headers.get('x-webhook-signature');
+
+    if (kapsoSecret && receivedSig) {
+      const expectedSig = 'sha256=' + crypto
+        .createHmac('sha256', kapsoSecret)
+        .update(rawBody)
+        .digest('hex');
+
+      if (expectedSig !== receivedSig) {
+        // Log but return 200 to prevent Kapso retries during debugging
+        console.error('[Kapso] Signature mismatch — expected:', expectedSig, 'received:', receivedSig);
+        return NextResponse.json({ ok: true }, { status: 200 });
+      }
     }
 
-    // Detect source — Kapso payloads have message.kapso field
-    const isKapso = payload?.message?.kapso !== undefined;
+    // Always return 200 for test payloads immediately
+    if (payload.test === true) {
+      console.log('[Kapso] Test payload acknowledged');
+      return NextResponse.json({ ok: true }, { status: 200 });
+    }
 
-    if (isKapso) {
-      // Verify Kapso signature using X-Webhook-Signature header
-      const kapsoSecret = process.env.KAPSO_WEBHOOK_SECRET;
-      const receivedSig = request.headers.get('x-webhook-signature');
+    // Only process inbound text messages
+    const msg = payload.message;
+    if (!msg) {
+      return NextResponse.json({ ok: true, ignored: true }, { status: 200 });
+    }
 
-      if (kapsoSecret && receivedSig) {
-        const expectedSig = 'sha256=' + crypto
-          .createHmac('sha256', kapsoSecret)
-          .update(rawBody)
-          .digest('hex');
+    const direction = msg?.kapso?.direction;
+    if (direction === 'inbound') {
+      // Normalise phone number to E.164
+      const rawFrom = (msg.from || '').replace(/\s/g, '');
+      const from = rawFrom.startsWith('+') ? rawFrom : `+${rawFrom}`;
 
-        if (expectedSig !== receivedSig) {
-          console.error('[Kapso] Signature mismatch', { expectedSig, receivedSig });
-          return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
+      // Only process text messages
+      if (msg.type === 'text' && msg?.text?.body) {
+        console.log('[Kapso] Inbound text message', { from, body: msg.text.body });
+        
+        try {
+          await handleInboundMessage({
+            from,
+            body: msg.text.body,
+            messageId: msg.id,
+            phoneNumberId: payload.phone_number_id,
+            timestamp: msg.timestamp
+          });
+        } catch (err) {
+          console.error('[Kapso] handleInboundMessage error:', JSON.stringify(err, Object.getOwnPropertyNames(err)));
         }
       }
-
-      // Return 200 immediately for test payloads
-      if (payload.test === true) {
-        console.log('[Kapso] Test webhook received — acknowledged');
-        return NextResponse.json({ success: true }, { status: 200 });
-      }
-
-      const msg = payload.message;
-      const direction = msg?.kapso?.direction;
-
-      if (direction === 'inbound' && msg?.text?.body) {
-        // Normalise phone number to E.164 format
-        const rawFrom = msg.from?.replace(/\s/g, '') || '';
-        const from = rawFrom.startsWith('+') ? rawFrom : `+${rawFrom}`;
-        const messageText = msg.text.body;
-        const phoneNumberId = payload.phone_number_id;
-
-        console.log('[Kapso] Inbound message received', { from, messageText, phoneNumberId });
-
-        // Call your existing inbound handler
-        await handleInboundMessage({
-          from,
-          body: messageText,
-          messageId: msg.id,
-          phoneNumberId,
-          timestamp: msg.timestamp
-        });
-      }
-
-      return NextResponse.json({ success: true }, { status: 200 });
-
-    } else {
-      // Existing Meta direct verification and handling — keep unchanged
-      const signature = request.headers.get("x-hub-signature-256");
-
-      if (!verifyWhatsappSignature(rawBody, signature)) {
-        console.error("[WhatsApp] Invalid webhook signature");
-        return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
-      }
-
-      const message = payload?.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
-
-      if (!message || message.type !== "text") {
-        return NextResponse.json({ status: "ignored" });
-      }
-
-      const from: string = message.from;
-      const text: string = message.text?.body;
-
-      if (!from || !text) {
-        return NextResponse.json({ status: "invalid_data" });
-      }
-
-      await handleInboundMessage({
-        from,
-        body: text,
-        messageId: message.id,
-        timestamp: message.timestamp
-      });
-
-      return NextResponse.json({ status: "ok" });
     }
+
+    return NextResponse.json({ ok: true }, { status: 200 });
+  }
+
+  // --- Existing Meta direct webhook handling below — do not change ---
+  try {
+    const signature = request.headers.get("x-hub-signature-256");
+
+    if (!verifyWhatsappSignature(rawBody, signature)) {
+      console.error("[WhatsApp] Invalid webhook signature");
+      return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+    }
+
+    const message = payload?.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
+
+    if (!message || message.type !== "text") {
+      return NextResponse.json({ status: "ignored" });
+    }
+
+    const from: string = message.from;
+    const text: string = message.text?.body;
+
+    if (!from || !text) {
+      return NextResponse.json({ status: "invalid_data" });
+    }
+
+    await handleInboundMessage({
+      from,
+      body: text,
+      messageId: message.id,
+      timestamp: message.timestamp
+    });
+
+    return NextResponse.json({ status: "ok" });
   } catch (error) {
     console.error("[WhatsApp] Webhook error:", error);
     // Return 200 even on error — Meta retries any non-200 response
