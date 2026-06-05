@@ -44,8 +44,9 @@ export async function POST(req: Request) {
                     periodEnd.setMonth(periodEnd.getMonth() + 1);
                 }
 
-                // Create subscription record
-                await supabase.from("subscriptions").insert({
+                // Promote the row created by /api/subscriptions/create to active.
+                // Insert only if the webhook somehow arrives before that row exists.
+                const subscriptionRecord = {
                     coach_id: coachId,
                     plan: targetPlan,
                     billing_cycle: billingCycle,
@@ -56,7 +57,17 @@ export async function POST(req: Request) {
                     current_period_start: now.toISOString().split("T")[0],
                     current_period_end: periodEnd.toISOString().split("T")[0],
                     started_at: new Date().toISOString(),
-                });
+                };
+
+                const { data: updatedRows } = await supabase
+                    .from("subscriptions")
+                    .update(subscriptionRecord)
+                    .eq("gateway_payment_id", subscription.id)
+                    .select("id");
+
+                if (!updatedRows || updatedRows.length === 0) {
+                    await supabase.from("subscriptions").insert(subscriptionRecord);
+                }
 
                 // Update coach plan
                 const planLimit = getPlanLimit(targetPlan);

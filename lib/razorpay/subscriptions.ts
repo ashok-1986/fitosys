@@ -23,7 +23,7 @@ export async function createRazorpaySubscription({ planName, coachId, coachEmail
         total_count: 120,
         customer_notify: 1,
         quantity: 1,
-        notes: { coach_id: coachId, plan: planName }
+        notes: { coach_id: coachId, plan: planName, target_plan: planName, billing_cycle: "monthly" }
     });
 
     return subscription;
