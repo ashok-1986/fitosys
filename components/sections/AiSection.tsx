@@ -20,7 +20,7 @@ function useTypewriter(text: string, speed = 30, startDelay = 0) {
         }
 
         let i = 0;
-        let interval: NodeJS.Timeout | undefined;
+        let interval: ReturnType<typeof setInterval> | undefined;
         const timeout = setTimeout(() => {
             interval = setInterval(() => {
                 setDisplayed(text.slice(0, i + 1));

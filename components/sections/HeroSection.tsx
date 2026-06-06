@@ -103,35 +103,35 @@ export function HeroSection() {
                     <div className="relative w-full flex flex-col items-center z-10">
 
                         {/* Float card 1: Response Rate (Top Right) */}
-                        <div className="absolute top-[12%] -right-[12%] bg-[var(--surface)] border border-[var(--border)] rounded-xl py-4 px-5 min-w-[190px] z-20 shadow-2xl animate-[float_4s_ease-in-out_infinite] hidden lg:block">
+                        <div className="absolute top-[12%] -right-[12%] bg-[#161616] border border-[rgba(255,255,255,0.08)] rounded-xl py-4 px-5 min-w-[190px] z-20 shadow-2xl animate-[float_4s_ease-in-out_infinite] hidden lg:block">
                             <div className="font-sans text-[10px] font-bold uppercase tracking-[0.12em] text-[var(--grey)] mb-[6px]">This Week's Response Rate</div>
-                            <div className="font-display font-medium text-[28px] leading-none tracking-[0.02em] text-[var(--red)]">73<span className="text-[20px]">%</span></div>
-                            <div className="font-sans text-[11px] text-[var(--grey)] mt-[3px]">22 of 30 clients checked in</div>
+                            <div className="font-display font-medium text-[28px] leading-none tracking-[0.02em] text-[#E8001D]">73<span className="text-[20px]">%</span></div>
+                            <div className="font-sans text-[12px] text-[#888888] mt-[3px]">22 of 30 clients checked in</div>
                             <div className="h-[2px] bg-[rgba(255,255,255,0.06)] rounded-sm mt-[10px] overflow-hidden">
                                 <div className="h-full bg-[var(--red)] rounded-sm" style={{ width: '73%' }}></div>
                             </div>
                         </div>
 
                         {/* Float card 2: Renewal Alert (Bottom Left) */}
-                        <div className="absolute bottom-[18%] -left-[12%] bg-[var(--surface)] border border-[var(--border)] rounded-xl py-4 px-5 min-w-[180px] z-20 shadow-2xl animate-[float_3.5s_ease-in-out_infinite_reverse] hidden lg:block">
+                        <div className="absolute bottom-[18%] -left-[12%] bg-[#161616] border border-[rgba(232,0,29,0.2)] rounded-xl py-4 px-5 min-w-[180px] z-20 shadow-2xl animate-[float_3.5s_ease-in-out_infinite_reverse] hidden lg:block">
                             <div className="font-sans text-[10px] font-bold uppercase tracking-[0.12em] text-[var(--grey)] mb-[6px]">Renewal Alert</div>
-                            <div className="font-display font-medium text-[28px] leading-none tracking-[0.02em] text-[#F59E0B]">3 clients</div>
+                            <div className="font-display font-medium text-[28px] leading-none tracking-[0.02em] text-[#E8001D]">3 clients</div>
                             <div className="font-sans text-[11px] text-[var(--grey)] mt-[3px]">programs expiring in 7 days</div>
-                            <div className="font-sans text-[10px] font-bold uppercase tracking-[0.08em] text-[var(--red)] mt-[8px]">Reminders sent automatically ✓</div>
+                            <div className="font-sans text-[11px] font-bold uppercase tracking-[0.08em] text-[#25D366] mt-[8px]">Reminders sent automatically ✓</div>
                         </div>
 
                         {/* Tab Switcher */}
                         <div className="flex gap-[2px] bg-[#111111] border border-white/10 rounded-[40px] p-1 mb-4 relative z-20">
                             <button
                                 onClick={() => setActiveTab("client")}
-                                className={`font-sans font-bold text-[11px] uppercase tracking-[0.08em] px-5 py-2 rounded-[36px] transition-all duration-250 ${activeTab === "client" ? "bg-[#25D366] text-white" : "bg-transparent text-[#888888] hover:text-white"
+                                className={`font-sans font-bold text-[11px] uppercase tracking-[0.08em] px-5 py-2 rounded-[36px] transition-all duration-250 ${activeTab === "client" ? "bg-[#25D366] text-white" : "bg-transparent border border-[rgba(255,255,255,0.15)] text-[#888888] hover:text-white"
                                     }`}
                             >
                                 {activeTab === "client" ? "● " : "○ "}Client View
                             </button>
                             <button
                                 onClick={() => setActiveTab("dashboard")}
-                                className={`font-sans font-bold text-[11px] uppercase tracking-[0.08em] px-5 py-2 rounded-[36px] transition-all duration-250 ${activeTab === "dashboard" ? "bg-[#111111] text-white" : "bg-transparent text-[#888888] hover:text-white"
+                                className={`font-sans font-bold text-[11px] uppercase tracking-[0.08em] px-5 py-2 rounded-[36px] transition-all duration-250 ${activeTab === "dashboard" ? "bg-[#25D366] text-white" : "bg-transparent border border-[rgba(255,255,255,0.15)] text-[#888888] hover:text-white"
                                     }`}
                             >
                                 {activeTab === "dashboard" ? "● " : "○ "}Dashboard
@@ -139,7 +139,7 @@ export function HeroSection() {
                         </div>
 
                         {/* Phone Mockup Frame */}
-                        <div className="w-[300px] bg-[#1A1A1A] border border-white/10 rounded-[40px] p-[14px] shadow-[0_48px_96px_rgba(0,0,0,0.9)] relative z-10">
+                        <div className="w-[300px] bg-[#0A0A0A] border border-[rgba(255,255,255,0.08)] rounded-[16px] p-[14px] shadow-[0_48px_96px_rgba(0,0,0,0.9)] relative z-10">
 
                             {/* Inner Screen */}
                             <div className="relative rounded-[30px] overflow-hidden min-h-[500px] bg-[#0A0A0A]">
@@ -148,7 +148,7 @@ export function HeroSection() {
                                 <div className={`absolute inset-0 transition-opacity duration-300 ease-in-out ${activeTab === "client" ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"}`}>
 
                                     {/* WA Header */}
-                                    <div className="bg-[#075E54] p-[14px] flex items-center gap-[10px]">
+                                    <div className="bg-[#111111] p-[14px] flex items-center gap-[10px]">
                                         <div className="w-[36px] h-[36px] rounded-full bg-[var(--red)] flex items-center justify-center font-display font-medium text-[13px] text-white shrink-0">
                                             F
                                         </div>
@@ -156,32 +156,32 @@ export function HeroSection() {
                                             <div className="font-sans text-[13px] font-bold text-white leading-[1.2]">Fitosys Bot</div>
                                             <div className="font-sans text-[10px] text-[rgba(255,255,255,0.6)]">for Coach Priya · automated</div>
                                         </div>
-                                        <div className="ml-auto bg-[rgba(232,0,29,0.9)] text-white text-[9px] font-bold px-2 py-0.5 rounded-full tracking-[0.06em]">
+                                        <div className="ml-auto bg-[rgba(37,211,102,0.2)] text-[#25D366] border border-[rgba(37,211,102,0.3)] text-[10px] px-2 py-0.5 rounded-[2px] font-bold tracking-[0.06em]">
                                             AUTO
                                         </div>
                                     </div>
 
                                     {/* WA Body */}
-                                    <div className="bg-[#ECE5DD] p-[10px] flex flex-col gap-[8px] min-h-[440px]">
-                                        <div className="max-w-[84%] p-[8px_12px] text-[12px] leading-[1.5] text-[#333] rounded-lg bg-[#E8D5FF] self-start border-l-4 border-[var(--red)] reveal-slide-right" style={{ transitionDelay: '200ms' }}>
+                                    <div className="bg-[#111111] p-[10px] flex flex-col gap-[8px] min-h-[440px]">
+                                        <div className="max-w-[84%] p-[8px_12px] text-[12px] leading-[1.5] text-[#FFFFFF] rounded-[12px_12px_2px_12px] bg-[rgba(37,211,102,0.15)] border border-[rgba(37,211,102,0.25)] self-start reveal-slide-right" style={{ transitionDelay: '200ms' }}>
                                             <strong>Hi Anjali! 👋</strong><br />
                                             Weekly check-in from Coach Priya:<br /><br />
                                             1. Energy this week (1-10)?<br />
                                             2. Sessions completed?<br />
                                             3. One win? 💪
-                                            <div className="text-[9px] text-[#999] text-right mt-[2px]">Sun 7:00 PM · Auto-sent</div>
+                                            <div className="text-[11px] text-[rgba(255,255,255,0.35)] text-right mt-[2px]">Sun 7:00 PM · Auto-sent</div>
                                         </div>
-                                        <div className="max-w-[84%] p-[8px_12px] text-[12px] leading-[1.5] text-[#333] rounded-[8px_8px_0_8px] bg-[#DCF8C6] self-end shadow-sm reveal-slide-left" style={{ transitionDelay: '400ms' }}>
+                                        <div className="max-w-[84%] p-[8px_12px] text-[12px] leading-[1.5] text-[rgba(255,255,255,0.85)] rounded-[12px_12px_12px_2px] bg-[#1E1E1E] border border-[rgba(255,255,255,0.08)] self-end shadow-sm reveal-slide-left" style={{ transitionDelay: '400ms' }}>
                                             Energy 8/10, 4 sessions done. Win: ran 5km non-stop! 🏃
-                                            <div className="text-[9px] text-[#999] text-right mt-[2px]">Sun 8:14 PM</div>
+                                            <div className="text-[11px] text-[rgba(255,255,255,0.35)] text-right mt-[2px]">Sun 8:14 PM</div>
                                         </div>
-                                        <div className="max-w-[84%] p-[8px_12px] text-[12px] leading-[1.5] text-[#333] rounded-lg bg-[#E8D5FF] self-start border-l-4 border-[var(--red)] reveal-slide-right" style={{ transitionDelay: '600ms' }}>
+                                        <div className="max-w-[84%] p-[8px_12px] text-[12px] leading-[1.5] text-[#FFFFFF] rounded-[12px_12px_2px_12px] bg-[rgba(37,211,102,0.15)] border border-[rgba(37,211,102,0.25)] self-start reveal-slide-right" style={{ transitionDelay: '600ms' }}>
                                             Amazing Anjali! 🔥 5km is a huge milestone. Coach Priya will review this Wednesday.
-                                            <div className="text-[9px] text-[#999] text-right mt-[2px]">Sun 8:14 PM · AI-generated</div>
+                                            <div className="text-[11px] text-[rgba(255,255,255,0.35)] text-right mt-[2px]">Sun 8:14 PM · AI-generated</div>
                                         </div>
-                                        <div className="max-w-[84%] p-[8px_12px] text-[12px] leading-[1.5] text-[#333] rounded-[0_8px_8px_8px] bg-white self-start shadow-sm mt-1 reveal-slide-right" style={{ transitionDelay: '800ms' }}>
+                                        <div className="max-w-[84%] p-[8px_12px] text-[12px] leading-[1.5] text-[rgba(255,255,255,0.85)] rounded-[12px_12px_12px_2px] bg-[#1E1E1E] border border-[rgba(255,255,255,0.08)] self-end shadow-sm mt-1 reveal-slide-right" style={{ transitionDelay: '800ms' }}>
                                             Thank you! This system is so convenient 😊
-                                            <div className="text-[9px] text-[#999] text-right mt-[2px]">Sun 8:16 PM</div>
+                                            <div className="text-[11px] text-[rgba(255,255,255,0.35)] text-right mt-[2px]">Sun 8:16 PM</div>
                                         </div>
                                     </div>
                                 </div>

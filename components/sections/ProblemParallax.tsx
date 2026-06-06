@@ -1,7 +1,8 @@
 'use client';
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useReveal } from '@/hooks/useReveal';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 const IMG_PADDING = 12;
 
@@ -15,8 +16,8 @@ interface ProblemPanelProps {
 
 const ProblemPanel = ({ number, category, heading, body, statBadge }: ProblemPanelProps) => {
   return (
-    <div style={{ paddingLeft: IMG_PADDING, paddingRight: IMG_PADDING }}>
-      <div className="relative h-[150vh]">
+    <div style={{ paddingLeft: IMG_PADDING, paddingRight: IMG_PADDING, position: 'relative' }}>
+      <div className="relative" style={{ height: '150vh' }}>
         <StickyPanel number={number} />
         <OverlayContent
           number={number}
@@ -44,8 +45,8 @@ const StickyPanel = ({ number }: { number: string }) => {
     <motion.div
       ref={targetRef}
       style={{
-        height: `calc(100vh - ${IMG_PADDING * 2}px)`,
-        top: IMG_PADDING,
+        height: `calc(100svh - 24px)`,
+        top: '72px',
         scale,
         opacity,
         backgroundColor: 'var(--black)',
@@ -103,8 +104,7 @@ const OverlayContent = ({
     <motion.div
       ref={targetRef}
       style={{ y, opacity }}
-      className="absolute left-0 top-0 flex h-screen w-full flex-col items-start
-                 justify-center px-12 lg:px-24"
+      className="absolute inset-0 flex flex-col justify-center px-10 lg:px-20 pointer-events-none"
     >
       <div className="flex items-center gap-3 mb-6">
         <div className="w-8 h-[2px] bg-red-600" />
@@ -133,14 +133,17 @@ const OverlayContent = ({
       <h2
         style={{
           fontFamily: 'var(--fd)',
-          fontSize: 'clamp(40px, 6vw, 88px)',
+          fontSize: 'clamp(44px, 5.5vw, 80px)',
           fontWeight: 500,
           textTransform: 'uppercase',
           letterSpacing: '0.01em',
           lineHeight: 1.0,
           color: '#FFFFFF',
-          maxWidth: '700px',
-          marginBottom: '24px',
+          maxWidth: '640px',
+          marginBottom: '20px',
+          overflowWrap: 'normal',
+          wordBreak: 'keep-all',
+          whiteSpace: 'normal',
         }}
       >
         {heading}
@@ -245,9 +248,15 @@ const ProblemParallaxDesktop = ({ problems }: { problems: ProblemPanelProps[] })
 export default function ProblemParallax() {
   const headingRef = useReveal<HTMLHeadingElement>(0);
   const textRef = useReveal<HTMLParagraphElement>(100);
+  const isMobile = useMediaQuery('(max-width: 767px)');
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
-    <section id="problem" className="bg-[#0A0A0A]">
+    <section id="problem" className="bg-[#0A0A0A]" style={{ overflow: 'visible', position: 'relative' }}>
       {/* Section intro */}
       <div className="mx-auto max-w-[1200px] px-8 lg:px-16 pt-24 pb-12">
         <div className="flex items-center gap-3 mb-6">
@@ -261,7 +270,7 @@ export default function ProblemParallax() {
         </div>
         <h2
           ref={headingRef}
-          style={{ fontFamily: 'var(--fd)', whiteSpace: 'nowrap', overflowWrap: 'normal', wordBreak: 'keep-all' }}
+          style={{ fontFamily: 'var(--fd)', overflowWrap: 'normal', wordBreak: 'keep-all', whiteSpace: 'normal' }}
           className="reveal-on-scroll text-[48px] lg:text-[64px] xl:text-[80px] font-medium uppercase leading-none text-white mb-6"
         >
           Your coaching is excellent.
@@ -278,12 +287,11 @@ export default function ProblemParallax() {
         </p>
       </div>
 
-      <div className="block md:hidden">
+      {!mounted ? null : isMobile ? (
         <ProblemMobileCards problems={PROBLEMS} />
-      </div>
-      <div className="hidden md:block">
+      ) : (
         <ProblemParallaxDesktop problems={PROBLEMS} />
-      </div>
+      )}
     </section>
   );
 }
