@@ -1,15 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
-import { CheckCircle, Bell } from "lucide-react";
+import { CheckCircle } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { KineticText } from "@/components/ui/KineticText";
+import { MagneticButton } from "@/components/ui/MagneticButton";
+import { CursorSpotlight } from "@/components/ui/CursorSpotlight";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { useCounter } from "@/hooks/useCounter";
 
 export function HeroSection() {
-    const [activeTab, setActiveTab] = useState<"client" | "dashboard">("client");
+    const [activeTab, setActiveTab] = useState<"whatsapp" | "dashboard">("whatsapp");
+    const sectionRef = useRef<HTMLElement>(null);
+    const statRef = useRef<HTMLDivElement>(null);
+    
+    useScrollReveal(sectionRef);
+
+    const stat1 = useCounter(3, 1000, statRef);
+    const stat2 = useCounter(72000, 1200, statRef);
+    const stat3 = useCounter(30, 800, statRef);
 
     return (
-        <section className="relative pt-32 pb-20 lg:pt-44 lg:pb-32 overflow-hidden min-h-screen flex items-center">
+        <section ref={sectionRef} className="relative pt-[120px] pb-24 md:pt-[160px] md:pb-32 overflow-hidden border-b border-[var(--border)] min-h-[90vh] flex items-center">
+            <CursorSpotlight containerRef={sectionRef} />
+            <div className="max-w-[1400px] mx-auto px-4 md:px-12 w-full relative z-10">
             {/* Full-Screen Background Video */}
             <video
                 src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260306_074215_04640ca7-042c-45d6-bb56-58b1e8a42489.mp4"
@@ -30,21 +45,23 @@ export function HeroSection() {
                         <Eyebrow label="BUILT FOR INDIA'S COACHES · RUNS ON WHATSAPP" />
 
                         <h1 className="font-display font-medium uppercase tracking-[0.02em] leading-none text-[44px] md:text-[60px] lg:text-[80px]">
-                            <span className="block text-white">GOOD COACHES.</span>
-                            <span className="block text-[#E8001D]">LOST CLIENTS.</span>
+                            <KineticText as="span" className="block text-white" text="GOOD COACHES." delay={0} charDelay={40} />
+                            <KineticText as="span" className="block text-[#E8001D]" text="LOST CLIENTS." delay={200} charDelay={40} />
                         </h1>
 
-                        <p className="font-sans text-[20px] leading-[1.7] text-[var(--grey)] mb-10 max-w-[480px]">
+                        <p className="font-sans text-[20px] leading-[1.7] text-[var(--grey)] mb-10 max-w-[480px] reveal-fade-up" style={{ transitionDelay: '600ms' }}>
                             Fitosys automates your client check-ins, renewals, and onboarding — <strong>natively on WhatsApp</strong>. 30 minutes to set up. Runs every week without you.
                         </p>
 
                         <div className="flex flex-col sm:flex-row items-center gap-4 mb-4">
-                            <Link
-                                href="/signup"
-                                className="bg-[var(--red)] text-white px-8 py-[14px] text-[13px] font-bold uppercase tracking-[0.04em] hover:bg-[#C20000] border-2 border-[var(--red)] hover:border-[#C20000] transition-colors rounded-[2px] w-full sm:w-auto text-center"
-                            >
-                                Start Free
-                            </Link>
+                            <MagneticButton radius={60} strength={0.4} className="w-full sm:w-auto">
+                                <Link
+                                    href="/signup"
+                                    className="bg-[var(--red)] text-white px-8 py-[14px] text-[13px] font-bold uppercase tracking-[0.04em] hover:bg-[#C20000] border-2 border-[var(--red)] hover:border-[#C20000] transition-colors rounded-[2px] block text-center"
+                                >
+                                    Start Free
+                                </Link>
+                            </MagneticButton>
                             <Link
                                 href="/demo"
                                 className="bg-transparent text-white px-8 py-[14px] text-[13px] font-medium uppercase tracking-[0.04em] border-2 border-[rgba(255,255,255,0.12)] hover:border-[rgba(255,255,255,0.4)] transition-colors rounded-[2px] w-full sm:w-auto text-center"
@@ -55,10 +72,10 @@ export function HeroSection() {
                         <p className="font-sans text-[12px] text-[var(--grey)] mb-14">No card needed · First 5 clients free · Setup in 30 minutes</p>
 
                         {/* Stat Strip */}
-                        <div className="flex gap-8 md:gap-12 pt-8 border-t border-white/10">
+                        <div ref={statRef} className="flex gap-8 md:gap-12 pt-8 border-t border-white/10">
                             <div className="flex flex-col gap-1 min-w-0">
                                 <span className="font-display font-medium text-[32px] md:text-[40px] leading-none tracking-[0.02em] uppercase text-[#E8001D]">
-                                    2–3hrs
+                                    2–{stat1}hrs
                                 </span>
                                 <span className="font-sans text-[13px] text-[#888888] leading-[1.4]">
                                     saved every week
@@ -66,7 +83,7 @@ export function HeroSection() {
                             </div>
                             <div className="flex flex-col gap-1 min-w-0">
                                 <span className="font-display font-medium text-[32px] md:text-[40px] leading-none tracking-[0.02em] uppercase text-[#E8001D]">
-                                    ₹72K+
+                                    ₹{Math.floor(stat2 / 1000)}K+
                                 </span>
                                 <span className="font-sans text-[13px] text-[#888888] leading-[1.4]">
                                     avg. annual revenue<br />recovered
@@ -74,7 +91,7 @@ export function HeroSection() {
                             </div>
                             <div className="flex flex-col gap-1 min-w-0">
                                 <span className="font-display font-medium text-[32px] md:text-[40px] leading-none tracking-[0.02em] uppercase text-[#E8001D]">
-                                    30min
+                                    {stat3}min
                                 </span>
                                 <span className="font-sans text-[13px] text-[#888888] leading-[1.4]">
                                     setup time.<br />zero tech skills needed.
@@ -147,7 +164,7 @@ export function HeroSection() {
 
                                     {/* WA Body */}
                                     <div className="bg-[#ECE5DD] p-[10px] flex flex-col gap-[8px] min-h-[440px]">
-                                        <div className="max-w-[84%] p-[8px_12px] text-[12px] leading-[1.5] text-[#333] rounded-lg bg-[#E8D5FF] self-start border-l-4 border-[var(--red)]">
+                                        <div className="max-w-[84%] p-[8px_12px] text-[12px] leading-[1.5] text-[#333] rounded-lg bg-[#E8D5FF] self-start border-l-4 border-[var(--red)] reveal-slide-right" style={{ transitionDelay: '200ms' }}>
                                             <strong>Hi Anjali! 👋</strong><br />
                                             Weekly check-in from Coach Priya:<br /><br />
                                             1. Energy this week (1-10)?<br />
@@ -155,15 +172,15 @@ export function HeroSection() {
                                             3. One win? 💪
                                             <div className="text-[9px] text-[#999] text-right mt-[2px]">Sun 7:00 PM · Auto-sent</div>
                                         </div>
-                                        <div className="max-w-[84%] p-[8px_12px] text-[12px] leading-[1.5] text-[#333] rounded-[8px_8px_0_8px] bg-[#DCF8C6] self-end shadow-sm">
+                                        <div className="max-w-[84%] p-[8px_12px] text-[12px] leading-[1.5] text-[#333] rounded-[8px_8px_0_8px] bg-[#DCF8C6] self-end shadow-sm reveal-slide-left" style={{ transitionDelay: '400ms' }}>
                                             Energy 8/10, 4 sessions done. Win: ran 5km non-stop! 🏃
                                             <div className="text-[9px] text-[#999] text-right mt-[2px]">Sun 8:14 PM</div>
                                         </div>
-                                        <div className="max-w-[84%] p-[8px_12px] text-[12px] leading-[1.5] text-[#333] rounded-lg bg-[#E8D5FF] self-start border-l-4 border-[var(--red)]">
+                                        <div className="max-w-[84%] p-[8px_12px] text-[12px] leading-[1.5] text-[#333] rounded-lg bg-[#E8D5FF] self-start border-l-4 border-[var(--red)] reveal-slide-right" style={{ transitionDelay: '600ms' }}>
                                             Amazing Anjali! 🔥 5km is a huge milestone. Coach Priya will review this Wednesday.
                                             <div className="text-[9px] text-[#999] text-right mt-[2px]">Sun 8:14 PM · AI-generated</div>
                                         </div>
-                                        <div className="max-w-[84%] p-[8px_12px] text-[12px] leading-[1.5] text-[#333] rounded-[0_8px_8px_8px] bg-white self-start shadow-sm mt-1">
+                                        <div className="max-w-[84%] p-[8px_12px] text-[12px] leading-[1.5] text-[#333] rounded-[0_8px_8px_8px] bg-white self-start shadow-sm mt-1 reveal-slide-right" style={{ transitionDelay: '800ms' }}>
                                             Thank you! This system is so convenient 😊
                                             <div className="text-[9px] text-[#999] text-right mt-[2px]">Sun 8:16 PM</div>
                                         </div>

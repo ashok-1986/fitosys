@@ -1,6 +1,10 @@
+"use client";
+
+import { useRef } from "react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const PRICING_DATA = [
     {
@@ -69,8 +73,11 @@ const PRICING_DATA = [
 ];
 
 export function PricingSection() {
+    const sectionRef = useRef<HTMLElement>(null);
+    useScrollReveal(sectionRef);
+
     return (
-        <section id="pricing" className="py-24 md:py-32">
+        <section ref={sectionRef} id="pricing" className="py-24 md:py-32">
             <div className="max-w-[1400px] mx-auto px-4 md:px-12">
                 <div className="grid lg:grid-cols-2 gap-12 mb-16">
                     <div>
@@ -92,9 +99,10 @@ export function PricingSection() {
                             key={i}
                             className={
                                 plan.featured
-                                    ? "relative flex flex-col bg-[#E8001D] rounded-[10px] p-8 scale-[1.03] shadow-[0_0_60px_rgba(232,0,29,0.25)]"
-                                    : "bg-[#111111] border border-white/[0.06] rounded-[10px] p-8 flex flex-col"
+                                    ? "relative flex flex-col bg-[#E8001D] rounded-[10px] p-8 scale-[1.03] shadow-[0_0_60px_rgba(232,0,29,0.25)] reveal-fade-up animate-[pulse_4s_ease-in-out_infinite]"
+                                    : "bg-[#111111] border border-white/[0.06] rounded-[10px] p-8 flex flex-col reveal-fade-up"
                             }
+                            style={{ transitionDelay: `${i * 80}ms` }}
                         >
                             {plan.badge && (
                                 <span className={
@@ -195,8 +203,11 @@ export function PricingSection() {
                     ))}
                 </div>
 
-                <p className="text-center font-sans text-[13px] text-[#888888] mt-6">
-                    14-day free trial on all plans · No credit card required · Cancel anytime
+                <p className="text-center font-sans text-[13px] text-[#888888] mt-6 reveal-fade-up" style={{ transitionDelay: '400ms' }}>
+                    14-day free trial on all plans &middot; No credit card required &middot; Cancel anytime
+                </p>
+                <p className="text-center font-sans text-[12px] text-[#888888] mt-2 reveal-fade-up" style={{ transitionDelay: '500ms' }}>
+                    All prices exclude 18% GST &middot; GST invoice auto-generated on every payment &middot; Data stored in India (Mumbai) &middot; DPDP Compliant &middot; Secured by Razorpay
                 </p>
             </div>
         </section>

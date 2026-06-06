@@ -1,17 +1,27 @@
+"use client";
+
+import { useRef } from "react";
 import { PROBLEM_ITEMS } from "@/lib/constants";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { KineticText } from "@/components/ui/KineticText";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { useCounter } from "@/hooks/useCounter";
 
 export function ProblemSection() {
+    const sectionRef = useRef<HTMLElement>(null);
+    useScrollReveal(sectionRef);
+    const badgeCounter = useCounter(72000, 1200, sectionRef);
+
     return (
-        <section className="bg-[var(--surface)]" id="problem">
+        <section ref={sectionRef} className="bg-[var(--surface)]" id="problem">
             <div className="max-w-[1400px] mx-auto px-4 md:px-12 py-28 md:py-32">
                 <div className="grid lg:grid-cols-2 gap-20 items-start">
                     {/* Left — Headline */}
                     <div>
                         <Eyebrow label="THE PROBLEM" />
                         <h2 className="font-display font-medium text-[36px] md:text-[44px] lg:text-[56px] leading-none tracking-[0.02em] uppercase text-white mt-6 mb-6">
-                            <span className="block">YOUR COACHING IS EXCELLENT.</span>
-                            <span className="block">YOUR SYSTEM IS BROKEN.</span>
+                            <KineticText as="span" className="block" text="YOUR COACHING IS EXCELLENT." delay={0} charDelay={50} />
+                            <KineticText as="span" className="block" text="YOUR SYSTEM IS BROKEN." delay={200} charDelay={50} />
                         </h2>
                         <p className="font-sans text-[17px] text-[var(--grey)] leading-[1.7] max-w-[460px] mt-5">
                             Independent coaches with 20 to 40 clients face the same three failures every month. None of them have anything to do with coaching quality.
@@ -21,7 +31,7 @@ export function ProblemSection() {
                     {/* Right — Problem List */}
                     <div className="flex flex-col">
                         {PROBLEM_ITEMS.map((item, i) => (
-                            <div key={i} className={`py-7 border-b border-[var(--border)] ${i === 0 ? 'border-t' : ''}`}>
+                            <div key={i} className={`py-7 border-b border-[var(--border)] reveal-fade-up ${i === 0 ? 'border-t' : ''}`} style={{ transitionDelay: `${i * 80}ms` }}>
                                 <div className="font-sans font-medium text-[13px] uppercase tracking-[0.08em] text-[rgba(255,255,255,0.2)] mb-2">
                                     {item.num} — {item.tag}
                                 </div>
@@ -32,7 +42,7 @@ export function ProblemSection() {
                                     {item.description}
                                 </p>
                                 <span className="inline-flex items-center gap-[6px] bg-[var(--red-dim)] border border-[var(--red-border)] px-3 py-1 rounded-[2px] font-sans font-bold text-[11px] uppercase tracking-[0.06em] text-[var(--red)]">
-                                    {item.badge}
+                                    {i === 0 ? `₹${badgeCounter.toLocaleString()}+ lost annually on average` : item.badge}
                                 </span>
                             </div>
                         ))}

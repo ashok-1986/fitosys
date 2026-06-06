@@ -14,7 +14,8 @@ export function Nav() {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <nav className={`fixed top-0 left-0 right-0 z-[100] h-[64px] px-12 flex items-center justify-between transition-colors duration-300 ${isLanding ? "bg-transparent border-transparent" : "bg-[rgba(10,10,10,0.9)] backdrop-blur-md border-b border-[rgba(255,255,255,0.06)]"}`}>
+        <>
+            <nav className={`fixed top-0 left-0 right-0 z-[100] h-[64px] px-12 flex items-center justify-between transition-colors duration-300 ${isLanding ? "bg-transparent border-transparent" : "bg-[rgba(10,10,10,0.9)] backdrop-blur-md border-b border-[rgba(255,255,255,0.06)]"}`}>
             <div className="max-w-[1400px] mx-auto px-4 flex items-center justify-between w-full">
                 <Link href="/">
                     <Image
@@ -62,7 +63,7 @@ export function Nav() {
 
             {/* Mobile Drawer */}
             {isOpen && (
-                <div className="md:hidden absolute top-full left-0 w-full bg-[#111111] border-b border-[rgba(255,255,255,0.06)] flex flex-col p-4 shadow-2xl">
+                <div className="md:hidden fixed top-[64px] left-0 w-full h-[calc(100vh-64px)] bg-[#111111] border-b border-[rgba(255,255,255,0.06)] flex flex-col p-4 shadow-2xl z-[110]">
                     {NAV_LINKS.map((link) => (
                         <Link
                             key={link.label}
@@ -85,5 +86,16 @@ export function Nav() {
                 </div>
             )}
         </nav>
+        {isLanding && (
+            <div 
+                className="fixed top-[64px] left-0 right-0 z-[90] h-[40px] bg-[#0A0A0A] border-b border-[rgba(255,255,255,0.06)] flex items-center justify-center overflow-x-auto whitespace-nowrap [&::-webkit-scrollbar]:hidden"
+                style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}
+            >
+                <span className="font-sans text-[11px] text-[#888888] uppercase tracking-[0.1em] px-4">
+                    Built for India &middot; Runs on WhatsApp &middot; DPDP Compliant &middot; GST Invoices Auto-Generated &middot; Setup in 30 Minutes
+                </span>
+            </div>
+        )}
+        </>
     );
 }

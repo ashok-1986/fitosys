@@ -16,8 +16,8 @@ const TICKER_ITEMS = [
 
 export function PainTicker() {
     return (
-        <div className="w-full bg-[var(--surface)] border-y border-[var(--border)] py-10 overflow-hidden flex relative">
-            <div className="flex animate-[marquee_25s_linear_infinite] whitespace-nowrap min-w-max">
+        <div className="w-full bg-[var(--surface)] border-y border-[var(--border)] py-10 overflow-hidden flex relative group">
+            <div className="flex animate-[marquee_25s_linear_infinite] group-hover:[animation-play-state:paused] whitespace-nowrap min-w-max marquee-track">
                 {TICKER_ITEMS.map((item, i) => (
                     <div key={i} className="flex items-center justify-center min-w-[360px]">
                         <div className="flex flex-col items-center text-center">

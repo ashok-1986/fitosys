@@ -5,28 +5,28 @@ const TESTIMONIALS = [
         quote: "I used to spend every Sunday sending check-in messages manually to 28 clients. Now I wake up Monday to an AI summary and spend the time on an actual rest day.",
         roi: "2.5hrs",
         roiLabel: "saved every week — 130 hours per year back",
-        name: "Priya S.",
-        role: "Fitness Coach · Mumbai · 28 active clients",
+        name: "Fitness Coach, Mumbai",
+        role: "",
         avatarColor: "bg-[#E8001D]",
-        initial: "P",
+        initial: "F",
     },
     {
         quote: "I was losing 2 to 3 renewals a month because I forgot to follow up. Fitosys caught 4 renewals in the first month. That is more than ₹15,000 in one month alone.",
         roi: "₹1.8L",
         roiLabel: "annual renewal revenue recovered",
-        name: "Rahul V.",
-        role: "Yoga Instructor · Delhi · 22 active clients",
+        name: "Yoga Instructor, Delhi",
+        role: "",
         avatarColor: "bg-[#1A1A3E]",
-        initial: "R",
+        initial: "Y",
     },
     {
         quote: "My clients comment that the check-in feels personal. They do not know it is automated. The message goes out in my name, from my number. That is the detail that matters.",
         roi: "94%",
         roiLabel: "check-in response rate — up from 60%",
-        name: "Ananya K.",
-        role: "Nutrition Coach · Bangalore · 35 active clients",
+        name: "Nutrition Coach, Bangalore",
+        role: "",
         avatarColor: "bg-[#0A3020]",
-        initial: "A",
+        initial: "N",
     },
 ];
 
@@ -41,7 +41,7 @@ export function TestimonialsSection() {
                         <span className="block text-[#E8001D]">THEIR SUNDAYS BACK.</span>
                     </h2>
                     <p className="font-sans text-[20px] text-[#888888] leading-[1.7] mt-6 max-w-[600px]">
-                        Real coaches. Real numbers. What happens when systems replace spreadsheets.
+                        Illustrative results based on beta coach conversations. Individual outcomes vary. What independent coaches tell us happens when systems replace spreadsheets.
                     </p>
                 </div>
 
