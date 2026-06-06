@@ -170,7 +170,7 @@ export function HeroSection() {
                                     {/* WA Body */}
                                     <div style={{ background: '#111111', padding: 10, display: 'flex', flexDirection: 'column' as const, gap: 8, minHeight: 440 }}>
                                         {/* Sent bubble (coach) */}
-                                        <div className="max-w-[84%] self-start reveal-slide-right" style={{ background: 'rgba(37,211,102,0.15)', border: '1px solid rgba(37,211,102,0.25)', color: '#FFFFFF', borderRadius: '12px 12px 2px 12px', padding: '10px 14px', fontSize: 13, lineHeight: 1.5, transitionDelay: '200ms' }}>
+                                        <div className="max-w-[84%] self-start" style={{ background: 'rgba(37,211,102,0.15)', border: '1px solid rgba(37,211,102,0.25)', color: '#FFFFFF', borderRadius: '12px 12px 2px 12px', padding: '10px 14px', fontSize: 13, lineHeight: 1.5 }}>
                                             <strong style={{ color: '#FFFFFF' }}>Hi Anjali! 👋</strong><br />
                                             <span style={{ color: '#FFFFFF' }}>Weekly check-in from Coach Priya:</span><br /><br />
                                             <span style={{ color: '#FFFFFF' }}>1. Energy this week (1-10)?</span><br />
@@ -179,17 +179,17 @@ export function HeroSection() {
                                             <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: 11, textAlign: 'right' as const, marginTop: 4, display: 'block' }}>Sun 7:00 PM · Auto-sent</div>
                                         </div>
                                         {/* Received bubble (client) */}
-                                        <div className="max-w-[84%] self-end shadow-sm reveal-slide-left" style={{ background: '#1E2420', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.85)', borderRadius: '12px 12px 12px 2px', padding: '10px 14px', fontSize: 13, lineHeight: 1.5, transitionDelay: '400ms' }}>
+                                        <div className="max-w-[84%] self-end shadow-sm" style={{ background: '#1E2420', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.85)', borderRadius: '12px 12px 12px 2px', padding: '10px 14px', fontSize: 13, lineHeight: 1.5 }}>
                                             <span style={{ color: 'rgba(255,255,255,0.85)' }}>Energy 8/10, 4 sessions done. Win: ran 5km non-stop! 🏃</span>
                                             <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: 11, textAlign: 'left' as const, marginTop: 4, display: 'block' }}>Sun 8:14 PM</div>
                                         </div>
                                         {/* Sent bubble (coach) */}
-                                        <div className="max-w-[84%] self-start reveal-slide-right" style={{ background: 'rgba(37,211,102,0.15)', border: '1px solid rgba(37,211,102,0.25)', color: '#FFFFFF', borderRadius: '12px 12px 2px 12px', padding: '10px 14px', fontSize: 13, lineHeight: 1.5, transitionDelay: '600ms' }}>
+                                        <div className="max-w-[84%] self-start" style={{ background: 'rgba(37,211,102,0.15)', border: '1px solid rgba(37,211,102,0.25)', color: '#FFFFFF', borderRadius: '12px 12px 2px 12px', padding: '10px 14px', fontSize: 13, lineHeight: 1.5 }}>
                                             <span style={{ color: '#FFFFFF' }}>Amazing Anjali! 🔥 5km is a huge milestone. Coach Priya will review this Wednesday.</span>
                                             <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: 11, textAlign: 'right' as const, marginTop: 4, display: 'block' }}>Sun 8:14 PM · AI-generated</div>
                                         </div>
                                         {/* Received bubble (client) */}
-                                        <div className="max-w-[84%] self-end shadow-sm reveal-slide-right" style={{ background: '#1E2420', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.85)', borderRadius: '12px 12px 12px 2px', padding: '10px 14px', fontSize: 13, lineHeight: 1.5, marginTop: 4, transitionDelay: '800ms' }}>
+                                        <div className="max-w-[84%] self-end shadow-sm" style={{ background: '#1E2420', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.85)', borderRadius: '12px 12px 12px 2px', padding: '10px 14px', fontSize: 13, lineHeight: 1.5, marginTop: 4 }}>
                                             <span style={{ color: 'rgba(255,255,255,0.85)' }}>Thank you! This system is so convenient 😊</span>
                                             <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: 11, textAlign: 'left' as const, marginTop: 4, display: 'block' }}>Sun 8:16 PM</div>
                                         </div>
