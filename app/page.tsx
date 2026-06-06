@@ -1,6 +1,6 @@
 import { HeroSection } from "@/components/sections/HeroSection";
 import { PainTicker } from "@/components/sections/PainTicker";
-import ProblemParallax from "@/components/sections/ProblemParallax";
+import TheProblemSection from "@/components/sections/TheProblemSection";
 import { FeaturesSection } from "@/components/sections/FeaturesSection";
 import { AiSection } from "@/components/sections/AiSection";
 import { HowItWorksSection } from "@/components/sections/HowItWorksSection";
@@ -15,7 +15,7 @@ export default function LandingPage() {
     <>
       <HeroSection />
       <PainTicker />
-      <ProblemParallax />
+      <TheProblemSection />
       <FeaturesSection />
       <AiSection />
       <HowItWorksSection />

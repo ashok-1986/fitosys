@@ -165,6 +165,15 @@
 
 /* ── BASE LAYER ── */
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
   * {
     @apply border-border outline-ring/50;
   }
@@ -181,6 +190,10 @@
     text-transform: uppercase;
     letter-spacing: 0.02em;
     color: var(--foreground);
+  }
+
+  section {
+    contain: layout style;
   }
 }
 
