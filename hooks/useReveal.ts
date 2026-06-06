@@ -19,13 +19,17 @@ export function useReveal<T extends HTMLElement>(delay = 0) {
       return;
     }
 
+    const timeouts = new Set<NodeJS.Timeout>();
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setTimeout(() => {
+            const timeoutId = setTimeout(() => {
               entry.target.classList.add('revealed');
+              timeouts.delete(timeoutId);
             }, delay);
+            timeouts.add(timeoutId);
             observer.unobserve(entry.target);
           }
         });
@@ -34,7 +38,11 @@ export function useReveal<T extends HTMLElement>(delay = 0) {
     );
 
     if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      timeouts.forEach((id) => clearTimeout(id));
+      timeouts.clear();
+    };
   }, [delay]);
 
   return ref;

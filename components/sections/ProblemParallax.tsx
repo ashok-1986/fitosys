@@ -1,5 +1,5 @@
 'use client';
-import { useRef, useState, useEffect } from 'react';
+import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useReveal } from '@/hooks/useReveal';
 
@@ -243,16 +243,8 @@ const ProblemParallaxDesktop = ({ problems }: { problems: ProblemPanelProps[] })
 };
 
 export default function ProblemParallax() {
-  const [isMobile, setIsMobile] = useState(false);
   const headingRef = useReveal<HTMLHeadingElement>(0);
   const textRef = useReveal<HTMLParagraphElement>(100);
-
-  useEffect(() => {
-    setIsMobile(window.innerWidth < 768);
-    const handler = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener('resize', handler);
-    return () => window.removeEventListener('resize', handler);
-  }, []);
 
   return (
     <section id="problem" className="bg-[#0A0A0A]">
@@ -286,7 +278,12 @@ export default function ProblemParallax() {
         </p>
       </div>
 
-      {isMobile ? <ProblemMobileCards problems={PROBLEMS} /> : <ProblemParallaxDesktop problems={PROBLEMS} />}
+      <div className="block md:hidden">
+        <ProblemMobileCards problems={PROBLEMS} />
+      </div>
+      <div className="hidden md:block">
+        <ProblemParallaxDesktop problems={PROBLEMS} />
+      </div>
     </section>
   );
 }

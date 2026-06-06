@@ -20,15 +20,18 @@ function useTypewriter(text: string, speed = 30, startDelay = 0) {
         }
 
         let i = 0;
+        let interval: NodeJS.Timeout | undefined;
         const timeout = setTimeout(() => {
-            const interval = setInterval(() => {
+            interval = setInterval(() => {
                 setDisplayed(text.slice(0, i + 1));
                 i++;
                 if (i >= text.length) clearInterval(interval);
             }, speed);
-            return () => clearInterval(interval);
         }, startDelay);
-        return () => clearTimeout(timeout);
+        return () => {
+            clearTimeout(timeout);
+            if (interval) clearInterval(interval);
+        };
     }, [started, text, speed, startDelay]);
 
     return { displayed, start: () => setStarted(true) };
