@@ -100,118 +100,128 @@ export function HeroSection() {
                     </div>
 
                     {/* Right Column - Mockup & Floaters */}
-                    <div className="relative w-full flex flex-col items-center z-10">
+                    <div className="relative w-full flex flex-col items-center z-10" style={{ color: '#FFFFFF' }}>
 
                         {/* Float card 1: Response Rate (Top Right) */}
-                        <div className="absolute top-[12%] -right-[12%] bg-[#161616] border border-[rgba(255,255,255,0.08)] rounded-xl py-4 px-5 min-w-[190px] z-20 shadow-2xl animate-[float_4s_ease-in-out_infinite] hidden lg:block">
-                            <div className="font-sans text-[10px] font-bold uppercase tracking-[0.12em] text-[var(--grey)] mb-[6px]">This Week's Response Rate</div>
-                            <div className="font-display font-medium text-[28px] leading-none tracking-[0.02em] text-[#E8001D]">73<span className="text-[20px]">%</span></div>
-                            <div className="font-sans text-[12px] text-[#888888] mt-[3px]">22 of 30 clients checked in</div>
+                        <div className="absolute top-[12%] -right-[12%] min-w-[190px] z-20 shadow-2xl animate-[float_4s_ease-in-out_infinite] hidden lg:block" style={{ background: '#1A1A1A', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8, padding: '12px 16px' }}>
+                            <div style={{ color: '#888888', fontSize: 10, fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.1em', marginBottom: 6 }}>This Week&apos;s Response Rate</div>
+                            <div className="font-display" style={{ color: '#E8001D', fontSize: 28, fontWeight: 500, lineHeight: 1 }}>73<span style={{ color: '#E8001D', fontSize: 16 }}>%</span></div>
+                            <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12, marginTop: 3 }}>22 of 30 clients checked in</div>
                             <div className="h-[2px] bg-[rgba(255,255,255,0.06)] rounded-sm mt-[10px] overflow-hidden">
-                                <div className="h-full bg-[var(--red)] rounded-sm" style={{ width: '73%' }}></div>
+                                <div className="h-full bg-[#E8001D] rounded-sm" style={{ width: '73%' }}></div>
                             </div>
                         </div>
 
                         {/* Float card 2: Renewal Alert (Bottom Left) */}
-                        <div className="absolute bottom-[18%] -left-[12%] bg-[#161616] border border-[rgba(232,0,29,0.2)] rounded-xl py-4 px-5 min-w-[180px] z-20 shadow-2xl animate-[float_3.5s_ease-in-out_infinite_reverse] hidden lg:block">
-                            <div className="font-sans text-[10px] font-bold uppercase tracking-[0.12em] text-[var(--grey)] mb-[6px]">Renewal Alert</div>
-                            <div className="font-display font-medium text-[28px] leading-none tracking-[0.02em] text-[#E8001D]">3 clients</div>
-                            <div className="font-sans text-[11px] text-[var(--grey)] mt-[3px]">programs expiring in 7 days</div>
-                            <div className="font-sans text-[11px] font-bold uppercase tracking-[0.08em] text-[#25D366] mt-[8px]">Reminders sent automatically ✓</div>
+                        <div className="absolute bottom-[18%] -left-[12%] min-w-[180px] z-20 shadow-2xl animate-[float_3.5s_ease-in-out_infinite_reverse] hidden lg:block" style={{ background: '#1A1A1A', border: '1px solid rgba(232,0,29,0.2)', borderRadius: 8, padding: '12px 16px' }}>
+                            <div style={{ color: '#888888', fontSize: 10, fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.1em', marginBottom: 6 }}>Renewal Alert</div>
+                            <div className="font-display" style={{ color: '#E8001D', fontFamily: 'var(--fd)', fontSize: 28, fontWeight: 500, lineHeight: 1 }}>3 clients</div>
+                            <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12, marginTop: 3 }}>programs expiring in 7 days</div>
+                            <div style={{ color: '#25D366', fontSize: 11, fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.08em', marginTop: 8 }}>Reminders sent automatically ✓</div>
                         </div>
 
                         {/* Tab Switcher */}
                         <div className="flex gap-[2px] bg-[#111111] border border-white/10 rounded-[40px] p-1 mb-4 relative z-20">
                             <button
                                 onClick={() => setActiveTab("client")}
-                                className={`font-sans font-bold text-[11px] uppercase tracking-[0.08em] px-5 py-2 rounded-[36px] transition-all duration-250 ${activeTab === "client" ? "bg-[#25D366] text-white" : "bg-transparent border border-[rgba(255,255,255,0.15)] text-[#888888] hover:text-white"
-                                    }`}
+                                style={activeTab === "client"
+                                    ? { background: '#25D366', color: '#FFFFFF', fontSize: 12, fontWeight: 600, padding: '6px 14px', borderRadius: 20 }
+                                    : { background: 'transparent', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.15)', fontSize: 12, padding: '6px 14px', borderRadius: 20 }
+                                }
+                                className="font-sans uppercase tracking-[0.08em] transition-all duration-250"
                             >
                                 {activeTab === "client" ? "● " : "○ "}Client View
                             </button>
                             <button
                                 onClick={() => setActiveTab("dashboard")}
-                                className={`font-sans font-bold text-[11px] uppercase tracking-[0.08em] px-5 py-2 rounded-[36px] transition-all duration-250 ${activeTab === "dashboard" ? "bg-[#25D366] text-white" : "bg-transparent border border-[rgba(255,255,255,0.15)] text-[#888888] hover:text-white"
-                                    }`}
+                                style={activeTab === "dashboard"
+                                    ? { background: '#25D366', color: '#FFFFFF', fontSize: 12, fontWeight: 600, padding: '6px 14px', borderRadius: 20 }
+                                    : { background: 'transparent', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.15)', fontSize: 12, padding: '6px 14px', borderRadius: 20 }
+                                }
+                                className="font-sans uppercase tracking-[0.08em] transition-all duration-250"
                             >
                                 {activeTab === "dashboard" ? "● " : "○ "}Dashboard
                             </button>
                         </div>
 
                         {/* Phone Mockup Frame */}
-                        <div className="w-[300px] bg-[#0A0A0A] border border-[rgba(255,255,255,0.08)] rounded-[16px] p-[14px] shadow-[0_48px_96px_rgba(0,0,0,0.9)] relative z-10">
+                        <div style={{ width: 300, background: '#0A0A0A', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, padding: 14 }} className="shadow-[0_48px_96px_rgba(0,0,0,0.9)] relative z-10">
 
                             {/* Inner Screen */}
-                            <div className="relative rounded-[30px] overflow-hidden min-h-[500px] bg-[#0A0A0A]">
+                            <div className="relative rounded-[28px] overflow-hidden" style={{ minHeight: 500, background: '#111111', color: '#FFFFFF' }}>
 
                                 {/* ════ Client View (WhatsApp) ════ */}
                                 <div className={`absolute inset-0 transition-opacity duration-300 ease-in-out ${activeTab === "client" ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"}`}>
 
                                     {/* WA Header */}
-                                    <div className="bg-[#111111] p-[14px] flex items-center gap-[10px]">
-                                        <div className="w-[36px] h-[36px] rounded-full bg-[var(--red)] flex items-center justify-center font-display font-medium text-[13px] text-white shrink-0">
+                                    <div style={{ background: '#0F1F17', padding: 14, display: 'flex', alignItems: 'center', gap: 10 }}>
+                                        <div className="w-[36px] h-[36px] rounded-full bg-[#E8001D] flex items-center justify-center font-display font-medium shrink-0" style={{ fontSize: 13, color: '#FFFFFF' }}>
                                             F
                                         </div>
                                         <div>
-                                            <div className="font-sans text-[13px] font-bold text-white leading-[1.2]">Fitosys Bot</div>
-                                            <div className="font-sans text-[10px] text-[rgba(255,255,255,0.6)]">for Coach Priya · automated</div>
+                                            <div style={{ color: '#FFFFFF', fontWeight: 600, fontSize: 14, lineHeight: 1.2 }} className="font-sans">Fitosys Bot</div>
+                                            <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }} className="font-sans">for Coach Priya · automated</div>
                                         </div>
-                                        <div className="ml-auto bg-[rgba(37,211,102,0.2)] text-[#25D366] border border-[rgba(37,211,102,0.3)] text-[10px] px-2 py-0.5 rounded-[2px] font-bold tracking-[0.06em]">
+                                        <div className="ml-auto" style={{ background: 'rgba(37,211,102,0.2)', color: '#25D366', border: '1px solid rgba(37,211,102,0.35)', fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 3 }}>
                                             AUTO
                                         </div>
                                     </div>
 
                                     {/* WA Body */}
-                                    <div className="bg-[#111111] p-[10px] flex flex-col gap-[8px] min-h-[440px]">
-                                        <div className="max-w-[84%] p-[8px_12px] text-[12px] leading-[1.5] text-[#FFFFFF] rounded-[12px_12px_2px_12px] bg-[rgba(37,211,102,0.15)] border border-[rgba(37,211,102,0.25)] self-start reveal-slide-right" style={{ transitionDelay: '200ms' }}>
-                                            <strong>Hi Anjali! 👋</strong><br />
-                                            Weekly check-in from Coach Priya:<br /><br />
-                                            1. Energy this week (1-10)?<br />
-                                            2. Sessions completed?<br />
-                                            3. One win? 💪
-                                            <div className="text-[11px] text-[rgba(255,255,255,0.35)] text-right mt-[2px]">Sun 7:00 PM · Auto-sent</div>
+                                    <div style={{ background: '#111111', padding: 10, display: 'flex', flexDirection: 'column' as const, gap: 8, minHeight: 440 }}>
+                                        {/* Sent bubble (coach) */}
+                                        <div className="max-w-[84%] self-start reveal-slide-right" style={{ background: 'rgba(37,211,102,0.15)', border: '1px solid rgba(37,211,102,0.25)', color: '#FFFFFF', borderRadius: '12px 12px 2px 12px', padding: '10px 14px', fontSize: 13, lineHeight: 1.5, transitionDelay: '200ms' }}>
+                                            <strong style={{ color: '#FFFFFF' }}>Hi Anjali! 👋</strong><br />
+                                            <span style={{ color: '#FFFFFF' }}>Weekly check-in from Coach Priya:</span><br /><br />
+                                            <span style={{ color: '#FFFFFF' }}>1. Energy this week (1-10)?</span><br />
+                                            <span style={{ color: '#FFFFFF' }}>2. Sessions completed?</span><br />
+                                            <span style={{ color: '#FFFFFF' }}>3. One win? 💪</span>
+                                            <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: 11, textAlign: 'right' as const, marginTop: 4, display: 'block' }}>Sun 7:00 PM · Auto-sent</div>
                                         </div>
-                                        <div className="max-w-[84%] p-[8px_12px] text-[12px] leading-[1.5] text-[rgba(255,255,255,0.85)] rounded-[12px_12px_12px_2px] bg-[#1E1E1E] border border-[rgba(255,255,255,0.08)] self-end shadow-sm reveal-slide-left" style={{ transitionDelay: '400ms' }}>
-                                            Energy 8/10, 4 sessions done. Win: ran 5km non-stop! 🏃
-                                            <div className="text-[11px] text-[rgba(255,255,255,0.35)] text-right mt-[2px]">Sun 8:14 PM</div>
+                                        {/* Received bubble (client) */}
+                                        <div className="max-w-[84%] self-end shadow-sm reveal-slide-left" style={{ background: '#1E2420', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.85)', borderRadius: '12px 12px 12px 2px', padding: '10px 14px', fontSize: 13, lineHeight: 1.5, transitionDelay: '400ms' }}>
+                                            <span style={{ color: 'rgba(255,255,255,0.85)' }}>Energy 8/10, 4 sessions done. Win: ran 5km non-stop! 🏃</span>
+                                            <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: 11, textAlign: 'left' as const, marginTop: 4, display: 'block' }}>Sun 8:14 PM</div>
                                         </div>
-                                        <div className="max-w-[84%] p-[8px_12px] text-[12px] leading-[1.5] text-[#FFFFFF] rounded-[12px_12px_2px_12px] bg-[rgba(37,211,102,0.15)] border border-[rgba(37,211,102,0.25)] self-start reveal-slide-right" style={{ transitionDelay: '600ms' }}>
-                                            Amazing Anjali! 🔥 5km is a huge milestone. Coach Priya will review this Wednesday.
-                                            <div className="text-[11px] text-[rgba(255,255,255,0.35)] text-right mt-[2px]">Sun 8:14 PM · AI-generated</div>
+                                        {/* Sent bubble (coach) */}
+                                        <div className="max-w-[84%] self-start reveal-slide-right" style={{ background: 'rgba(37,211,102,0.15)', border: '1px solid rgba(37,211,102,0.25)', color: '#FFFFFF', borderRadius: '12px 12px 2px 12px', padding: '10px 14px', fontSize: 13, lineHeight: 1.5, transitionDelay: '600ms' }}>
+                                            <span style={{ color: '#FFFFFF' }}>Amazing Anjali! 🔥 5km is a huge milestone. Coach Priya will review this Wednesday.</span>
+                                            <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: 11, textAlign: 'right' as const, marginTop: 4, display: 'block' }}>Sun 8:14 PM · AI-generated</div>
                                         </div>
-                                        <div className="max-w-[84%] p-[8px_12px] text-[12px] leading-[1.5] text-[rgba(255,255,255,0.85)] rounded-[12px_12px_12px_2px] bg-[#1E1E1E] border border-[rgba(255,255,255,0.08)] self-end shadow-sm mt-1 reveal-slide-right" style={{ transitionDelay: '800ms' }}>
-                                            Thank you! This system is so convenient 😊
-                                            <div className="text-[11px] text-[rgba(255,255,255,0.35)] text-right mt-[2px]">Sun 8:16 PM</div>
+                                        {/* Received bubble (client) */}
+                                        <div className="max-w-[84%] self-end shadow-sm reveal-slide-right" style={{ background: '#1E2420', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.85)', borderRadius: '12px 12px 12px 2px', padding: '10px 14px', fontSize: 13, lineHeight: 1.5, marginTop: 4, transitionDelay: '800ms' }}>
+                                            <span style={{ color: 'rgba(255,255,255,0.85)' }}>Thank you! This system is so convenient 😊</span>
+                                            <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: 11, textAlign: 'left' as const, marginTop: 4, display: 'block' }}>Sun 8:16 PM</div>
                                         </div>
                                     </div>
                                 </div>
 
 
                                 {/* ════ Dashboard View (Dark) ════ */}
-                                <div className={`absolute inset-0 bg-[var(--black)] p-4 transition-opacity duration-300 ease-in-out ${activeTab === "dashboard" ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"}`}>
-                                    <div className="font-sans font-bold text-white text-[15px] mb-4">Clients Overview</div>
+                                <div className={`absolute inset-0 p-4 transition-opacity duration-300 ease-in-out ${activeTab === "dashboard" ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"}`} style={{ background: '#0A0A0A' }}>
+                                    <div style={{ color: '#FFFFFF', fontSize: 15, fontWeight: 700, marginBottom: 16 }} className="font-sans">Clients Overview</div>
 
                                     <div className="space-y-3">
-                                        <div className="bg-[var(--surface)] border border-[var(--border)] p-3 rounded-lg flex items-center justify-between">
+                                        <div style={{ background: '#161616', border: '1px solid rgba(255,255,255,0.08)', padding: 12, borderRadius: 8 }} className="flex items-center justify-between">
                                             <div>
-                                                <p className="text-[13px] font-bold text-white mb-0.5">Anjali Kapoor</p>
-                                                <p className="text-[11px] text-[#10B981]">Energy: 8/10 • Won: 5km run</p>
+                                                <p style={{ color: '#FFFFFF', fontSize: 13, fontWeight: 700, marginBottom: 2 }}>Anjali Kapoor</p>
+                                                <p style={{ color: '#10B981', fontSize: 11 }}>Energy: 8/10 • Won: 5km run</p>
                                             </div>
-                                            <CheckCircle className="w-4 h-4 text-[#10B981]" />
+                                            <CheckCircle className="w-4 h-4" style={{ color: '#10B981' }} />
                                         </div>
-                                        <div className="bg-[var(--surface)] border border-[var(--border)] p-3 rounded-lg flex items-center justify-between">
+                                        <div style={{ background: '#161616', border: '1px solid rgba(255,255,255,0.08)', padding: 12, borderRadius: 8 }} className="flex items-center justify-between">
                                             <div>
-                                                <p className="text-[13px] font-bold text-white mb-0.5">Vikram Singh</p>
-                                                <p className="text-[11px] text-[#F59E0B]">Renewal in 7 days</p>
+                                                <p style={{ color: '#FFFFFF', fontSize: 13, fontWeight: 700, marginBottom: 2 }}>Vikram Singh</p>
+                                                <p style={{ color: '#F59E0B', fontSize: 11 }}>Renewal in 7 days</p>
                                             </div>
-                                            <div className="w-2 h-2 rounded-full bg-[#F59E0B]" />
+                                            <div className="w-2 h-2 rounded-full" style={{ background: '#F59E0B' }} />
                                         </div>
-                                        <div className="bg-[var(--surface)] border border-[var(--border)] p-3 rounded-lg flex items-center justify-between">
+                                        <div style={{ background: '#161616', border: '1px solid rgba(255,255,255,0.08)', padding: 12, borderRadius: 8 }} className="flex items-center justify-between">
                                             <div>
-                                                <p className="text-[13px] font-bold text-white mb-0.5">Priya Sharma</p>
-                                                <p className="text-[11px] text-[var(--red)]">Missed 2 check-ins</p>
+                                                <p style={{ color: '#FFFFFF', fontSize: 13, fontWeight: 700, marginBottom: 2 }}>Priya Sharma</p>
+                                                <p style={{ color: '#E8001D', fontSize: 11 }}>Missed 2 check-ins</p>
                                             </div>
-                                            <div className="w-2 h-2 rounded-full bg-[var(--red)]" />
+                                            <div className="w-2 h-2 rounded-full" style={{ background: '#E8001D' }} />
                                         </div>
                                     </div>
 

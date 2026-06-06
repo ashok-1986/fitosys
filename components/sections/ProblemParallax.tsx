@@ -16,16 +16,39 @@ interface ProblemPanelProps {
 
 const ProblemPanel = ({ number, category, heading, body, statBadge }: ProblemPanelProps) => {
   return (
-    <div style={{ paddingLeft: IMG_PADDING, paddingRight: IMG_PADDING, position: 'relative' }}>
-      <div className="relative" style={{ height: '150vh' }}>
+    <div
+      style={{
+        paddingLeft: IMG_PADDING,
+        paddingRight: IMG_PADDING,
+        position: 'relative',
+      }}
+    >
+      {/* 150vh gives the scroll distance for the sticky effect */}
+      <div style={{ position: 'relative', height: '150vh' }}>
+
+        {/* 1. STICKY BACKGROUND PANEL */}
         <StickyPanel number={number} />
-        <OverlayContent
-          number={number}
-          category={category}
-          heading={heading}
-          body={body}
-          statBadge={statBadge}
-        />
+
+        {/* 2. STICKY ANCHOR — creates a viewport-sized canvas */}
+        <div
+          style={{
+            position: 'sticky',
+            top: 0,
+            height: '100svh',
+            pointerEvents: 'none',
+            zIndex: 10,
+          }}
+        >
+          {/* 3. OVERLAY CONTENT — transforms within viewport */}
+          <OverlayContent
+            number={number}
+            category={category}
+            heading={heading}
+            body={body}
+            statBadge={statBadge}
+          />
+        </div>
+
       </div>
     </div>
   );
@@ -39,45 +62,52 @@ const StickyPanel = ({ number }: { number: string }) => {
   });
 
   const scale = useTransform(scrollYProgress, [0, 1], [1, 0.92]);
-  const opacity = useTransform(scrollYProgress, [0, 1], [1, 0.2]);
+  const opacity = useTransform(scrollYProgress, [0, 1], [1, 0.1]);
 
   return (
     <motion.div
       ref={targetRef}
       style={{
-        height: `calc(100svh - 24px)`,
-        top: '72px',
+        position: 'sticky',
+        top: 0,
+        height: '100svh',
         scale,
         opacity,
-        backgroundColor: 'var(--black)',
+        backgroundColor: '#0A0A0A',
+        borderRadius: 12,
+        overflow: 'hidden',
+        zIndex: 0,
       }}
-      className="sticky z-0 overflow-hidden rounded-2xl border border-white/5"
     >
+      {/* Ghost number — bottom right, large */}
       <div
-        className="absolute inset-0 flex items-center justify-center"
         aria-hidden="true"
-      >
-        <span
-          style={{
-            fontFamily: 'var(--fd)',
-            fontSize: 'clamp(200px, 30vw, 400px)',
-            fontWeight: 500,
-            color: 'rgba(232, 0, 29, 0.04)',
-            lineHeight: 1,
-            textTransform: 'uppercase',
-            letterSpacing: '-0.02em',
-            userSelect: 'none',
-          }}
-        >
-          {number}
-        </span>
-      </div>
-      <div
-        className="absolute inset-0"
         style={{
+          position: 'absolute',
+          bottom: '-2%',
+          right: '3%',
+          fontFamily: 'var(--fd)',
+          fontSize: 'clamp(200px, 28vw, 400px)',
+          fontWeight: 500,
+          color: 'rgba(232, 0, 29, 0.05)',
+          lineHeight: 1,
+          textTransform: 'uppercase',
+          userSelect: 'none',
+          pointerEvents: 'none',
+        }}
+      >
+        {number}
+      </div>
+      {/* Grid texture */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
           backgroundImage:
-            'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)',
+            'linear-gradient(rgba(255,255,255,0.015) 1px,transparent 1px),' +
+            'linear-gradient(90deg,rgba(255,255,255,0.015) 1px,transparent 1px)',
           backgroundSize: '40px 40px',
+          pointerEvents: 'none',
         }}
       />
     </motion.div>
@@ -93,89 +123,96 @@ const OverlayContent = ({
     offset: ['start end', 'end start'],
   });
 
-  const y = useTransform(scrollYProgress, [0, 1], [200, -200]);
+  const y = useTransform(scrollYProgress, [0, 1], [60, -60]);
   const opacity = useTransform(
     scrollYProgress,
-    [0.2, 0.4, 0.7, 0.85],
+    [0.1, 0.3, 0.7, 0.9],
     [0, 1, 1, 0]
   );
 
   return (
     <motion.div
       ref={targetRef}
-      style={{ y, opacity }}
-      className="absolute inset-0 flex flex-col justify-center px-10 lg:px-20 pointer-events-none"
+      className="absolute inset-0 flex flex-col justify-center"
+      style={{
+        y,
+        opacity,
+        paddingLeft: 'clamp(24px, 5vw, 80px)',
+        paddingRight: 'clamp(24px, 5vw, 80px)',
+      }}
     >
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-8 h-[2px] bg-red-600" />
-        <span
-          style={{ fontFamily: 'var(--fb)' }}
-          className="text-xs font-[600] uppercase tracking-[0.12em] text-red-500"
-        >
+      {/* Category eyebrow */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
+        <div style={{ width: 28, height: 2, background: '#E8001D' }} />
+        <span style={{
+          fontFamily: 'var(--fb)',
+          fontSize: 11,
+          fontWeight: 600,
+          textTransform: 'uppercase',
+          letterSpacing: '0.12em',
+          color: '#E8001D',
+        }}>
           {category}
         </span>
       </div>
 
-      <div
-        style={{
-          fontFamily: 'var(--fd)',
-          fontSize: 'clamp(12px, 1.5vw, 16px)',
-          color: 'rgba(232,0,29,0.4)',
-          textTransform: 'uppercase',
-          letterSpacing: '0.1em',
-          fontWeight: 500,
-          marginBottom: '16px',
-        }}
-      >
+      {/* Panel number */}
+      <div style={{
+        fontFamily: 'var(--fd)',
+        fontSize: 13,
+        fontWeight: 500,
+        color: 'rgba(232,0,29,0.35)',
+        textTransform: 'uppercase',
+        letterSpacing: '0.1em',
+        marginBottom: 14,
+      }}>
         {number}
       </div>
 
-      <h2
-        style={{
-          fontFamily: 'var(--fd)',
-          fontSize: 'clamp(44px, 5.5vw, 80px)',
-          fontWeight: 500,
-          textTransform: 'uppercase',
-          letterSpacing: '0.01em',
-          lineHeight: 1.0,
-          color: '#FFFFFF',
-          maxWidth: '640px',
-          marginBottom: '20px',
-          overflowWrap: 'normal',
-          wordBreak: 'keep-all',
-          whiteSpace: 'normal',
-        }}
-      >
+      {/* Main heading */}
+      <h2 style={{
+        fontFamily: 'var(--fd)',
+        fontSize: 'clamp(40px, 5.5vw, 80px)',
+        fontWeight: 500,
+        textTransform: 'uppercase',
+        letterSpacing: '0.01em',
+        lineHeight: 1.0,
+        color: '#FFFFFF',
+        maxWidth: 600,
+        marginBottom: 20,
+        overflowWrap: 'normal',
+        wordBreak: 'keep-all',
+      }}>
         {heading}
       </h2>
 
-      <p
-        style={{
-          fontFamily: 'var(--fb)',
-          fontSize: 'clamp(15px, 1.4vw, 18px)',
-          color: '#888888',
-          lineHeight: 1.7,
-          maxWidth: '520px',
-          marginBottom: '28px',
-        }}
-      >
+      {/* Body */}
+      <p style={{
+        fontFamily: 'var(--fb)',
+        fontSize: 'clamp(14px, 1.3vw, 17px)',
+        color: '#888888',
+        lineHeight: 1.7,
+        maxWidth: 460,
+        marginBottom: 24,
+      }}>
         {body}
       </p>
 
-      <div
-        style={{
-          fontFamily: 'var(--fb)',
-          fontSize: '11px',
-          fontWeight: 600,
-          textTransform: 'uppercase',
-          letterSpacing: '0.1em',
-          color: '#E8001D',
-          background: 'rgba(232,0,29,0.08)',
-          border: '1px solid rgba(232,0,29,0.2)',
-          padding: '5px 14px',
-          borderRadius: '2px',
-        }}
-      >
+      {/* Stat badge */}
+      <div style={{
+        display: 'inline-block',
+        alignSelf: 'flex-start',
+        fontFamily: 'var(--fb)',
+        fontSize: 11,
+        fontWeight: 600,
+        textTransform: 'uppercase',
+        letterSpacing: '0.1em',
+        color: '#E8001D',
+        background: 'rgba(232,0,29,0.08)',
+        border: '1px solid rgba(232,0,29,0.2)',
+        padding: '5px 14px',
+        borderRadius: 2,
+      }}>
         {statBadge}
       </div>
     </motion.div>
@@ -292,6 +329,9 @@ export default function ProblemParallax() {
       ) : (
         <ProblemParallaxDesktop problems={PROBLEMS} />
       )}
+
+      {/* Bottom spacer — prevents next section from overlapping */}
+      <div style={{ height: 80 }} />
     </section>
   );
 }
