@@ -1,17 +1,23 @@
 "use client";
 
-import { useRef } from "react";
 import Link from "next/link";
 import { KineticText } from "@/components/ui/KineticText";
 import { MagneticButton } from "@/components/ui/MagneticButton";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { useReveal } from "@/hooks/useReveal";
 
 export function CtaBanner() {
-    const sectionRef = useRef<HTMLElement>(null);
-    useScrollReveal(sectionRef);
+    const textRef1 = useReveal<HTMLParagraphElement>(0);
+    const textRef2 = useReveal<HTMLParagraphElement>(100);
+
+    const featureRefs = [
+        useReveal<HTMLSpanElement>(0),
+        useReveal<HTMLSpanElement>(100),
+        useReveal<HTMLSpanElement>(200),
+        useReveal<HTMLSpanElement>(300)
+    ];
 
     return (
-        <section ref={sectionRef} className="relative z-[1] bg-[#E8001D] py-16 md:py-20 overflow-hidden">
+        <section className="relative z-[1] bg-[#E8001D] py-16 md:py-20 overflow-hidden">
             {/* SVG Grain Filter */}
             <svg className="absolute inset-0 w-full h-full opacity-[0.25] pointer-events-none mix-blend-overlay z-0">
                 <filter id="grain">
@@ -29,7 +35,7 @@ export function CtaBanner() {
             <div className="max-w-[1400px] mx-auto px-8 md:px-12 py-20 md:py-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
                 {/* Left column — headline + body + stats */}
                 <div>
-                    <p className="font-sans text-[13px] font-medium uppercase tracking-[0.08em] text-white/60 mb-8 flex items-center gap-3">
+                    <p ref={textRef1} className="reveal-on-scroll font-sans text-[13px] font-medium uppercase tracking-[0.08em] text-white/60 mb-8 flex items-center gap-3">
                         <span className="block w-10 h-px bg-white/40" />
                         THE SYSTEM BEHIND THE RESULT.
                     </p>
@@ -43,7 +49,7 @@ export function CtaBanner() {
                             <KineticText as="span" text="COACHING." delay={680} charDelay={40} />
                         </span>
                     </h2>
-                    <p className="font-sans text-[15px] text-white/70 leading-[1.7] max-w-[480px]">
+                    <p ref={textRef2} className="reveal-on-scroll font-sans text-[15px] text-white/70 leading-[1.7] max-w-[480px]">
                         Fitosys automates client onboarding, weekly check-ins, and renewal reminders — natively on WhatsApp. Set up in 30 minutes. Runs on its own after that.
                     </p>
 
@@ -102,7 +108,7 @@ export function CtaBanner() {
                     </p>
                     <div className="flex flex-wrap justify-center lg:justify-end gap-2 mt-4 font-sans text-[11px] uppercase tracking-[0.1em] text-[rgba(255,255,255,0.45)] w-full">
                         {['DPDP Compliant', 'GST Invoices Auto-Generated', 'Data Stored in India', 'Secured by Razorpay'].map((item, i) => (
-                            <span key={i} className="reveal-fade-up flex items-center gap-2" style={{ transitionDelay: `${i * 100 + 400}ms` }}>
+                            <span key={i} ref={featureRefs[i]} className="reveal-on-scroll flex items-center gap-2">
                                 {item}
                                 {i !== 3 && <span className="opacity-50">&middot;</span>}
                             </span>

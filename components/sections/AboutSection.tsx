@@ -1,6 +1,13 @@
+"use client";
+
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { useReveal } from "@/hooks/useReveal";
 
 export function AboutSection() {
+    const textRef1 = useReveal<HTMLParagraphElement>(0);
+    const textRef2 = useReveal<HTMLParagraphElement>(100);
+    const textRef3 = useReveal<HTMLParagraphElement>(200);
+
     return (
         <section className="bg-[var(--surface)]" id="about">
             <div className="max-w-[1400px] mx-auto px-4 md:px-12 py-28 md:py-32">
@@ -9,15 +16,15 @@ export function AboutSection() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start mt-8">
                     {/* Left column — text, pillars */}
                     <div>
-                        <p className="font-sans text-[20px] md:text-[24px] italic text-white leading-[1.5] mb-8 max-w-[600px]">
+                        <p ref={textRef1} className="reveal-on-scroll font-sans text-[20px] md:text-[24px] italic text-white leading-[1.5] mb-8 max-w-[600px]">
                             Fitosys exists because India&apos;s best coaches shouldn&apos;t be drowning in WhatsApp messages. The system should run. You should coach.
                         </p>
 
-                        <p className="font-sans text-[17px] text-[#888888] leading-[1.7] mb-6 max-w-[700px]">
+                        <p ref={textRef2} className="reveal-on-scroll font-sans text-[17px] text-[#888888] leading-[1.7] mb-6 max-w-[700px]">
                             Built by Alchemetryx — a technology company that builds operating systems for independent professionals. We spoke to coaches across Mumbai, Delhi, Bangalore, and Pune. Every conversation had the same ending: good coaches losing good clients not because the coaching was poor, but because nothing was holding the business together between sessions.
                         </p>
 
-                        <p className="font-sans text-[17px] text-white font-semibold leading-[1.7] mb-12 max-w-[700px]">
+                        <p ref={textRef3} className="reveal-on-scroll font-sans text-[17px] text-white font-semibold leading-[1.7] mb-12 max-w-[700px]">
                             Fitosys is that thing.
                         </p>
 

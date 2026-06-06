@@ -1,10 +1,9 @@
 "use client";
 
-import { useRef } from "react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { useReveal } from "@/hooks/useReveal";
 
 const PRICING_DATA = [
     {
@@ -73,21 +72,32 @@ const PRICING_DATA = [
 ];
 
 export function PricingSection() {
-    const sectionRef = useRef<HTMLElement>(null);
-    useScrollReveal(sectionRef);
+    const headingRef = useReveal<HTMLHeadingElement>(0);
+    const textRef = useReveal<HTMLParagraphElement>(100);
+
+    // We use a mapping function for card refs to simplify
+    const cardRefs = [
+        useReveal<HTMLDivElement>(0),
+        useReveal<HTMLDivElement>(100),
+        useReveal<HTMLDivElement>(200),
+        useReveal<HTMLDivElement>(300)
+    ];
+    
+    const footerTextRef1 = useReveal<HTMLParagraphElement>(0);
+    const footerTextRef2 = useReveal<HTMLParagraphElement>(100);
 
     return (
-        <section ref={sectionRef} id="pricing" className="py-24 md:py-32">
+        <section id="pricing" className="py-24 md:py-32">
             <div className="max-w-[1400px] mx-auto px-4 md:px-12">
                 <div className="grid lg:grid-cols-2 gap-12 mb-16">
                     <div>
                         <Eyebrow label="PRICING" />
-                        <h2 className="font-display font-medium uppercase tracking-[0.02em] leading-none text-[44px] md:text-[56px]">
+                        <h2 ref={headingRef} className="reveal-on-scroll font-display font-medium uppercase tracking-[0.02em] leading-none text-[44px] md:text-[56px]">
                             <span className="block text-white">BUILT FOR INDIA.</span>
                             <span className="block text-[#E8001D]">PRICED FOR COACHES.</span>
                         </h2>
                     </div>
-                    <p className="font-sans text-[20px] text-[#888888] leading-[1.7] self-end">
+                    <p ref={textRef} className="reveal-on-scroll font-sans text-[20px] text-[#888888] leading-[1.7] self-end">
                         Client-count based pricing. You pay more only as your business grows. Annual plans save 2 months.
                     </p>
                 </div>
@@ -97,12 +107,12 @@ export function PricingSection() {
                     {PRICING_DATA.map((plan, i) => (
                         <div
                             key={i}
+                            ref={cardRefs[i]}
                             className={
                                 plan.featured
-                                    ? "relative flex flex-col bg-[#E8001D] rounded-[10px] p-8 scale-[1.03] shadow-[0_0_60px_rgba(232,0,29,0.25)] reveal-fade-up animate-[pulse_4s_ease-in-out_infinite]"
-                                    : "bg-[#111111] border border-white/[0.06] rounded-[10px] p-8 flex flex-col reveal-fade-up"
+                                    ? "reveal-on-scroll relative flex flex-col bg-[#E8001D] rounded-[10px] p-8 scale-[1.03] shadow-[0_0_60px_rgba(232,0,29,0.25)] animate-[pulse_4s_ease-in-out_infinite]"
+                                    : "reveal-on-scroll bg-[#111111] border border-white/[0.06] rounded-[10px] p-8 flex flex-col"
                             }
-                            style={{ transitionDelay: `${i * 80}ms` }}
                         >
                             {plan.badge && (
                                 <span className={
@@ -203,10 +213,10 @@ export function PricingSection() {
                     ))}
                 </div>
 
-                <p className="text-center font-sans text-[13px] text-[#888888] mt-6 reveal-fade-up" style={{ transitionDelay: '400ms' }}>
+                <p ref={footerTextRef1} className="reveal-on-scroll text-center font-sans text-[13px] text-[#888888] mt-6">
                     14-day free trial on all plans &middot; No credit card required &middot; Cancel anytime
                 </p>
-                <p className="text-center font-sans text-[12px] text-[#888888] mt-2 reveal-fade-up" style={{ transitionDelay: '500ms' }}>
+                <p ref={footerTextRef2} className="reveal-on-scroll text-center font-sans text-[12px] text-[#888888] mt-2">
                     All prices exclude 18% GST &middot; GST invoice auto-generated on every payment &middot; Data stored in India (Mumbai) &middot; DPDP Compliant &middot; Secured by Razorpay
                 </p>
             </div>

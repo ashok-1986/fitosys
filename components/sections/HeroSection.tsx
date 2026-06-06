@@ -7,7 +7,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { KineticText } from "@/components/ui/KineticText";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { CursorSpotlight } from "@/components/ui/CursorSpotlight";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { useReveal } from "@/hooks/useReveal";
 import { useCounter } from "@/hooks/useCounter";
 
 export function HeroSection() {
@@ -15,7 +15,7 @@ export function HeroSection() {
     const sectionRef = useRef<HTMLElement>(null);
     const statRef = useRef<HTMLDivElement>(null);
     
-    useScrollReveal(sectionRef);
+    const textRef = useReveal<HTMLParagraphElement>(100);
 
     const stat1 = useCounter(3, 1000, statRef);
     const stat2 = useCounter(72000, 1200, statRef);
@@ -48,7 +48,7 @@ export function HeroSection() {
                             <KineticText as="span" className="block text-[#E8001D]" text="LOST CLIENTS." delay={200} charDelay={40} />
                         </h1>
 
-                        <p className="font-sans text-[20px] leading-[1.7] text-[var(--grey)] mb-10 max-w-[480px] reveal-fade-up" style={{ transitionDelay: '600ms' }}>
+                        <p ref={textRef} className="reveal-on-scroll font-sans text-[20px] leading-[1.7] text-[var(--grey)] mb-10 max-w-[480px]">
                             Fitosys automates your client check-ins, renewals, and onboarding — <strong>natively on WhatsApp</strong>. 30 minutes to set up. Runs every week without you.
                         </p>
 
