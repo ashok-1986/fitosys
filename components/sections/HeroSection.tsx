@@ -11,7 +11,7 @@ import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useCounter } from "@/hooks/useCounter";
 
 export function HeroSection() {
-    const [activeTab, setActiveTab] = useState<"whatsapp" | "dashboard">("whatsapp");
+    const [activeTab, setActiveTab] = useState<"client" | "dashboard">("client");
     const sectionRef = useRef<HTMLElement>(null);
     const statRef = useRef<HTMLDivElement>(null);
     
@@ -24,7 +24,6 @@ export function HeroSection() {
     return (
         <section ref={sectionRef} className="relative pt-[120px] pb-24 md:pt-[160px] md:pb-32 overflow-hidden border-b border-[var(--border)] min-h-[90vh] flex items-center">
             <CursorSpotlight containerRef={sectionRef} />
-            <div className="max-w-[1400px] mx-auto px-4 md:px-12 w-full relative z-10">
             {/* Full-Screen Background Video */}
             <video
                 src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260306_074215_04640ca7-042c-45d6-bb56-58b1e8a42489.mp4"
