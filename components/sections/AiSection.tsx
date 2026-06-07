@@ -184,7 +184,7 @@ export function AiSection() {
 
                     {/* Right - Content */}
                     <div className="relative order-1 lg:order-2">
-                        <div className="absolute inset-0 -z-10 opacity-30 flex items-center justify-center pointer-events-none mix-blend-screen overflow-visible">
+                        <div className="absolute inset-0 -z-10 opacity-60 flex items-center justify-center pointer-events-none overflow-visible">
                             <CpuArchitecture width="120%" height="120%" className="-translate-x-10" />
                         </div>
                         <Eyebrow label="AI Powered" />

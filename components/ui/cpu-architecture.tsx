@@ -26,7 +26,7 @@ const CpuArchitecture = ({
 }: CpuArchitectureSvgProps) => {
   return (
     <svg
-      className={cn("text-muted opacity-50 pointer-events-none", className)}
+      className={cn("text-[var(--grey)] pointer-events-none", className)}
       width={width}
       height={height}
       viewBox="0 0 200 100"
@@ -361,7 +361,7 @@ const CpuArchitecture = ({
         </linearGradient>
         {/* Add CPU Text Gradient */}
         <linearGradient id="cpu-text-gradient" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#666666">
+          <stop offset="0%" stopColor="#AAAAAA">
             <animate
               attributeName="offset"
               values="-2; -1; 0"
@@ -383,7 +383,7 @@ const CpuArchitecture = ({
               keySplines="0.4 0 0.2 1; 0.4 0 0.2 1"
             />
           </stop>
-          <stop offset="50%" stopColor="#666666">
+          <stop offset="50%" stopColor="#AAAAAA">
             <animate
               attributeName="offset"
               values="0; 1; 2;"
