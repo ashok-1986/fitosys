@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
+import { ReactLenis } from 'lenis/react';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -121,13 +122,15 @@ const FlowArt: React.FC<FlowArtProps> = ({
   );
 
   return (
-    <main
-      ref={containerRef}
-      aria-label={ariaLabel}
-      className={cx('w-full overflow-x-hidden', className)}
-    >
-      {children}
-    </main>
+    <ReactLenis root>
+      <main
+        ref={containerRef}
+        aria-label={ariaLabel}
+        className={cx('w-full overflow-x-hidden', className)}
+      >
+        {children}
+      </main>
+    </ReactLenis>
   );
 };
 
