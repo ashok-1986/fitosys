@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { CpuArchitecture } from "@/components/ui/cpu-architecture";
 import { useReveal } from "@/hooks/useReveal";
 import { useCounter } from "@/hooks/useCounter";
 
@@ -182,7 +183,10 @@ export function AiSection() {
                     </div>
 
                     {/* Right - Content */}
-                    <div className="order-1 lg:order-2">
+                    <div className="relative order-1 lg:order-2">
+                        <div className="absolute inset-0 -z-10 opacity-60 flex items-center justify-center pointer-events-none overflow-visible">
+                            <CpuArchitecture width="120%" height="120%" className="-translate-x-10" />
+                        </div>
                         <Eyebrow label="AI Powered" />
                         <h2 ref={headingRef} className="reveal-on-scroll font-display font-medium text-[44px] md:text-[56px] lg:text-[64px] leading-none tracking-[0.02em] uppercase text-white mt-6 mb-8">
                             <span className="block text-white">KNOW WHO NEEDS YOU.</span>
@@ -192,7 +196,7 @@ export function AiSection() {
                             </span>
                         </h2>
                         <p ref={textRef} className="reveal-on-scroll font-sans text-[18px] text-[var(--grey)] leading-[1.7] mb-8">
-                            Gemini AI reads every check-in from the week and sends you one clear brief by 7 AM Monday. Response rates, energy trends, at-risk clients — sorted and prioritised. No dashboard needed. Just act on it.
+                            Fitosys AI reads every check-in from the week and sends you one clear brief by 7 AM Monday. Response rates, energy trends, at-risk clients — sorted and prioritised. No dashboard needed. Just act on it.
                         </p>
 
                         <ul className="space-y-4 mb-10">
