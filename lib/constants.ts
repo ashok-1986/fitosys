@@ -61,7 +61,7 @@ export const FEATURES = [
     {
         num: "04",
         title: "Know who needs you. Every Monday.",
-        description: "Gemini AI reads every check-in response and delivers one clear brief to your WhatsApp by 7 AM Monday. Response rates, energy trends, at-risk clients — sorted and prioritised.",
+        description: "Fitosys AI reads every check-in response and delivers one clear brief to your WhatsApp by 7 AM Monday. Response rates, energy trends, at-risk clients — sorted and prioritised.",
         tag: "AI Powered",
         tagColor: "ai",
     },

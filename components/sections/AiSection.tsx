@@ -192,7 +192,7 @@ export function AiSection() {
                             </span>
                         </h2>
                         <p ref={textRef} className="reveal-on-scroll font-sans text-[18px] text-[var(--grey)] leading-[1.7] mb-8">
-                            Gemini AI reads every check-in from the week and sends you one clear brief by 7 AM Monday. Response rates, energy trends, at-risk clients — sorted and prioritised. No dashboard needed. Just act on it.
+                            Fitosys AI reads every check-in from the week and sends you one clear brief by 7 AM Monday. Response rates, energy trends, at-risk clients — sorted and prioritised. No dashboard needed. Just act on it.
                         </p>
 
                         <ul className="space-y-4 mb-10">
