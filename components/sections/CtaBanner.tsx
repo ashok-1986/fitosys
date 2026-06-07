@@ -104,7 +104,7 @@ export function CtaBanner() {
                         </Link>
                     </MagneticButton>
                     <p className="font-sans text-[12px] text-white/50 text-center lg:text-right">
-                        No credit card. No contract. Cancel any time.
+                        No card needed. Cancel whenever. First 5 clients free.
                     </p>
                     <div className="flex flex-wrap justify-center lg:justify-end gap-2 mt-4 font-sans text-[11px] uppercase tracking-[0.1em] text-[rgba(255,255,255,0.45)] w-full">
                         {['DPDP Compliant', 'GST Invoices Auto-Generated', 'Data Stored in India', 'Secured by Razorpay'].map((item, i) => (

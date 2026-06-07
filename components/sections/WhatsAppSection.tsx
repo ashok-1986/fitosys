@@ -18,9 +18,7 @@ export function WhatsAppSection() {
                             India runs on WhatsApp. So does Fitosys.
                         </p>
                         <p className="font-sans text-[16px] text-[var(--grey)] leading-[1.7] mb-10">
-                            Your clients never need to download another app. Every message, every check-in, 
-                            every renewal reminder happens natively on WhatsApp — the app they already 
-                            use every single day.
+                            Your clients don't download anything. They're already on WhatsApp.
                         </p>
                         
                         <ul className="space-y-4 mb-10">

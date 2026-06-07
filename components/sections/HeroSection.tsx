@@ -49,7 +49,7 @@ export function HeroSection() {
                         </h1>
 
                         <p ref={textRef} className="reveal-on-scroll font-sans text-[20px] leading-[1.7] text-[var(--grey)] mb-10 max-w-[480px]">
-                            Fitosys automates your client check-ins, renewals, and onboarding — <strong>natively on WhatsApp</strong>. 30 minutes to set up. Runs every week without you.
+                            Fitosys automates your WhatsApp check-ins, renewal reminders, and client onboarding. Set up in 30 minutes. Runs every week on its own after that.
                         </p>
 
                         <div className="flex flex-col sm:flex-row items-center gap-4 mb-4">

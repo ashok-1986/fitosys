@@ -47,7 +47,7 @@ export const FEATURES = [
     {
         num: "02",
         title: "Check-ins without lifting a finger",
-        description: "Every Sunday at 7 PM, structured check-ins go out to every active client — in your name, from your number. Replies are stored automatically. Monday morning you receive a 2-minute AI summary showing exactly who needs your attention that week.",
+        description: "Every Sunday at 7 PM, check-ins go out to every client — in your name, from your WhatsApp number. Automatically. Replies are stored automatically. Monday morning you receive a 2-minute AI summary showing exactly who needs your attention that week.",
         tag: "WhatsApp Native",
         tagColor: "wa",
     },
