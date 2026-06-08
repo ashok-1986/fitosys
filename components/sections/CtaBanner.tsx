@@ -32,12 +32,19 @@ export function CtaBanner() {
                 backgroundSize: '40px 40px',
             }} />
 
+            {/* Giant Watermark */}
+            <div className="absolute -bottom-[2vw] -left-[2vw] pointer-events-none select-none z-0 w-full overflow-hidden">
+                <span className="font-display font-bold text-[28vw] leading-[0.75] text-black/[0.04] tracking-[-0.02em] whitespace-nowrap block">
+                    FITOSYS
+                </span>
+            </div>
+
             <div className="max-w-[1400px] mx-auto px-8 md:px-12 py-20 md:py-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
                 {/* Left column — headline + body + stats */}
                 <div>
                     <p ref={textRef1} className="reveal-on-scroll font-sans text-[13px] font-medium uppercase tracking-[0.08em] text-white/60 mb-8 flex items-center gap-3">
                         <span className="block w-10 h-px bg-white/40" />
-                        THE SYSTEM BEHIND THE RESULT.
+                        READY TO AUTOMATE YOUR PRACTICE?
                     </p>
                     <h2 className="font-display font-medium uppercase tracking-[0.02em] leading-none text-[64px] md:text-[80px] mb-8">
                         <KineticText as="span" className="block text-white" text="STOP" delay={0} charDelay={40} />
@@ -81,7 +88,7 @@ export function CtaBanner() {
                         </div>
                         <div>
                             <p className="font-display font-medium text-[28px] text-white leading-none tracking-[0.02em]">
-                                No
+                                0
                             </p>
                             <p className="font-sans text-[11px] uppercase tracking-[0.06em] text-white/50 mt-1">
                                 Card required
@@ -96,9 +103,9 @@ export function CtaBanner() {
                         GET STARTED TODAY
                     </p>
                     <MagneticButton radius={80} strength={0.3} className="w-full lg:max-w-[360px]">
-                        <Link href="/signup" className="block w-full">
+                        <Link href="/signup" className="block w-full relative z-20">
                             <button className="w-full px-10 py-5 bg-white text-[#E8001D] font-sans font-bold text-[13px] uppercase tracking-[0.06em] rounded-[2px] hover:bg-white/90 transition-colors flex items-center justify-center gap-3">
-                                START FREE
+                                START FREE TRIAL
                                 <span className="text-[16px]">→</span>
                             </button>
                         </Link>
