@@ -88,7 +88,7 @@ export function CtaBanner() {
                         </div>
                         <div>
                             <p className="font-display font-medium text-[28px] text-white leading-none tracking-[0.02em]">
-                                0
+                                No
                             </p>
                             <p className="font-sans text-[11px] uppercase tracking-[0.06em] text-white/50 mt-1">
                                 Card required
