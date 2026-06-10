@@ -6,6 +6,57 @@ import { CheckCircle, Circle, Copy, Check, ArrowRight, Zap } from "lucide-react"
 import Image from "next/image";
 import Link from "next/link";
 
+const GlobalStyles = () => (
+  <style>{`
+    @keyframes fadeSlideIn {
+      from {
+        opacity: 0;
+        transform: scale(0.97) translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .onboarding-card {
+      animation: fadeSlideIn 400ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
+      opacity: 0;
+    }
+    .onboarding-logo {
+      animation: fadeIn 300ms ease-out forwards;
+    }
+    .onboarding-step {
+      animation: fadeIn 300ms ease-out forwards;
+    }
+    .onboarding-progress-fill {
+      transition: width 500ms cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .onboarding-copy-btn {
+      transition: background 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .onboarding-copy-btn:active {
+      transform: scale(0.97) !important;
+    }
+    .onboarding-submit {
+      transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1), opacity 160ms ease, background 160ms ease;
+    }
+    .onboarding-submit:hover {
+      background: #C20000 !important;
+    }
+    .onboarding-submit:active:not(:disabled) {
+      transform: scale(0.97) !important;
+    }
+    .step-item {
+      animation: fadeSlideIn 400ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
+      opacity: 0;
+    }
+  `}</style>
+);
+
 export default function OnboardingConfirmPage() {
     const router = useRouter();
     const [slug, setSlug] = useState("");
@@ -13,7 +64,6 @@ export default function OnboardingConfirmPage() {
     const [copied, setCopied] = useState(false);
 
     useEffect(() => {
-        // Redirect to dashboard if onboarding is already complete (has programs)
         let cancelled = false;
         Promise.all([
             fetch("/api/coaches/profile").then(res => {
@@ -36,7 +86,6 @@ export default function OnboardingConfirmPage() {
         }).catch((err) => {
             if (cancelled) return;
             console.error("Failed to load onboarding data:", err);
-            // Consider showing an error state or redirecting to an error page
         });
         return () => { cancelled = true; };
     }, [router]);
@@ -77,6 +126,7 @@ export default function OnboardingConfirmPage() {
                         textDecoration: "none",
                         fontFamily: "var(--font-urbanist, sans-serif)",
                         marginTop: "10px",
+                        transition: "background 160ms ease, border-color 160ms ease",
                     } as React.CSSProperties}
                 >
                     <Zap style={{ width: "12px", height: "12px" }} />
@@ -107,6 +157,7 @@ export default function OnboardingConfirmPage() {
                     </code>
                     <button
                         onClick={copyLink}
+                        className="onboarding-copy-btn"
                         style={{
                             display: "flex",
                             alignItems: "center",
@@ -144,26 +195,35 @@ export default function OnboardingConfirmPage() {
             padding: "24px",
             fontFamily: "var(--font-urbanist, sans-serif)",
         }}>
+            <GlobalStyles />
             <div style={{ maxWidth: "480px", width: "100%" }}>
 
                 {/* Logo */}
                 <div style={{ textAlign: "center", marginBottom: "32px" }}>
-                    <Image
-                        src="/Fitosys_Logo_v1.png"
-                        alt="Fitosys"
-                        width={120}
-                        height={32}
-                        style={{ objectFit: "contain", filter: "brightness(0) invert(1)" }}
-                    />
+                    <div className="onboarding-logo">
+                        <Image
+                            src="/Fitosys_Logo_v1.png"
+                            alt="Fitosys"
+                            width={120}
+                            height={32}
+                            style={{ objectFit: "contain", filter: "brightness(0) invert(1)" }}
+                        />
+                    </div>
                 </div>
 
                 {/* Progress */}
                 <div style={{ display: "flex", gap: "6px", marginBottom: "32px" }}>
-                    <div style={{ flex: 1, height: "3px", background: "#E8001D", borderRadius: "2px" }} />
-                    <div style={{ flex: 1, height: "3px", background: "#E8001D", borderRadius: "2px" }} />
+                    <div
+                        className="onboarding-progress-fill"
+                        style={{ flex: 1, height: "3px", background: "#E8001D", borderRadius: "2px" }}
+                    />
+                    <div
+                        className="onboarding-progress-fill"
+                        style={{ flex: 1, height: "3px", background: "#E8001D", borderRadius: "2px" }}
+                    />
                 </div>
 
-                <div style={{ background: "#111111", border, borderRadius: "12px", padding: "28px" }}>
+                <div className="onboarding-card" style={{ background: "#111111", border, borderRadius: "12px", padding: "28px" }}>
                     <h1 style={{
                         fontFamily: "var(--font-barlow, sans-serif)",
                         fontSize: "26px",
@@ -184,11 +244,13 @@ export default function OnboardingConfirmPage() {
                         {steps.map((step, i) => (
                             <div
                                 key={i}
+                                className="step-item"
                                 style={{
                                     display: "flex",
                                     gap: "14px",
                                     padding: "16px 0",
                                     borderBottom: i < steps.length - 1 ? border : "none",
+                                    animationDelay: `${i * 80}ms`,
                                 }}
                             >
                                 <div style={{ flexShrink: 0, marginTop: "2px" }}>
@@ -217,6 +279,7 @@ export default function OnboardingConfirmPage() {
 
                     <button
                         onClick={() => router.push("/dashboard")}
+                        className="onboarding-submit"
                         style={{
                             display: "flex",
                             alignItems: "center",
