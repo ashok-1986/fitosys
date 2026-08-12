@@ -125,11 +125,11 @@ export function HeroSection() {
                         <div className="flex bg-[#111111] border border-white/10 rounded-full p-1 mb-4 relative z-20 shadow-lg">
                             <button
                                 onClick={() => setActiveTab("client")}
-                                className={\`relative font-sans uppercase tracking-wider text-[13px] px-5 py-1.5 rounded-full outline-none \${
+                                className={`relative font-sans uppercase tracking-wider text-[13px] px-5 py-1.5 rounded-full outline-none ${
                                     activeTab === "client"
                                         ? "text-white font-semibold"
                                         : "text-white/50 hover:text-white/80"
-                                }\`}
+                                }`}
                             >
                                 {activeTab === "client" && (
                                     <motion.div
@@ -142,11 +142,11 @@ export function HeroSection() {
                             </button>
                             <button
                                 onClick={() => setActiveTab("dashboard")}
-                                className={\`relative font-sans uppercase tracking-wider text-[13px] px-5 py-1.5 rounded-full outline-none \${
+                                className={`relative font-sans uppercase tracking-wider text-[13px] px-5 py-1.5 rounded-full outline-none ${
                                     activeTab === "dashboard"
                                         ? "text-white font-semibold"
                                         : "text-white/50 hover:text-white/80"
-                                }\`}
+                                }`}
                             >
                                 {activeTab === "dashboard" && (
                                     <motion.div
@@ -166,7 +166,7 @@ export function HeroSection() {
                             <div className="relative rounded-3xl overflow-hidden min-h-[580px] bg-[#111111] text-white">
 
                                 {/* ════ Client View (WhatsApp) ════ */}
-                                <div className={\`absolute inset-0 transition-opacity duration-300 ease-in-out flex flex-col \${activeTab === "client" ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"}\`}>
+                                <div className={`absolute inset-0 transition-opacity duration-300 ease-in-out flex flex-col ${activeTab === "client" ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"}`}>
 
                                     {/* WA Header */}
                                     <div className="bg-[#0F1F17] p-3.5 flex items-center gap-3">
