@@ -4,29 +4,40 @@ import { useReveal } from "@/hooks/useReveal";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { KineticText } from "@/components/ui/KineticText";
 
+import { CreditCard, FileText, Bot, BarChart2, Bell, Zap } from "lucide-react";
+
 const NEW_FEATURES = [
     {
         num: "01",
         title: "ONBOARDING IN ONE LINK.",
-        description: "Share one link. Your client fills the intake form, picks a program, and pays via UPI or card. They get a WhatsApp welcome automatically. No back-and-forth. No awkward payment conversation.",
+        description: "Share one link. Clients select programs and pay via UPI/Card. They get an automatic WhatsApp welcome. Zero friction.",
         badge: "WHATSAPP NATIVE",
-        subFeature: "GST invoice auto-generated · Payment via Razorpay",
+        subFeatures: [
+            { icon: CreditCard, text: "Razorpay Ready" },
+            { icon: FileText, text: "Auto Invoices" }
+        ],
         badgeColor: "bg-[rgba(37,211,102,0.1)] text-[#25D366]",
     },
     {
         num: "02",
         title: "CHECK-INS WITHOUT LIFTING A FINGER.",
-        description: "Every Sunday at 7 PM, structured check-ins go out to every active client — in your name, from your number. Replies are stored automatically. Monday morning you receive a 2-minute AI summary showing exactly who needs your attention that week.",
+        description: "Automated check-ins fire every Sunday. On Monday, get a 2-minute AI summary highlighting exactly who needs attention.",
         badge: "WHATSAPP NATIVE",
-        subFeature: "Fitosys AI · Response rate tracking · Priority actions",
+        subFeatures: [
+            { icon: Bot, text: "Fitosys AI" },
+            { icon: BarChart2, text: "Response Tracking" }
+        ],
         badgeColor: "bg-[rgba(37,211,102,0.1)] text-[#25D366]",
     },
     {
         num: "03",
         title: "NEVER LOSE A RENEWAL AGAIN.",
-        description: "7 days before a program ends, a personalised reminder fires with the client's own progress data. If there is no reply in 48 hours, a follow-up goes out. Every payment triggers a GST-compliant invoice, generated and emailed automatically.",
+        description: "Personalised reminders fire 7 days before expiry, with an auto follow-up if ignored. Payments auto-generate GST invoices.",
         badge: "WHATSAPP NATIVE",
-        subFeature: "T-7 days automatic · Every invoice automatic · Real-time data",
+        subFeatures: [
+            { icon: Bell, text: "T-7 Automations" },
+            { icon: Zap, text: "Real-time sync" }
+        ],
         badgeColor: "bg-[rgba(37,211,102,0.1)] text-[#25D366]",
     },
 ];
@@ -42,7 +53,7 @@ export function FeaturesSection() {
 
     return (
         <section id="features">
-            <div className="max-w-[1400px] mx-auto px-4 md:px-12 py-28 md:py-32">
+            <div className="max-w-[1400px] mx-auto px-4 md:px-12 py-32 lg:py-40">
                 <div className="grid lg:grid-cols-2 gap-12 mb-16 items-end">
                     <div>
                         <Eyebrow label="CORE FEATURES" />
@@ -78,10 +89,18 @@ export function FeaturesSection() {
                                 <p className="font-sans text-[16px] text-[var(--grey)] leading-[1.7] mb-8 flex-grow">
                                     {f.description}
                                 </p>
-                                <div className="pt-6 border-t border-[var(--border)] mt-auto">
-                                    <span className="font-sans text-[12px] font-semibold text-[var(--t2)] uppercase tracking-[0.05em]">
-                                        {f.subFeature}
-                                    </span>
+                                <div className="pt-6 border-t border-[var(--border)] mt-auto flex flex-wrap gap-2.5">
+                                    {f.subFeatures.map((sf, idx) => {
+                                        const Icon = sf.icon;
+                                        return (
+                                            <div key={idx} className="flex items-center gap-1.5 bg-white/5 border border-white/10 px-2.5 py-1.5 rounded-md">
+                                                <Icon className="w-3.5 h-3.5 text-[var(--t2)]" />
+                                                <span className="font-sans text-[11px] font-semibold text-[var(--t2)] uppercase tracking-[0.05em]">
+                                                    {sf.text}
+                                                </span>
+                                            </div>
+                                        )
+                                    })}
                                 </div>
                             </div>
                         );

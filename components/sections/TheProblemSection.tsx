@@ -8,7 +8,7 @@ const PROBLEMS = [
     number: '01',
     category: 'Revenue Leakage',
     heading: 'Renewals slip.\nSilently.',
-    body: 'Programs expire and you find out when the client stops responding. No reminder fired. No system caught it. At ₹3,000 to ₹8,000 per client per month, that is real money gone quietly.',
+    body: "Programs expire silently. No system catches it. At ₹3-8k per client/month, that's real money lost without a fight.",
     stat: '₹72,000+',
     statLabel: 'lost annually on average',
     badge: '₹72,000+ LOST ANNUALLY ON AVERAGE',
@@ -24,7 +24,7 @@ const PROBLEMS = [
     number: '02',
     category: 'Engagement Blindspot',
     heading: "You can't see\nwho's leaving.",
-    body: "Without structured check-ins, there is no early warning. By the time a client's energy drops or sessions start slipping, the relationship has already cooled. You catch it after the fact — not before.",
+    body: "Without structured check-ins, there's no early warning. When energy drops, you only catch it after the relationship cools.",
     stat: '10–20%',
     statLabel: 'annual churn from retention blindness',
     badge: '10–20% ANNUAL CHURN FROM RETENTION BLINDNESS',
@@ -43,7 +43,7 @@ const PROBLEMS = [
     number: '03',
     category: 'Admin Burnout',
     heading: 'Sunday evenings\nare not yours.',
-    body: 'Manual check-ins. Payment follow-ups. Onboarding over 4 WhatsApp exchanges. Coaches with 25 clients spend 3 to 5 hours a week on tasks a system should handle.',
+    body: 'Manual check-ins. Payment follow-ups. Messy onboarding. Coaches waste 3-5 hours every week on tasks a system should handle.',
     stat: '3–5 HRS',
     statLabel: 'of admin every week',
     badge: '3–5 HOURS OF ADMIN EVERY WEEK',
@@ -252,7 +252,7 @@ export default function TheProblemSection() {
       <div className="tps-panel-intro" style={{
         maxWidth: 1200,
         margin: '0 auto',
-        padding: '96px 40px 80px',
+        padding: '120px 40px 96px',
       }}>
         <Reveal>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
@@ -347,7 +347,7 @@ export default function TheProblemSection() {
           <div className="tps-panel-grid" style={{
             maxWidth: 1200,
             margin: '0 auto',
-            padding: 'clamp(48px, 6vw, 80px) 40px',
+            padding: 'clamp(80px, 8vw, 120px) 40px',
           }}>
 
             {/* LEFT — Problem content */}
@@ -410,10 +410,10 @@ export default function TheProblemSection() {
               </Reveal>
 
               <Reveal delay={0.2}>
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 20 }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 24 }}>
                   <span style={{
                     fontFamily: 'var(--fd)',
-                    fontSize: 'clamp(32px, 4vw, 52px)',
+                    fontSize: 'clamp(48px, 6vw, 72px)',
                     fontWeight: 500,
                     color: '#E8001D',
                     lineHeight: 1,
@@ -472,7 +472,7 @@ export default function TheProblemSection() {
         <div className="tps-panel-quote" style={{
           maxWidth: 1200,
           margin: '0 auto',
-          padding: '64px 40px',
+          padding: '96px 40px',
           display: 'grid',
           gridTemplateColumns: '1fr 2fr',
           gap: 48,
