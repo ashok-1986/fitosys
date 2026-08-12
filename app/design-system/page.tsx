@@ -27,7 +27,7 @@ export default function DesignSystem() {
           <Swatch hex="#888888" name="Steel Grey" usage="Secondary text, labels" dark={false} />
           <Swatch hex="#444444" name="Dark Grey" usage="Tertiary text, disabled" dark={false} />
         </div>
-        <div style={{ marginTop: '16px', padding: '12px 16px', background: '#111111', borderLeft: '3px solid #E8001D', fontSize: '12px', color: '#888888', lineHeight: 1.7 }}>
+        <div style={{ marginTop: '16px', padding: '12px 16px', background: '#111111', fontSize: '12px', color: '#888888', lineHeight: 1.7 }}>
           <strong style={{ color: '#E8001D' }}>Border rule:</strong> Use <code style={{ color: '#FFFFFF' }}>rgba(255,255,255,0.06)</code> for structural borders. Use <code style={{ color: '#FFFFFF' }}>rgba(232,0,29,0.2)</code> for red-accented borders. Never swap these.
         </div>
       </section>
@@ -64,7 +64,7 @@ export default function DesignSystem() {
         </div>
 
         {/* The one rule */}
-        <div style={{ marginTop: '2px', background: '#111111', padding: '24px 32px', borderTop: '3px solid #E8001D' }}>
+        <div style={{ marginTop: '2px', background: '#111111', padding: '24px 32px' }}>
           <p style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#E8001D', marginBottom: '12px' }}>The One Rule — Stat Numbers</p>
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: '48px' }}>
             <div>
@@ -156,7 +156,7 @@ export default function DesignSystem() {
             <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, #E8001D, transparent)', marginBottom: '8px' }} />
             <p style={{ fontSize: '12px', color: '#888888' }}>Red gradient divider — section separators on marketing pages</p>
           </div>
-          <div style={{ borderLeft: '3px solid #E8001D', padding: '12px 16px', background: 'rgba(232,0,29,0.08)' }}>
+          <div style={{ padding: '12px 16px', background: 'rgba(232,0,29,0.08)' }}>
             <p style={{ fontSize: '12px', color: '#888888' }}>Rule box — <code style={{ color: '#FFFFFF' }}>border-left: 3px solid #E8001D</code> — use for important callouts and warnings</p>
           </div>
         </div>

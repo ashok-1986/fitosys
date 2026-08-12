@@ -44,6 +44,7 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  metadataBase: new URL("https://fitosys.alchemetryx.com"),
 };
 
 const jsonLd = {
@@ -106,7 +107,7 @@ export default async function RootLayout({
         <Providers>
           <Grain />
           {!isShellRoute && <Nav />}
-          <main id="main-content">
+          <main id="main-content" tabIndex={-1} className="focus:outline-none">
             {children}
           </main>
           {!isShellRoute && <Footer />}

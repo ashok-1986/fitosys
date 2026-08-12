@@ -519,7 +519,7 @@ export default function SettingsPage() {
               <div>
                 <div style={{ fontSize: "13px", fontWeight: 600, color: "white", marginBottom: "10px" }}>Client Usage</div>
                 <div style={{ background: "#1a1a1a", borderRadius: "99px", height: "6px", overflow: "hidden", marginBottom: "8px" }}>
-                  <div style={{ width: `${subData.utilisation_pct}%`, height: "100%", borderRadius: "99px", transition: "width 0.4s ease", background: subData.utilisation_pct >= 90 ? "#EF4444" : subData.utilisation_pct >= 70 ? "#F59E0B" : "#10B981" }} />
+                  <div style={{ width: `${subData.utilisation_pct}%`, height: "100%", borderRadius: "99px", background: subData.utilisation_pct >= 90 ? "#EF4444" : subData.utilisation_pct >= 70 ? "#F59E0B" : "#10B981" }} />
                 </div>
                 <div style={{ fontSize: "12px", color: "#888888" }}>
                   {subData.active_clients} of {subData.client_limit ?? '∞'} clients used

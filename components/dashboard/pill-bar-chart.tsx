@@ -94,7 +94,6 @@ export function PillBarChart({
                   className="bar-pill-fill"
                   style={{
                     height: animated ? `${fillHeight}px` : "0",
-                    transition: "height 0.65s cubic-bezier(.4,0,.2,1)",
                   }}
                 />
               </div>

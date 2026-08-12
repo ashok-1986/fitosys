@@ -60,7 +60,7 @@ export function MagneticButton({ children, strength = 0.4, radius = 60, classNam
       className={`relative inline-block ${className}`}
       style={{
         transform: `translate(${position.x}px, ${position.y}px)`,
-        transition: isHovering ? "none" : "transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)"
+        transition: isHovering ? "none" : "transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)"
       }}
       onClick={onClick}
     >

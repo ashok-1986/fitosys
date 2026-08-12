@@ -205,7 +205,7 @@ export default function DashboardPage() {
                 <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: "6px", height: "100%", justifyContent: "flex-end" }}>
                   <span style={{ fontSize: "10px", color: "#C8C8C8" }}>{d.value}%</span>
                   <div style={{ width: "100%", background: "#1A1A1A", borderRadius: "99px", overflow: "hidden", height: "80px", position: "relative" }}>
-                    <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "#E8001D", opacity: d.value > 0 ? 0.8 : 0.1, height: `${Math.round((d.value / maxChartValue) * 100)}%`, borderRadius: "99px", transition: "height 0.6s ease" }} />
+                    <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "#E8001D", opacity: d.value > 0 ? 0.8 : 0.1, height: `${Math.round((d.value / maxChartValue) * 100)}%`, borderRadius: "99px" }} />
                   </div>
                   <span style={{ fontSize: "10px", color: "#888888", textTransform: "uppercase", letterSpacing: "0.04em" }}>{d.label.slice(0, 3)}</span>
                 </div>

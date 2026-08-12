@@ -152,7 +152,7 @@ export default function ClientProfilePage() {
               const h = Math.max((val / 10) * 60, 4);
               return (
                 <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end" }}>
-                  <div style={{ width: "100%", background: bg, height: `${h}px`, transition: "height 0.3s" }} />
+                  <div style={{ width: "100%", background: bg, height: `${h}px` }} />
                   <div style={{ fontSize: "9px", color: "#888888", marginTop: "4px" }}>Wk {c.week_number}</div>
                 </div>
               );

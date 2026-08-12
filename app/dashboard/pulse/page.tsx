@@ -175,7 +175,7 @@ export default function PulsePage() {
                 <div style={{ fontSize: "9px", color: "#888888", textAlign: "center", marginBottom: "4px" }}>
                   {d.rate > 0 ? `${d.rate}%` : "—"}
                 </div>
-                <div style={{ width: "100%", background: bg, height: `${h}px`, borderRadius: "4px 4px 0 0", transition: "height 0.3s" }} />
+                <div style={{ width: "100%", background: bg, height: `${h}px`, borderRadius: "4px 4px 0 0" }} />
                 <div style={{ fontSize: "9px", color: "#888888", textAlign: "center", marginTop: "6px" }}>{d.week}</div>
               </div>
             );

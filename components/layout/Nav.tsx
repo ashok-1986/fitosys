@@ -56,6 +56,9 @@ export function Nav() {
                 <button
                     className="md:hidden text-white"
                     onClick={() => setIsOpen(!isOpen)}
+                    aria-label="Toggle Navigation"
+                    aria-expanded={isOpen}
+                    aria-controls="mobile-menu"
                 >
                     {isOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
@@ -63,7 +66,7 @@ export function Nav() {
 
             {/* Mobile Drawer */}
             {isOpen && (
-                <div className="md:hidden fixed top-[64px] left-0 w-full h-[calc(100vh-64px)] bg-[#111111] border-b border-[rgba(255,255,255,0.06)] flex flex-col p-4 shadow-2xl z-[110]">
+                <div id="mobile-menu" className="md:hidden fixed top-[64px] left-0 w-full h-[calc(100vh-64px)] bg-[#111111] border-b border-[rgba(255,255,255,0.06)] flex flex-col p-4 shadow-2xl z-[110]">
                     {NAV_LINKS.map((link) => (
                         <Link
                             key={link.label}
@@ -75,6 +78,13 @@ export function Nav() {
                         </Link>
                     ))}
                     <div className="flex flex-col gap-3 py-6">
+                        <Link
+                            href="/login"
+                            onClick={() => setIsOpen(false)}
+                            className="bg-white/10 hover:bg-white/20 text-white text-center py-3 text-[13px] font-bold uppercase tracking-[0.04em] transition-colors"
+                        >
+                            Login
+                        </Link>
                         <Link
                             href="/signup"
                             onClick={() => setIsOpen(false)}

@@ -112,7 +112,6 @@ const RevenueCard = ({ data }: { data: { months: string[]; values: number[]; lab
             height: `${v}%`,
             background: `rgba(232,0,29,${0.15 + (v / 100) * 0.6})`,
             borderRadius: '3px 3px 0 0',
-            transition: 'height 1s ease',
           }} />
           <span style={{ fontSize: 9, color: '#666', textTransform: 'uppercase', fontFamily: 'var(--fb)' }}>{data.months[i]}</span>
         </div>
