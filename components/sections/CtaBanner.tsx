@@ -42,7 +42,7 @@ export function CtaBanner() {
             <div className="max-w-[1400px] mx-auto px-8 md:px-12 py-20 md:py-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
                 {/* Left column — headline + body + stats */}
                 <div>
-                    <p ref={textRef1} className="reveal-on-scroll font-sans text-[13px] font-medium uppercase tracking-[0.08em] text-white/60 mb-8 flex items-center gap-3">
+                    <p ref={textRef1} className="reveal-on-scroll font-sans text-xs font-medium uppercase tracking-[0.08em] text-white/60 mb-8 flex items-center gap-3">
                         <span className="block w-10 h-px bg-white/40" />
                         READY TO AUTOMATE YOUR PRACTICE?
                     </p>
@@ -56,7 +56,7 @@ export function CtaBanner() {
                             <KineticText as="span" text="COACHING." delay={680} charDelay={40} />
                         </span>
                     </h2>
-                    <p ref={textRef2} className="reveal-on-scroll font-sans text-[15px] text-white/70 leading-[1.7] max-w-[480px]">
+                    <p ref={textRef2} className="reveal-on-scroll font-sans text-sm text-white/70 leading-[1.7] max-w-[480px]">
                         Fitosys automates client onboarding, weekly check-ins, and renewal reminders — natively on WhatsApp. Set up in 30 minutes. Runs on its own after that.
                     </p>
 
@@ -66,7 +66,7 @@ export function CtaBanner() {
                             <p className="font-display font-medium text-[28px] text-white leading-none tracking-[0.02em]">
                                 30<span className="text-[18px]">min</span>
                             </p>
-                            <p className="font-sans text-[11px] uppercase tracking-[0.06em] text-white/50 mt-1">
+                            <p className="font-sans text-xs uppercase tracking-[0.06em] text-white/50 mt-1">
                                 Setup time
                             </p>
                         </div>
@@ -74,7 +74,7 @@ export function CtaBanner() {
                             <p className="font-display font-medium text-[28px] text-white leading-none tracking-[0.02em]">
                                 ₹999
                             </p>
-                            <p className="font-sans text-[11px] uppercase tracking-[0.06em] text-white/50 mt-1">
+                            <p className="font-sans text-xs uppercase tracking-[0.06em] text-white/50 mt-1">
                                 Starts at / month
                             </p>
                         </div>
@@ -82,7 +82,7 @@ export function CtaBanner() {
                             <p className="font-display font-medium text-[28px] text-white leading-none tracking-[0.02em]">
                                 14<span className="text-[18px]">day</span>
                             </p>
-                            <p className="font-sans text-[11px] uppercase tracking-[0.06em] text-white/50 mt-1">
+                            <p className="font-sans text-xs uppercase tracking-[0.06em] text-white/50 mt-1">
                                 Free trial
                             </p>
                         </div>
@@ -90,7 +90,7 @@ export function CtaBanner() {
                             <p className="font-display font-medium text-[28px] text-white leading-none tracking-[0.02em]">
                                 No
                             </p>
-                            <p className="font-sans text-[11px] uppercase tracking-[0.06em] text-white/50 mt-1">
+                            <p className="font-sans text-xs uppercase tracking-[0.06em] text-white/50 mt-1">
                                 Card required
                             </p>
                         </div>
@@ -99,21 +99,21 @@ export function CtaBanner() {
 
                 {/* Right column — CTA */}
                 <div className="flex flex-col items-start lg:items-end gap-4 w-full">
-                    <p className="font-sans text-[11px] uppercase tracking-[0.1em] text-white/50">
+                    <p className="font-sans text-xs uppercase tracking-[0.1em] text-white/50">
                         GET STARTED TODAY
                     </p>
                     <MagneticButton radius={80} strength={0.3} className="w-full lg:max-w-[360px]">
                         <Link href="/signup" className="block w-full relative z-20">
-                            <button className="w-full px-10 py-5 bg-white text-[#E8001D] font-sans font-bold text-[13px] uppercase tracking-[0.06em] rounded-[2px] hover:bg-white/90 transition-colors flex items-center justify-center gap-3">
+                            <button className="w-full px-10 py-5 bg-white text-[#E8001D] font-sans font-bold text-xs uppercase tracking-[0.06em] rounded-[2px] hover:bg-white/90 transition-colors flex items-center justify-center gap-3">
                                 START FREE TRIAL
                                 <span className="text-[16px]">→</span>
                             </button>
                         </Link>
                     </MagneticButton>
-                    <p className="font-sans text-[12px] text-white/50 text-center lg:text-right">
+                    <p className="font-sans text-xs text-white/50 text-center lg:text-right">
                         No credit card. No contract. Cancel any time.
                     </p>
-                    <div className="flex flex-wrap justify-center lg:justify-end gap-2 mt-4 font-sans text-[11px] uppercase tracking-[0.1em] text-[rgba(255,255,255,0.45)] w-full">
+                    <div className="flex flex-wrap justify-center lg:justify-end gap-2 mt-4 font-sans text-xs uppercase tracking-[0.1em] text-[rgba(255,255,255,0.45)] w-full">
                         {['DPDP Compliant', 'GST Invoices Auto-Generated', 'Data Stored in India', 'Secured by Razorpay'].map((item, i) => (
                             <span key={i} ref={featureRefs[i]} className="reveal-on-scroll flex items-center gap-2">
                                 {item}

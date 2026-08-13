@@ -97,7 +97,7 @@ export function PricingSection() {
                             <span className="block text-[#E8001D]">PRICED FOR COACHES.</span>
                         </h2>
                     </div>
-                    <p ref={textRef} className="reveal-on-scroll font-sans text-[20px] text-[#888888] leading-[1.7] self-end">
+                    <p ref={textRef} className="reveal-on-scroll font-sans text-lg text-[#888888] leading-[1.7] self-end hidden md:block">
                         Client-count based pricing. You pay more only as your business grows. Annual plans save 2 months.
                     </p>
                 </div>
@@ -117,8 +117,8 @@ export function PricingSection() {
                             {plan.badge && (
                                 <span className={
                                     plan.featured
-                                        ? "absolute top-4 right-4 bg-white text-[#E8001D] text-[11px] font-bold uppercase tracking-[0.06em] px-3 py-1 rounded-[2px]"
-                                        : "self-end bg-[#E8001D] text-white text-[11px] font-bold uppercase tracking-[0.06em] px-3 py-1 rounded-[2px] mb-4"
+                                        ? "absolute top-4 right-4 bg-white text-[#E8001D] text-xs font-bold uppercase tracking-[0.06em] px-3 py-1 rounded-[2px]"
+                                        : "self-end bg-[#E8001D] text-white text-xs font-bold uppercase tracking-[0.06em] px-3 py-1 rounded-[2px] mb-4"
                                 }>
                                     {plan.badge}
                                 </span>
@@ -126,8 +126,8 @@ export function PricingSection() {
 
                             <div className={
                                 plan.featured
-                                    ? "font-sans text-[11px] font-bold uppercase tracking-[0.08em] text-white/70 mb-2"
-                                    : "font-sans text-[11px] font-bold uppercase tracking-[0.08em] text-[#E8001D] mb-4"
+                                    ? "font-sans text-xs font-bold uppercase tracking-[0.08em] text-white/70 mb-2"
+                                    : "font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#E8001D] mb-4"
                             }>
                                 {plan.tier}
                             </div>
@@ -149,16 +149,16 @@ export function PricingSection() {
 
                             <div className={
                                 plan.featured
-                                    ? "font-sans text-[13px] text-white/70 mb-2"
-                                    : "font-sans text-[13px] text-[#888888] mb-2"
+                                    ? "font-sans text-xs text-white/70 mb-2"
+                                    : "font-sans text-xs text-[#888888] mb-2"
                             }>
                                 {plan.period}
                             </div>
 
                             <div className={
                                 plan.featured
-                                    ? "font-sans text-[15px] font-semibold text-white mb-6"
-                                    : "font-sans text-[15px] font-semibold text-white mb-6"
+                                    ? "font-sans text-sm font-semibold text-white mb-6"
+                                    : "font-sans text-sm font-semibold text-white mb-6"
                             }>
                                 {plan.clients}
                             </div>
@@ -174,9 +174,9 @@ export function PricingSection() {
                                     <li key={fi} className={
                                         plan.featured
                                             ? feature.locked
-                                                ? "font-sans text-[13px] text-white/30 flex items-start gap-2"
-                                                : "font-sans text-[13px] text-white/90 flex items-start gap-2"
-                                            : "font-sans text-[13px] flex items-start gap-2"
+                                                ? "font-sans text-xs text-white/30 flex items-start gap-2"
+                                                : "font-sans text-xs text-white/90 flex items-start gap-2"
+                                            : "font-sans text-xs flex items-start gap-2"
                                     }>
                                         {feature.locked ? (
                                             <span className={plan.featured ? "text-white/30 shrink-0" : "text-white/20 shrink-0"}>✕</span>
@@ -199,7 +199,7 @@ export function PricingSection() {
                             </ul>
 
                             {plan.featured ? (
-                                <Link href="/login" className="w-full block text-center py-4 bg-white text-[#E8001D] font-sans font-bold text-[13px] uppercase tracking-[0.04em] rounded-[2px] hover:bg-white/90 transition-colors">
+                                <Link href="/login" className="w-full block text-center py-4 bg-white text-[#E8001D] font-sans font-bold text-xs uppercase tracking-[0.04em] rounded-[2px] hover:bg-white/90 transition-colors">
                                     Start Free
                                 </Link>
                             ) : (
@@ -213,10 +213,10 @@ export function PricingSection() {
                     ))}
                 </div>
 
-                <p ref={footerTextRef1} className="reveal-on-scroll text-center font-sans text-[13px] text-[#888888] mt-6">
+                <p ref={footerTextRef1} className="reveal-on-scroll text-center font-sans text-xs text-[#888888] mt-6 hidden md:block">
                     14-day free trial on all plans &middot; No credit card required &middot; Cancel anytime
                 </p>
-                <p ref={footerTextRef2} className="reveal-on-scroll text-center font-sans text-[12px] text-[#888888] mt-2">
+                <p ref={footerTextRef2} className="reveal-on-scroll text-center font-sans text-xs text-[#888888] mt-2 hidden md:block">
                     All prices exclude 18% GST &middot; GST invoice auto-generated on every payment &middot; Data stored in India (Mumbai) &middot; DPDP Compliant &middot; Secured by Razorpay
                 </p>
             </div>

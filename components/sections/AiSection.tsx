@@ -58,8 +58,8 @@ const AIInsightCard = () => {
                     </svg>
                 </div>
                 <div>
-                    <div className="font-sans text-[12px] text-white font-semibold mb-1">AI Insight</div>
-                    <p className="font-sans text-[12px] text-[var(--grey)] leading-[1.6]">
+                    <div className="font-sans text-xs text-white font-semibold mb-1">AI Insight</div>
+                    <p className="font-sans text-xs text-[var(--grey)] leading-[1.6]">
                         {displayed}
                         {displayed.length < AI_INSIGHT_TEXT.length && (
                             <span className="inline-block w-[2px] h-[14px] bg-red-600 ml-[2px] animate-pulse align-middle" />
@@ -117,11 +117,11 @@ export function AiSection() {
                                         <span className="font-display font-medium text-[14px] text-white">AI</span>
                                     </div>
                                     <div>
-                                        <div className="font-sans font-semibold text-[13px] text-white">Monday Brief</div>
-                                        <div className="font-sans text-[11px] text-[var(--grey)]">Week of March 18, 2026</div>
+                                        <div className="font-sans font-semibold text-xs text-white">Monday Brief</div>
+                                        <div className="font-sans text-xs text-[var(--grey)]">Week of March 18, 2026</div>
                                     </div>
                                 </div>
-                                <div className="font-sans text-[11px] text-[var(--grey)]">
+                                <div className="font-sans text-xs text-[var(--grey)]">
                                     7:00 AM · Auto-generated
                                 </div>
                             </div>
@@ -147,7 +147,7 @@ export function AiSection() {
 
                                 {/* Action Items */}
                                 <div>
-                                    <div className="font-sans text-[11px] text-[var(--grey)] uppercase tracking-[0.06em] mb-3">Priority Actions</div>
+                                    <div className="font-sans text-xs text-[var(--grey)] uppercase tracking-[0.06em] mb-3">Priority Actions</div>
                                     <div className="space-y-2">
                                         {priorityItems.map((item, i) => (
                                             <motion.div
@@ -159,10 +159,10 @@ export function AiSection() {
                                                 <div className="bg-[#0A0A0A] border border-[rgba(255,255,255,0.06)] rounded-[6px] p-3 flex items-start gap-3">
                                                     <div className={`w-2 h-2 rounded-full ${item.dot} mt-1.5 shrink-0`} />
                                                     <div className="flex-1">
-                                                        <div className="font-sans text-[13px] text-white mb-1">
+                                                        <div className="font-sans text-xs text-white mb-1">
                                                             {item.text}<span className="text-white font-medium">{item.bold}</span>{item.sub}
                                                         </div>
-                                                        <div className="font-sans text-[11px] text-[var(--grey)]">
+                                                        <div className="font-sans text-xs text-[var(--grey)]">
                                                             {item.detail}
                                                         </div>
                                                     </div>
@@ -201,31 +201,31 @@ export function AiSection() {
 
                         <ul className="space-y-4 mb-10">
                             <li ref={listRef1} className="reveal-on-scroll flex items-start gap-3">
-                                <span className="font-display font-medium text-[20px] text-[var(--red)] mt-1">●</span>
+                                <span className="font-display font-medium text-lg text-[var(--red)] mt-1">●</span>
                                 <div>
-                                    <span className="font-sans text-[15px] text-white block mb-1">At-risk client flagging</span>
-                                    <span className="font-sans text-[13px] text-[var(--grey)]">Clients who missed check-ins or show dropping energy are flagged automatically.</span>
+                                    <span className="font-sans text-sm text-white block mb-1">At-risk client flagging</span>
+                                    <span className="font-sans text-xs text-[var(--grey)]">Clients who missed check-ins or show dropping energy are flagged automatically.</span>
                                 </div>
                             </li>
                             <li ref={listRef2} className="reveal-on-scroll flex items-start gap-3">
-                                <span className="font-display font-medium text-[20px] text-[var(--red)] mt-1">●</span>
+                                <span className="font-display font-medium text-lg text-[var(--red)] mt-1">●</span>
                                 <div>
-                                    <span className="font-sans text-[15px] text-white block mb-1">Renewal predictions</span>
-                                    <span className="font-sans text-[13px] text-[var(--grey)]">Know who is likely to renew and who needs a conversation before their program ends.</span>
+                                    <span className="font-sans text-sm text-white block mb-1">Renewal predictions</span>
+                                    <span className="font-sans text-xs text-[var(--grey)]">Know who is likely to renew and who needs a conversation before their program ends.</span>
                                 </div>
                             </li>
                             <li ref={listRef3} className="reveal-on-scroll flex items-start gap-3">
-                                <span className="font-display font-medium text-[20px] text-[var(--red)] mt-1">●</span>
+                                <span className="font-display font-medium text-lg text-[var(--red)] mt-1">●</span>
                                 <div>
-                                    <span className="font-sans text-[15px] text-white block mb-1">One priority per week</span>
-                                    <span className="font-sans text-[13px] text-[var(--grey)]">One specific coaching action every Monday. Not ten insights. One.</span>
+                                    <span className="font-sans text-sm text-white block mb-1">One priority per week</span>
+                                    <span className="font-sans text-xs text-[var(--grey)]">One specific coaching action every Monday. Not ten insights. One.</span>
                                 </div>
                             </li>
                         </ul>
 
                         <a
                             href="/signup"
-                            className="inline-block bg-[var(--red)] text-white font-sans font-bold text-[13px] uppercase tracking-[0.04em] px-10 py-[14px] rounded-[2px] hover:bg-[#C20000] transition-colors border-2 border-[var(--red)]"
+                            className="inline-block bg-[var(--red)] text-white font-sans font-bold text-xs uppercase tracking-[0.04em] px-10 py-[14px] rounded-[2px] hover:bg-[#C20000] transition-colors border-2 border-[var(--red)]"
                         >
                             Start Free
                         </a>

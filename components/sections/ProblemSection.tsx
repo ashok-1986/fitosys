@@ -32,16 +32,16 @@ export function ProblemSection() {
                     <div className="flex flex-col">
                         {PROBLEM_ITEMS.map((item, i) => (
                             <div key={i} className={`py-7 border-b border-[var(--border)] reveal-fade-up ${i === 0 ? 'border-t' : ''}`} style={{ transitionDelay: `${i * 80}ms` }}>
-                                <div className="font-sans font-medium text-[13px] uppercase tracking-[0.08em] text-[rgba(255,255,255,0.2)] mb-2">
+                                <div className="font-sans font-medium text-xs uppercase tracking-[0.08em] text-[rgba(255,255,255,0.2)] mb-2">
                                     {item.num} — {item.tag}
                                 </div>
                                 <h3 className="font-display font-medium text-[28px] md:text-[32px] leading-[1.1] tracking-[0.02em] uppercase text-white mb-2">
                                     {item.title}
                                 </h3>
-                                <p className="font-sans text-[15px] text-[var(--grey)] leading-[1.7] mb-3">
+                                <p className="font-sans text-sm text-[var(--grey)] leading-[1.7] mb-3">
                                     {item.description}
                                 </p>
-                                <span className="inline-flex items-center gap-[6px] bg-[var(--red-dim)] border border-[var(--red-border)] px-3 py-1 rounded-[2px] font-sans font-bold text-[11px] uppercase tracking-[0.06em] text-[var(--red)]">
+                                <span className="inline-flex items-center gap-[6px] bg-[var(--red-dim)] border border-[var(--red-border)] px-3 py-1 rounded-[2px] font-sans font-bold text-xs uppercase tracking-[0.06em] text-[var(--red)]">
                                     {i === 0 ? `₹${badgeCounter.toLocaleString()}+ lost annually on average` : item.badge}
                                 </span>
                             </div>
@@ -56,7 +56,7 @@ export function ProblemSection() {
                         <p className="font-sans text-[17px] italic text-white leading-[1.6] mb-4">
                             I was spending every Sunday sending check-in messages to 28 clients manually. By Monday I was already exhausted before the week had started.
                         </p>
-                        <div className="font-sans font-semibold text-[13px] text-white">
+                        <div className="font-sans font-semibold text-xs text-white">
                             Priya S. <span className="text-[var(--grey)] font-normal">— Fitness Coach, Mumbai</span>
                         </div>
                     </div>

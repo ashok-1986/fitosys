@@ -16,7 +16,7 @@ export function AboutSection() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start mt-8">
                     {/* Left column — text, pillars */}
                     <div>
-                        <p ref={textRef1} className="reveal-on-scroll font-sans text-[20px] md:text-[24px] italic text-white leading-[1.5] mb-8 max-w-[600px]">
+                        <p ref={textRef1} className="reveal-on-scroll font-sans text-lg md:text-[24px] italic text-white leading-[1.5] mb-8 max-w-[600px]">
                             Fitosys exists because India&apos;s best coaches shouldn&apos;t be drowning in WhatsApp messages. The system should run. You should coach.
                         </p>
 
@@ -33,8 +33,8 @@ export function AboutSection() {
                             <div className="flex gap-5 py-5 border-b border-white/[0.06]">
                                 <span className="font-display font-medium text-[32px] text-[#E8001D] leading-none tracking-[0.02em] shrink-0">01</span>
                                 <div>
-                                    <div className="font-sans font-semibold text-[13px] text-white uppercase tracking-[0.08em] mb-2">India-First, Always</div>
-                                    <div className="font-sans text-[15px] text-[#888888] leading-[1.7]">
+                                    <div className="font-sans font-semibold text-xs text-white uppercase tracking-[0.08em] mb-2">India-First, Always</div>
+                                    <div className="font-sans text-sm text-[#888888] leading-[1.7]">
                                         Razorpay UPI built in. GST invoices automatic. WhatsApp as primary channel. We built for how India actually works, not how a Western SaaS assumes it does.
                                     </div>
                                 </div>
@@ -42,8 +42,8 @@ export function AboutSection() {
                             <div className="flex gap-5 py-5 border-b border-white/[0.06]">
                                 <span className="font-display font-medium text-[32px] text-[#E8001D] leading-none tracking-[0.02em] shrink-0">02</span>
                                 <div>
-                                    <div className="font-sans font-semibold text-[13px] text-white uppercase tracking-[0.08em] mb-2">Systems Over Features</div>
-                                    <div className="font-sans text-[15px] text-[#888888] leading-[1.7]">
+                                    <div className="font-sans font-semibold text-xs text-white uppercase tracking-[0.08em] mb-2">Systems Over Features</div>
+                                    <div className="font-sans text-sm text-[#888888] leading-[1.7]">
                                         Fitosys does three things. It does them reliably, every week, without the coach touching them. That is the product. Not a feature list.
                                     </div>
                                 </div>
@@ -51,8 +51,8 @@ export function AboutSection() {
                             <div className="flex gap-5 py-5 border-b border-white/[0.06]">
                                 <span className="font-display font-medium text-[32px] text-[#E8001D] leading-none tracking-[0.02em] shrink-0">03</span>
                                 <div>
-                                    <div className="font-sans font-semibold text-[13px] text-white uppercase tracking-[0.08em] mb-2">Coach Revenue Is Sacred</div>
-                                    <div className="font-sans text-[15px] text-[#888888] leading-[1.7]">
+                                    <div className="font-sans font-semibold text-xs text-white uppercase tracking-[0.08em] mb-2">Coach Revenue Is Sacred</div>
+                                    <div className="font-sans text-sm text-[#888888] leading-[1.7]">
                                         Every decision is measured against one question: does this protect or grow the coach&apos;s revenue? If the answer is no, it does not ship.
                                     </div>
                                 </div>
@@ -67,7 +67,7 @@ export function AboutSection() {
                                 <p className="font-display font-medium text-[40px] text-white leading-none tracking-[0.02em] mb-2">
                                     ₹72,000+
                                 </p>
-                                <p className="font-sans text-[13px] text-[#888888]">
+                                <p className="font-sans text-xs text-[#888888]">
                                     average annual revenue recovered per coach
                                 </p>
                             </div>
@@ -76,7 +76,7 @@ export function AboutSection() {
                                 <p className="font-display font-medium text-[40px] text-white leading-none tracking-[0.02em] mb-2">
                                     130 hrs
                                 </p>
-                                <p className="font-sans text-[13px] text-[#888888]">
+                                <p className="font-sans text-xs text-[#888888]">
                                     saved per year from admin automation
                                 </p>
                             </div>
@@ -85,7 +85,7 @@ export function AboutSection() {
                                 <p className="font-display font-medium text-[40px] text-white leading-none tracking-[0.02em] mb-2">
                                     30 min
                                 </p>
-                                <p className="font-sans text-[13px] text-[#888888]">
+                                <p className="font-sans text-xs text-[#888888]">
                                     average setup time for new coaches
                                 </p>
                             </div>
@@ -94,7 +94,7 @@ export function AboutSection() {
                                 <p className="font-display font-medium text-[40px] text-white leading-none tracking-[0.02em] mb-2">
                                     ₹999
                                 </p>
-                                <p className="font-sans text-[13px] text-[#888888]">
+                                <p className="font-sans text-xs text-[#888888]">
                                     starting price — less than one skipped session
                                 </p>
                             </div>

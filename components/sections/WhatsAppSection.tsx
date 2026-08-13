@@ -25,31 +25,31 @@ export function WhatsAppSection() {
                         
                         <ul className="space-y-4 mb-10">
                             <li className="flex items-start gap-3">
-                                <span className="font-display font-medium text-[20px] text-[var(--red)] mt-1">●</span>
+                                <span className="font-display font-medium text-lg text-[var(--red)] mt-1">●</span>
                                 <div>
-                                    <span className="font-sans text-[15px] text-white block mb-1">No app download required</span>
-                                    <span className="font-sans text-[13px] text-[var(--grey)]">Your clients stay in WhatsApp. Zero friction.</span>
+                                    <span className="font-sans text-sm text-white block mb-1">No app download required</span>
+                                    <span className="font-sans text-xs text-[var(--grey)]">Your clients stay in WhatsApp. Zero friction.</span>
                                 </div>
                             </li>
                             <li className="flex items-start gap-3">
-                                <span className="font-display font-medium text-[20px] text-[var(--red)] mt-1">●</span>
+                                <span className="font-display font-medium text-lg text-[var(--red)] mt-1">●</span>
                                 <div>
-                                    <span className="font-sans text-[15px] text-white block mb-1">90%+ open rates</span>
-                                    <span className="font-sans text-[13px] text-[var(--grey)]">WhatsApp messages get read. Emails don't.</span>
+                                    <span className="font-sans text-sm text-white block mb-1">90%+ open rates</span>
+                                    <span className="font-sans text-xs text-[var(--grey)]">WhatsApp messages get read. Emails don't.</span>
                                 </div>
                             </li>
                             <li className="flex items-start gap-3">
-                                <span className="font-display font-medium text-[20px] text-[var(--red)] mt-1">●</span>
+                                <span className="font-display font-medium text-lg text-[var(--red)] mt-1">●</span>
                                 <div>
-                                    <span className="font-sans text-[15px] text-white block mb-1">Feels personal, runs automated</span>
-                                    <span className="font-sans text-[13px] text-[var(--grey)]">Every message comes from your number, in your name.</span>
+                                    <span className="font-sans text-sm text-white block mb-1">Feels personal, runs automated</span>
+                                    <span className="font-sans text-xs text-[var(--grey)]">Every message comes from your number, in your name.</span>
                                 </div>
                             </li>
                         </ul>
 
                         <a
                             href="/signup"
-                            className="inline-block bg-[var(--red)] text-white font-sans font-bold text-[13px] uppercase tracking-[0.04em] px-10 py-[14px] rounded-[2px] hover:bg-[#C20000] transition-colors border-2 border-[var(--red)]"
+                            className="inline-block bg-[var(--red)] text-white font-sans font-bold text-xs uppercase tracking-[0.04em] px-10 py-[14px] rounded-[2px] hover:bg-[#C20000] transition-colors border-2 border-[var(--red)]"
                         >
                             Start Free — No Card Needed
                         </a>
@@ -68,7 +68,7 @@ export function WhatsAppSection() {
                                     </div>
                                     <div>
                                         <div className="font-sans font-semibold text-[14px] text-white">Fitosys Coach</div>
-                                        <div className="font-sans text-[11px] text-[var(--grey)]">Business Account</div>
+                                        <div className="font-sans text-xs text-[var(--grey)]">Business Account</div>
                                     </div>
                                 </div>
 
@@ -84,7 +84,7 @@ export function WhatsAppSection() {
                                         </p>
                                         <div className="flex gap-2 mt-3">
                                             {['1-4', '5-7', '8-10'].map((opt) => (
-                                                <button key={opt} className="bg-[var(--red)] text-white font-sans text-[12px] font-bold px-4 py-2 rounded-[4px]">
+                                                <button key={opt} className="bg-[var(--red)] text-white font-sans text-xs font-bold px-4 py-2 rounded-[4px]">
                                                     {opt}
                                                 </button>
                                             ))}
@@ -128,7 +128,7 @@ export function WhatsAppSection() {
                                 {/* Chat Input (static) */}
                                 <div className="bg-[#111111] border-t border-[rgba(255,255,255,0.06)] px-4 py-3 flex items-center gap-3">
                                     <div className="flex-1 bg-[#1A1A1A] rounded-[20px] px-4 py-2">
-                                        <span className="font-sans text-[13px] text-[var(--grey)]">Type a message...</span>
+                                        <span className="font-sans text-xs text-[var(--grey)]">Type a message...</span>
                                     </div>
                                     <div className="w-10 h-10 rounded-full bg-[var(--red)] flex items-center justify-center">
                                         <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">

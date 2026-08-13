@@ -49,7 +49,7 @@ export function HeroSection() {
                             <KineticText as="span" className="block text-[#E8001D]" text="LOST CLIENTS." delay={200} charDelay={40} />
                         </h1>
 
-                        <p ref={textRef} className="reveal-on-scroll font-sans text-[20px] leading-[1.7] text-[var(--grey)] mb-10 max-w-[480px]">
+                        <p ref={textRef} className="reveal-on-scroll font-sans text-lg leading-[1.7] text-[var(--grey)] mb-10 max-w-[480px]">
                             Fitosys automates your client check-ins, renewals, and onboarding — <strong>natively on WhatsApp</strong>. 30 minutes to set up. Runs every week without you.
                         </p>
 
@@ -57,19 +57,19 @@ export function HeroSection() {
                             <MagneticButton radius={60} strength={0.4} className="w-full sm:w-auto">
                                 <Link
                                     href="/signup"
-                                    className="bg-[var(--red)] text-white px-8 py-[14px] text-[13px] font-bold uppercase tracking-[0.04em] hover:bg-[#C20000] border-2 border-[var(--red)] hover:border-[#C20000] transition-colors rounded-[2px] block text-center"
+                                    className="bg-[var(--red)] text-white px-8 py-[14px] text-xs font-bold uppercase tracking-[0.04em] hover:bg-[#C20000] border-2 border-[var(--red)] hover:border-[#C20000] transition-colors rounded-[2px] block text-center"
                                 >
                                     Start Free
                                 </Link>
                             </MagneticButton>
                             <Link
                                 href="/demo"
-                                className="bg-transparent text-white px-8 py-[14px] text-[13px] font-medium uppercase tracking-[0.04em] border-2 border-[rgba(255,255,255,0.12)] hover:border-[rgba(255,255,255,0.4)] transition-colors rounded-[2px] w-full sm:w-auto text-center"
+                                className="bg-transparent text-white px-8 py-[14px] text-xs font-medium uppercase tracking-[0.04em] border-2 border-[rgba(255,255,255,0.12)] hover:border-[rgba(255,255,255,0.4)] transition-colors rounded-[2px] w-full sm:w-auto text-center"
                             >
                                 View Demo
                             </Link>
                         </div>
-                        <p className="font-sans text-[12px] text-[var(--grey)] mb-14">No card needed · First 5 clients free · Setup in 30 minutes</p>
+                        <p className="font-sans text-xs text-[var(--grey)] mb-14">No card needed · First 5 clients free · Setup in 30 minutes</p>
 
                         {/* Stat Strip */}
                         <div ref={statRef} className="flex gap-8 md:gap-12 pt-8 border-t border-white/10">
@@ -77,7 +77,7 @@ export function HeroSection() {
                                 <span className="font-display font-medium text-[32px] md:text-[40px] leading-none tracking-[0.02em] uppercase text-[#E8001D]">
                                     2–{stat1}hrs
                                 </span>
-                                <span className="font-sans text-[13px] text-[#888888] leading-[1.4]">
+                                <span className="font-sans text-xs text-[#888888] leading-[1.4]">
                                     saved every week
                                 </span>
                             </div>
@@ -85,7 +85,7 @@ export function HeroSection() {
                                 <span className="font-display font-medium text-[32px] md:text-[40px] leading-none tracking-[0.02em] uppercase text-[#E8001D]">
                                     ₹{Math.floor(stat2 / 1000)}K+
                                 </span>
-                                <span className="font-sans text-[13px] text-[#888888] leading-[1.4]">
+                                <span className="font-sans text-xs text-[#888888] leading-[1.4]">
                                     avg. annual revenue<br />recovered
                                 </span>
                             </div>
@@ -93,7 +93,7 @@ export function HeroSection() {
                                 <span className="font-display font-medium text-[32px] md:text-[40px] leading-none tracking-[0.02em] uppercase text-[#E8001D]">
                                     {stat3}min
                                 </span>
-                                <span className="font-sans text-[13px] text-[#888888] leading-[1.4]">
+                                <span className="font-sans text-xs text-[#888888] leading-[1.4]">
                                     setup time.<br />zero tech skills needed.
                                 </span>
                             </div>
@@ -105,9 +105,9 @@ export function HeroSection() {
 
                         {/* Float card 1: Response Rate (Top Right) */}
                         <div className="absolute top-[12%] -right-[12%] min-w-[210px] z-20 shadow-2xl animate-[float_4s_ease-in-out_infinite] hidden lg:block bg-[#1A1A1A] border border-white/10 rounded-lg py-3 px-4">
-                            <div className="text-[#888888] text-[13px] font-semibold uppercase tracking-widest mb-1.5">This Week&apos;s Response Rate</div>
+                            <div className="text-[#888888] text-xs font-semibold uppercase tracking-widest mb-1.5">This Week&apos;s Response Rate</div>
                             <div className="font-display text-[#E8001D] text-3xl font-medium leading-none">73<span className="text-xl">%</span></div>
-                            <div className="text-white/50 text-[13px] mt-1">22 of 30 clients checked in</div>
+                            <div className="text-white/50 text-xs mt-1">22 of 30 clients checked in</div>
                             <div className="h-[2px] bg-white/5 rounded-sm mt-2.5 overflow-hidden">
                                 <div className="h-full bg-[#E8001D] rounded-sm w-[73%]"></div>
                             </div>
@@ -115,17 +115,17 @@ export function HeroSection() {
 
                         {/* Float card 2: Renewal Alert (Bottom Left) */}
                         <div className="absolute bottom-[18%] -left-[12%] min-w-[200px] z-20 shadow-2xl animate-[float_3.5s_ease-in-out_infinite_reverse] hidden lg:block bg-[#1A1A1A] border border-[#E8001D]/20 rounded-lg py-3 px-4">
-                            <div className="text-[#888888] text-[13px] font-semibold uppercase tracking-widest mb-1.5">Renewal Alert</div>
+                            <div className="text-[#888888] text-xs font-semibold uppercase tracking-widest mb-1.5">Renewal Alert</div>
                             <div className="font-display text-[#E8001D] text-3xl font-medium leading-none">3 clients</div>
-                            <div className="text-white/50 text-[13px] mt-1">programs expiring in 7 days</div>
-                            <div className="text-[#25D366] text-[13px] font-semibold uppercase tracking-wider mt-2">Reminders sent automatically ✓</div>
+                            <div className="text-white/50 text-xs mt-1">programs expiring in 7 days</div>
+                            <div className="text-[#25D366] text-xs font-semibold uppercase tracking-wider mt-2">Reminders sent automatically ✓</div>
                         </div>
 
                         {/* Tab Switcher */}
                         <div className="flex bg-[#111111] border border-white/10 rounded-full p-1 mb-4 relative z-20 shadow-lg">
                             <button
                                 onClick={() => setActiveTab("client")}
-                                className={`relative font-sans uppercase tracking-wider text-[13px] px-5 py-1.5 rounded-full outline-none ${
+                                className={`relative font-sans uppercase tracking-wider text-xs px-5 py-1.5 rounded-full outline-none ${
                                     activeTab === "client"
                                         ? "text-white font-semibold"
                                         : "text-white/50 hover:text-white/80"
@@ -142,7 +142,7 @@ export function HeroSection() {
                             </button>
                             <button
                                 onClick={() => setActiveTab("dashboard")}
-                                className={`relative font-sans uppercase tracking-wider text-[13px] px-5 py-1.5 rounded-full outline-none ${
+                                className={`relative font-sans uppercase tracking-wider text-xs px-5 py-1.5 rounded-full outline-none ${
                                     activeTab === "dashboard"
                                         ? "text-white font-semibold"
                                         : "text-white/50 hover:text-white/80"
@@ -174,10 +174,10 @@ export function HeroSection() {
                                             F
                                         </div>
                                         <div>
-                                            <div className="text-white font-semibold text-[15px] leading-tight font-sans">Fitosys Bot</div>
-                                            <div className="text-white/50 text-[13px] font-sans">for Coach Priya · automated</div>
+                                            <div className="text-white font-semibold text-sm leading-tight font-sans">Fitosys Bot</div>
+                                            <div className="text-white/50 text-xs font-sans">for Coach Priya · automated</div>
                                         </div>
-                                        <div className="ml-auto bg-[#25D366]/20 text-[#25D366] border border-[#25D366]/30 text-[11px] font-semibold px-2 py-0.5 rounded-sm">
+                                        <div className="ml-auto bg-[#25D366]/20 text-[#25D366] border border-[#25D366]/30 text-xs font-semibold px-2 py-0.5 rounded-sm">
                                             AUTO
                                         </div>
                                     </div>
@@ -206,7 +206,7 @@ export function HeroSection() {
                                                         <span className="text-white">1. Energy this week (1-10)?</span><br />
                                                         <span className="text-white">2. Sessions completed?</span><br />
                                                         <span className="text-white">3. One win? 💪</span>
-                                                        <div className="text-white/40 text-[12px] text-right mt-1.5 block">Sun 7:00 PM · Auto-sent</div>
+                                                        <div className="text-white/40 text-xs text-right mt-1.5 block">Sun 7:00 PM · Auto-sent</div>
                                                     </motion.div>
                                                     {/* Received bubble (client) */}
                                                     <motion.div 
@@ -215,7 +215,7 @@ export function HeroSection() {
                                                         className="max-w-[85%] self-end shadow-sm bg-[#1E2420] border border-white/5 text-white/90 rounded-tl-xl rounded-tr-xl rounded-bl-xl rounded-br-sm p-3 text-[14px] leading-relaxed origin-bottom-right"
                                                     >
                                                         <span className="text-white/90">Energy 8/10, 4 sessions done. Win: ran 5km non-stop! 🏃</span>
-                                                        <div className="text-white/40 text-[12px] text-left mt-1.5 block">Sun 8:14 PM</div>
+                                                        <div className="text-white/40 text-xs text-left mt-1.5 block">Sun 8:14 PM</div>
                                                     </motion.div>
                                                     {/* Sent bubble (coach) */}
                                                     <motion.div 
@@ -224,7 +224,7 @@ export function HeroSection() {
                                                         className="max-w-[85%] self-start bg-[#25D366]/15 border border-[#25D366]/25 text-white rounded-tl-xl rounded-tr-xl rounded-br-xl rounded-bl-sm p-3 text-[14px] leading-relaxed origin-bottom-left"
                                                     >
                                                         <span className="text-white">Amazing Anjali! 🔥 5km is a huge milestone. Coach Priya will review this Wednesday.</span>
-                                                        <div className="text-white/40 text-[12px] text-right mt-1.5 block">Sun 8:14 PM · AI-generated</div>
+                                                        <div className="text-white/40 text-xs text-right mt-1.5 block">Sun 8:14 PM · AI-generated</div>
                                                     </motion.div>
                                                     {/* Received bubble (client) */}
                                                     <motion.div 
@@ -233,7 +233,7 @@ export function HeroSection() {
                                                         className="max-w-[85%] self-end shadow-sm bg-[#1E2420] border border-white/5 text-white/90 rounded-tl-xl rounded-tr-xl rounded-bl-xl rounded-br-sm p-3 text-[14px] leading-relaxed mt-1 origin-bottom-right"
                                                     >
                                                         <span className="text-white/90">Thank you! This system is so convenient 😊</span>
-                                                        <div className="text-white/40 text-[12px] text-left mt-1.5 block">Sun 8:16 PM</div>
+                                                        <div className="text-white/40 text-xs text-left mt-1.5 block">Sun 8:16 PM</div>
                                                     </motion.div>
                                                 </motion.div>
                                             )}
@@ -267,7 +267,7 @@ export function HeroSection() {
                                                 >
                                                     <div>
                                                         <p className="text-white text-[14px] font-bold mb-1">Anjali Kapoor</p>
-                                                        <p className="text-[#10B981] text-[13px]">Energy: 8/10 • Won: 5km run</p>
+                                                        <p className="text-[#10B981] text-xs">Energy: 8/10 • Won: 5km run</p>
                                                     </div>
                                                     <CheckCircle className="w-5 h-5 text-[#10B981]" />
                                                 </motion.div>
@@ -278,7 +278,7 @@ export function HeroSection() {
                                                 >
                                                     <div>
                                                         <p className="text-white text-[14px] font-bold mb-1">Vikram Singh</p>
-                                                        <p className="text-[#F59E0B] text-[13px]">Renewal in 7 days</p>
+                                                        <p className="text-[#F59E0B] text-xs">Renewal in 7 days</p>
                                                     </div>
                                                     <div className="w-2.5 h-2.5 rounded-full bg-[#F59E0B]" />
                                                 </motion.div>
@@ -289,7 +289,7 @@ export function HeroSection() {
                                                 >
                                                     <div>
                                                         <p className="text-white text-[14px] font-bold mb-1">Priya Sharma</p>
-                                                        <p className="text-[#E8001D] text-[13px]">Missed 2 check-ins</p>
+                                                        <p className="text-[#E8001D] text-xs">Missed 2 check-ins</p>
                                                     </div>
                                                     <div className="w-2.5 h-2.5 rounded-full bg-[#E8001D]" />
                                                 </motion.div>

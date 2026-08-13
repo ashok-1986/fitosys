@@ -52,7 +52,7 @@ export function TestimonialsSection() {
                         <span className="block text-white">COACHES WHO GOT</span>
                         <span className="block text-[#E8001D]">THEIR SUNDAYS BACK.</span>
                     </h2>
-                    <p ref={textRef} className="reveal-on-scroll font-sans text-[20px] text-[#888888] leading-[1.7] mt-6 max-w-[600px]">
+                    <p ref={textRef} className="reveal-on-scroll font-sans text-lg text-[#888888] leading-[1.7] mt-6 max-w-[600px] hidden md:block">
                         Illustrative results based on beta coach conversations. Individual outcomes vary. What independent coaches tell us happens when systems replace spreadsheets.
                     </p>
                 </div>
@@ -74,7 +74,7 @@ export function TestimonialsSection() {
                                 <span className="font-display font-medium text-[28px] text-[#E8001D] leading-none shrink-0">
                                     {t.roi}
                                 </span>
-                                <span className="font-sans text-[11px] text-[#888888] leading-[1.4]">
+                                <span className="font-sans text-xs text-[#888888] leading-[1.4]">
                                     {t.roiLabel}
                                 </span>
                             </div>
@@ -85,10 +85,10 @@ export function TestimonialsSection() {
                                     {t.initial}
                                 </div>
                                 <div>
-                                    <div className="font-sans font-semibold text-[13px] text-white">
+                                    <div className="font-sans font-semibold text-xs text-white">
                                         {t.name}
                                     </div>
-                                    <div className="font-sans text-[11px] text-[#888888]">
+                                    <div className="font-sans text-xs text-[#888888]">
                                         {t.role}
                                     </div>
                                 </div>

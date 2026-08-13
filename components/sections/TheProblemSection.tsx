@@ -94,125 +94,161 @@ const Reveal = ({ children, delay = 0, direction = 'up' }: { children: React.Rea
   );
 };
 
-const RevenueCard = ({ data }: { data: { months: string[]; values: number[]; label: string; sublabel: string } }) => (
-  <div style={{
-    background: '#111111',
-    border: '1px solid rgba(255,255,255,0.07)',
-    borderRadius: 8,
-    padding: 24,
-  }}>
-    <div style={{ fontSize: 11, color: '#888', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16, fontFamily: 'var(--fb)' }}>
-      {data.label}
+const RevenueCard = ({ data }: { data: { months: string[]; values: number[]; label: string; sublabel: string } }) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.5 });
+  return (
+    <div ref={ref} style={{
+      background: '#111111',
+      border: '1px solid rgba(255,255,255,0.07)',
+      borderRadius: 8,
+      padding: 24,
+    }}>
+      <div style={{ fontSize: 11, color: '#888', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16, fontFamily: 'var(--fb)' }}>
+        {data.label}
+      </div>
+      <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, height: 80, marginBottom: 12 }}>
+        {data.values.map((v, i) => (
+          <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+            <motion.div 
+              initial={{ height: '100%' }}
+              animate={isInView ? { height: `${v}%` } : { height: '100%' }}
+              transition={{ duration: 1.2, delay: 0.2 + (i * 0.1), ease: "easeOut" }}
+              style={{
+                width: '100%',
+                background: `rgba(232,0,29,${0.15 + (v / 100) * 0.6})`,
+                borderRadius: '3px 3px 0 0',
+              }} 
+            />
+            <span style={{ fontSize: 9, color: '#666', textTransform: 'uppercase', fontFamily: 'var(--fb)' }}>{data.months[i]}</span>
+          </div>
+        ))}
+      </div>
+      <div style={{ fontSize: 11, color: '#666', lineHeight: 1.4, fontFamily: 'var(--fb)' }}>{data.sublabel}</div>
+      <div style={{ marginTop: 12, padding: '6px 10px', background: 'rgba(232,0,29,0.08)', border: '1px solid rgba(232,0,29,0.2)', borderRadius: 4 }}>
+        <span style={{ fontSize: 11, color: '#E8001D', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'var(--fb)' }}>
+          No system = no second chance
+        </span>
+      </div>
     </div>
-    <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, height: 80, marginBottom: 12 }}>
-      {data.values.map((v, i) => (
-        <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-          <div style={{
-            width: '100%',
-            height: `${v}%`,
-            background: `rgba(232,0,29,${0.15 + (v / 100) * 0.6})`,
-            borderRadius: '3px 3px 0 0',
-          }} />
-          <span style={{ fontSize: 9, color: '#666', textTransform: 'uppercase', fontFamily: 'var(--fb)' }}>{data.months[i]}</span>
+  );
+};
+
+const EngagementCard = ({ data }: { data: { clients: { name: string; weeks: number; status: 'silent' | 'at-risk' | 'ok'; energy: number }[]; label: string } }) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.5 });
+  return (
+    <div ref={ref} style={{
+      background: '#111111',
+      border: '1px solid rgba(255,255,255,0.07)',
+      borderRadius: 8,
+      padding: 24,
+    }}>
+      <div style={{ fontSize: 11, color: '#888', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16, fontFamily: 'var(--fb)' }}>
+        {data.label}
+      </div>
+      {data.clients.map((client, i) => (
+        <motion.div 
+          key={i} 
+          initial={{ opacity: 0, x: -20 }}
+          animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+          transition={{ duration: 0.5, delay: 0.3 + (i * 0.15), ease: "easeOut" }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '10px 0',
+            borderBottom: i < data.clients.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{
+              width: 8,
+              height: 8,
+              borderRadius: '50%',
+              background: client.status === 'silent' ? '#E8001D'
+                : client.status === 'at-risk' ? '#F5A623'
+                : '#25D366',
+              flexShrink: 0,
+            }} />
+            <span style={{ fontSize: 13, color: client.status === 'ok' ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.85)', fontFamily: 'var(--fb)' }}>
+              {client.name}
+            </span>
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontSize: 11, color: client.status === 'silent' ? '#E8001D' : client.status === 'at-risk' ? '#F5A623' : '#888', fontFamily: 'var(--fb)' }}>
+              {client.status === 'silent' ? `${client.weeks}w silent`
+                : client.status === 'at-risk' ? 'at risk'
+                : 'on track'}
+            </div>
+            <div style={{ fontSize: 10, color: '#555', fontFamily: 'var(--fb)' }}>energy {client.energy}/10</div>
+          </div>
+        </motion.div>
+      ))}
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+        transition={{ delay: 1.0, duration: 0.5 }}
+        style={{ marginTop: 12, fontSize: 11, color: '#666', fontFamily: 'var(--fb)' }}
+      >
+        You have no way to know this without Fitosys.
+      </motion.div>
+    </div>
+  );
+};
+
+const TimeCard = ({ data }: { data: { tasks: { label: string; hours: number; color: string }[]; label: string } }) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.5 });
+  return (
+    <div ref={ref} style={{
+      background: '#111111',
+      border: '1px solid rgba(255,255,255,0.07)',
+      borderRadius: 8,
+      padding: 24,
+    }}>
+      <div style={{ fontSize: 11, color: '#888', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16, fontFamily: 'var(--fb)' }}>
+        {data.label}
+      </div>
+      {data.tasks.map((task, i) => (
+        <div key={i} style={{ marginBottom: 14 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
+            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', fontFamily: 'var(--fb)' }}>{task.label}</span>
+            <span style={{ fontSize: 12, color: '#E8001D', fontWeight: 600, fontFamily: 'var(--fb)' }}>{task.hours}h</span>
+          </div>
+          <div style={{ height: 6, background: 'rgba(255,255,255,0.06)', borderRadius: 3 }}>
+            <motion.div 
+              initial={{ width: 0 }}
+              animate={isInView ? { width: `${(task.hours / 2.0) * 100}%` } : { width: 0 }}
+              transition={{ duration: 1.0, delay: 0.3 + (i * 0.2), ease: "easeOut" }}
+              style={{
+                height: '100%',
+                background: task.color,
+                borderRadius: 3,
+              }} 
+            />
+          </div>
         </div>
       ))}
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+        transition={{ delay: 1.2, duration: 0.5 }}
+        style={{
+          marginTop: 16,
+          paddingTop: 12,
+          borderTop: '1px solid rgba(255,255,255,0.07)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <span style={{ fontSize: 12, color: '#888', fontFamily: 'var(--fb)' }}>Total per week</span>
+        <span style={{ fontSize: 20, fontFamily: 'var(--fd)', fontWeight: 500, color: '#E8001D' }}>4.25 HRS</span>
+      </motion.div>
     </div>
-    <div style={{ fontSize: 11, color: '#666', lineHeight: 1.4, fontFamily: 'var(--fb)' }}>{data.sublabel}</div>
-    <div style={{ marginTop: 12, padding: '6px 10px', background: 'rgba(232,0,29,0.08)', border: '1px solid rgba(232,0,29,0.2)', borderRadius: 4 }}>
-      <span style={{ fontSize: 11, color: '#E8001D', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'var(--fb)' }}>
-        No system = no second chance
-      </span>
-    </div>
-  </div>
-);
-
-const EngagementCard = ({ data }: { data: { clients: { name: string; weeks: number; status: 'silent' | 'at-risk' | 'ok'; energy: number }[]; label: string } }) => (
-  <div style={{
-    background: '#111111',
-    border: '1px solid rgba(255,255,255,0.07)',
-    borderRadius: 8,
-    padding: 24,
-  }}>
-    <div style={{ fontSize: 11, color: '#888', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16, fontFamily: 'var(--fb)' }}>
-      {data.label}
-    </div>
-    {data.clients.map((client, i) => (
-      <div key={i} style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '10px 0',
-        borderBottom: i < data.clients.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{
-            width: 8,
-            height: 8,
-            borderRadius: '50%',
-            background: client.status === 'silent' ? '#E8001D'
-              : client.status === 'at-risk' ? '#F5A623'
-              : '#25D366',
-            flexShrink: 0,
-          }} />
-          <span style={{ fontSize: 13, color: client.status === 'ok' ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.85)', fontFamily: 'var(--fb)' }}>
-            {client.name}
-          </span>
-        </div>
-        <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: 11, color: client.status === 'silent' ? '#E8001D' : client.status === 'at-risk' ? '#F5A623' : '#888', fontFamily: 'var(--fb)' }}>
-            {client.status === 'silent' ? `${client.weeks}w silent`
-              : client.status === 'at-risk' ? 'at risk'
-              : 'on track'}
-          </div>
-          <div style={{ fontSize: 10, color: '#555', fontFamily: 'var(--fb)' }}>energy {client.energy}/10</div>
-        </div>
-      </div>
-    ))}
-    <div style={{ marginTop: 12, fontSize: 11, color: '#666', fontFamily: 'var(--fb)' }}>
-      You have no way to know this without Fitosys.
-    </div>
-  </div>
-);
-
-const TimeCard = ({ data }: { data: { tasks: { label: string; hours: number; color: string }[]; label: string } }) => (
-  <div style={{
-    background: '#111111',
-    border: '1px solid rgba(255,255,255,0.07)',
-    borderRadius: 8,
-    padding: 24,
-  }}>
-    <div style={{ fontSize: 11, color: '#888', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16, fontFamily: 'var(--fb)' }}>
-      {data.label}
-    </div>
-    {data.tasks.map((task, i) => (
-      <div key={i} style={{ marginBottom: 14 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
-          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', fontFamily: 'var(--fb)' }}>{task.label}</span>
-          <span style={{ fontSize: 12, color: '#E8001D', fontWeight: 600, fontFamily: 'var(--fb)' }}>{task.hours}h</span>
-        </div>
-        <div style={{ height: 6, background: 'rgba(255,255,255,0.06)', borderRadius: 3 }}>
-          <div style={{
-            height: '100%',
-            width: `${(task.hours / 2.0) * 100}%`,
-            background: task.color,
-            borderRadius: 3,
-          }} />
-        </div>
-      </div>
-    ))}
-    <div style={{
-      marginTop: 16,
-      paddingTop: 12,
-      borderTop: '1px solid rgba(255,255,255,0.07)',
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    }}>
-      <span style={{ fontSize: 12, color: '#888', fontFamily: 'var(--fb)' }}>Total per week</span>
-      <span style={{ fontSize: 20, fontFamily: 'var(--fd)', fontWeight: 500, color: '#E8001D' }}>4.25 HRS</span>
-    </div>
-  </div>
-);
+  );
+};
 
 export default function TheProblemSection() {
   return (

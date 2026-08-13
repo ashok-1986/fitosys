@@ -33,7 +33,7 @@ export function FaqSection() {
                                     onClick={() => setOpenIndex(openIndex === i ? null : i)}
                                     className="w-full flex items-center justify-between py-6 px-1 text-left transition-colors hover:text-white group"
                                 >
-                                    <span className="font-display font-medium text-[18px] md:text-[20px] uppercase tracking-[0.02em] text-white">
+                                    <span className="font-display font-medium text-[18px] md:text-lg uppercase tracking-[0.02em] text-white">
                                         {faq.q}
                                     </span>
                                     <ChevronDown
@@ -43,7 +43,7 @@ export function FaqSection() {
                                 <div
                                     className={`transition-all duration-300 ease-in-out ${openIndex === i ? 'max-h-[300px] pb-8' : 'max-h-0'}`}
                                 >
-                                    <p className="font-sans text-[15px] text-[var(--grey)] leading-[1.7] px-1">
+                                    <p className="font-sans text-sm text-[var(--grey)] leading-[1.7] px-1">
                                         {faq.a}
                                     </p>
                                 </div>
